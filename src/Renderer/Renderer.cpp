@@ -3,8 +3,6 @@
 #include <algorithm>
 #include "GLValidate.hpp"
 
-// TODO switch to heap allocation to stop stack overflows with large vert counts
-
 static IndexBuffer* GenerateIndexBuffer(unsigned int count) {
   unsigned int indicies[count];
   unsigned int offset = 0;
@@ -133,22 +131,25 @@ void Renderer::SetQuadTextureID(const unsigned int quadIndex, const float textur
 // Draws all of the quads that have been added to the renderer
 void Renderer::Draw() {
   
-  // Using this reduces the size of the vertices array if we are not drawing max quads
-  Vertex vertices[m_Quads.size() * 4];
+  // Reserve a Vertex vector with enough room for all the quads
+  std::vector<Vertex> vertices;
+  vertices.reserve(m_Quads.size() * 4);
 
+  // Loop through each quad and apply its model matrix, then push it to the vecor
   for(int i = 0; i < m_Quads.size(); i++) {
-    
     auto quad = m_Quads.at(i);
     auto modelMatrix = m_ModelMatrices.at(i);
     for(int j = 0; j < 4; j++) {
       quad.at(j).Position = modelMatrix * glm::vec4(quad.at(j).Position, 1.0f);
+      vertices.push_back(quad.at(j));
     }
-    memcpy(vertices + i * 4, quad.data(), 4 * sizeof(Vertex));
-
   }
+  // Send the data from the vector to the GPU for rendering
   m_VertexBuffer->Bind();
-  glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(vertices), vertices);
+  glBufferSubData(GL_ARRAY_BUFFER, 0, vertices.size() * sizeof(Vertex), &vertices.front());
   m_VertexBuffer->Unbind();
+  
+  
 
   m_Shader->Bind();
   m_VertexArray->Bind();
@@ -156,6 +157,8 @@ void Renderer::Draw() {
 
   // Update the view matrix uniform
   m_Shader->SetUniformMatrix4f("u_ViewMatrix", m_ViewMatrix);
+  // To send the model matrix data to the gpu for processesing
+  //m_Shader->SetUniformMatrix4fv("u_ModelMatrix", m_ModelMatrices.size(), m_ModelMatrices.front());
 
   glDrawElements(GL_TRIANGLES, m_IndexBuffer->GetCount(), GL_UNSIGNED_INT, 0);
 }

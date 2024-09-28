@@ -12,7 +12,7 @@ out float v_TextureID;
 uniform mat4 u_ProjectionMatrix;
 uniform mat4 u_ViewMatrix;
 // As of right now the position vector is being adjusted according to the modelmatrix on the cpu side
-//uniform mat4 u_ModelMatrix;
+//uniform mat4 u_ModelMatrix[1000000];
 
 void main()
 {

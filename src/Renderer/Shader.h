@@ -21,6 +21,7 @@ class Shader {
     void SetUniform1i(const char* uniformName, int i);
     void SetUniform1iv(const char* uniformName, int count, const int* values);
     void SetUniformMatrix4f(const char* uniformName, const glm::mat4& matrix);
+    void SetUniformMatrix4fv(const char* uniformName, const int count, const glm::mat4& values);
 };
 
 #endif

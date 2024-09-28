@@ -27,7 +27,7 @@ int main() {
   const unsigned int xDimension = 1066;
   const unsigned int yDimension = 600;
 
-  const unsigned int maxQuads = 50000;
+  const unsigned int maxQuads = 100000;
   const unsigned int maxVertex = 4 * maxQuads;
   const unsigned int maxIndex = 6 * maxQuads;
 
@@ -71,11 +71,11 @@ int main() {
   renderer.SetQuadTextureID(index3, 0);
 
   // Stress Test
-  /*for(int i = 0; i < 50000; i++) {
+  for(int i = 0; i < 100000; i++) {
     unsigned int index = renderer.AddQuad(100,0);
     glm::mat4 modelMatrix = glm::translate(glm::mat4(1.0f), glm::vec3(-300, -300+i, 0));
     renderer.SetQuadModelMatrix(index, modelMatrix);
-  }*/
+  }
   // LOOKHERE
 
   /////////////////////////////////////////////////////////
