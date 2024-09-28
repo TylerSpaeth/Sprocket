@@ -12,10 +12,10 @@
 
 // Processes user input
 void ProcessInput(GLFWwindow* window) {
-	// Binds the escape key to closing the window if pressed
-	if(glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS) {
-		glfwSetWindowShouldClose(window,true);
-	}
+  // Binds the escape key to closing the window if pressed
+  if(glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS) {
+    glfwSetWindowShouldClose(window,true);
+  }
 }
 
 int main() {
@@ -24,8 +24,8 @@ int main() {
   /////////////////// INITITIALIZATION ////////////////////
   /////////////////////////////////////////////////////////
 
-	const unsigned int xDimension = 1066;
-	const unsigned int yDimension = 600;
+  const unsigned int xDimension = 1066;
+  const unsigned int yDimension = 600;
 
   const unsigned int maxQuads = 50000;
   const unsigned int maxVertex = 4 * maxQuads;
@@ -33,11 +33,11 @@ int main() {
 
   GLFWwindow* window = InitGLFWwindow(xDimension, yDimension);
 
-	// Initialize GLAD
+  // Initialize GLAD
   // MUST BE DONE BEFORE ANY OPENGL CALLS INCLUDING INTIALIZING RENDERER
-	if(!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {
-		return -1;
-	}
+  if(!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {
+    return -1;
+  }
 
   Renderer renderer("../res/shaders/Basic.vert", "../res/shaders/Basic.frag", maxQuads);
  
@@ -83,26 +83,26 @@ int main() {
   /////////////////////////////////////////////////////////
 
   /////////////////////////////////////////////////////////
-	////////////////////// RENDER LOOP //////////////////////
+  ////////////////////// RENDER LOOP //////////////////////
   /////////////////////////////////////////////////////////
-	while(!glfwWindowShouldClose(window)) {
+  while(!glfwWindowShouldClose(window)) {
 
     // Print fps
     std::cout << 1000000 / renderer.GetTimeSinceLastChecked() << "FPS\n";
 
-		ProcessInput(window);
+    ProcessInput(window);
 
     renderer.Clear();
     
     renderer.Draw();
 
-		glfwSwapBuffers(window);
-		glfwPollEvents();
-	}
+    glfwSwapBuffers(window);
+    glfwPollEvents();
+  }
 
-	// Clear out used resources
-	glfwTerminate();	
-	return 0;
+  // Clear out used resources
+  glfwTerminate();	
+  return 0;
 
 }
 

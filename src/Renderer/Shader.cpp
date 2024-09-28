@@ -6,24 +6,24 @@
 #include <sstream>
 
 static unsigned int CompileShader(GLenum shaderType, const char* source) {
-	// Create and compile the shader
-	unsigned int shader = glCreateShader(shaderType);
-	glShaderSource(shader, 1, &source, NULL);
-	glCompileShader(shader);
+  // Create and compile the shader
+  unsigned int shader = glCreateShader(shaderType);
+  glShaderSource(shader, 1, &source, NULL);
+  glCompileShader(shader);
 
-	// Valide the shader compilation
-	int result;
-	glGetShaderiv(shader, GL_COMPILE_STATUS, &result);
-	if(result == GL_FALSE) {
-		int length;
-		glGetShaderiv(shader, GL_INFO_LOG_LENGTH, &length);
-		char* message = (char*) alloca(length * sizeof(char));
+  // Valide the shader compilation
+  int result;
+  glGetShaderiv(shader, GL_COMPILE_STATUS, &result);
+  if(result == GL_FALSE) {
+    int length;
+    glGetShaderiv(shader, GL_INFO_LOG_LENGTH, &length);
+    char* message = (char*) alloca(length * sizeof(char));
     glGetShaderInfoLog(shader, length, &length, message);
-		std::cout << "Failed to compile shader\n";
+    std::cout << "Failed to compile shader\n";
     std::cout << message<<"\n";
-	}
-	
-	return shader;
+  }
+  
+  return shader;
 }
 
 // Parse the data from the given filepath to a string
@@ -49,24 +49,24 @@ Shader::Shader(const std::string& vertexPath, const std::string& fragmentPath) {
 
   unsigned int program = glCreateProgram();
 
-	// Compile Shaders
-	unsigned int vShader = CompileShader(GL_VERTEX_SHADER, vertexShader.c_str());
-	unsigned int fShader = CompileShader(GL_FRAGMENT_SHADER, fragmentShader.c_str()); 
+  // Compile Shaders
+  unsigned int vShader = CompileShader(GL_VERTEX_SHADER, vertexShader.c_str());
+  unsigned int fShader = CompileShader(GL_FRAGMENT_SHADER, fragmentShader.c_str()); 
 
-	// Attach the shaders to the program
-	glAttachShader(program, vShader);
-	glAttachShader(program, fShader);
-	glLinkProgram(program);
-	glValidateProgram(program);
+  // Attach the shaders to the program
+  glAttachShader(program, vShader);
+  glAttachShader(program, fShader);
+  glLinkProgram(program);
+  glValidateProgram(program);
 
-	glDeleteShader(vShader);
-	glDeleteShader(fShader);
+  glDeleteShader(vShader);
+  glDeleteShader(fShader);
 
   programID = program;
 }
 
 Shader::~Shader() {
-	glDeleteProgram(programID);
+  glDeleteProgram(programID);
 }
 
 void Shader::Bind() const {
@@ -79,12 +79,12 @@ void Shader::Unbind() const {
 
 void Shader::SetUniform4f(const char* uniformName, float v1, float v2, float v3, float v4) {
   int location = GetUniformLocation(uniformName);
-	glUniform4f(location, v1, v2, v3, v4);
+  glUniform4f(location, v1, v2, v3, v4);
 }
 
 void Shader::SetUniform1i(const char* uniformName, int i) {
   int location = GetUniformLocation(uniformName);
-	glUniform1i(location, i);
+  glUniform1i(location, i);
 }
 
 void Shader::SetUniform1iv(const char* uniformName, int count, const int* values) {

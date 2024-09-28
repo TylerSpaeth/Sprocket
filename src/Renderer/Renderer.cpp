@@ -151,7 +151,7 @@ void Renderer::Draw() {
   m_VertexBuffer->Unbind();
 
   m_Shader->Bind();
-	m_VertexArray->Bind();
+  m_VertexArray->Bind();
   m_IndexBuffer->Bind();
 
   // Update the view matrix uniform
