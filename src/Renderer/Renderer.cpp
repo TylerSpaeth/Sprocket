@@ -1,7 +1,6 @@
 #include "Renderer.h"
 #include <iostream>
 #include <algorithm>
-#include "GLValidate.hpp"
 
 static IndexBuffer* GenerateIndexBuffer(unsigned int count) {
   unsigned int indicies[count];
@@ -52,13 +51,12 @@ static std::array<Vertex, 4> CreateQuad(float size, float textureID) {
   return {v0, v1, v2, v3};
 }
 
-Renderer::Renderer(const std::string& vertexPath, const std::string& fragmentPath, const unsigned int maxQuads) : m_MaxQuads(maxQuads) {
+Renderer::Renderer(const unsigned int maxQuads) : m_MaxQuads(maxQuads) {
 
   // Setup blending
   glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
   glEnable(GL_BLEND);
 
-  m_Shader = new Shader(vertexPath, fragmentPath);
   m_VertexBuffer = new VertexBuffer(nullptr, sizeof(Vertex)*m_MaxQuads * 4);;
   m_IndexBuffer = GenerateIndexBuffer(m_MaxQuads * 6);
   m_VertexArray = new VertexArray();
@@ -70,6 +68,11 @@ Renderer::Renderer(const std::string& vertexPath, const std::string& fragmentPat
   layout.Push<float>(2); // Texcoords
   layout.Push<float>(1); // TextureID
   m_VertexArray->AddBuffer(*m_VertexBuffer, layout);
+
+}
+
+void Renderer::AttachShader(Shader* shader) {
+  m_Shader = shader;
 }
 
 void Renderer::Clear() const {
@@ -161,14 +164,6 @@ void Renderer::Draw() {
   //m_Shader->SetUniformMatrix4fv("u_ModelMatrix", m_ModelMatrices.size(), m_ModelMatrices.front());
 
   glDrawElements(GL_TRIANGLES, m_IndexBuffer->GetCount(), GL_UNSIGNED_INT, 0);
-}
-
-// Returns the time since this function was last called in terms of microseconds
-int64_t Renderer::GetTimeSinceLastChecked() {
-  auto currentMicro = std::chrono::duration_cast<std::chrono::microseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
-    auto elapsed = currentMicro - m_LastTimeChecked;
-    m_LastTimeChecked = currentMicro;
-    return elapsed;
 }
 
 ///////////////////////////////////////////////////////////////////////////////

@@ -3,11 +3,8 @@
 #include "Renderer/Renderer.h"
 #include "Renderer/Texture.h"
 #include "Window.h"
-#include "GLValidate.hpp"
 #include "Input.h"
 
-#include "ThirdParty/glad/glad.h"
-#include "ThirdParty/GLFW/glfw3.h"
 #include "ThirdParty/glm/glm.hpp"
 #include "ThirdParty/glm/gtc/matrix_transform.hpp"
 
@@ -21,21 +18,14 @@ int main() {
   const unsigned int yDimension = 600;
 
   const unsigned int maxQuads = 100000;
-  const unsigned int maxVertex = 4 * maxQuads;
-  const unsigned int maxIndex = 6 * maxQuads;
 
   Window::SetWindowAttributes(xDimension, yDimension, "New Window");
-  Window* win = &Window::GetInstance();
-  Input* input = win->GetInput();
-  GLFWwindow* window = win->GetWindow();
+  Window* window = &Window::GetInstance();
+  Input* input = window->GetInput();
 
-  // Initialize GLAD
-  // MUST BE DONE BEFORE ANY OPENGL CALLS INCLUDING INTIALIZING RENDERER
-  if(!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {
-    return -1;
-  }
-
-  Renderer renderer("../res/shaders/Basic.vert", "../res/shaders/Basic.frag", maxQuads);
+  window->InitializeRenderer(maxQuads);
+  Renderer renderer = *window->GetRenderer();
+  renderer.AttachShader(new Shader("../res/shaders/Basic.vert", "../res/shaders/Basic.frag"));
  
   // Load Textures
   Texture texture("../res/textures/BiggerBetterTree.png", 1);
@@ -83,16 +73,16 @@ int main() {
   /////////////////////////////////////////////////////////
   ////////////////////// RENDER LOOP //////////////////////
   /////////////////////////////////////////////////////////
-  while(!glfwWindowShouldClose(window)) {
+  while(!window->ShouldClose()) {
 
     // In microseconds
-    double frameDelay = renderer.GetTimeSinceLastChecked();
+    double frameDelay = window->GetTimeSinceLastChecked();
 
     // Print fps
     //std::cout << 1000000 / frameDelay << "FPS\n";
 
-    if(input->IsKeyPressed(GLFW_KEY_ESCAPE)) {
-      glfwSetWindowShouldClose(window,true);
+    if(input->IsKeyPressed(KEY_ESCAPE)) {
+      window->SetShouldClose();
     }
     
     if(input->IsKeyRepeated(KEY_W) || input->IsKeyPressed(KEY_W)) {
@@ -112,20 +102,20 @@ int main() {
       renderer.SetQuadModelMatrix(index3, modelMat);
     }
     
-
     renderer.Clear();
     
     renderer.Draw();
 
     // This clears all the keypress data from this frame so there is no
     // residual in the next one
-    win->ClearInputs(window);
-    glfwSwapBuffers(window);
-    glfwPollEvents();
+    window->ClearInputs();
+    window->SwapBuffers();
+    window->PollEvents();
   }
 
-  // Clear out used resources
-  glfwTerminate();	
+  // TODO make sure everything is getting cleaned up
+
+  window->Close();
   return 0;
 
 }

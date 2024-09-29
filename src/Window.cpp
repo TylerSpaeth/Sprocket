@@ -46,8 +46,8 @@ static void KeyCallback(GLFWwindow* window, int key, int scancode, int action, i
 }
 
 // This clears all key for the keys that are stored in the keys vector
-void Window::ClearInputs(GLFWwindow* window) {
-  Input* input = (Input*)glfwGetWindowUserPointer(window);
+void Window::ClearInputs() {
+  Input* input = (Input*)glfwGetWindowUserPointer(m_Window);
   for(int i : clearKeys) {
     input->UpdateKeyState(i, -1);
   }
@@ -86,8 +86,13 @@ Window::Window(const unsigned int xDimension, const unsigned int yDimension) {
   m_Input = new Input(m_Window);
   glfwSetWindowUserPointer(m_Window, m_Input);
   RegisterCallbacks(m_Window);
+
+  // Initialize GLAD
+  // MUST BE DONE BEFORE ANY OPENGL CALLS INCLUDING INTIALIZING RENDERER
+  gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);
 }
 
+// These need to be specified before getting the window instance
 void Window::SetWindowAttributes(const unsigned int xDimension, const unsigned int yDimension, const std::string& windowTitle) {
   s_XDimension = xDimension;
   s_YDimension = yDimension;
@@ -99,4 +104,36 @@ Window& Window::GetInstance() {
     s_Instance = new Window(s_XDimension, s_YDimension);
   }
   return *s_Instance;
+}
+
+void Window::SetShouldClose() {
+  glfwSetWindowShouldClose(m_Window, GLFW_TRUE);
+}
+
+bool Window::ShouldClose() {
+  return glfwWindowShouldClose(m_Window);
+}
+
+void Window::Close() {
+  glfwTerminate();
+}
+
+void Window::SwapBuffers() {
+  glfwSwapBuffers(m_Window);
+}
+
+void Window::PollEvents() {
+  glfwPollEvents();
+}
+
+// Returns the time since this function was last called in terms of microseconds
+int64_t Window::GetTimeSinceLastChecked() {
+  auto currentMicro = std::chrono::duration_cast<std::chrono::microseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
+    auto elapsed = currentMicro - m_LastTimeChecked;
+    m_LastTimeChecked = currentMicro;
+    return elapsed;
+}
+
+void Window::InitializeRenderer(unsigned int maxQuads) {
+  m_Renderer = new Renderer(maxQuads);
 }
