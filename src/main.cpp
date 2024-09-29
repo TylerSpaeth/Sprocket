@@ -4,18 +4,55 @@
 #include "Renderer/Texture.h"
 #include "Window.hpp"
 #include "GLValidate.hpp"
+#include "Input.h"
 
 #include "ThirdParty/glad/glad.h"
 #include "ThirdParty/GLFW/glfw3.h"
 #include "ThirdParty/glm/glm.hpp"
 #include "ThirdParty/glm/gtc/matrix_transform.hpp"
 
-// Processes user input
-void ProcessInput(GLFWwindow* window) {
-  // Binds the escape key to closing the window if pressed
-  if(glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS) {
-    glfwSetWindowShouldClose(window,true);
+// This vector stores the keys that have been pressed and need to be cleaned between frames
+std::vector<int> clearKeys;
+std::vector<int> pressedKeys;
+
+// This updates the key states in the input object that is stored in the glfw user pointer
+static void KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mod) {
+  Input* input = (Input*)glfwGetWindowUserPointer(window);
+  input->UpdateKeyState(key, action);
+  if(action == GLFW_RELEASE) {
+    clearKeys.push_back(key);
   }
+  else if(action == GLFW_PRESS) {
+    pressedKeys.push_back(key);
+  }
+}
+
+// This clears all key for the keys that are stored in the keys vector
+static void ClearKeys(GLFWwindow* window) {
+  Input* input = (Input*)glfwGetWindowUserPointer(window);
+  for(int i : clearKeys) {
+    input->UpdateKeyState(i, -1);
+  }
+  clearKeys.clear();
+  for(int i : pressedKeys) {
+    input->UpdateKeyState(i, GLFW_REPEAT);
+  }
+  pressedKeys.clear();
+}
+
+static void CursorPositionCallback(GLFWwindow* window, double xpos, double ypos) {
+  Input* input = (Input*)glfwGetWindowUserPointer(window);
+  input->UpdateCursorPosition(xpos, ypos);
+}
+
+static void MouseButtonCallback(GLFWwindow* window, int button, int action, int mods) {
+  Input* input = (Input*)glfwGetWindowUserPointer(window);
+  input->UpdateMouseButtonState(button, action);
+}
+
+static void ScrollCallback(GLFWwindow* window, double xoffset, double yoffset) {
+  Input* input = (Input*)glfwGetWindowUserPointer(window);
+  input->UpdateMouseScrollOffset(xoffset, yoffset);
 }
 
 int main() {
@@ -32,6 +69,14 @@ int main() {
   const unsigned int maxIndex = 6 * maxQuads;
 
   GLFWwindow* window = InitGLFWwindow(xDimension, yDimension);
+  // Create an input object and store it in the glfw user pointer so that it can
+  // be accessed in the callback
+  Input input(window);
+  glfwSetWindowUserPointer(window, &input);
+  glfwSetKeyCallback(window, KeyCallback);
+  glfwSetCursorPosCallback(window, CursorPositionCallback);
+  glfwSetMouseButtonCallback(window, MouseButtonCallback);
+  glfwSetScrollCallback(window, ScrollCallback);
 
   // Initialize GLAD
   // MUST BE DONE BEFORE ANY OPENGL CALLS INCLUDING INTIALIZING RENDERER
@@ -71,31 +116,58 @@ int main() {
   renderer.SetQuadTextureID(index3, 0);
 
   // Stress Test
-  for(int i = 0; i < 100000; i++) {
+  /*for(int i = 0; i < 100000; i++) {
     unsigned int index = renderer.AddQuad(100,0);
     glm::mat4 modelMatrix = glm::translate(glm::mat4(1.0f), glm::vec3(-300, -300+i, 0));
     renderer.SetQuadModelMatrix(index, modelMatrix);
-  }
+  }*/
   // LOOKHERE
 
   /////////////////////////////////////////////////////////
   /////////////////////////////////////////////////////////
   /////////////////////////////////////////////////////////
 
+
+  glm::mat4 modelMat = glm::translate(glm::mat4(1.0f), glm::vec3(0, 0, 0));
   /////////////////////////////////////////////////////////
   ////////////////////// RENDER LOOP //////////////////////
   /////////////////////////////////////////////////////////
   while(!glfwWindowShouldClose(window)) {
 
-    // Print fps
-    std::cout << 1000000 / renderer.GetTimeSinceLastChecked() << "FPS\n";
+    // In microseconds
+    double frameDelay = renderer.GetTimeSinceLastChecked();
 
-    ProcessInput(window);
+    // Print fps
+    //std::cout << 1000000 / frameDelay << "FPS\n";
+
+    if(input.IsKeyPressed(GLFW_KEY_ESCAPE)) {
+      glfwSetWindowShouldClose(window,true);
+    }
+
+    if(input.IsKeyRepeated(KEY_W) || input.IsKeyPressed(KEY_W)) {
+      modelMat = glm::translate(glm::mat4(1.0f), glm::vec3(0, 100.0f*frameDelay/1000000.0f, 0)) * modelMat; 
+      renderer.SetQuadModelMatrix(index3, modelMat);
+    }
+    if(input.IsKeyRepeated(KEY_S) || input.IsKeyPressed(KEY_S)) {
+      modelMat = glm::translate(glm::mat4(1.0f), glm::vec3(0, -100.0f*frameDelay/1000000.0f, 0)) * modelMat; 
+      renderer.SetQuadModelMatrix(index3, modelMat);
+    }
+    if(input.IsKeyRepeated(KEY_A) || input.IsKeyPressed(KEY_A)) {
+      modelMat = glm::translate(glm::mat4(1.0f), glm::vec3(-100.0f*frameDelay/1000000.0f, 0, 0)) * modelMat; 
+      renderer.SetQuadModelMatrix(index3, modelMat);
+    }
+    if(input.IsKeyRepeated(KEY_D) || input.IsKeyPressed(KEY_D)) {
+      modelMat = glm::translate(glm::mat4(1.0f), glm::vec3(100.0f*frameDelay/1000000.0f, 0, 0)) * modelMat; 
+      renderer.SetQuadModelMatrix(index3, modelMat);
+    }
 
     renderer.Clear();
     
     renderer.Draw();
 
+    // This clears all the keypress data from this frame so there is no
+    // residual in the next one
+    ClearKeys(window);
     glfwSwapBuffers(window);
     glfwPollEvents();
   }

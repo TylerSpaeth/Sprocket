@@ -30,6 +30,7 @@ target_sources(${PROJECT_NAME} PRIVATE
 
 # Add source code
 target_sources(${PROJECT_NAME} PRIVATE 
+  src/Input.cpp
 )
 
 # Links libraries in the lib folder to the executable
