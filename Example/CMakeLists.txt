@@ -3,17 +3,25 @@ cmake_minimum_required(VERSION 3.28.2)
 # Specifies the name of the project
 project(app)
 
-find_library(Sprocketlib Sprocket REQUIRED PATHS ../Sprocket/build)
+# Compiles the Sprocket dll
+add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/../Sprocket ${CMAKE_CURRENT_SOURCE_DIR}/../Sprocket/build )
 
 add_executable(${PROJECT_NAME} src/main.cpp)
 
 # Include the public headers from Sprocket
 target_include_directories(${PROJECT_NAME} PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/../Sprocket/include)
 
-target_link_libraries(${PROJECT_NAME} PRIVATE ${Sprocketlib})
+# Links the sprocket library to the target
+target_link_libraries(${PROJECT_NAME} PRIVATE Sprocket)
 
 # This increases the stack size to 10mb, which is necessary based on how the 
 # renderer portion currently works. In reality, those sections that take up large
 # amounts of memory should be on the heap
 set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -Wl,--stack,10000000") 
+
+# Copys the Sprocket dll into the build folder
+add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy_if_different
+        "${PROJECT_SOURCE_DIR}/../Sprocket/build/libSprocket.dll"
+        $<TARGET_FILE_DIR:${PROJECT_NAME}>)
 

@@ -1,6 +1,3 @@
-#include "ThirdParty/glad/glad.h"
-#include "ThirdParty/GLFW/glfw3.h"
-
 #include "Window.h"
 
 #include <vector>
@@ -50,7 +47,7 @@ static void KeyCallback(GLFWwindow* window, int key, int scancode, int action, i
 
 // This clears all key for the keys that are stored in the keys vector
 void Window::ClearInputs() {
-  Input* input = (Input*)glfwGetWindowUserPointer((GLFWwindow*)m_Window);
+  Input* input = (Input*)glfwGetWindowUserPointer(m_Window);
   for(int i : clearKeys) {
     input->UpdateKeyState(i, -1);
   }
@@ -86,9 +83,9 @@ static void RegisterCallbacks(GLFWwindow* window) {
 
 Window::Window(const unsigned int xDimension, const unsigned int yDimension) {
   m_Window = InitGLFWwindow(xDimension, yDimension, s_WindowTitle.c_str());
-  m_Input = new Input((GLFWwindow*)m_Window);
-  glfwSetWindowUserPointer((GLFWwindow*)m_Window, m_Input);
-  RegisterCallbacks((GLFWwindow*)m_Window);
+  m_Input = new Input(m_Window);
+  glfwSetWindowUserPointer(m_Window, m_Input);
+  RegisterCallbacks(m_Window);
 
   // Initialize GLAD
   // MUST BE DONE BEFORE ANY OPENGL CALLS INCLUDING INTIALIZING RENDERER
@@ -110,11 +107,11 @@ Window& Window::GetInstance() {
 }
 
 void Window::SetShouldClose() {
-  glfwSetWindowShouldClose((GLFWwindow*)m_Window, GLFW_TRUE);
+  glfwSetWindowShouldClose(m_Window, GLFW_TRUE);
 }
 
 bool Window::ShouldClose() {
-  return glfwWindowShouldClose((GLFWwindow*)m_Window);
+  return glfwWindowShouldClose(m_Window);
 }
 
 void Window::Close() {
@@ -122,7 +119,7 @@ void Window::Close() {
 }
 
 void Window::SwapBuffers() {
-  glfwSwapBuffers((GLFWwindow*)m_Window);
+  glfwSwapBuffers(m_Window);
 }
 
 void Window::PollEvents() {

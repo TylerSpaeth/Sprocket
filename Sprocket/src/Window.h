@@ -1,6 +1,8 @@
 #ifndef WINDOW_H
 #define WINDOW_H
 
+#include "ThirdParty/glad/glad.h"
+#include "ThirdParty/GLFW/glfw3.h"
 #include "Input.h"
 #include "Renderer/Renderer.h"
 
@@ -16,7 +18,7 @@ class SPROCKET_API Window {
     inline static unsigned int s_YDimension = 0;
     inline static std::string s_WindowTitle = "Window";
     inline static Window* s_Instance = nullptr;
-    void* m_Window; // The GLFWwindow* stored as void to keep GLFW out of dll
+    GLFWwindow* m_Window;
     Input* m_Input;
     Renderer* m_Renderer;
     Window(const unsigned int xDimension, const unsigned int yDimension);
