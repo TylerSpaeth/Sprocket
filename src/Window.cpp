@@ -2,13 +2,13 @@
 
 #include <vector>
 
-static GLFWwindow* InitGLFWwindow(const unsigned int xDimension, const unsigned int yDimension) {
+static GLFWwindow* InitGLFWwindow(const unsigned int xDimension, const unsigned int yDimension, const char* windowTitle) {
   glfwInit();
   glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
   glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6);
   glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
-  GLFWwindow* window = glfwCreateWindow(xDimension,yDimension,"LearnOpenGL",NULL,NULL);
+  GLFWwindow* window = glfwCreateWindow(xDimension,yDimension,windowTitle,NULL,NULL);
   if(window == NULL) {
     glfwTerminate();
   }
@@ -82,7 +82,7 @@ static void RegisterCallbacks(GLFWwindow* window) {
 }
 
 Window::Window(const unsigned int xDimension, const unsigned int yDimension) {
-  m_Window = InitGLFWwindow(xDimension, yDimension);
+  m_Window = InitGLFWwindow(xDimension, yDimension, s_WindowTitle.c_str());
   m_Input = new Input(m_Window);
   glfwSetWindowUserPointer(m_Window, m_Input);
   RegisterCallbacks(m_Window);
