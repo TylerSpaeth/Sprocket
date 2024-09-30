@@ -33,6 +33,7 @@ class SPROCKET_API Renderer {
     mutable std::vector<glm::mat4> m_ModelMatrices;
   public:
     Renderer(const unsigned int maxQuads);
+    ~Renderer();
     void AttachShader(Shader* shader);
     void Clear() const;
     unsigned int AddQuad(float size, float textureID);

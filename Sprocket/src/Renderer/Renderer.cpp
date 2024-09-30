@@ -3,7 +3,7 @@
 #include <algorithm>
 
 static IndexBuffer* GenerateIndexBuffer(unsigned int count) {
-  unsigned int indicies[count];
+  unsigned int* indicies = (unsigned int*) malloc(count*sizeof(unsigned int));
   unsigned int offset = 0;
   for(int i = 0; i < count; i+=6) {
     indicies[i+0] = 0 + offset;
@@ -15,7 +15,10 @@ static IndexBuffer* GenerateIndexBuffer(unsigned int count) {
     offset += 4;
   }
 
-  return new IndexBuffer(indicies, count);
+  IndexBuffer* ib = new IndexBuffer(indicies, count);
+  free(indicies);
+
+  return ib;
 }
 
 static std::array<Vertex, 4> CreateQuad(float size, float textureID) {
@@ -69,6 +72,13 @@ Renderer::Renderer(const unsigned int maxQuads) : m_MaxQuads(maxQuads) {
   layout.Push<float>(1); // TextureID
   m_VertexArray->AddBuffer(*m_VertexBuffer, layout);
 
+}
+
+Renderer::~Renderer() {
+  // TODO make sure everything is getting cleaned up
+  delete m_VertexBuffer;
+  delete m_VertexArray;
+  delete m_IndexBuffer;
 }
 
 void Renderer::AttachShader(Shader* shader) {
