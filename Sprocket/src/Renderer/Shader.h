@@ -3,15 +3,16 @@
 
 #include <string>
 #include <unordered_map>
-#include "ThirdParty/glm/glm.hpp"
-#include "ThirdParty/glad/glad.h"
+#include "../ThirdParty/glm/glm.hpp"
+
+#include "../Macros.h"
 
 
-class Shader {
+class SPROCKET_API Shader {
   private:
     unsigned int programID;
-    mutable std::unordered_map<std::string, GLint> uniformLocationCache;
-    GLint GetUniformLocation(const std::string& name) const;
+    mutable std::unordered_map<std::string, int> uniformLocationCache;
+    int GetUniformLocation(const std::string& name) const;
   public:
     Shader(const std::string& vertexPath, const std::string& fragmentPath);
     ~Shader();

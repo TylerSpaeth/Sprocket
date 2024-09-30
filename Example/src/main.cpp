@@ -1,12 +1,4 @@
-#include <iostream>
-
-#include "Renderer/Renderer.h"
-#include "Renderer/Texture.h"
-#include "Window.h"
-#include "Input.h"
-
-#include "ThirdParty/glm/glm.hpp"
-#include "ThirdParty/glm/gtc/matrix_transform.hpp"
+#include "Sprocket.h"
 
 int main() {
 
@@ -119,5 +111,3 @@ int main() {
   return 0;
 
 }
-
-

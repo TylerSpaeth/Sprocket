@@ -5,6 +5,8 @@
 #include <map>
 #include "ThirdParty/GLFW/glfw3.h"
 
+#include "Macros.h"
+
 // Keycodes
 #define KEY_SPACE                     GLFW_KEY_SPACE        
 #define KEY_APOSTROPHE                GLFW_KEY_APOSTROPHE   
@@ -152,7 +154,7 @@ struct MouseButtonState {
   bool Released;
  };
 
-class Input {
+class SPROCKET_API Input {
   private:
     GLFWwindow* m_Window;
     std::map<unsigned int, KeyState> m_Keys;

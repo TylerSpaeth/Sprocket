@@ -1,16 +1,16 @@
 cmake_minimum_required(VERSION 3.28.2)
 
 # Specifies the name of the project
-project(myproject)
-
-# Specifies where our include directory is
-include_directories(src)
+project(Sprocket)
 
 # Links our lib directory to be used
 link_directories(lib)
 
+add_compile_definitions(${PROJECT_NAME} PRIVATE SPROCKET_BUILD_DLL)
+
 # Specifies that we want to create an executable using certain source code
-add_executable(${PROJECT_NAME} src/main.cpp)
+add_library(${PROJECT_NAME} SHARED)
+target_include_directories(${PROJECT_NAME} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/src )
 
 # Add ThirdParty source code
 target_sources(${PROJECT_NAME} PRIVATE 
@@ -34,11 +34,7 @@ target_sources(${PROJECT_NAME} PRIVATE
   src/Window.cpp
 )
 
+target_include_directories(${PROJECT_NAME} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include)
+
 # Links libraries in the lib folder to the executable
-target_link_libraries(${PROJECT_NAME} libglfw3.a)
-
-# This increases the stack size to 10mb, which is necessary based on how the 
-# renderer portion currently works. In reality, those sections that take up large
-# amounts of memory should be on the heap
-set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -Wl,--stack,10000000") 
-
+target_link_libraries(${PROJECT_NAME} PRIVATE libglfw3.a)

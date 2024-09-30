@@ -5,8 +5,10 @@
 #include "IndexBuffer.h"
 #include "Shader.h"
 #include "Texture.h"
-#include "ThirdParty/glm/glm.hpp"
-#include "ThirdParty/glm/gtc/matrix_transform.hpp"
+#include "../ThirdParty/glm/glm.hpp"
+#include "../ThirdParty/glm/gtc/matrix_transform.hpp"
+
+#include "../Macros.h"
 
 #include <array>
 #include <vector>
@@ -18,7 +20,7 @@ struct Vertex {
   float TextureID;
 };
 
-class Renderer {
+class SPROCKET_API Renderer {
   private:
     // View matrix is initialized to just being at 0,0
     glm::mat4 m_ViewMatrix = glm::translate(glm::mat4(1.0f), glm::vec3(0, 0, 0));

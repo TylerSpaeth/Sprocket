@@ -1,22 +1,22 @@
 #ifndef WINDOW_H
 #define WINDOW_H
 
-#include "ThirdParty/glad/glad.h"
-#include "ThirdParty/GLFW/glfw3.h"
 #include "Input.h"
 #include "Renderer/Renderer.h"
+
+#include "Macros.h"
 
 #include <string>
 #include <chrono>
 
 // Window is a singleton
-class Window {
+class SPROCKET_API Window {
   private:
     inline static unsigned int s_XDimension = 0;
     inline static unsigned int s_YDimension = 0;
     inline static std::string s_WindowTitle = "Window";
     inline static Window* s_Instance = nullptr;
-    GLFWwindow* m_Window;
+    void* m_Window; // The GLFWwindow* stored as void to keep GLFW out of dll
     Input* m_Input;
     Renderer* m_Renderer;
     Window(const unsigned int xDimension, const unsigned int yDimension);

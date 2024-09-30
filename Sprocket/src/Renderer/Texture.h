@@ -3,7 +3,9 @@
 
 #include <string>
 
-class Texture {
+#include "../Macros.h"
+
+class SPROCKET_API Texture {
   private:
     unsigned int textureID;
     std::string filePath;

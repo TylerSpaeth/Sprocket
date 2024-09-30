@@ -1,5 +1,5 @@
 #include "IndexBuffer.h"
-#include "ThirdParty/glad/glad.h"
+#include "../ThirdParty/glad/glad.h"
 
 IndexBuffer::IndexBuffer(const unsigned int* data, unsigned int count) : count(count) {
   glGenBuffers(1, &rendererID);
