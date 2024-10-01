@@ -31,7 +31,7 @@ class SPROCKET_API Renderer {
     mutable std::vector<std::array<Vertex, 4>> m_Quads;
     mutable std::vector<glm::mat4> m_ModelMatrices;
   public:
-    Renderer(const unsigned int maxQuads);
+    Renderer(const unsigned int maxQuads, const unsigned int xDimension, const unsigned int yDimension);
     ~Renderer();
     void Clear() const;
     unsigned int AddQuad(float size, float textureID);
@@ -41,7 +41,6 @@ class SPROCKET_API Renderer {
     void SetQuadTextureID(const unsigned int quadIndex, const float textureID);
     void Draw();
     void SetViewMatrix(glm::mat4 viewMatrix);
-    void SetProjectionMatrix(const glm::mat4& projectionMatrix);;
     void UpdateTextureUniform(unsigned int uniqueTextures);
 };
 

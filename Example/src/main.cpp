@@ -1,5 +1,7 @@
 #include "Sprocket.h"
 
+#include <iostream>
+
 int main() {
 
   /////////////////////////////////////////////////////////
@@ -9,7 +11,7 @@ int main() {
   const unsigned int xDimension = 1066;
   const unsigned int yDimension = 600;
 
-  const unsigned int maxQuads = 100000;
+  const unsigned int maxQuads = 1000000;
 
   Window::SetWindowAttributes(xDimension, yDimension, "New Window");
   Window* window = &Window::GetInstance();
@@ -24,11 +26,6 @@ int main() {
   Texture texture2("../res/textures/Bandit-Idle96x96.png", 3);
   // Update the textures in the uniform of the renderer's shader
   renderer.UpdateTextureUniform(3);
-
-  // Set projection matrix
-  // (0,0) is the center of our orthographic projection matrix
-  renderer.SetProjectionMatrix( glm::ortho(-(float)xDimension/2, (float)xDimension/2, -(float) yDimension/2, (float)yDimension/2));
-
   
   // LOOKHERE test code for rendering
   // Set model matricies
@@ -48,7 +45,7 @@ int main() {
   renderer.SetQuadTextureID(index3, 0);
 
   // Stress Test
-  /*for(int i = 0; i < 100000; i++) {
+  /*for(int i = 0; i < 1000000; i++) {
     unsigned int index = renderer.AddQuad(100,0);
     glm::mat4 modelMatrix = glm::translate(glm::mat4(1.0f), glm::vec3(-300, -300+i, 0));
     renderer.SetQuadModelMatrix(index, modelMatrix);
@@ -70,7 +67,7 @@ int main() {
     double frameDelay = window->GetTimeSinceLastChecked();
 
     // Print fps
-    //std::cout << 1000000 / frameDelay << "FPS\n";
+    std::cout << 1000000 / frameDelay << "FPS\n";
 
     if(input->IsKeyPressed(KEY_ESCAPE)) {
       window->SetShouldClose();

@@ -52,7 +52,7 @@ static std::array<Vertex, 4> CreateQuad(float size, float textureID) {
   return {v0, v1, v2, v3};
 }
 
-Renderer::Renderer(const unsigned int maxQuads) : m_MaxQuads(maxQuads) {
+Renderer::Renderer(const unsigned int maxQuads, const unsigned int xDimension, const unsigned int yDimension) : m_MaxQuads(maxQuads) {
 
   // Setup blending
   glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -70,6 +70,12 @@ Renderer::Renderer(const unsigned int maxQuads) : m_MaxQuads(maxQuads) {
   layout.Push<float>(2); // Texcoords
   layout.Push<float>(1); // TextureID
   m_VertexArray->AddBuffer(*m_VertexBuffer, layout);
+
+  // By default, the projection matrix will have the center of the screen at (0,0) and
+  // the the edges will be determined by the x and y values given 
+  m_Shader->Bind();
+  m_Shader->SetUniformMatrix4f("u_ProjectionMatrix", glm::ortho(-(float)xDimension/2, (float)xDimension/2, -(float) yDimension/2, (float)yDimension/2));
+  m_Shader->Unbind();
 
 }
 
@@ -178,12 +184,6 @@ void Renderer::Draw() {
 
 void Renderer::SetViewMatrix(glm::mat4 viewMatrix) {
   m_ViewMatrix = viewMatrix;
-}
-
-void Renderer::SetProjectionMatrix(const glm::mat4& projectionMatrix) {
-  m_Shader->Bind();
-  m_Shader->SetUniformMatrix4f("u_ProjectionMatrix", projectionMatrix);
-  m_Shader->Unbind();
 }
 
 // This updates the texture uniform to have IDs for all the textures

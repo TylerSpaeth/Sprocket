@@ -135,5 +135,5 @@ int64_t Window::GetTimeSinceLastChecked() {
 }
 
 void Window::InitializeRenderer(unsigned int maxQuads) {
-  m_Renderer = new Renderer(maxQuads);
+  m_Renderer = new Renderer(maxQuads, s_XDimension, s_YDimension);
 }
