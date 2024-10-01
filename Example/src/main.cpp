@@ -17,7 +17,6 @@ int main() {
 
   window->InitializeRenderer(maxQuads);
   Renderer renderer = *window->GetRenderer();
-  renderer.AttachShader(new Shader("../res/shaders/Basic.vert", "../res/shaders/Basic.frag"));
  
   // Load Textures
   Texture texture("../res/textures/BiggerBetterTree.png", 1);

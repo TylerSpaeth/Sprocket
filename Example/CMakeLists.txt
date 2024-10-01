@@ -20,3 +20,15 @@ add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
         "${PROJECT_SOURCE_DIR}/../Sprocket/build/libSprocket.dll"
         $<TARGET_FILE_DIR:${PROJECT_NAME}>)
 
+# Copys the Default.vert shader into the build folder
+add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy_if_different
+        "${PROJECT_SOURCE_DIR}/../Sprocket/res/shaders/Default.vert"
+        $<TARGET_FILE_DIR:${PROJECT_NAME}>)
+
+# Copys the Default.frag shader into the build folder
+add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy_if_different
+        "${PROJECT_SOURCE_DIR}/../Sprocket/res/shaders/Default.frag"
+        $<TARGET_FILE_DIR:${PROJECT_NAME}>)
+

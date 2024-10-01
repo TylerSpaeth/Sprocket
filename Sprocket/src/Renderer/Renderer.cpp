@@ -1,6 +1,4 @@
 #include "Renderer.h"
-#include <iostream>
-#include <algorithm>
 
 static IndexBuffer* GenerateIndexBuffer(unsigned int count) {
   unsigned int* indicies = (unsigned int*) malloc(count*sizeof(unsigned int));
@@ -63,6 +61,7 @@ Renderer::Renderer(const unsigned int maxQuads) : m_MaxQuads(maxQuads) {
   m_VertexBuffer = new VertexBuffer(nullptr, sizeof(Vertex)*m_MaxQuads * 4);;
   m_IndexBuffer = GenerateIndexBuffer(m_MaxQuads * 6);
   m_VertexArray = new VertexArray();
+  m_Shader = new Shader("Default.vert", "Default.frag");
 
   // Describes the layout of the VertexBuffer
   VertexBufferLayout layout;
@@ -79,10 +78,7 @@ Renderer::~Renderer() {
   delete m_VertexBuffer;
   delete m_VertexArray;
   delete m_IndexBuffer;
-}
-
-void Renderer::AttachShader(Shader* shader) {
-  m_Shader = shader;
+  delete m_Shader;
 }
 
 void Renderer::Clear() const {

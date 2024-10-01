@@ -4,7 +4,6 @@
 #include "VertexArray.h"
 #include "IndexBuffer.h"
 #include "Shader.h"
-#include "Texture.h"
 #include "../ThirdParty/glm/glm.hpp"
 #include "../ThirdParty/glm/gtc/matrix_transform.hpp"
 
@@ -34,7 +33,6 @@ class SPROCKET_API Renderer {
   public:
     Renderer(const unsigned int maxQuads);
     ~Renderer();
-    void AttachShader(Shader* shader);
     void Clear() const;
     unsigned int AddQuad(float size, float textureID);
     void SetQuadModelMatrix(const unsigned int quadIndex, const glm::mat4 modelMatrix);
