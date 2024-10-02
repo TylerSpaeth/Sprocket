@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.28.2)
 
 # Specifies the name of the project
-project(Sprocket)
+project(sprocket)
 
 # Links our lib directory to be used
 link_directories(lib)

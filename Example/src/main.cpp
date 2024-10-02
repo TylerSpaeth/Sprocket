@@ -13,17 +13,17 @@ int main() {
 
   const unsigned int maxQuads = 1000000;
 
-  Window::SetWindowAttributes(xDimension, yDimension, "New Window");
-  Window* window = &Window::GetInstance();
-  Input* input = window->GetInput();
+  Sprocket::Window::SetWindowAttributes(xDimension, yDimension, "New Window");
+  Sprocket::Window* window = &Sprocket::Window::GetInstance();
+  Sprocket::Input* input = window->GetInput();
 
   window->InitializeRenderer(maxQuads);
-  Renderer renderer = *window->GetRenderer();
+  Sprocket::Renderer renderer = *window->GetRenderer();
  
   // Load Textures
-  Texture texture("../res/textures/BiggerBetterTree.png", 1);
-  Texture texture1("../res/textures/CowBoyAiming.png", 2);
-  Texture texture2("../res/textures/Bandit-Idle96x96.png", 3);
+  Sprocket::Texture texture("../res/textures/BiggerBetterTree.png", 1);
+  Sprocket::Texture texture1("../res/textures/CowBoyAiming.png", 2);
+  Sprocket::Texture texture2("../res/textures/Bandit-Idle96x96.png", 3);
   // Update the textures in the uniform of the renderer's shader
   renderer.UpdateTextureUniform(3);
   
@@ -63,6 +63,8 @@ int main() {
   /////////////////////////////////////////////////////////
   while(!window->ShouldClose()) {
 
+    // TODO find what is causing a frame drop on certain frames
+    // Seems consistent at every 7 frames dropping from 1100-1400 down to 700-800
     // In microseconds
     double frameDelay = window->GetTimeSinceLastChecked();
 

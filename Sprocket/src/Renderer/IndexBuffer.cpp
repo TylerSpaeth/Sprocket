@@ -1,20 +1,24 @@
 #include "IndexBuffer.h"
 #include "../ThirdParty/glad/glad.h"
 
-IndexBuffer::IndexBuffer(const unsigned int* data, unsigned int count) : count(count) {
-  glGenBuffers(1, &rendererID);
-  glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, rendererID);
-  glBufferData(GL_ELEMENT_ARRAY_BUFFER, count*sizeof(unsigned int), data, GL_STATIC_DRAW);
-}
+namespace Sprocket {
 
-IndexBuffer::~IndexBuffer() {
-  glDeleteBuffers(1, &rendererID);
-}
+  IndexBuffer::IndexBuffer(const unsigned int* data, unsigned int count) : count(count) {
+    glGenBuffers(1, &rendererID);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, rendererID);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, count*sizeof(unsigned int), data, GL_STATIC_DRAW);
+  }
 
-void IndexBuffer::Bind() const {
-  glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, rendererID);
-}
+  IndexBuffer::~IndexBuffer() {
+    glDeleteBuffers(1, &rendererID);
+  }
 
-void IndexBuffer::Unbind() const {
-  glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+  void IndexBuffer::Bind() const {
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, rendererID);
+  }
+
+  void IndexBuffer::Unbind() const {
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+  }
+
 }

@@ -5,21 +5,25 @@
 
 #include "../Macros.h"
 
-class SPROCKET_API Texture {
-  private:
-    unsigned int textureID;
-    std::string filePath;
-    unsigned char* localBuffer;
-    int width, height, bitsPerPixel;
-  public:
-    Texture(const std::string& path, unsigned int slot);
-    ~Texture();
+namespace Sprocket {
 
-    void Bind(unsigned int slot = 0) const;
-    void Unbind() const;
+  class SPROCKET_API Texture {
+    private:
+      unsigned int textureID;
+      std::string filePath;
+      unsigned char* localBuffer;
+      int width, height, bitsPerPixel;
+    public:
+      Texture(const std::string& path, unsigned int slot);
+      ~Texture();
 
-    inline int GetWidth() const {return width;}
-    inline int GetHeight() const {return height;}
-};
+      void Bind(unsigned int slot = 0) const;
+      void Unbind() const;
+
+      inline int GetWidth() const {return width;}
+      inline int GetHeight() const {return height;}
+  };
+
+}
 
 #endif
