@@ -6,7 +6,8 @@ project(app)
 # Compiles the Sprocket dll
 add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/../Sprocket ${CMAKE_CURRENT_SOURCE_DIR}/../Sprocket/build )
 
-add_executable(${PROJECT_NAME} src/main.cpp)
+#add_executable(${PROJECT_NAME} src/main.cpp)
+add_executable(${PROJECT_NAME} src/TestApplication.cpp)
 
 # Include the public headers from Sprocket
 target_include_directories(${PROJECT_NAME} PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/../Sprocket/include)

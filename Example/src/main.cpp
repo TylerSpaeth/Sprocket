@@ -13,8 +13,7 @@ int main() {
 
   const unsigned int maxQuads = 1000000;
 
-  Sprocket::Window::SetWindowAttributes(xDimension, yDimension, "New Window");
-  Sprocket::Window* window = &Sprocket::Window::GetInstance();
+  Sprocket::Window* window = new Sprocket::Window(xDimension, yDimension, "Test Window");
   Sprocket::Input* input = window->GetInput();
 
   window->InitializeRenderer(maxQuads);
@@ -106,6 +105,7 @@ int main() {
   // TODO make sure everything is getting cleaned up
 
   window->Close();
+  delete window;
   return 0;
 
 }

@@ -83,8 +83,8 @@ namespace Sprocket {
     glfwSetScrollCallback(window, ScrollCallback);
   }
 
-  Window::Window(const unsigned int xDimension, const unsigned int yDimension) {
-    m_Window = InitGLFWwindow(xDimension, yDimension, s_WindowTitle.c_str());
+  Window::Window(const unsigned int xDimension, const unsigned int yDimension, const std::string& windowTitle) : m_XDimension(xDimension), m_YDimension(yDimension) {
+    m_Window = InitGLFWwindow(xDimension, yDimension, windowTitle.c_str());
     m_Input = new Input(m_Window);
     glfwSetWindowUserPointer(m_Window, m_Input);
     RegisterCallbacks(m_Window);
@@ -92,20 +92,6 @@ namespace Sprocket {
     // Initialize GLAD
     // MUST BE DONE BEFORE ANY OPENGL CALLS INCLUDING INTIALIZING RENDERER
     gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);
-  }
-
-  // These need to be specified before getting the window instance
-  void Window::SetWindowAttributes(const unsigned int xDimension, const unsigned int yDimension, const std::string& windowTitle) {
-    s_XDimension = xDimension;
-    s_YDimension = yDimension;
-    s_WindowTitle = windowTitle;
-  }
-
-  Window& Window::GetInstance() {
-    if(!s_Instance) {
-      s_Instance = new Window(s_XDimension, s_YDimension);
-    }
-    return *s_Instance;
   }
 
   void Window::SetShouldClose() {
@@ -137,7 +123,7 @@ namespace Sprocket {
   }
 
   void Window::InitializeRenderer(unsigned int maxQuads) {
-    m_Renderer = new Renderer(maxQuads, s_XDimension, s_YDimension);
+    m_Renderer = new Renderer(maxQuads, m_XDimension, m_YDimension);
   }
 
 }
