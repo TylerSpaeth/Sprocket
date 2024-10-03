@@ -21,7 +21,6 @@ namespace Sprocket {
       GLFWwindow* m_Window;
       Input* m_Input;
       Renderer* m_Renderer;
-      int64_t m_LastTimeChecked = std::chrono::duration_cast<std::chrono::microseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
     public:
       Window(const unsigned int xDimension, const unsigned int yDimension, const std::string& windowTitle);
       void SetShouldClose();
@@ -32,8 +31,7 @@ namespace Sprocket {
       Input* GetInput() const {return m_Input;}
       Renderer* GetRenderer() const {return m_Renderer;}
       void ClearInputs();
-      int64_t GetTimeSinceLastChecked();
-      void InitializeRenderer(unsigned int maxQuads);
+      void SetActiveRenderer(Renderer* renderer);
   };
 
 }

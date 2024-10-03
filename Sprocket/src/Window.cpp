@@ -114,16 +114,8 @@ namespace Sprocket {
     glfwPollEvents();
   }
 
-  // Returns the time since this function was last called in terms of microseconds
-  int64_t Window::GetTimeSinceLastChecked() {
-    auto currentMicro = std::chrono::duration_cast<std::chrono::microseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
-      auto elapsed = currentMicro - m_LastTimeChecked;
-      m_LastTimeChecked = currentMicro;
-      return elapsed;
-  }
-
-  void Window::InitializeRenderer(unsigned int maxQuads) {
-    m_Renderer = new Renderer(maxQuads, m_XDimension, m_YDimension);
+  void Window::SetActiveRenderer(Renderer* renderer) {
+    m_Renderer = renderer;
   }
 
 }
