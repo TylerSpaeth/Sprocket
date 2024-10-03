@@ -3,13 +3,12 @@
 
 #include "ThirdParty/glad/glad.h"
 #include "ThirdParty/GLFW/glfw3.h"
-#include "Input.h"
-#include "Renderer/Renderer.h"
+#include "Events/Event.h"
 
 #include "Macros.h"
 
 #include <string>
-#include <chrono>
+#include <functional>
 
 namespace Sprocket {
 
@@ -19,19 +18,12 @@ namespace Sprocket {
       unsigned int m_XDimension;
       unsigned int m_YDimension;
       GLFWwindow* m_Window;
-      Input* m_Input;
-      Renderer* m_Renderer;
+      std::function<void(Event&)> m_EventCallback; // Function to call when an even occurs
     public:
       Window(const unsigned int xDimension, const unsigned int yDimension, const std::string& windowTitle);
-      void SetShouldClose();
-      bool ShouldClose();
-      void Close();
-      void SwapBuffers();
-      void PollEvents();
-      Input* GetInput() const {return m_Input;}
-      Renderer* GetRenderer() const {return m_Renderer;}
-      void ClearInputs();
-      void SetActiveRenderer(Renderer* renderer);
+      void OnClose();
+      void OnUpdate();
+      void RegisterEventCallback(const std::function<void(Event&)>eventCallback);
   };
 
 }

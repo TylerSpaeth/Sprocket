@@ -1,15 +1,28 @@
+#include <functional>
+#include <iostream>
+
 #include "Application.h"
+#include "Events/KeyboardEvent.h"
+#include "Events/MouseEvent.h"
 
 namespace Sprocket {
 
-  Application::Application(unsigned int windowXDimension, unsigned int windowYDimension, const char* windowTitle) {
+  Application::Application(unsigned int windowXDimension, unsigned int windowYDimension, const char* windowTitle, unsigned int maxQuads) {
     m_Window = new Window(windowXDimension, windowYDimension, windowTitle);
+    m_Window->RegisterEventCallback(std::bind(&Application::OnEvent, this, std::placeholders::_1));
+    
+    m_Renderer = new Renderer(maxQuads, windowXDimension, windowYDimension);
   }
 
   Application::~Application() {}
 
   void Application::Run() {
-    while(true) {}
+    // TODO everything here is just for testing
+    while(true) {
+    m_Renderer->Clear();
+    m_Renderer->Draw();
+    m_Window->OnUpdate();
+    }
   }
 
   // Returns the time since this function was last called in terms of microseconds
@@ -18,6 +31,13 @@ namespace Sprocket {
       auto elapsed = currentMicro - m_LastTimeChecked;
       m_LastTimeChecked = currentMicro;
       return elapsed;
+  }
+
+  void Application::OnEvent(Event& event) {
+    // TODO make this Post to other handlers
+    if(event.GetEventType() == WINDOW_CLOSE) {
+      std::cout << "Closing\n";
+    }
   }
 
 }
