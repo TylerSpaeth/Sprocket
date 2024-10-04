@@ -1,8 +1,8 @@
-#include <iostream>
-
 #include "Application.h"
 #include "Events/EventHandler.h"
 #include "Events/ApplicationEvent.h"
+
+#include <iostream>
 
 namespace Sprocket {
 
@@ -10,12 +10,12 @@ namespace Sprocket {
   
     std::cout << "Sprocket: Startup\n";
 
-    m_Window = new Window(windowXDimension, windowYDimension, windowTitle);
-    m_Window->RegisterEventCallback(std::bind(&Application::OnEvent, this, std::placeholders::_1));
+    Window::Init(windowXDimension, windowYDimension, windowTitle);
+    Window::RegisterEventCallback(std::bind(&Application::OnEvent, this, std::placeholders::_1));
     
     m_Renderer = new Renderer(maxQuads, windowXDimension, windowYDimension);
 
-    m_EventCallbacks.push_back(std::bind(&Window::OnEvent, m_Window, std::placeholders::_1));
+    m_EventCallbacks.push_back(Window::OnEvent);
     m_EventCallbacks.push_back(std::bind(&Renderer::OnEvent, m_Renderer, std::placeholders::_1));
   }
 

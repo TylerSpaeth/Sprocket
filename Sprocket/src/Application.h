@@ -16,7 +16,6 @@ namespace Sprocket {
   class SPROCKET_API Application {
     private:
       bool m_AppRunning;
-      Window* m_Window;
       Renderer* m_Renderer;
       int64_t m_LastTimeChecked = std::chrono::duration_cast<std::chrono::microseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
       int64_t GetTimeSinceLastChecked();

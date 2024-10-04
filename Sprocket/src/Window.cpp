@@ -1,13 +1,17 @@
 #include "Window.h"
-
-#include <vector>
 #include "Events/KeyboardEvent.h"
 #include "Events/MouseEvent.h"
 #include "Events/WindowEvents.h"
-#include  <iostream>
+
+#include <iostream>
+#include <vector>
 
 
 namespace Sprocket {
+
+  ////////////////////////////////////////////////////////////////////////////////////
+  //////////////////////////////// NONCLASS FUNCTIONS ////////////////////////////////
+  ////////////////////////////////////////////////////////////////////////////////////
 
   static GLFWwindow* InitGLFWwindow(const unsigned int xDimension, const unsigned int yDimension, const char* windowTitle) {
     glfwInit();
@@ -94,41 +98,63 @@ namespace Sprocket {
     glfwSetScrollCallback(window, ScrollCallback);
     glfwSetWindowCloseCallback(window, WindowCloseCallback);
   }
+  ////////////////////////////////////////////////////////////////////////////////////
+  ////////////////////////////////////////////////////////////////////////////////////
+  ////////////////////////////////////////////////////////////////////////////////////
 
-  Window::Window(const unsigned int xDimension, const unsigned int yDimension, const std::string& windowTitle) : m_XDimension(xDimension), m_YDimension(yDimension) {
-    m_Window = InitGLFWwindow(xDimension, yDimension, windowTitle.c_str());
-    glfwSetWindowUserPointer(m_Window, (void*)&m_EventCallback);
-    RegisterCallbacks(m_Window);
+  ////////////////////////////////////////////////////////////////////////////////////
+  ///////////////////////////////// STATIC FUNCTIONS /////////////////////////////////
+  ////////////////////////////////////////////////////////////////////////////////////
+
+  Window* Window::s_Instance = nullptr;
+  void Window::Init(const unsigned int xDimension, const unsigned int yDimension, const std::string& windowTitle) {
+    if(!s_Instance) {
+      s_Instance = new Window();
+      s_Instance->m_Window = InitGLFWwindow(xDimension, yDimension, windowTitle.c_str());
+      glfwSetWindowUserPointer(s_Instance->m_Window, (void*)&s_Instance->m_EventCallback);
+      RegisterCallbacks(s_Instance->m_Window);
 
     // Initialize GLAD
     // MUST BE DONE BEFORE ANY OPENGL CALLS INCLUDING INTIALIZING RENDERER
-    gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);
+      gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);
+    }
   }
+  ////////////////////////////////////////////////////////////////////////////////////
+  ////////////////////////////////////////////////////////////////////////////////////
+  ////////////////////////////////////////////////////////////////////////////////////
 
-  void Window::OnEvent(Event& event) {
+  ////////////////////////////////////////////////////////////////////////////////////
+  //////////////////////////////// INSTANCE FUNCTIONS ////////////////////////////////
+  ////////////////////////////////////////////////////////////////////////////////////
+
+  void Window::OnEventInstance(Event& event) {
     EventType type = event.GetEventType();
     switch(type) {
       case WINDOW_CLOSE:
-        OnClose();
+        OnCloseInstance();
         break;
       case APP_UPDATE:
-        OnUpdate();
+        OnUpdateInstance();
     }
   }
 
-  void Window::OnClose() {
+  void Window::OnCloseInstance() {
     glfwTerminate();
   }
 
-  void Window::OnUpdate() {
+  void Window::OnUpdateInstance() {
     glfwSwapBuffers(m_Window);
     glfwPollEvents();
   }
 
-  void Window::RegisterEventCallback(const std::function<void(Event&)> eventCallback) {
+  void Window::RegisterEventCallbackInstance(const std::function<void(Event&)> eventCallback) {
     m_EventCallback = eventCallback;
     KeyPressedEvent e(KEY_0);
     eventCallback(e);
   }
+
+  ////////////////////////////////////////////////////////////////////////////////////
+  ////////////////////////////////////////////////////////////////////////////////////
+  ////////////////////////////////////////////////////////////////////////////////////
 
 }
