@@ -18,12 +18,13 @@ namespace Sprocket {
       unsigned int m_XDimension;
       unsigned int m_YDimension;
       GLFWwindow* m_Window;
-      std::function<void(Event&)> m_EventCallback; // Function to call when an even occurs
+      std::function<void(Event&)> m_EventCallback;
     public:
       Window(const unsigned int xDimension, const unsigned int yDimension, const std::string& windowTitle);
+      void OnEvent(Event& event);
       void OnClose();
       void OnUpdate();
-      void RegisterEventCallback(const std::function<void(Event&)>eventCallback);
+      void RegisterEventCallback(const std::function<void(Event&)> eventCallback);
   };
 
 }

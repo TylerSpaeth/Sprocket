@@ -10,7 +10,9 @@ namespace Sprocket {
     // MOUSE
     MOUSE_BTN_PRESSED, MOUSE_BTN_RELEASED, MOUSE_MOVED, MOUSE_SCROLLED,
     // WINDOW
-    WINDOW_CLOSE
+    WINDOW_CLOSE,
+    // APPLICATION
+    APP_UPDATE
   };
 
   enum EventCategory {
@@ -44,6 +46,8 @@ namespace Sprocket {
             return eventCategory == EventCategory::INPUT || eventCategory == EventCategory::MOUSE;
           case EventType::WINDOW_CLOSE:
             return eventCategory == EventCategory::APPLICATION || eventCategory == EventCategory::WINDOW;
+          case EventType::APP_UPDATE:
+            return eventCategory == EventCategory::APPLICATION;
         }
       }
   };

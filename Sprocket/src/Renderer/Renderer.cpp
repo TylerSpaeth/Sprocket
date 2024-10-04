@@ -89,8 +89,18 @@ namespace Sprocket {
     delete m_Shader;
   }
 
-  void Renderer::Clear() const {
+  void Renderer::OnEvent(Event& event) {
+    EventType type = event.GetEventType();
+    switch(type) {
+      case APP_UPDATE:
+        OnUpdate();
+        break;
+    }
+  }
+
+  void Renderer::OnUpdate() {
     glClear(GL_COLOR_BUFFER_BIT);
+    Draw();
   }
 
   ///////////////////////////////////////////////////////////////////////////////

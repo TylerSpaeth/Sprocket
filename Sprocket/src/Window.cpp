@@ -4,6 +4,8 @@
 #include "Events/KeyboardEvent.h"
 #include "Events/MouseEvent.h"
 #include "Events/WindowEvents.h"
+#include  <iostream>
+
 
 namespace Sprocket {
 
@@ -101,6 +103,17 @@ namespace Sprocket {
     // Initialize GLAD
     // MUST BE DONE BEFORE ANY OPENGL CALLS INCLUDING INTIALIZING RENDERER
     gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);
+  }
+
+  void Window::OnEvent(Event& event) {
+    EventType type = event.GetEventType();
+    switch(type) {
+      case WINDOW_CLOSE:
+        OnClose();
+        break;
+      case APP_UPDATE:
+        OnUpdate();
+    }
   }
 
   void Window::OnClose() {

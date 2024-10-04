@@ -6,6 +6,7 @@
 #include "Shader.h"
 #include "../ThirdParty/glm/glm.hpp"
 #include "../ThirdParty/glm/gtc/matrix_transform.hpp"
+#include "../Events/Event.h"
 
 #include "../Macros.h"
 
@@ -32,16 +33,17 @@ namespace Sprocket {
       VertexArray* m_VertexArray;
       mutable std::vector<std::array<Vertex, 4>> m_Quads;
       mutable std::vector<glm::mat4> m_ModelMatrices;
+      void Draw();
     public:
       Renderer(const unsigned int maxQuads, const unsigned int xDimension, const unsigned int yDimension);
       ~Renderer();
-      void Clear() const;
+      void OnEvent(Event& event);
+      void OnUpdate();
       unsigned int AddQuad(float size, float textureID);
       void SetQuadModelMatrix(const unsigned int quadIndex, const glm::mat4 modelMatrix);
       void SetQuadColor(const unsigned int quadIndex, const glm::vec4 color);
       void SetQuadTextureCoords(const unsigned int quadIndex, const glm::vec4 xCoords, const glm::vec4 yCoords);
       void SetQuadTextureID(const unsigned int quadIndex, const float textureID);
-      void Draw();
       void SetViewMatrix(glm::mat4 viewMatrix);
       void UpdateTextureUniform(unsigned int uniqueTextures);
   };

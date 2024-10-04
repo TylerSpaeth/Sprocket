@@ -13,7 +13,7 @@ namespace Sprocket {
       EventHandler(Event& event) : m_Event(event){}
 
       // TODO should add some sort of type checking here
-      template<typename Target, typename Function>
+      template<typename Function>
       void Post(const Function& function) {
         function(m_Event);
       }
