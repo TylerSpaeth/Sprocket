@@ -13,10 +13,12 @@ namespace Sprocket {
     Window::Init(windowXDimension, windowYDimension, windowTitle);
     Window::RegisterEventCallback(std::bind(&Application::OnEvent, this, std::placeholders::_1));
     
-    m_Renderer = new Renderer(maxQuads, windowXDimension, windowYDimension);
+    Renderer::Init(maxQuads, windowXDimension, windowYDimension);
+    //m_Renderer = new Renderer(maxQuads, windowXDimension, windowYDimension);
 
     m_EventCallbacks.push_back(Window::OnEvent);
-    m_EventCallbacks.push_back(std::bind(&Renderer::OnEvent, m_Renderer, std::placeholders::_1));
+    m_EventCallbacks.push_back(Renderer::OnEvent);
+    //m_EventCallbacks.push_back(std::bind(&Renderer::OnEvent, m_Renderer, std::placeholders::_1));
   }
 
   Application::~Application() {}
