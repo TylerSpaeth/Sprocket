@@ -1,7 +1,6 @@
 #include "Application.h"
 #include "Events/EventHandler.h"
 #include "Events/ApplicationEvent.h"
-#include "Renderer/Texture.h"
 
 #include <iostream>
 

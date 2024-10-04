@@ -20,5 +20,9 @@ Sprocket::Application* Sprocket::CreateApplication() {
   Renderer::Init(100000, 1066, 600);
   app->RegisterEventCallback(Renderer::OnEvent);
 
+  Renderer::AddTexture("../res/textures/BiggerBetterTree.png", 1);
+  Renderer::UpdateTextureUniform(1);
+  Renderer::AddQuad(100, 1);
+
   return app;
 }

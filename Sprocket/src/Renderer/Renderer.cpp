@@ -103,14 +103,6 @@ namespace Sprocket {
   //////////////////////////////// INSTANCE FUNCTIONS ////////////////////////////////
   ////////////////////////////////////////////////////////////////////////////////////
 
-  Renderer::~Renderer() {
-    // TODO make sure everything is getting cleaned up
-    delete m_VertexBuffer;
-    delete m_VertexArray;
-    delete m_IndexBuffer;
-    delete m_Shader;
-  }
-
   // Draws all of the quads that have been added to the renderer
   void Renderer::Draw() {
     
@@ -154,12 +146,31 @@ namespace Sprocket {
       case APP_UPDATE:
         OnUpdateInstance();
         break;
+      case WINDOW_CLOSE:
+        OnCloseInstance();
+        break;
     }
   }
 
   void Renderer::OnUpdateInstance() {
     glClear(GL_COLOR_BUFFER_BIT);
     Draw();
+  }
+
+  void Renderer::OnCloseInstance() {
+    // TODO make sure everything is getting cleaned up
+    delete m_VertexBuffer;
+    delete m_VertexArray;
+    delete m_IndexBuffer;
+    delete m_Shader;
+    // Deallocate all of the textures pointers
+    for(Texture* t : m_BoundTextures) {
+      free(t);
+    }
+    // Clear Vectors
+    m_Quads.clear();
+    m_ModelMatrices.clear();
+    m_BoundTextures.clear();
   }
 
   ////////////////////////////////// QUAD FUNCTIONS //////////////////////////////////
@@ -225,6 +236,10 @@ namespace Sprocket {
     }
     m_Shader->SetUniform1iv("u_Texture", uniqueTextures, textureIDs);
     m_Shader->Unbind();
+  }
+
+  void Renderer::AddTextureInstance(const std::string& path, unsigned int slot) {
+    m_BoundTextures.push_back(new Texture(path, slot));
   }
 
   ////////////////////////////////////////////////////////////////////////////////////

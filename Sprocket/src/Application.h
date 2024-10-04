@@ -1,15 +1,12 @@
 #ifndef APPLICATION_H
 #define APPLICATION_H
 
+#include "Macros.h"
+#include "Events/Event.h"
+
 #include <chrono>
 #include <functional>
 #include <vector>
-
-#include "Macros.h"
-#include "Window.h"
-#include "Renderer/Renderer.h"
-#include "Events/Event.h"
-
 
 namespace Sprocket {
 

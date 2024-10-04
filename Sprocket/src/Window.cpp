@@ -111,8 +111,8 @@ namespace Sprocket {
       glfwSetWindowUserPointer(s_Instance->m_Window, (void*)&s_Instance->m_EventCallback);
       RegisterCallbacks(s_Instance->m_Window);
 
-    // Initialize GLAD
-    // MUST BE DONE BEFORE ANY OPENGL CALLS INCLUDING INTIALIZING RENDERER
+      // Initialize GLAD
+      // MUST BE DONE BEFORE ANY OPENGL CALLS INCLUDING INTIALIZING RENDERER
       gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);
     }
   }
@@ -127,11 +127,12 @@ namespace Sprocket {
   void Window::OnEventInstance(Event& event) {
     EventType type = event.GetEventType();
     switch(type) {
+      case APP_UPDATE:
+        OnUpdateInstance();
+        break;
       case WINDOW_CLOSE:
         OnCloseInstance();
         break;
-      case APP_UPDATE:
-        OnUpdateInstance();
     }
   }
 

@@ -4,6 +4,7 @@
 #include "VertexArray.h"
 #include "IndexBuffer.h"
 #include "Shader.h"
+#include "Texture.h"
 #include "../ThirdParty/glm/glm.hpp"
 #include "../ThirdParty/glm/gtc/matrix_transform.hpp"
 #include "../Events/Event.h"
@@ -33,8 +34,8 @@ namespace Sprocket {
       VertexArray* m_VertexArray;
       mutable std::vector<std::array<Vertex, 4>> m_Quads;
       mutable std::vector<glm::mat4> m_ModelMatrices;
+      mutable std::vector<Texture*> m_BoundTextures;
       void Draw();
-      ~Renderer();
 
       // Singleton Components
       static Renderer* s_Instance;
@@ -45,6 +46,7 @@ namespace Sprocket {
       // Actual implementations for the static instance functions
       void OnEventInstance(Event& event);
       void OnUpdateInstance();
+      void OnCloseInstance();
       unsigned int AddQuadInstance(float size, float textureID);
       void SetQuadModelMatrixInstance(const unsigned int quadIndex, const glm::mat4 modelMatrix);
       void SetQuadColorInstance(const unsigned int quadIndex, const glm::vec4 color);
@@ -52,11 +54,13 @@ namespace Sprocket {
       void SetQuadTextureIDInstance(const unsigned int quadIndex, const float textureID);
       void SetViewMatrixInstance(glm::mat4 viewMatrix);
       void UpdateTextureUniformInstance(unsigned int uniqueTextures);
+      void AddTextureInstance(const std::string& path, unsigned int slot);
 
     public:
       static void Init(const unsigned int maxQuads, const unsigned int xDimension, const unsigned int yDimension);
       static void OnEvent(Event& event) {s_Instance->OnEventInstance(event);}
       static void OnUpdate() {s_Instance->OnUpdateInstance();}
+      static void OnClose() {s_Instance->OnCloseInstance();}
       static unsigned int AddQuad(float size, float textureID) {return s_Instance->AddQuadInstance(size, textureID);}
       static void SetQuadModelMatrix(const unsigned int quadIndex, const glm::mat4 modelMatrix) {s_Instance->SetQuadModelMatrixInstance(quadIndex, modelMatrix);}
       static void SetQuadColor(const unsigned int quadIndex, const glm::vec4 color) {s_Instance->SetQuadColorInstance(quadIndex, color);}
@@ -64,6 +68,7 @@ namespace Sprocket {
       static void SetQuadTextureID(const unsigned int quadIndex, const float textureID) {s_Instance->SetQuadTextureIDInstance(quadIndex, textureID);}
       static void SetViewMatrix(glm::mat4 viewMatrix) {s_Instance->SetViewMatrixInstance(viewMatrix);}
       static void UpdateTextureUniform(unsigned int uniqueTextures) {s_Instance->UpdateTextureUniformInstance(uniqueTextures);}
+      static void AddTexture(const std::string& path, unsigned int slot) {s_Instance->AddTextureInstance(path, slot);}
   };
 
 }
