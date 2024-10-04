@@ -1,32 +1,23 @@
 #include "Application.h"
 #include "Events/EventHandler.h"
 #include "Events/ApplicationEvent.h"
+#include "Renderer/Texture.h"
 
 #include <iostream>
 
 namespace Sprocket {
 
-  Application::Application(unsigned int windowXDimension, unsigned int windowYDimension, const char* windowTitle, unsigned int maxQuads) : m_AppRunning(true) {
-  
+  Application::Application() : m_AppRunning(true) {
     std::cout << "Sprocket: Startup\n";
-
-    Window::Init(windowXDimension, windowYDimension, windowTitle);
-    Window::RegisterEventCallback(std::bind(&Application::OnEvent, this, std::placeholders::_1));
-    
-    Renderer::Init(maxQuads, windowXDimension, windowYDimension);
-    //m_Renderer = new Renderer(maxQuads, windowXDimension, windowYDimension);
-
-    m_EventCallbacks.push_back(Window::OnEvent);
-    m_EventCallbacks.push_back(Renderer::OnEvent);
-    //m_EventCallbacks.push_back(std::bind(&Renderer::OnEvent, m_Renderer, std::placeholders::_1));
   }
 
   Application::~Application() {}
 
   void Application::Run() {
+
     // TODO everything here is just for testing
     while(m_AppRunning) {
-      float deltaTime = GetTimeSinceLastChecked() / 1000000;
+      float deltaTime = GetTimeSinceLastChecked() / 1000000.0f;
       ApplicationUpdateEvent event(deltaTime);
       OnEvent(event);
     }

@@ -26,9 +26,6 @@ namespace Sprocket {
     // Make the window we created the current context on the current thread
     glfwMakeContextCurrent(window);
 
-    // Disables vsync
-    glfwSwapInterval(0);
-
     // Locks aspect ratio to whatever was set intially
     glfwSetWindowAspectRatio(window, xDimension, yDimension);
 
@@ -151,6 +148,15 @@ namespace Sprocket {
     m_EventCallback = eventCallback;
     KeyPressedEvent e(KEY_0);
     eventCallback(e);
+  }
+
+  void Window::EnableVSyncInstance(bool enable) {
+    if(enable) {
+      glfwSwapInterval(1);
+    }
+    else {
+      glfwSwapInterval(0);
+    }
   }
 
   ////////////////////////////////////////////////////////////////////////////////////

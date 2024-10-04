@@ -28,6 +28,7 @@ namespace Sprocket {
       void OnCloseInstance();
       void OnUpdateInstance();
       void RegisterEventCallbackInstance(const std::function<void(Event&)> eventCallback);
+      void EnableVSyncInstance(bool enable);
 
     public:
       static void Init(const unsigned int xDimension, const unsigned int yDimension, const std::string& windowTitle);
@@ -35,6 +36,7 @@ namespace Sprocket {
       static void OnClose() {s_Instance->OnCloseInstance();}
       static void OnUpdate() {s_Instance->OnUpdateInstance();}
       static void RegisterEventCallback(const std::function<void(Event&)> eventCallback) {s_Instance->RegisterEventCallbackInstance(eventCallback);}
+      static void EnableVSync(bool enable) {s_Instance->EnableVSyncInstance(enable);}
   };
 
 }
