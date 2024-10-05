@@ -1,13 +1,13 @@
 #ifndef SPROCKET_H
 #define SPROCKET_H
 
-#include "../src/Renderer/Renderer.h"
-#include "../src/Window.h"
-#include "../src/Renderer/Texture.h"
-#include "../src/Application.h"
-#include "../src/Input.h"
+#include "Renderer/Renderer.h"
+#include "Core/Window.h"
+#include "Renderer/Texture.h"
+#include "Core/Application.h"
+#include "Core/Input.h"
 
 // Sprocket EntryPoint
-#include "../src/EntryPoint.hpp"
+#include "Core/EntryPoint.hpp"
 
 #endif

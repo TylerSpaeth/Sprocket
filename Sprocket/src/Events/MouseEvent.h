@@ -2,7 +2,7 @@
 #define MOUSEEVENT_H
 
 #include "Event.h"
-#include "../MouseButtons.h"
+#include "Core/MouseButtons.h"
 
 namespace Sprocket {
 

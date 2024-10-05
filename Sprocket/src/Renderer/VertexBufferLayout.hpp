@@ -3,7 +3,7 @@
 
 #include <vector>
 #include <stdexcept>
-#include "../ThirdParty/glad/glad.h"
+#include "ThirdParty/glad/glad.h"
 
 namespace Sprocket {
 

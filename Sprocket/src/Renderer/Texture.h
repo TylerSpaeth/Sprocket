@@ -3,7 +3,7 @@
 
 #include <string>
 
-#include "../Macros.h"
+#include "Core/Macros.h"
 
 namespace Sprocket {
 

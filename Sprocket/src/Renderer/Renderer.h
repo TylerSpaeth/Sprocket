@@ -5,11 +5,11 @@
 #include "IndexBuffer.h"
 #include "Shader.h"
 #include "Texture.h"
-#include "../ThirdParty/glm/glm.hpp"
-#include "../ThirdParty/glm/gtc/matrix_transform.hpp"
-#include "../Events/Event.h"
+#include "ThirdParty/glm/glm.hpp"
+#include "ThirdParty/glm/gtc/matrix_transform.hpp"
+#include "Events/Event.h"
 
-#include "../Macros.h"
+#include "Core/Macros.h"
 
 #include <array>
 #include <vector>

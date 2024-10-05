@@ -2,7 +2,7 @@
 #define KEYBOARDEVENT_H
 
 #include "Event.h"
-#include "../Keycodes.h"
+#include "Core/Keycodes.h"
 
 namespace Sprocket {
 

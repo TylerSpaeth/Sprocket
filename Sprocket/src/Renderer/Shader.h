@@ -3,9 +3,9 @@
 
 #include <string>
 #include <unordered_map>
-#include "../ThirdParty/glm/glm.hpp"
+#include "ThirdParty/glm/glm.hpp"
 
-#include "../Macros.h"
+#include "Core/Macros.h"
 
 namespace Sprocket {
 
