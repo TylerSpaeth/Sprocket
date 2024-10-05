@@ -4,9 +4,6 @@
 #include "Events/Event.h"
 #include "Macros.h"
 
-#include "ThirdParty/glad/glad.h"
-#include "ThirdParty/GLFW/glfw3.h"
-
 #include <string>
 #include <functional>
 
@@ -14,7 +11,7 @@ namespace Sprocket {
 
   class SPROCKET_API Window {
     private:
-      GLFWwindow* m_Window;
+      void* m_Window; // GLFWwindow
       std::function<void(Event&)> m_EventCallback;
 
       // Singleton components

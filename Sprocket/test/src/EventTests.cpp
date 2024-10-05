@@ -1,9 +1,9 @@
 #include <gtest/gtest.h>
-#include "Event.h"
-#include "KeyboardEvent.h"
-#include "MouseEvent.h"
-#include "WindowEvents.h"
-#include "ApplicationEvent.h"
+#include "Events/Event.h"
+#include "Events/KeyboardEvent.h"
+#include "Events/MouseEvent.h"
+#include "Events/WindowEvents.h"
+#include "Events/ApplicationEvent.h"
 
 TEST(EventTests, VerifyEventTypes) {
   {

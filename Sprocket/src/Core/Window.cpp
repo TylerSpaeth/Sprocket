@@ -3,6 +3,9 @@
 #include "Events/MouseEvent.h"
 #include "Events/WindowEvents.h"
 
+#include "ThirdParty/glad/glad.h"
+#include "ThirdParty/GLFW/glfw3.h"
+
 #include <iostream>
 #include <vector>
 
@@ -110,8 +113,8 @@ namespace Sprocket {
     if(!s_Instance) {
       s_Instance = new Window();
       s_Instance->m_Window = InitGLFWwindow(xDimension, yDimension, windowTitle.c_str());
-      glfwSetWindowUserPointer(s_Instance->m_Window, (void*)&s_Instance->m_EventCallback);
-      RegisterCallbacks(s_Instance->m_Window);
+      glfwSetWindowUserPointer((GLFWwindow*)s_Instance->m_Window, (void*)&s_Instance->m_EventCallback);
+      RegisterCallbacks((GLFWwindow*)s_Instance->m_Window);
 
       // Initialize GLAD
       // MUST BE DONE BEFORE ANY OPENGL CALLS INCLUDING INTIALIZING RENDERER
@@ -143,7 +146,7 @@ namespace Sprocket {
   }
 
   void Window::OnUpdateInstance() {
-    glfwSwapBuffers(m_Window);
+    glfwSwapBuffers((GLFWwindow*)m_Window);
     glfwPollEvents();
   }
 
