@@ -2,7 +2,7 @@
 #define VERTEXARRAY_H
 
 #include "VertexBuffer.h"
-#include "VertexBufferLayout.hpp"
+#include "VertexBufferLayout.h"
 
 namespace Sprocket {
 

@@ -28,7 +28,7 @@ namespace Sprocket {
       glEnableVertexAttribArray(i);
       glVertexAttribPointer(i, element.count, element.type, element.normalized, layout.GetStride(),
           (const void*)offset);
-      offset += element.count * VertexBufferElement::GetSizeOfType(element.type);
+      offset += element.count * VertexBufferLayout::GetSizeOfType(element.type);
     }
     Unbind();
     vertexBuffer.Unbind();
