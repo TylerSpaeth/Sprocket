@@ -1,6 +1,8 @@
 #ifndef MOUSEBUTTONS_H
 #define MOUSEBUTTONS_H
 
+#include "ThirdParty/GLFW/glfw3.h"
+
 namespace Sprocket {
 
   enum MouseButton {

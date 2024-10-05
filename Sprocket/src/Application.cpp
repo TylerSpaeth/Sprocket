@@ -23,7 +23,6 @@ namespace Sprocket {
   }
 
   void Application::OnEvent(Event& event) {
-    // TODO make this Post to other handlers
     
     EventHandler eventHandler(event);
 

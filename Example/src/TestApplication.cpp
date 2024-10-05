@@ -16,6 +16,9 @@ Sprocket::Application* Sprocket::CreateApplication() {
   Window::EnableVSync(false);
   Window::RegisterEventCallback(std::bind(&Application::OnEvent, app, std::placeholders::_1));
   app->RegisterEventCallback(Window::OnEvent);
+
+  Input::Init();
+  app->RegisterEventCallback(Input::OnEvent);
   
   Renderer::Init(100000, 1066, 600);
   app->RegisterEventCallback(Renderer::OnEvent);

@@ -5,6 +5,7 @@
 #include "../src/Window.h"
 #include "../src/Renderer/Texture.h"
 #include "../src/Application.h"
+#include "../src/Input.h"
 
 // Sprocket EntryPoint
 #include "../src/EntryPoint.hpp"

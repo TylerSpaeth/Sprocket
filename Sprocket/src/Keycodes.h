@@ -1,6 +1,8 @@
 #ifndef KEYCODES_H
 #define KEYCODES_H
 
+#include "ThirdParty/GLFW/glfw3.h"
+
 namespace Sprocket {
 
   enum Keycode {

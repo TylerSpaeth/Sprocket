@@ -67,10 +67,12 @@ namespace Sprocket {
       case GLFW_PRESS: {
         MouseButtonPressedEvent e((MouseButton) button);
         eventCallback(e);
+        break;
       }
       case GLFW_RELEASE: {
         MouseButtonReleasedEvent e((MouseButton) button);
         eventCallback(e);
+        break;
       }
     }
   }
