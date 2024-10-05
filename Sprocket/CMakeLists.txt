@@ -26,7 +26,6 @@ target_sources(${PROJECT_NAME} PRIVATE
   src/Renderer/Renderer.cpp 
   src/Renderer/Texture.cpp 
   src/Renderer/Shader.cpp
-  src/Renderer/VertexBufferLayout.cpp
 )
 
 # Add source code
