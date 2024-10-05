@@ -11,12 +11,16 @@ namespace Sprocket {
   }
 
   Application::~Application() {}
+  void Application::Start() {}
+  void Application::Update(float deltaTime) {}
 
   void Application::Run() {
+    this->Start();
 
     // TODO everything here is just for testing
     while(m_AppRunning) {
       float deltaTime = GetTimeSinceLastChecked() / 1000000.0f;
+      this->Update(deltaTime);
       ApplicationUpdateEvent event(deltaTime);
       OnEvent(event);
     }

@@ -1,11 +1,18 @@
 #include "Sprocket.h"
 #include <functional>
+#include <iostream>
 
 class TestApplication : public Sprocket::Application {
 
   public:
     TestApplication() : Sprocket::Application() {}
     ~TestApplication() {}
+    void Start() {
+
+    }
+    void Update(float deltaTime) {
+      
+    }
 };
 
 Sprocket::Application* Sprocket::CreateApplication() {

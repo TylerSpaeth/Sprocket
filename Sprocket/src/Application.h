@@ -19,6 +19,13 @@ namespace Sprocket {
     public:
       Application();
       virtual ~Application();
+
+      // The start and update functions provide a way for the an application
+      // using Sprocket to access the main run loop. These functions will likely
+      // be removed in the future
+      virtual void Start();
+      virtual void Update(float deltaTime);
+
       void Run();
       void OnEvent(Event& event);
       void RegisterEventCallback(std::function<void(Event&)> eventCallback);
