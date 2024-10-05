@@ -6,7 +6,7 @@
 namespace Sprocket {
 
   class ApplicationEvent : public Event {
-    public:
+    protected:
       ApplicationEvent(){}
   };
 
