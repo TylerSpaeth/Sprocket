@@ -30,6 +30,8 @@ namespace Sprocket {
           (const void*)offset);
       offset += element.count * VertexBufferElement::GetSizeOfType(element.type);
     }
+    Unbind();
+    vertexBuffer.Unbind();
   }
   
 }

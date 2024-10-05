@@ -15,7 +15,6 @@ namespace Sprocket {
     localBuffer = stbi_load(path.c_str(), &width, &height, &bitsPerPixel, 4);
     
     glGenTextures(1, &textureID);
-    glActiveTexture(GL_TEXTURE0 + slot);
     glBindTexture(GL_TEXTURE_2D, textureID);
 
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
@@ -32,6 +31,8 @@ namespace Sprocket {
     else if(localBuffer == nullptr) {
       std::cout << "Failed to load texture\n";
     }
+
+    glBindTexture(GL_TEXTURE_2D, 0);
   }
 
   Texture::~Texture() {

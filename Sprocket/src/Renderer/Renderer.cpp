@@ -239,7 +239,9 @@ namespace Sprocket {
   }
 
   void Renderer::AddTextureInstance(const std::string& path, unsigned int slot) {
-    m_BoundTextures.push_back(new Texture(path, slot));
+    Texture* texture = new Texture(path, slot);
+    m_BoundTextures.push_back(texture);
+    texture->Bind(slot);
   }
 
   ////////////////////////////////////////////////////////////////////////////////////

@@ -7,6 +7,7 @@ namespace Sprocket {
     glGenBuffers(1, &rendererID);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, rendererID);
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, count*sizeof(unsigned int), data, GL_STATIC_DRAW);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
   }
 
   IndexBuffer::~IndexBuffer() {
