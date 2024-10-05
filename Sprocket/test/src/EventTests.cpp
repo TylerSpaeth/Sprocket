@@ -94,9 +94,9 @@ TEST(EventTests, MouseEventTests) {
     EXPECT_EQ(0, event.GetYPosition());
   }
   {
-    Sprocket::MouseMovedEvent event(100.0d,-200.0d);
-    EXPECT_EQ(100.0d, event.GetXPosition());
-    EXPECT_EQ(-200.0d, event.GetYPosition());
+    Sprocket::MouseMovedEvent event(100,-200);
+    EXPECT_EQ(100., event.GetXPosition());
+    EXPECT_EQ(-200, event.GetYPosition());
   }
   {
     Sprocket::MouseScrolledEvent event(0,0);
@@ -104,8 +104,8 @@ TEST(EventTests, MouseEventTests) {
     EXPECT_EQ(0, event.GetYOffset());
   }
   {
-    Sprocket::MouseScrolledEvent event(200.0d,-100.0d);
-    EXPECT_EQ(200.0d, event.GetXOffset());
-    EXPECT_EQ(-100.0d, event.GetYOffset());
+    Sprocket::MouseScrolledEvent event(200.123,-100);
+    EXPECT_EQ(200.123, event.GetXOffset());
+    EXPECT_EQ(-100, event.GetYOffset());
   }
 }
