@@ -1,5 +1,7 @@
 #include "Renderer.h"
 
+#include "ThirdParty/glad/glad.h"
+
 namespace Sprocket {
 
   ////////////////////////////////////////////////////////////////////////////////////
@@ -79,13 +81,18 @@ namespace Sprocket {
       s_Instance->m_VertexArray = new VertexArray();
       s_Instance->m_Shader = new Shader("Default.vert", "Default.frag");
 
-      // Describes the layout of the VertexBuffer
-      VertexBufferLayout layout;
-      layout.Push<float>(3); // Coords
-      layout.Push<float>(4); // Color
-      layout.Push<float>(2); // Texcoords
-      layout.Push<float>(1); // TextureID
-      s_Instance->m_VertexArray->AddBuffer(*s_Instance->m_VertexBuffer, layout);
+      s_Instance->m_VertexArray->Bind();
+      s_Instance->m_VertexBuffer->Bind();
+      glEnableVertexAttribArray(0);
+      glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 10*sizeof(float), (void*)0);
+      glEnableVertexAttribArray(1);
+      glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, 10*sizeof(float), (void*)(3*sizeof(float)));
+      glEnableVertexAttribArray(2);
+      glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 10*sizeof(float), (void*)(7*sizeof(float)));
+      glEnableVertexAttribArray(3);
+      glVertexAttribPointer(3, 1, GL_FLOAT, GL_FALSE, 10*sizeof(float), (void*)(9*sizeof(float)));
+      s_Instance->m_VertexBuffer->Unbind();
+      s_Instance->m_VertexArray->Unbind();
 
        // By default, the projection matrix will have the center of the screen at (0,0) and
       // the the edges will be determined by the x and y values given 
