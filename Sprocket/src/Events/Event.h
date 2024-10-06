@@ -15,6 +15,7 @@ namespace Sprocket {
     APP_UPDATE
   };
 
+  // For future use
   enum EventCategory {
     UNCATEGORIZED,
     APPLICATION,
@@ -34,6 +35,7 @@ namespace Sprocket {
 
       EventType GetEventType() const {return m_EventType;}
       
+      // For future use
       bool IsCategory(EventCategory eventCategory) {
         switch(m_EventType) {
           case EventType::KEY_PRESSED:
