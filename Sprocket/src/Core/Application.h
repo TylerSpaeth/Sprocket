@@ -34,7 +34,6 @@ namespace Sprocket {
       /// @param deltaTime The amount of time that has elapsed since the last call to Update in seconds.
       virtual void Update(float deltaTime);
 
-
       /// @brief Runs the program. Calls the Start() and Update() functions appropriately and 
       /// disperses ApplicationUpdateEvents to all subscribers in every iteration of the loop.
       void Run();

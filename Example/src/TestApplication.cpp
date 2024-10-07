@@ -8,11 +8,7 @@ class TestApplication : public Sprocket::Application {
     TestApplication() : Sprocket::Application() {}
     ~TestApplication() {}
     void Start() {
-      Sprocket::SceneManager man;
-      Sprocket::Scene* sc = new Sprocket::Scene();
-      std::cout << sc << "\n";
-      man.AddScene(1,sc);
-      std::cout << man.GetSceneAtIndex(1) << "\n";
+
     }
     void Update(float deltaTime) {
       
@@ -37,6 +33,9 @@ Sprocket::Application* Sprocket::CreateApplication() {
   Renderer::AddTexture("../res/textures/BiggerBetterTree.png", 1);
   Renderer::UpdateTextureUniform(1);
   Renderer::AddQuad(100, 1);
+
+  SceneManager::Init();
+  app->RegisterEventCallback(SceneManager::OnEvent);
 
   return app;
 }
