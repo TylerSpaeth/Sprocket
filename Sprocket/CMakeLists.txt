@@ -33,6 +33,7 @@ target_sources(${PROJECT_NAME} PRIVATE
   src/Core/Window.cpp
   src/Core/Application.cpp
   src/Core/Input.cpp
+  src/ECS/SceneManager.cpp
 )
 
 target_include_directories(${PROJECT_NAME} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include)

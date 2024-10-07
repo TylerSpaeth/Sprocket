@@ -7,6 +7,9 @@
 #include "Core/Application.h"
 #include "Core/Input.h"
 
+#include "ECS/Scene.h"
+#include "ECS/SceneManager.h"
+
 // Sprocket EntryPoint
 #include "Core/EntryPoint.hpp"
 
