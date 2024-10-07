@@ -28,12 +28,17 @@ target_sources(${PROJECT_NAME} PRIVATE
   src/Renderer/Shader.cpp
 )
 
-# Add source code
+# Add Core source code
 target_sources(${PROJECT_NAME} PRIVATE 
   src/Core/Window.cpp
   src/Core/Application.cpp
   src/Core/Input.cpp
+)
+
+# Add ECS source code
+target_sources(${PROJECT_NAME} PRIVATE 
   src/ECS/SceneManager.cpp
+  src/ECS/Scene.cpp
 )
 
 target_include_directories(${PROJECT_NAME} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include)

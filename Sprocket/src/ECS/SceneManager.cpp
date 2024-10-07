@@ -39,4 +39,10 @@ namespace Sprocket {
     return (Scene*) m_Scenes.at(m_ActiveSceneIndex);
   }
 
+  void SceneManager::OnUpdate(Event& event) {
+    // Propogate the call to the active scene
+    GetActiveScene()->OnEvent(event); 
+    // TODO handle events
+  }
+
 } 
