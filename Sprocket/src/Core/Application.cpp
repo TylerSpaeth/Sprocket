@@ -48,7 +48,6 @@ namespace Sprocket {
     m_EventCallbacks.push_back(eventCallback);
   }
 
-  // Returns the time since this function was last called in terms of microseconds
   int64_t Application::GetTimeSinceLastChecked() {
     auto currentMicro = std::chrono::duration_cast<std::chrono::microseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
       auto elapsed = currentMicro - m_LastTimeChecked;

@@ -11,7 +11,8 @@
 namespace Sprocket {
 
   /// @brief The central component of a Sprocket application. Drives the main run loop and 
-  /// acts as the central event handler for the entire application.
+  /// acts as the central event handler for the entire application. This is an event producer
+  /// and handler.
   class SPROCKET_API Application {
     private:
       bool m_AppRunning;

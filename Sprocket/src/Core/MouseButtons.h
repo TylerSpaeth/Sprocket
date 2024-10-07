@@ -3,6 +3,7 @@
 
 namespace Sprocket {
 
+  /// @brief Codes corresponding to GLFW mouse buttons
   enum MouseButton {
     MOUSE_BTN_1 = 0, //GLFW_MOUSE_BUTTON_1,
     MOUSE_BTN_2 = 1, //GLFW_MOUSE_BUTTON_2,

@@ -3,6 +3,7 @@
 
 namespace Sprocket {
 
+  /// @brief Codes corresponding to GLFW key codes.
   enum Keycode {
     KEY_SPACE =         32, //GLFW_KEY_SPACE
     KEY_APOSTROPHE =    39, //GLFW_KEY_APOSTROPHE

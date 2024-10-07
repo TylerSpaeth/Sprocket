@@ -73,6 +73,18 @@ namespace Sprocket {
     }
   }
 
+  bool Input::IsKeyPressedInstance(Keycode key) {
+    return (*s_Instance->m_CurrentKeyStatus.find(key)).second;
+  }
+
+  bool Input::IsMouseButtonPressedInstance(MouseButton button) {
+    return (*s_Instance->m_CurrentButtonStatus.find(button)).second;
+  }
+
+  ////////////////////////////////////////////////////////////////////////////////////
+  ///////////////////////////// PRIVATE STATIC FUNCTIONS /////////////////////////////
+  ////////////////////////////////////////////////////////////////////////////////////
+  
   void Input::OnCloseInstance() {
     m_CurrentButtonStatus.clear();
     m_CurrentKeyStatus.clear();
@@ -82,12 +94,7 @@ namespace Sprocket {
     
   }
 
-  bool Input::IsKeyPressedInstance(Keycode key) {
-    return (*s_Instance->m_CurrentKeyStatus.find(key)).second;
-  }
-
-  bool Input::IsMouseButtonPressedInstance(MouseButton button) {
-    return (*s_Instance->m_CurrentButtonStatus.find(button)).second;
-  }
-
+  ////////////////////////////////////////////////////////////////////////////////////
+  ////////////////////////////////////////////////////////////////////////////////////
+  ////////////////////////////////////////////////////////////////////////////////////
 }
