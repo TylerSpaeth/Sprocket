@@ -27,15 +27,15 @@ namespace Sprocket {
 
 
 
-  void Input::OnEventInstance(Event& event) {
+  void Input::OnEvent(Event& event) {
     EventType type = event.GetEventType();
     switch(type) {
       case APP_UPDATE: {
-        OnUpdateInstance();
+        OnUpdate();
         return;
       }
       case WINDOW_CLOSE: {
-        OnCloseInstance();
+        OnClose();
         return;
       }
       case KEY_PRESSED: {
@@ -73,11 +73,11 @@ namespace Sprocket {
     }
   }
 
-  bool Input::IsKeyPressedInstance(Keycode key) {
+  bool Input::IsKeyPressed(Keycode key) {
     return (*s_Instance->m_CurrentKeyStatus.find(key)).second;
   }
 
-  bool Input::IsMouseButtonPressedInstance(MouseButton button) {
+  bool Input::IsMouseButtonPressed(MouseButton button) {
     return (*s_Instance->m_CurrentButtonStatus.find(button)).second;
   }
 
@@ -85,12 +85,12 @@ namespace Sprocket {
   ///////////////////////////// PRIVATE STATIC FUNCTIONS /////////////////////////////
   ////////////////////////////////////////////////////////////////////////////////////
   
-  void Input::OnCloseInstance() {
-    m_CurrentButtonStatus.clear();
-    m_CurrentKeyStatus.clear();
+  void Input::OnClose() {
+    s_Instance->m_CurrentButtonStatus.clear();
+    s_Instance->m_CurrentKeyStatus.clear();
   }
 
-  void Input::OnUpdateInstance() {
+  void Input::OnUpdate() {
     
   }
 

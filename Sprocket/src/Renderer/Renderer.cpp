@@ -102,6 +102,112 @@ namespace Sprocket {
     }
   }
 
+  ///////////////////////////////// EVENT FUNCTIONS /////////////////////////////////
+
+  void Renderer::OnEvent(Event& event) {
+    EventType type = event.GetEventType();
+    switch(type) {
+      case APP_UPDATE:
+        OnUpdate();
+        break;
+      case WINDOW_CLOSE:
+        OnClose();
+        break;
+    }
+  }
+
+  void Renderer::OnUpdate() {
+    glClear(GL_COLOR_BUFFER_BIT);
+    s_Instance->Draw();
+  }
+
+  void Renderer::OnClose() {
+    // TODO make sure everything is getting cleaned up
+    delete s_Instance->m_VertexBuffer;
+    delete s_Instance->m_VertexArray;
+    delete s_Instance->m_IndexBuffer;
+    delete s_Instance->m_Shader;
+    // Deallocate all of the textures pointers
+    for(Texture* t : s_Instance->m_BoundTextures) {
+      free(t);
+    }
+    // Clear Vectors
+    s_Instance->m_Quads.clear();
+    s_Instance->m_ModelMatrices.clear();
+    s_Instance->m_BoundTextures.clear();
+  }
+
+  ////////////////////////////////// QUAD FUNCTIONS //////////////////////////////////
+
+  unsigned int Renderer::AddQuad(float size, float textureID) {
+    if(s_Instance->m_Quads.size() >= s_Instance->m_MaxQuads) {
+      return -1;
+    }
+    // Create a quad and add it to the back of the quads vector
+    auto quad = CreateQuad(size, textureID);
+    s_Instance->m_Quads.push_back(quad);
+    // Add a new model matrix to the back of the quads vector set to the identity matrix
+    s_Instance->m_ModelMatrices.push_back(glm::mat4(1.0f)); 
+    // Return the index where the quad and model matrix are set
+    return s_Instance->m_Quads.size()-1;
+  }
+
+  // Set the model matrix for the corresponding index, should have scale, rotation,
+  // and transform already applied
+  void Renderer::SetQuadModelMatrix(const unsigned int quadIndex, const glm::mat4 modelMatrix) {
+    if(quadIndex == -1) {
+      return;
+    }
+    s_Instance->m_ModelMatrices[quadIndex] = modelMatrix;
+  }
+
+  // Sets the color of the quad at the given index to the given color
+  void Renderer::SetQuadColor(const unsigned int quadIndex, const glm::vec4 color) {
+    auto quad = s_Instance->m_Quads.at(quadIndex);
+    for(int i = 0; i < 4; i++) {
+      quad.at(i).Color = color;
+    }
+    s_Instance->m_Quads.at(quadIndex) = quad;
+  }
+
+  // The coords should start in the top right corner and go clockwise
+  void Renderer::SetQuadTextureCoords(const unsigned int quadIndex, const glm::vec4 xCoords, const glm::vec4 yCoords) {
+    for(int i = 0; i < 4; i++) {
+      s_Instance->m_Quads.at(quadIndex).at(i).TextureCoords = glm::vec2(xCoords[i], yCoords[i]);
+    }
+  }
+
+  void Renderer::SetQuadTextureID(const unsigned int quadIndex, const float textureID) {
+    for(int i = 0; i < 4; i++) {
+      s_Instance->m_Quads.at(quadIndex).at(i).TextureID = textureID;
+    }
+  }
+
+  ///////////////////////////// SHADER UNIFORM FUNCTIONS /////////////////////////////
+
+  void Renderer::SetViewMatrix(glm::mat4 viewMatrix) {
+    s_Instance->m_ViewMatrix = viewMatrix;
+  }
+
+  // This updates the texture uniform to have IDs for all the textures
+  // that need to be rendered, asssuming that they start at slot 1 and are
+  // in sequencial order
+  void Renderer::UpdateTextureUniform(unsigned int uniqueTextures) {
+    s_Instance->m_Shader->Bind();
+    int textureIDs[uniqueTextures];
+    for(int i = 1; i <= uniqueTextures; i++) {
+      textureIDs[i-1] = i;
+    }
+    s_Instance->m_Shader->SetUniform1iv("u_Texture", uniqueTextures, textureIDs);
+    s_Instance->m_Shader->Unbind();
+  }
+
+  void Renderer::AddTexture(const std::string& path, unsigned int slot) {
+    Texture* texture = new Texture(path, slot);
+    s_Instance->m_BoundTextures.push_back(texture);
+    texture->Bind(slot);
+  }
+
   ////////////////////////////////////////////////////////////////////////////////////
   ////////////////////////////////////////////////////////////////////////////////////
   ////////////////////////////////////////////////////////////////////////////////////
@@ -143,112 +249,6 @@ namespace Sprocket {
     //m_Shader->SetUniformMatrix4fv("u_ModelMatrix", m_ModelMatrices.size(), m_ModelMatrices.front());
 
     glDrawElements(GL_TRIANGLES, m_IndexBuffer->GetCount(), GL_UNSIGNED_INT, 0);
-  }
-
-  ///////////////////////////////// EVENT FUNCTIONS /////////////////////////////////
-
-  void Renderer::OnEventInstance(Event& event) {
-    EventType type = event.GetEventType();
-    switch(type) {
-      case APP_UPDATE:
-        OnUpdateInstance();
-        break;
-      case WINDOW_CLOSE:
-        OnCloseInstance();
-        break;
-    }
-  }
-
-  void Renderer::OnUpdateInstance() {
-    glClear(GL_COLOR_BUFFER_BIT);
-    Draw();
-  }
-
-  void Renderer::OnCloseInstance() {
-    // TODO make sure everything is getting cleaned up
-    delete m_VertexBuffer;
-    delete m_VertexArray;
-    delete m_IndexBuffer;
-    delete m_Shader;
-    // Deallocate all of the textures pointers
-    for(Texture* t : m_BoundTextures) {
-      free(t);
-    }
-    // Clear Vectors
-    m_Quads.clear();
-    m_ModelMatrices.clear();
-    m_BoundTextures.clear();
-  }
-
-  ////////////////////////////////// QUAD FUNCTIONS //////////////////////////////////
-
-  unsigned int Renderer::AddQuadInstance(float size, float textureID) {
-    if(m_Quads.size() >= m_MaxQuads) {
-      return -1;
-    }
-    // Create a quad and add it to the back of the quads vector
-    auto quad = CreateQuad(size, textureID);
-    m_Quads.push_back(quad);
-    // Add a new model matrix to the back of the quads vector set to the identity matrix
-    m_ModelMatrices.push_back(glm::mat4(1.0f)); 
-    // Return the index where the quad and model matrix are set
-    return m_Quads.size()-1;
-  }
-
-  // Set the model matrix for the corresponding index, should have scale, rotation,
-  // and transform already applied
-  void Renderer::SetQuadModelMatrixInstance(const unsigned int quadIndex, const glm::mat4 modelMatrix) {
-    if(quadIndex == -1) {
-      return;
-    }
-    m_ModelMatrices[quadIndex] = modelMatrix;
-  }
-
-  // Sets the color of the quad at the given index to the given color
-  void Renderer::SetQuadColorInstance(const unsigned int quadIndex, const glm::vec4 color) {
-    auto quad = m_Quads.at(quadIndex);
-    for(int i = 0; i < 4; i++) {
-      quad.at(i).Color = color;
-    }
-    m_Quads.at(quadIndex) = quad;
-  }
-
-  // The coords should start in the top right corner and go clockwise
-  void Renderer::SetQuadTextureCoordsInstance(const unsigned int quadIndex, const glm::vec4 xCoords, const glm::vec4 yCoords) {
-    for(int i = 0; i < 4; i++) {
-      m_Quads.at(quadIndex).at(i).TextureCoords = glm::vec2(xCoords[i], yCoords[i]);
-    }
-  }
-
-  void Renderer::SetQuadTextureIDInstance(const unsigned int quadIndex, const float textureID) {
-    for(int i = 0; i < 4; i++) {
-      m_Quads.at(quadIndex).at(i).TextureID = textureID;
-    }
-  }
-
-  ///////////////////////////// SHADER UNIFORM FUNCTIONS /////////////////////////////
-
-  void Renderer::SetViewMatrixInstance(glm::mat4 viewMatrix) {
-    m_ViewMatrix = viewMatrix;
-  }
-
-  // This updates the texture uniform to have IDs for all the textures
-  // that need to be rendered, asssuming that they start at slot 1 and are
-  // in sequencial order
-  void Renderer::UpdateTextureUniformInstance(unsigned int uniqueTextures) {
-    m_Shader->Bind();
-    int textureIDs[uniqueTextures];
-    for(int i = 1; i <= uniqueTextures; i++) {
-      textureIDs[i-1] = i;
-    }
-    m_Shader->SetUniform1iv("u_Texture", uniqueTextures, textureIDs);
-    m_Shader->Unbind();
-  }
-
-  void Renderer::AddTextureInstance(const std::string& path, unsigned int slot) {
-    Texture* texture = new Texture(path, slot);
-    m_BoundTextures.push_back(texture);
-    texture->Bind(slot);
   }
 
   ////////////////////////////////////////////////////////////////////////////////////

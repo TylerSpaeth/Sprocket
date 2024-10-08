@@ -32,19 +32,12 @@ namespace Sprocket {
       Input operator=(const Input) = delete;
 
       // Actual implementations for the static instance functions
-
-      void OnEventInstance(Event& event);
-      void OnCloseInstance();
-      void OnUpdateInstance();
-      bool IsKeyPressedInstance(Keycode key);
-      bool IsMouseButtonPressedInstance(MouseButton button);
-
       /// @brief This function is called by the OnEvent function when a WINDOW_CLOSE event
       /// is recieved. Performs any tasks that need to occur before Input is destructed.
-      static void OnClose() {s_Instance->OnCloseInstance();}
+      static void OnClose();
       /// @brief This function is called by the OnEvent function when a APP_UPDATE event is
       /// received. Performs any tasks that need to occur every repeatedly.
-      static void OnUpdate() {s_Instance->OnUpdateInstance();}
+      static void OnUpdate();
 
     public:
       /// @brief Initializes the singleton. This function must be called before any other Input 
@@ -53,17 +46,17 @@ namespace Sprocket {
 
       /// @brief Handles incoming events. Should be registered as a callback to receive events.
       /// @param event The event the should be handled.
-      static void OnEvent(Event& event) {s_Instance->OnEventInstance(event);}
+      static void OnEvent(Event& event);
 
       /// @brief Checks if the given key is pressed.
       /// @param key The keycode corresponding to the key that should be checked.
       /// @return true if the key is pressed, otherwise false.
-      static bool IsKeyPressed(Keycode key) {return s_Instance->IsKeyPressedInstance(key);}
+      static bool IsKeyPressed(Keycode key);
 
       /// @brief Checks if the given mouse button is pressed.
       /// @param button The mouse button code corresponding to the key that should be checked.
       /// @return true if the button is pressed, otherwise false.
-      static bool IsMouseButtonPressed(MouseButton button) {return s_Instance->IsMouseButtonPressedInstance(button);}
+      static bool IsMouseButtonPressed(MouseButton button);
 
       static float GetMouseXPosition() {return s_Instance->m_MouseXPosition;}
       static float GetMouseYPosition() {return s_Instance->m_MouseYPosition;}

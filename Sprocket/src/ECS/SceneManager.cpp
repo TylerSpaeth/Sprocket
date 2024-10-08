@@ -8,46 +8,46 @@ namespace Sprocket {
   void SceneManager::Init() {
     if(!s_Instance) {
       s_Instance = new SceneManager();
-      s_Instance->AddSceneInstance(0, new Scene());
+      s_Instance->AddScene(0, new Scene());
     }
   }
 
-  void SceneManager::AddSceneInstance(const int index, const Scene* scene) {
-    if(m_Scenes.find(index) != m_Scenes.cend()) {
+  void SceneManager::AddScene(const int index, const Scene* scene) {
+    if(s_Instance->m_Scenes.find(index) != s_Instance->m_Scenes.cend()) {
       throw std::invalid_argument("Given index is already in use.");
     }
-    m_Scenes.insert({index, scene});
+    s_Instance->m_Scenes.insert({index, scene});
   }
 
-  void SceneManager::RemoveSceneInstance(const int index) {
-    if(m_Scenes.find(index) == m_Scenes.cend()) {
+  void SceneManager::RemoveScene(const int index) {
+    if(s_Instance->m_Scenes.find(index) == s_Instance->m_Scenes.cend()) {
       throw std::invalid_argument("No scene exists with this index.");
     }
-    m_Scenes.erase(index);
+    s_Instance->m_Scenes.erase(index);
   }
 
-  Scene* SceneManager::GetSceneAtIndexInstance(const int index) const {
-    if(m_Scenes.find(index) == m_Scenes.cend()) {
+  Scene* SceneManager::GetSceneAtIndex(const int index) {
+    if(s_Instance->m_Scenes.find(index) == s_Instance->m_Scenes.cend()) {
       throw std::invalid_argument("No scene exists with this index.");
     }
-    return (Scene*) m_Scenes.at(index);
+    return (Scene*) s_Instance->m_Scenes.at(index);
   }
 
-  void SceneManager::SetActiveSceneInstance(const int index) {
-    if(m_Scenes.find(index) == m_Scenes.cend()) {
+  void SceneManager::SetActiveScene(const int index) {
+    if(s_Instance->m_Scenes.find(index) == s_Instance->m_Scenes.cend()) {
       throw std::invalid_argument("No scene exists with this index.");
     }
-    m_ActiveSceneIndex = index;
+    s_Instance->m_ActiveSceneIndex = index;
   }
 
-  Scene* SceneManager::GetActiveSceneInstance() const {
-    if(m_Scenes.find(m_ActiveSceneIndex) == m_Scenes.cend()) {
+  Scene* SceneManager::GetActiveScene() {
+    if(s_Instance->m_Scenes.find(s_Instance->m_ActiveSceneIndex) == s_Instance->m_Scenes.cend()) {
       throw std::invalid_argument("No scene exists with this index.");
     }
-    return (Scene*) m_Scenes.at(m_ActiveSceneIndex);
+    return (Scene*) s_Instance->m_Scenes.at(s_Instance->m_ActiveSceneIndex);
   }
 
-  void SceneManager::OnEventInstance(Event& event) {
+  void SceneManager::OnEvent(Event& event) {
     // Propogate the call to the active scene
     GetActiveScene()->OnEvent(event); 
     // TODO handle events

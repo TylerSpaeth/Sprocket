@@ -43,32 +43,20 @@ namespace Sprocket {
       Renderer(const Renderer&) = delete;
       Renderer operator=(const Renderer&) = delete;
 
-      // Actual implementations for the static instance functions
-      void OnEventInstance(Event& event);
-      void OnUpdateInstance();
-      void OnCloseInstance();
-      unsigned int AddQuadInstance(float size, float textureID);
-      void SetQuadModelMatrixInstance(const unsigned int quadIndex, const glm::mat4 modelMatrix);
-      void SetQuadColorInstance(const unsigned int quadIndex, const glm::vec4 color);
-      void SetQuadTextureCoordsInstance(const unsigned int quadIndex, const glm::vec4 xCoords, const glm::vec4 yCoords);
-      void SetQuadTextureIDInstance(const unsigned int quadIndex, const float textureID);
-      void SetViewMatrixInstance(glm::mat4 viewMatrix);
-      void UpdateTextureUniformInstance(unsigned int uniqueTextures);
-      void AddTextureInstance(const std::string& path, unsigned int slot);
+      static void OnUpdate();
+      static void OnClose();
 
     public:
       static void Init(const unsigned int maxQuads, const unsigned int xDimension, const unsigned int yDimension);
-      static void OnEvent(Event& event) {s_Instance->OnEventInstance(event);}
-      static void OnUpdate() {s_Instance->OnUpdateInstance();}
-      static void OnClose() {s_Instance->OnCloseInstance();}
-      static unsigned int AddQuad(float size, float textureID) {return s_Instance->AddQuadInstance(size, textureID);}
-      static void SetQuadModelMatrix(const unsigned int quadIndex, const glm::mat4 modelMatrix) {s_Instance->SetQuadModelMatrixInstance(quadIndex, modelMatrix);}
-      static void SetQuadColor(const unsigned int quadIndex, const glm::vec4 color) {s_Instance->SetQuadColorInstance(quadIndex, color);}
-      static void SetQuadTextureCoords(const unsigned int quadIndex, const glm::vec4 xCoords, const glm::vec4 yCoords) {s_Instance->SetQuadTextureCoordsInstance(quadIndex, xCoords, yCoords);}
-      static void SetQuadTextureID(const unsigned int quadIndex, const float textureID) {s_Instance->SetQuadTextureIDInstance(quadIndex, textureID);}
-      static void SetViewMatrix(glm::mat4 viewMatrix) {s_Instance->SetViewMatrixInstance(viewMatrix);}
-      static void UpdateTextureUniform(unsigned int uniqueTextures) {s_Instance->UpdateTextureUniformInstance(uniqueTextures);}
-      static void AddTexture(const std::string& path, unsigned int slot) {s_Instance->AddTextureInstance(path, slot);}
+      static void OnEvent(Event& event);
+      static unsigned int AddQuad(float size, float textureID);
+      static void SetQuadModelMatrix(const unsigned int quadIndex, const glm::mat4 modelMatrix);
+      static void SetQuadColor(const unsigned int quadIndex, const glm::vec4 color);
+      static void SetQuadTextureCoords(const unsigned int quadIndex, const glm::vec4 xCoords, const glm::vec4 yCoords);
+      static void SetQuadTextureID(const unsigned int quadIndex, const float textureID);
+      static void SetViewMatrix(glm::mat4 viewMatrix);
+      static void UpdateTextureUniform(unsigned int uniqueTextures);
+      static void AddTexture(const std::string& path, unsigned int slot);
   };
 
 }
