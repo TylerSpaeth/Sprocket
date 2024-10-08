@@ -5,9 +5,9 @@ namespace Sprocket {
 
   VertexBuffer::VertexBuffer(const void* data, unsigned int size) {
     glGenBuffers(1, &rendererID);
-    glBindBuffer(GL_ARRAY_BUFFER, rendererID);
+    Bind();
     glBufferData(GL_ARRAY_BUFFER, size, data, GL_DYNAMIC_DRAW);
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
+    Unbind();
   }
 
   VertexBuffer::~VertexBuffer() {

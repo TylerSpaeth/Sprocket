@@ -7,6 +7,8 @@
 
 namespace Sprocket {
 
+  // TODO the texture system needs reworking to be more flexible
+
   class SPROCKET_API Texture {
     private:
       unsigned int textureID;

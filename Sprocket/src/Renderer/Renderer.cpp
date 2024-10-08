@@ -237,6 +237,10 @@ namespace Sprocket {
     //m_Shader->SetUniformMatrix4fv("u_ModelMatrix", m_ModelMatrices.size(), m_ModelMatrices.front());
 
     glDrawElements(GL_TRIANGLES, m_IndexBuffer->GetCount(), GL_UNSIGNED_INT, 0);
+
+    m_IndexBuffer->Unbind();
+    m_VertexArray->Unbind();
+    m_Shader->Unbind();
   }
 
   void Renderer::UpdateCalculatedQuads(const unsigned int index) {
