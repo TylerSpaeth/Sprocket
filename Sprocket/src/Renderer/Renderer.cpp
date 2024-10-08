@@ -99,6 +99,8 @@ namespace Sprocket {
       s_Instance->m_Shader->Bind();
       s_Instance->m_Shader->SetUniformMatrix4f("u_ProjectionMatrix", glm::ortho(-(float)xDimension/2, (float)xDimension/2, -(float) yDimension/2, (float)yDimension/2));
       s_Instance->m_Shader->Unbind();
+
+      s_Instance->m_CalculatedQuads.reserve(s_Instance->m_MaxQuads * 4);
     }
   }
 
@@ -146,8 +148,11 @@ namespace Sprocket {
     // Create a quad and add it to the back of the quads vector
     auto quad = CreateQuad(size, textureID);
     s_Instance->m_Quads.push_back(quad);
+    s_Instance->m_CalculatedQuads.push_back(quad);
     // Add a new model matrix to the back of the quads vector set to the identity matrix
     s_Instance->m_ModelMatrices.push_back(glm::mat4(1.0f)); 
+
+    s_Instance->UpdateCalculatedQuads(s_Instance->m_Quads.size()-1);
     // Return the index where the quad and model matrix are set
     return s_Instance->m_Quads.size()-1;
   }
@@ -159,6 +164,7 @@ namespace Sprocket {
       return;
     }
     s_Instance->m_ModelMatrices[quadIndex] = modelMatrix;
+    s_Instance->UpdateCalculatedQuads(quadIndex);
   }
 
   // Sets the color of the quad at the given index to the given color
@@ -168,6 +174,7 @@ namespace Sprocket {
       quad.at(i).Color = color;
     }
     s_Instance->m_Quads.at(quadIndex) = quad;
+    s_Instance->UpdateCalculatedQuads(quadIndex);
   }
 
   // The coords should start in the top right corner and go clockwise
@@ -175,12 +182,14 @@ namespace Sprocket {
     for(int i = 0; i < 4; i++) {
       s_Instance->m_Quads.at(quadIndex).at(i).TextureCoords = glm::vec2(xCoords[i], yCoords[i]);
     }
+    s_Instance->UpdateCalculatedQuads(quadIndex);
   }
 
   void Renderer::SetQuadTextureID(const unsigned int quadIndex, const float textureID) {
     for(int i = 0; i < 4; i++) {
       s_Instance->m_Quads.at(quadIndex).at(i).TextureID = textureID;
     }
+    s_Instance->UpdateCalculatedQuads(quadIndex);
   }
 
   ///////////////////////////// SHADER UNIFORM FUNCTIONS /////////////////////////////
@@ -220,7 +229,7 @@ namespace Sprocket {
   void Renderer::Draw() {
     
     // Reserve a Vertex vector with enough room for all the quads
-    std::vector<Vertex> vertices;
+    /*std::vector<Vertex> vertices;
     vertices.reserve(m_Quads.size() * 4);
 
     // Loop through each quad and apply its model matrix, then push it to the vecor
@@ -231,10 +240,11 @@ namespace Sprocket {
         quad.at(j).Position = modelMatrix * glm::vec4(quad.at(j).Position, 1.0f);
         vertices.push_back(quad.at(j));
       }
-    }
+    }*/
     // Send the data from the vector to the GPU for rendering
     m_VertexBuffer->Bind();
-    glBufferSubData(GL_ARRAY_BUFFER, 0, vertices.size() * sizeof(Vertex), &vertices.front());
+    //glBufferSubData(GL_ARRAY_BUFFER, 0, vertices.size() * sizeof(Vertex), &vertices.front());
+    glBufferSubData(GL_ARRAY_BUFFER, 0, m_CalculatedQuads.size() * sizeof(Vertex) * 4, &m_CalculatedQuads.front());
     m_VertexBuffer->Unbind();
     
     
@@ -249,6 +259,15 @@ namespace Sprocket {
     //m_Shader->SetUniformMatrix4fv("u_ModelMatrix", m_ModelMatrices.size(), m_ModelMatrices.front());
 
     glDrawElements(GL_TRIANGLES, m_IndexBuffer->GetCount(), GL_UNSIGNED_INT, 0);
+  }
+
+  void Renderer::UpdateCalculatedQuads(const unsigned int index) {
+    auto quad = m_Quads.at(index);
+    auto modelMatrix = m_ModelMatrices.at(index);
+    for(int j = 0; j < 4; j++) {
+      quad[j].Position = modelMatrix * glm::vec4(quad.at(j).Position, 1.0f);
+    }
+    m_CalculatedQuads[index] = quad;
   }
 
   ////////////////////////////////////////////////////////////////////////////////////

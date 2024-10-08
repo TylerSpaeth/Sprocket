@@ -32,10 +32,14 @@ namespace Sprocket {
       VertexBuffer* m_VertexBuffer;
       IndexBuffer* m_IndexBuffer;
       VertexArray* m_VertexArray;
-      mutable std::vector<std::array<Vertex, 4>> m_Quads;
+      // These are the raw quads without the model matrix application
+      mutable std::vector<std::array<Vertex, 4>> m_Quads; 
+      // These are the quads that have had the model matrix applied
+      mutable std::vector<std::array<Vertex, 4>> m_CalculatedQuads;
       mutable std::vector<glm::mat4> m_ModelMatrices;
       mutable std::vector<Texture*> m_BoundTextures;
       void Draw();
+      void UpdateCalculatedQuads(const unsigned int index);
 
       // Singleton Components
       static Renderer* s_Instance;
