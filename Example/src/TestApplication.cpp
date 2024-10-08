@@ -33,7 +33,8 @@ Sprocket::Application* Sprocket::CreateApplication() {
   Renderer::AddTexture("../res/textures/BiggerBetterTree.png", 1);
   Renderer::UpdateTextureUniform(1);
   for(int i = 0; i < 100000; i++) {
-    Renderer::AddQuad(100, 1);
+    auto index = Renderer::AddQuad(100, 1);
+    Renderer::SetQuadModelMatrix(index, glm::translate(glm::mat4(1.0f), glm::vec3(0, i, 0)));
   }
   
 

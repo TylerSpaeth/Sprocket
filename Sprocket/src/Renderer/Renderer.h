@@ -39,6 +39,10 @@ namespace Sprocket {
       mutable std::vector<glm::mat4> m_ModelMatrices;
       mutable std::vector<Texture*> m_BoundTextures;
       void Draw();
+
+      /// @brief Updates the quad at the given index to reflect any any changes to the 
+      /// uncalculated quads or modelMatrices. Passes this new data to the GPU
+      /// @param index the quad that needs to be updated
       void UpdateCalculatedQuads(const unsigned int index);
 
       // Singleton Components

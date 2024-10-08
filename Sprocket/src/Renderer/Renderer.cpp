@@ -227,28 +227,6 @@ namespace Sprocket {
 
   // Draws all of the quads that have been added to the renderer
   void Renderer::Draw() {
-    
-    // Reserve a Vertex vector with enough room for all the quads
-    /*std::vector<Vertex> vertices;
-    vertices.reserve(m_Quads.size() * 4);
-
-    // Loop through each quad and apply its model matrix, then push it to the vecor
-    for(int i = 0; i < m_Quads.size(); i++) {
-      auto quad = m_Quads.at(i);
-      auto modelMatrix = m_ModelMatrices.at(i);
-      for(int j = 0; j < 4; j++) {
-        quad.at(j).Position = modelMatrix * glm::vec4(quad.at(j).Position, 1.0f);
-        vertices.push_back(quad.at(j));
-      }
-    }*/
-    // Send the data from the vector to the GPU for rendering
-    m_VertexBuffer->Bind();
-    //glBufferSubData(GL_ARRAY_BUFFER, 0, vertices.size() * sizeof(Vertex), &vertices.front());
-    glBufferSubData(GL_ARRAY_BUFFER, 0, m_CalculatedQuads.size() * sizeof(Vertex) * 4, &m_CalculatedQuads.front());
-    m_VertexBuffer->Unbind();
-    
-    
-
     m_Shader->Bind();
     m_VertexArray->Bind();
     m_IndexBuffer->Bind();
@@ -267,7 +245,13 @@ namespace Sprocket {
     for(int j = 0; j < 4; j++) {
       quad[j].Position = modelMatrix * glm::vec4(quad.at(j).Position, 1.0f);
     }
+
     m_CalculatedQuads[index] = quad;
+
+    // Update the GPU's data to reflect this
+    m_VertexBuffer->Bind();
+    glBufferSubData(GL_ARRAY_BUFFER, index*4*sizeof(Vertex), sizeof(Vertex) * 4, &m_CalculatedQuads[index]);
+    m_VertexBuffer->Unbind();
   }
 
   ////////////////////////////////////////////////////////////////////////////////////
