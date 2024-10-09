@@ -11,7 +11,7 @@ class TestApplication : public Sprocket::Application {
 
     }
     void Update(float deltaTime) {
-      std::cout << (int) (1000000 / (deltaTime * 1000000)) << "\n";
+      //std::cout << (int) (1000000 / (deltaTime * 1000000)) << "\n";
     }
 };
 

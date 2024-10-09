@@ -79,7 +79,20 @@ namespace Sprocket {
       s_Instance->m_VertexBuffer = new VertexBuffer(nullptr, sizeof(Vertex)*s_Instance->m_MaxQuads * 4);;
       s_Instance->m_IndexBuffer = GenerateIndexBuffer(s_Instance->m_MaxQuads * 6);
       s_Instance->m_VertexArray = new VertexArray();
-      s_Instance->m_Shader = new Shader("Default.vert", "Default.frag");
+
+      // Check to see how many texture slots the system has
+      int systemMaxTextures;
+      glGetIntegerv(GL_MAX_TEXTURE_IMAGE_UNITS, &systemMaxTextures);
+      // Use the appropriate fragment shader for the number of texture slots the system has
+      // TODO add more options
+      if(systemMaxTextures < 32) {
+        s_Instance->m_Shader = new Shader("Default.vert", "Default.frag");
+      }
+      else {
+        s_Instance->m_Shader = new Shader("Default.vert", "Default32.frag");
+      }
+
+      
 
       s_Instance->m_VertexArray->Bind();
       s_Instance->m_VertexBuffer->Bind();
