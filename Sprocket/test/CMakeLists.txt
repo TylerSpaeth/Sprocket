@@ -2,6 +2,9 @@ cmake_minimum_required(VERSION 3.28.2)
 
 project(SprocketTest)
 
+# Specify that these are tests so dllexport and dllimport is not used
+add_compile_definitions(${PROJECT_NAME} PRIVATE SPROCKET_UNIT_TEST)
+
 include(FetchContent)
 FetchContent_Declare(
   googletest
@@ -17,11 +20,11 @@ add_executable(${PROJECT_NAME})
 target_include_directories(${PROJECT_NAME} PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/../src )
 
 # Test sources
-target_sources(${PROJECT_NAME} PRIVATE src/EventTests.cpp)
+target_sources(${PROJECT_NAME} PRIVATE src/EventTests.cpp src/EntityTests.cpp)
 
 # Sprocket Sources
-target_sources(${PROJECT_NAME} PRIVATE )
+target_sources(${PROJECT_NAME} PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/../src/ECS/Entity.cpp)
 
-target_link_libraries(${PROJECT_NAME} GTest::gtest_main)
+target_link_libraries(${PROJECT_NAME} GTest::gtest_main GTest::gmock_main)
 include(GoogleTest)
 gtest_discover_tests(${PROJECT_NAME})

@@ -41,8 +41,8 @@ namespace Sprocket {
 
   Entity::~Entity() {
     // Set all children of this Entity to have the parent of this Entity
-    for(Entity e : m_Children) {
-      e.SetParent(m_Parent);
+    for(Entity* e : m_Children) {
+      e->SetParent(m_Parent);
     }
     // Remove this entity from the parents list of children
     m_Parent->RemoveChild(this);

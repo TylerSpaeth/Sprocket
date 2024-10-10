@@ -15,6 +15,10 @@ namespace Sprocket {
     public:
       RootEntity* const GetSceneRoot() const {return m_Root;}
 
+      ~Scene() {
+        delete m_Root;
+      }
+
       /// @brief Handles incoming events. Does not need to be registered as a callback. Should 
       /// instead be called directly be the Scene Manager when it recieves an event.
       /// @param event The event the should be handled.

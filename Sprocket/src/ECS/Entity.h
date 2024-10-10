@@ -56,6 +56,7 @@ namespace Sprocket {
       /// @brief Create a new Entity with the given parent. Parent may be specified as nullptr,
       /// but it recommended to only use that in the case of the root node in a scene tree.
       /// @param parent A pointer to the Entity that should be the parent of this new Entity.
+      /// @throws std::invalid_argument if the given parent is nullptr.
       Entity(EntityNode* const parent);
 
       /// @brief Removes this Entity from any tree it is a part of. Its children are passed on to 

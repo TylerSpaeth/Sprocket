@@ -4,7 +4,15 @@
 #ifdef SPROCKET_BUILD_DLL
   #define SPROCKET_API __declspec(dllexport)
 #else
-  #define SPROCKET_API __declspec(dllimport)
+  #ifdef SPROCKET_UNIT_TEST
+    // For unit testing to stop exports
+    #define SPROCKET_API
+  #else
+     #define SPROCKET_API __declspec(dllimport)
+  #endif
 #endif
+
+
+
 
 #endif
