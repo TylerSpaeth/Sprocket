@@ -39,7 +39,7 @@ namespace Sprocket {
     }
 
     if(event.GetEventType() == WINDOW_CLOSE) {
-      std::cout << "Sprocket: Closing\n";
+      std::cout << "Sprocket: Shutdown\n";
       m_AppRunning = false;
     }
   }

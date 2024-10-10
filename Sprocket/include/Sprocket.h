@@ -9,6 +9,8 @@
 
 #include "ECS/Scene.h"
 #include "ECS/SceneManager.h"
+#include "ECS/Entity.h"
+#include "ECS/Component.h"
 
 // Sprocket EntryPoint
 #include "Core/EntryPoint.hpp"

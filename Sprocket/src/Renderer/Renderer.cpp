@@ -92,8 +92,6 @@ namespace Sprocket {
         s_Instance->m_Shader = new Shader("Default.vert", "Default32.frag");
       }
 
-      
-
       s_Instance->m_VertexArray->Bind();
       s_Instance->m_VertexBuffer->Bind();
       glEnableVertexAttribArray(0);

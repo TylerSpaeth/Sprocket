@@ -8,7 +8,13 @@ class TestApplication : public Sprocket::Application {
     TestApplication() : Sprocket::Application() {}
     ~TestApplication() {}
     void Start() {
-
+      using namespace Sprocket;
+      Scene* scene = SceneManager::GetActiveScene();
+      RootEntity* const root = scene->GetSceneRoot();
+      Entity* e = new Entity(root);
+      std::cout << root->GetChildren().size() << "\n";
+      std::cout << root->IsRoot() << "\n";
+      std::cout << e->IsRoot() << "\n";
     }
     void Update(float deltaTime) {
       //std::cout << (int) (1000000 / (deltaTime * 1000000)) << "\n";
@@ -37,7 +43,6 @@ Sprocket::Application* Sprocket::CreateApplication() {
     Renderer::SetQuadModelMatrix(index, glm::translate(glm::mat4(1.0f), glm::vec3(0, i, 0)));
   }
   
-
   SceneManager::Init();
   app->RegisterEventCallback(SceneManager::OnEvent);
 

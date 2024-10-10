@@ -59,7 +59,7 @@ namespace Sprocket {
       /// @brief Gets the index of the active scene.
       /// @return the index of the active scene.
       /// @throws invalid_argument if there are no scene at the active index.
-      static int GetActiveSceneIndex();
+      static int GetActiveSceneIndex() {return s_Instance->m_ActiveSceneIndex;}
 
       /// @brief Handles incoming events. Should be registered as a callback to receive events.
       /// @param event The event the should be handled.
