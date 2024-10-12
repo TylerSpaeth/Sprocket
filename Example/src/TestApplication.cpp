@@ -12,9 +12,6 @@ class TestApplication : public Sprocket::Application {
       Scene* scene = SceneManager::GetActiveScene();
       RootEntity* const root = scene->GetSceneRoot();
       Entity* e = new Entity(root);
-      std::cout << root->GetChildren().size() << "\n";
-      std::cout << root->IsRoot() << "\n";
-      std::cout << e->IsRoot() << "\n";
     }
     void Update(float deltaTime) {
       //std::cout << (int) (1000000 / (deltaTime * 1000000)) << "\n";

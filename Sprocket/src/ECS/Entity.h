@@ -12,9 +12,12 @@ namespace Sprocket {
   class RootEntity;
   class EntityNode;
 
-  class SPROCKET_API EntityNode {
+  class EntityNode {
+
     friend class Entity;
+
     protected:
+
       const bool m_IsRoot;
       std::vector<Entity*> m_Children;
 
@@ -34,22 +37,21 @@ namespace Sprocket {
 
     public:
 
-      /// @brief Gives all of the children of this Entity.
-      /// @return a vector of pointers to this Entity's children.
       const std::vector<Entity*> GetChildren() const {return m_Children;}
-
-      /// @brief Returns whether or not this is a RootEntity or not
-      /// @return true if this is a RootEntity, false othewise
       bool IsRoot() const {return m_IsRoot;}
 
   };
   
   class SPROCKET_API Entity : public EntityNode {
+
     private:
+
       EntityNode* m_Parent;
       
-      //TransformComponent& m_Transform;
-      //std::vector<Component*> m_Components;
+      // Transform is a special component that is attached to every entity and can not be removed 
+      // and additional transforms can not be added
+      TransformComponent m_Transform;
+      std::vector<Component*> m_Components;
 
     public:
 
@@ -75,21 +77,43 @@ namespace Sprocket {
       ///   2. The given parent is THIS Entity.
       void SetParent(EntityNode* const parent);
 
-      /// @brief Returns a pointer to the parent of this Entity.
-      /// @return A pointer to the parent of this Entity
       EntityNode* const GetParent() const {return m_Parent;}
 
-      //void AddComponent(Component& component);
-      //RemoveComponent();
-      //TransformComponent& GetTransform() const {return m_Transform;}
+      /// @brief Adds a new component to this Entity.
+      /// @param component The component that should be added.
+      /// @return an id that allows retreival and deletion of the component from this Entity.
+      /// @throws std::invalid_argument if the given component can not be added.
+      unsigned int AddComponent(const Component& component);
 
-      
+      /// @brief Removes the component with the given id.
+      /// @param id The id of the component to be removed.
+      /// @throws std::invalid_argument if the given id does not correspond to a valid component.
+      void RemoveComponent(const unsigned int id);
+
+      /// @brief Gets the component at the given id.
+      /// @param id The id of the component to be retreived
+      /// @return A reference to the component at the index.
+      /// @throws std::invalid_argument if the id does not correspond to a valid component.
+      Component& GetComponent(const unsigned int id);
+
+      TransformComponent& GetTransform() {return m_Transform;}
+ 
   };
 
   class RootEntity : public EntityNode {
+
     friend class Scene;
+
     private:
+
       RootEntity() : EntityNode(true) {}
+
+      // If a root entity is destroyed, destroy all children first
+      ~RootEntity() {
+        while(m_Children.size() != 0) {
+          delete m_Children.at(0);
+        }
+      }
   };  
 
 } 
