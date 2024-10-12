@@ -87,15 +87,28 @@ namespace Sprocket {
     // will be fruitful
     for(int i = 0; i < m_Components.size(); i++) {
       if(m_Components.at(i) == nullptr) {
-        m_Components.at(i) = new Component(component); // Make a copy of the component to store
-        return i;
+
+        // TODO implement this for every component type
+        switch(component.GetComponentType()) {
+          case Sprocket::ComponentType::TEST_COMPONENT: {
+            m_Components.at(i) = new TestComponent((const TestComponent&)component);
+            return i;
+          }
+
+        }
+       
       }
     }
 
-    // If no empty spaces were found, add this component at the end of the vector
-    m_Components.push_back(new Component(component)); // Make a copy of the component to store
-    return m_Components.size()-1;
+    // TODO implement this for every component type
+    switch(component.GetComponentType()) {
+      case Sprocket::ComponentType::TEST_COMPONENT: {
+        m_Components.push_back(new TestComponent((const TestComponent&)component));
+        return m_Components.size()-1;
+      }
+    }
 
+    return -1; // Indicates some sort of failure to add the component
   }
 
   void Entity::RemoveComponent(const unsigned int id) {

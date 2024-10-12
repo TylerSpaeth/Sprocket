@@ -27,10 +27,10 @@ namespace Sprocket {
       glm::vec3 m_Scale = glm::vec3(1,1,1);
   };
 
-  class TestComponent: public Component {
+  class TestComponent : public Component {
     public:
-      int value = 0;
-      TestComponent() : Component(ComponentType::TEST_COMPONENT){}
+      int value;
+      TestComponent() : Component(ComponentType::TEST_COMPONENT), value(0) {}
       
   };
 
