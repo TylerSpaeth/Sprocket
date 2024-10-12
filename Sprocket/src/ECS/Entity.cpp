@@ -1,5 +1,7 @@
 #include "ECS/Entity.h"
 
+#include "ThirdParty/glm/gtc/matrix_transform.hpp"
+
 #include <stdexcept>
 #include <algorithm>
 
@@ -91,7 +93,8 @@ namespace Sprocket {
         // TODO implement this for every component type
         switch(component.GetComponentType()) {
           case Sprocket::ComponentType::TEST_COMPONENT: {
-            m_Components.at(i) = new TestComponent((const TestComponent&)component);
+            TestComponent* toAdd = new TestComponent((const TestComponent&)component);
+            m_Components.at(i) = toAdd;
             return i;
           }
 
@@ -103,7 +106,8 @@ namespace Sprocket {
     // TODO implement this for every component type
     switch(component.GetComponentType()) {
       case Sprocket::ComponentType::TEST_COMPONENT: {
-        m_Components.push_back(new TestComponent((const TestComponent&)component));
+        TestComponent* toAdd = new TestComponent((const TestComponent&)component);
+        m_Components.push_back(toAdd);
         return m_Components.size()-1;
       }
     }
@@ -118,8 +122,8 @@ namespace Sprocket {
         throw std::invalid_argument("The component at the given id has already been deleted.");
       }
 
-      // Make the component that is being deleted a DeletedComponent which has no use other than to
-      // indicate that it is a free id in the vector.
+      // Make the component that is being deleted a nullptr to indicate that it is a free id in 
+      // the vector.
       m_Components.at(id) = nullptr;
     }
     catch(const std::out_of_range& e) {
@@ -139,6 +143,21 @@ namespace Sprocket {
     catch(const std::out_of_range& e) {
       throw std::invalid_argument("The given id does not correspond to a valid component.");
     }
+  }
+
+  TransformComponent Entity::GetGlobalTransform() const {
+    TransformComponent toReturn = m_Transform;
+    
+    Entity* parent = (Entity*)m_Parent;
+    while(!parent->IsRoot()) {
+      toReturn.m_Position += parent->m_Transform.m_Position;
+      toReturn.m_Rotation += parent->m_Transform.m_Rotation;
+      toReturn.m_Scale *= parent->m_Transform.m_Scale;
+
+      parent = (Entity*)parent->m_Parent;
+    }
+
+    return toReturn;
   }
 
   //////////////////////////////////////////////////////////////////////////////////

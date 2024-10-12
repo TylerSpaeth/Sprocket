@@ -1,6 +1,8 @@
 #ifndef COMPONENT_H
 #define COMPONENT_H
 
+//#include "ECS/Entity.h"
+
 #include "ThirdParty/glm/glm.hpp"
 
 namespace Sprocket {
@@ -9,7 +11,9 @@ namespace Sprocket {
     TRANSFORM_COMPONENT,
     TEST_COMPONENT
   };
-  
+
+  class Entity;
+
   class Component {
     private:
       ComponentType m_ComponentType;
@@ -20,8 +24,10 @@ namespace Sprocket {
   };
 
   class TransformComponent : public Component {
-    public:
+    friend class Entity;
+    private:
       TransformComponent() : Component(ComponentType::TRANSFORM_COMPONENT){}
+    public:
       glm::vec3 m_Position = glm::vec3(0,0,0);
       glm::vec3 m_Rotation = glm::vec3(0,0,0);
       glm::vec3 m_Scale = glm::vec3(1,1,1);

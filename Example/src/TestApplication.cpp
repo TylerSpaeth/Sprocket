@@ -12,6 +12,10 @@ class TestApplication : public Sprocket::Application {
       Scene* scene = SceneManager::GetActiveScene();
       RootEntity* const root = scene->GetSceneRoot();
       Entity* e = new Entity(root);
+      Entity* e2 = new Entity(e);
+      e->GetLocalTransform().m_Scale.x = 2;
+      e2->GetLocalTransform().m_Scale.x = 0.75;
+      std::cout << e2->GetGlobalTransform().m_Scale.x << "\n";
     }
     void Update(float deltaTime) {
       //std::cout << (int) (1000000 / (deltaTime * 1000000)) << "\n";

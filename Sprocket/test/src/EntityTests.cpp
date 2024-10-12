@@ -90,14 +90,8 @@ TEST(EntityTests, EntityComponentFunctionTests) {
   Sprocket::Entity* e = new Sprocket::Entity(root);
 
   Sprocket::TestComponent testComponent;
-  Sprocket::TransformComponent transformComponent;
   
-  // Verify that both components have the correct type
   EXPECT_EQ(Sprocket::ComponentType::TEST_COMPONENT, testComponent.GetComponentType());
-  EXPECT_EQ(Sprocket::ComponentType::TRANSFORM_COMPONENT, transformComponent.GetComponentType());
-
-  // Verify that a transform component can not be added
-  EXPECT_THROW(e->AddComponent(transformComponent), std::invalid_argument);
 
   // Add the same component twice to e
   unsigned int id1 = e->AddComponent(testComponent);
@@ -137,5 +131,103 @@ TEST(EntityTests, EntityComponentFunctionTests) {
   EXPECT_EQ(id2, e->AddComponent(testComponent));
 
   delete e;
+  delete scene;
+}
+
+TEST(EntityTests, TransformFunctionsBasicTest) {
+  Sprocket::Scene* scene = new Sprocket::Scene();
+  Sprocket::RootEntity* root = scene->GetSceneRoot();
+
+  Sprocket::Entity* e = new Sprocket::Entity(root);
+
+  EXPECT_EQ(e->GetLocalTransform().m_Position, e->GetGlobalTransform().m_Position);
+  EXPECT_EQ(e->GetLocalTransform().m_Rotation, e->GetGlobalTransform().m_Rotation);
+  EXPECT_EQ(e->GetLocalTransform().m_Scale, e->GetGlobalTransform().m_Scale);
+
+  Sprocket::TransformComponent& t = e->GetLocalTransform();
+
+  // Verify initial values
+  EXPECT_EQ(t.GetComponentType(), Sprocket::ComponentType::TRANSFORM_COMPONENT);
+  EXPECT_THROW(e->AddComponent(t), std::invalid_argument);
+  EXPECT_EQ(glm::vec3(0), t.m_Position);
+  EXPECT_EQ(glm::vec3(0), t.m_Rotation);
+  EXPECT_EQ(glm::vec3(1), t.m_Scale);
+
+  t.m_Position.x = 100;
+  EXPECT_EQ(100, e->GetLocalTransform().m_Position.x);
+
+  Sprocket::Entity* e2 = new Sprocket::Entity(e);
+  EXPECT_EQ(glm::vec3(0), e2->GetLocalTransform().m_Position);
+  EXPECT_EQ(glm::vec3(0), e2->GetLocalTransform().m_Rotation);
+  EXPECT_EQ(glm::vec3(1), e2->GetLocalTransform().m_Scale);
+
+  EXPECT_EQ(glm::vec3(100,0,0), e2->GetGlobalTransform().m_Position);
+  EXPECT_EQ(glm::vec3(0), e2->GetGlobalTransform().m_Rotation);
+  EXPECT_EQ(glm::vec3(1), e2->GetGlobalTransform().m_Scale);
+
+  t.m_Rotation.y = 90;
+
+  EXPECT_EQ(glm::vec3(100,0,0), e2->GetGlobalTransform().m_Position);
+  EXPECT_EQ(glm::vec3(0, 90, 0), e2->GetGlobalTransform().m_Rotation);
+  EXPECT_EQ(glm::vec3(1), e2->GetGlobalTransform().m_Scale);
+
+  EXPECT_EQ(glm::vec3(0), e2->GetLocalTransform().m_Position);
+  EXPECT_EQ(glm::vec3(0), e2->GetLocalTransform().m_Rotation);
+  EXPECT_EQ(glm::vec3(1), e2->GetLocalTransform().m_Scale);
+
+  delete e2;
+  delete e;
+  delete scene;
+}
+
+TEST(EntityTests, TransformFunctionsComplexTest) {
+  Sprocket::Scene* scene = new Sprocket::Scene();
+  Sprocket::RootEntity* root = scene->GetSceneRoot();
+
+  Sprocket::Entity* e1 = new Sprocket::Entity(root);
+  e1->GetLocalTransform().m_Position = glm::vec3(100,50,5);
+  Sprocket::Entity* e2 = new Sprocket::Entity(e1);
+  Sprocket::Entity* e3 = new Sprocket::Entity(e2);
+  Sprocket::Entity* e4 = new Sprocket::Entity(e3);
+  Sprocket::Entity* e5 = new Sprocket::Entity(e1);
+  Sprocket::Entity* e6 = new Sprocket::Entity(e5);
+
+  EXPECT_EQ(glm::vec3(100,50,5), e1->GetGlobalTransform().m_Position);
+  EXPECT_EQ(glm::vec3(100,50,5), e2->GetGlobalTransform().m_Position);
+  EXPECT_EQ(glm::vec3(100,50,5), e3->GetGlobalTransform().m_Position);
+  EXPECT_EQ(glm::vec3(100,50,5), e4->GetGlobalTransform().m_Position);
+  EXPECT_EQ(glm::vec3(100,50,5), e5->GetGlobalTransform().m_Position);
+  EXPECT_EQ(glm::vec3(100,50,5), e6->GetGlobalTransform().m_Position);
+
+  e5->GetLocalTransform().m_Rotation = glm::vec3(45,90,135);
+
+  EXPECT_EQ(glm::vec3(0), e1->GetGlobalTransform().m_Rotation);
+  EXPECT_EQ(glm::vec3(0), e2->GetGlobalTransform().m_Rotation);
+  EXPECT_EQ(glm::vec3(0), e3->GetGlobalTransform().m_Rotation);
+  EXPECT_EQ(glm::vec3(0), e4->GetGlobalTransform().m_Rotation);
+  EXPECT_EQ(glm::vec3(45,90,135), e5->GetGlobalTransform().m_Rotation);
+  EXPECT_EQ(glm::vec3(45,90,135), e6->GetGlobalTransform().m_Rotation);
+
+  delete e5;
+
+  EXPECT_EQ(glm::vec3(100,50,5), e6->GetGlobalTransform().m_Position);
+  EXPECT_EQ(glm::vec3(0), e6->GetGlobalTransform().m_Rotation);
+
+  e1->GetLocalTransform().m_Scale.x = 3;
+  e2->GetLocalTransform().m_Scale.x = 0;
+  e3->GetLocalTransform().m_Scale.x = 100;
+  e6->GetLocalTransform().m_Scale.x = .5;
+
+  EXPECT_EQ(glm::vec3(3,1,1), e1->GetGlobalTransform().m_Scale);
+  EXPECT_EQ(glm::vec3(0,1,1), e2->GetGlobalTransform().m_Scale);
+  EXPECT_EQ(glm::vec3(0,1,1), e3->GetGlobalTransform().m_Scale);
+  EXPECT_EQ(glm::vec3(0,1,1), e4->GetGlobalTransform().m_Scale);
+  EXPECT_EQ(glm::vec3(1.5,1,1), e6->GetGlobalTransform().m_Scale);
+
+  delete e6;
+  delete e4;
+  delete e3;
+  delete e2;
+  delete e1;
   delete scene;
 }
