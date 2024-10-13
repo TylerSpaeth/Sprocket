@@ -3,7 +3,7 @@
 
 namespace Sprocket {
 
-  enum EventType {
+  enum class EventType {
     NONE,
     // KEYBOARD
     KEY_PRESSED, KEY_RELEASED,
@@ -12,22 +12,25 @@ namespace Sprocket {
     // WINDOW
     WINDOW_CLOSE,
     // APPLICATION
-    APP_UPDATE
+    APP_UPDATE,
+    // RENDER
+    RENDER_NEW, RENDER_UPDATE
   };
 
   // For future use
-  enum EventCategory {
+  enum class EventCategory {
     UNCATEGORIZED,
     APPLICATION,
     WINDOW,
     INPUT,
     KEYBOARD,
-    MOUSE
+    MOUSE,
+    RENDER
   };
 
   class Event {
     private:
-      EventType m_EventType = NONE;
+      EventType m_EventType = EventType::NONE;
     public:
       void SetType(EventType type) {
         m_EventType = type;
@@ -50,6 +53,9 @@ namespace Sprocket {
             return eventCategory == EventCategory::APPLICATION || eventCategory == EventCategory::WINDOW;
           case EventType::APP_UPDATE:
             return eventCategory == EventCategory::APPLICATION;
+          case EventType::RENDER_NEW:
+          case EventType::RENDER_UPDATE:
+            return eventCategory == EventCategory::RENDER;
         }
       }
   };

@@ -18,14 +18,14 @@ namespace Sprocket {
   class MouseButtonPressedEvent : public MouseButtonEvent {
     public:
       MouseButtonPressedEvent(const MouseButton mouseButton) : MouseButtonEvent(mouseButton) {
-        this->SetType(MOUSE_BTN_PRESSED);
+        this->SetType(EventType::MOUSE_BTN_PRESSED);
       }
   };
 
   class MouseButtonReleasedEvent : public MouseButtonEvent {
     public:
       MouseButtonReleasedEvent(const MouseButton mouseButton) : MouseButtonEvent(mouseButton) {
-        this->SetType(MOUSE_BTN_RELEASED);
+        this->SetType(EventType::MOUSE_BTN_RELEASED);
       }
   };
 
@@ -35,7 +35,7 @@ namespace Sprocket {
       double m_YPos;
     public:
       MouseMovedEvent(const double xPos, const double yPos) : m_XPos(xPos), m_YPos(yPos) {
-        this->SetType(MOUSE_MOVED);
+        this->SetType(EventType::MOUSE_MOVED);
       }
       double GetXPosition() const {return m_XPos;}
       double GetYPosition() const {return m_YPos;}
@@ -47,7 +47,7 @@ namespace Sprocket {
       double m_YOffset;
     public:
       MouseScrolledEvent(const double xOffset, const double yOffset) : m_XOffset(xOffset), m_YOffset(yOffset) {
-        this->SetType(MOUSE_SCROLLED);
+        this->SetType(EventType::MOUSE_SCROLLED);
       }
       double GetXOffset() const {return m_XOffset;}
       double GetYOffset() const {return m_YOffset;}

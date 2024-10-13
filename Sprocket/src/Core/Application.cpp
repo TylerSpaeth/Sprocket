@@ -38,7 +38,7 @@ namespace Sprocket {
       eventHandler.Post(m_EventCallbacks[i]);
     }
 
-    if(event.GetEventType() == WINDOW_CLOSE) {
+    if(event.GetEventType() == EventType::WINDOW_CLOSE) {
       std::cout << "Sprocket: Shutdown\n";
       m_AppRunning = false;
     }

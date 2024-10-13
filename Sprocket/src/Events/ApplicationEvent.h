@@ -15,7 +15,7 @@ namespace Sprocket {
       float m_DeltaTime; // Time since last update
     public:
       ApplicationUpdateEvent(float deltaTime) : m_DeltaTime(deltaTime) {
-        this->SetType(APP_UPDATE);
+        this->SetType(EventType::APP_UPDATE);
       }
       float GetDeltaTime() const {return m_DeltaTime;}
   };

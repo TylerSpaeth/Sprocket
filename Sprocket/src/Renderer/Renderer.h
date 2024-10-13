@@ -68,7 +68,7 @@ namespace Sprocket {
       /// the same as the height of the window's native resolution in pixels.
       static void Init(const unsigned int maxQuads, const unsigned int xDimension, const unsigned int yDimension);
 
-      /// @brief Handles incoming events. Should be registered as a callback to receive events.
+      /// @brief Handles incoming events. Should be registered as a callback to recieve events.
       /// @param event The event the should be handled.
       static void OnEvent(Event& event);
 

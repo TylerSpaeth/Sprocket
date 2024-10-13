@@ -30,41 +30,41 @@ namespace Sprocket {
   void Input::OnEvent(Event& event) {
     EventType type = event.GetEventType();
     switch(type) {
-      case APP_UPDATE: {
+      case EventType::APP_UPDATE: {
         OnUpdate();
         return;
       }
-      case WINDOW_CLOSE: {
+      case EventType::WINDOW_CLOSE: {
         OnClose();
         return;
       }
-      case KEY_PRESSED: {
+      case EventType::KEY_PRESSED: {
         KeyPressedEvent* pressEvent = (KeyPressedEvent*) &event;
         (*s_Instance->m_CurrentKeyStatus.find(pressEvent->GetKeycode())).second = true;
         return;
       }
-      case KEY_RELEASED: {
+      case EventType::KEY_RELEASED: {
         KeyReleasedEvent* releaseEvent = (KeyReleasedEvent*) &event;
         (*s_Instance->m_CurrentKeyStatus.find(releaseEvent->GetKeycode())).second = false;
         return;
       }
-      case MOUSE_BTN_PRESSED: {
+      case EventType::MOUSE_BTN_PRESSED: {
         MouseButtonPressedEvent* pressEvent = (MouseButtonPressedEvent*) &event;
         (*s_Instance->m_CurrentButtonStatus.find(pressEvent->GetMouseButton())).second = true;
         return;
       }
-      case MOUSE_BTN_RELEASED: {
+      case EventType::MOUSE_BTN_RELEASED: {
         MouseButtonReleasedEvent* releaseEvent = (MouseButtonReleasedEvent*) &event;
         (*s_Instance->m_CurrentButtonStatus.find(releaseEvent->GetMouseButton())).second = false;
         return;
       }
-      case MOUSE_MOVED: {
+      case EventType::MOUSE_MOVED: {
         MouseMovedEvent* moveEvent = (MouseMovedEvent*) &event;
         s_Instance->m_MouseXPosition = moveEvent->GetXPosition();
         s_Instance->m_MouseYPosition = moveEvent->GetYPosition();
         return;
       }
-      case MOUSE_SCROLLED: {
+      case EventType::MOUSE_SCROLLED: {
         MouseScrolledEvent* scrollEvent = (MouseScrolledEvent*) &event;
         s_Instance->m_MouseXScrollOffset = scrollEvent->GetXOffset();
         s_Instance->m_MouseYScrollOffset = scrollEvent->GetYOffset();

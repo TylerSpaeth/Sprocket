@@ -18,14 +18,14 @@ namespace Sprocket {
   class KeyPressedEvent : public KeyEvent {
     public:
       KeyPressedEvent(const Keycode keycode) : KeyEvent(keycode){
-        this->SetType(KEY_PRESSED);
+        this->SetType(EventType::KEY_PRESSED);
       }
   };
 
   class KeyReleasedEvent : public KeyEvent {
     public:
       KeyReleasedEvent(const Keycode keycode) : KeyEvent(keycode){
-        this->SetType(KEY_RELEASED);
+        this->SetType(EventType::KEY_RELEASED);
       }
   };
 

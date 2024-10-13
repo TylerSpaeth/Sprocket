@@ -132,10 +132,10 @@ namespace Sprocket {
   void Window::OnEventInstance(Event& event) {
     EventType type = event.GetEventType();
     switch(type) {
-      case APP_UPDATE:
+      case EventType::APP_UPDATE:
         OnUpdateInstance();
         break;
-      case WINDOW_CLOSE:
+      case EventType::WINDOW_CLOSE:
         OnCloseInstance();
         break;
     }

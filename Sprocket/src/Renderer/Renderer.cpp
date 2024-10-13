@@ -1,5 +1,7 @@
 #include "Renderer.h"
 
+#include "Events/RenderEvent.h"
+
 #include "ThirdParty/glad/glad.h"
 
 namespace Sprocket {
@@ -120,12 +122,35 @@ namespace Sprocket {
   void Renderer::OnEvent(Event& event) {
     EventType type = event.GetEventType();
     switch(type) {
-      case APP_UPDATE:
+      case EventType::APP_UPDATE:
         OnUpdate();
         break;
-      case WINDOW_CLOSE:
+      case EventType::WINDOW_CLOSE:
         OnClose();
         break;
+      case EventType::RENDER_NEW:
+        ((RenderNewEvent&) event).m_QuadID = AddQuad(((RenderNewEvent&) event).GetSize(), ((RenderNewEvent&) event).GetTextureID());
+        break;
+      case EventType::RENDER_UPDATE: {
+        switch(((RenderUpdateEvent&)event).GetType()) {
+          case RenderUpdateType::VIEW_MATRIX:
+            SetViewMatrix(((RenderUpdateEvent&)event).m_Matrix);
+            break;
+          case RenderUpdateType::MODEL_MATRIX:
+            SetQuadModelMatrix(((RenderUpdateEvent&)event).m_QuadIndex, ((RenderUpdateEvent&)event).m_Matrix);
+            break;
+          case RenderUpdateType::QUAD_TEX_ID:
+            SetQuadTextureID(((RenderUpdateEvent&)event).m_QuadIndex, ((RenderUpdateEvent&)event).m_TextureID);
+            break;
+          case RenderUpdateType::QUAD_COLOR:
+            SetQuadColor(((RenderUpdateEvent&)event).m_QuadIndex, ((RenderUpdateEvent&)event).m_Vec1);
+            break;
+          case RenderUpdateType::QUAD_TEX_COORDS:
+            SetQuadTextureCoords(((RenderUpdateEvent&)event).m_QuadIndex, ((RenderUpdateEvent&)event).m_Vec1, ((RenderUpdateEvent&)event).m_Vec2);
+          break;
+        }
+      }
+
     }
   }
 
