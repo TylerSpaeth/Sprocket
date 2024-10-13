@@ -4,6 +4,7 @@
 #include "Events/MouseEvent.h"
 #include "Events/WindowEvents.h"
 #include "Events/ApplicationEvent.h"
+#include "Events/RenderEvent.h"
 
 TEST(EventTests, VerifyEventTypes) {
   {
@@ -50,6 +51,16 @@ TEST(EventTests, VerifyEventTypes) {
     Sprocket::WindowCloseEvent event;
     Sprocket::EventType type = event.GetEventType();
     EXPECT_EQ(type, Sprocket::EventType::WINDOW_CLOSE);
+  }
+  {
+    Sprocket::RenderNewEvent event(100,0);
+    Sprocket::EventType type = event.GetEventType();
+    EXPECT_EQ(type, Sprocket::EventType::RENDER_NEW);
+  }
+  {
+    Sprocket::RenderUpdateEvent event(Sprocket::RenderUpdateType::MODEL_MATRIX);
+    Sprocket::EventType type = event.GetEventType();
+    EXPECT_EQ(type, Sprocket::EventType::RENDER_UPDATE);
   }
 }
 

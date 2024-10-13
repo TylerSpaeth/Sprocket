@@ -19,13 +19,13 @@ namespace Sprocket {
 
   // For future use
   enum class EventCategory {
-    UNCATEGORIZED,
+    UNCATEGORIZED, // Every event type can be classified as uncategorized
     APPLICATION,
     WINDOW,
     INPUT,
     KEYBOARD,
     MOUSE,
-    RENDER
+    RENDER,
   };
 
   class Event {
@@ -40,15 +40,18 @@ namespace Sprocket {
       
       // For future use
       bool IsCategory(EventCategory eventCategory) {
+        if(eventCategory == EventCategory::UNCATEGORIZED) {
+          return true;
+        }
         switch(m_EventType) {
           case EventType::KEY_PRESSED:
           case EventType::KEY_RELEASED:
-            return eventCategory == EventCategory::INPUT || eventCategory == EventCategory::KEYBOARD;
+            return eventCategory == EventCategory::INPUT || eventCategory == EventCategory::KEYBOARD || eventCategory == EventCategory::APPLICATION;
           case EventType::MOUSE_BTN_PRESSED:
           case EventType::MOUSE_BTN_RELEASED:
           case EventType::MOUSE_MOVED:
           case EventType::MOUSE_SCROLLED:
-            return eventCategory == EventCategory::INPUT || eventCategory == EventCategory::MOUSE;
+            return eventCategory == EventCategory::INPUT || eventCategory == EventCategory::MOUSE || eventCategory == EventCategory::APPLICATION;
           case EventType::WINDOW_CLOSE:
             return eventCategory == EventCategory::APPLICATION || eventCategory == EventCategory::WINDOW;
           case EventType::APP_UPDATE:
@@ -57,6 +60,8 @@ namespace Sprocket {
           case EventType::RENDER_UPDATE:
             return eventCategory == EventCategory::RENDER;
         }
+
+        return false;
       }
   };
 

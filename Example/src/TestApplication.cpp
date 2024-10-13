@@ -37,13 +37,13 @@ Sprocket::Application* Sprocket::CreateApplication() {
   Window::Init(1066, 600, "Test Window");
   Window::EnableVSync(false);
   Window::RegisterEventCallback(std::bind(&Application::OnEvent, app, std::placeholders::_1));
-  app->RegisterEventCallback(Window::OnEvent);
+  app->RegisterEventCallback(Window::OnEvent, EventCategory::UNCATEGORIZED);
 
   Input::Init();
-  app->RegisterEventCallback(Input::OnEvent);
+  app->RegisterEventCallback(Input::OnEvent, EventCategory::APPLICATION);
   
   Renderer::Init(100000, 1066, 600);
-  app->RegisterEventCallback(Renderer::OnEvent);
+  app->RegisterEventCallback(Renderer::OnEvent, EventCategory::UNCATEGORIZED);
 
   Renderer::AddTexture("../res/textures/BiggerBetterTree.png", 1);
   Renderer::UpdateTextureUniform(1);
@@ -55,7 +55,7 @@ Sprocket::Application* Sprocket::CreateApplication() {
   
   
   SceneManager::Init();
-  app->RegisterEventCallback(SceneManager::OnEvent);
+  app->RegisterEventCallback(SceneManager::OnEvent, EventCategory::UNCATEGORIZED);
 
   return app;
 }

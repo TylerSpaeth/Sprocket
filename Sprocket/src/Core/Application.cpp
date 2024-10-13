@@ -34,8 +34,10 @@ namespace Sprocket {
     // that happen are the renderer drawing and the buffers being swapped
     int callbackCount = m_EventCallbacks.size();
     for(int i = callbackCount-1; i >= 0; i--) {
-      // Post the event to the subscriber
-      eventHandler.Post(m_EventCallbacks[i]);
+      if(event.IsCategory(m_EventCallbacks[i].second)) {
+         // Post the event to the subscriber
+        eventHandler.Post(m_EventCallbacks[i].first);
+      }
     }
 
     if(event.GetEventType() == EventType::WINDOW_CLOSE) {
@@ -44,8 +46,8 @@ namespace Sprocket {
     }
   }
 
-  void Application::RegisterEventCallback(std::function<void(Event&)> eventCallback) {
-    m_EventCallbacks.push_back(eventCallback);
+  void Application::RegisterEventCallback(std::function<void(Event&)> eventCallback, EventCategory category) {
+    m_EventCallbacks.push_back(std::pair(eventCallback, category));
   }
 
   int64_t Application::GetTimeSinceLastChecked() {
