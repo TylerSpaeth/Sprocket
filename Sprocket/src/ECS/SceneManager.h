@@ -6,6 +6,7 @@
 #include "Events/Event.h"
 
 #include <unordered_map>
+#include <functional>
 
 namespace Sprocket {
 
@@ -17,6 +18,8 @@ namespace Sprocket {
       // An empty default scene will always be given at index 0.
       mutable int m_ActiveSceneIndex = 0;
       mutable std::unordered_map<int, const Scene*> m_Scenes;
+      
+      std::function<void(Event&)> m_EventCallback;
 
       // Singleton Components
       static SceneManager* s_Instance;
@@ -64,6 +67,12 @@ namespace Sprocket {
       /// @brief Handles incoming events. Should be registered as a callback to receive events.
       /// @param event The event the should be handled.
       static void OnEvent(Event& event);
+
+      /// @brief Registers the given function as an Event callback to be run when an event occurs 
+      /// in the ECS system.. The event handler should subscribe to this in order for events 
+      /// produced here to become part of the central event system.
+      /// @param eventCallback a function that will take in an Event when an event occurs.
+      static void RegisterEventCallback(const std::function<void(Event&)> eventCallback);
   };
 
 }

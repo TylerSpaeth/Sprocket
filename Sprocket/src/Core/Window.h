@@ -48,7 +48,7 @@ namespace Sprocket {
       static void OnEvent(Event& event) {s_Instance->OnEventInstance(event);}
 
       /// @brief Registers the given function as an Event callback to be run when a window event 
-      /// occurs. The event handler should subscriber to this in order for Window events to become
+      /// occurs. The event handler should subscribe to this in order for Window events to become
       /// part of the central event system.
       /// @param eventCallback a function that will take in an Event when an event occurs.
       static void RegisterEventCallback(const std::function<void(Event&)> eventCallback) {s_Instance->RegisterEventCallbackInstance(eventCallback);}

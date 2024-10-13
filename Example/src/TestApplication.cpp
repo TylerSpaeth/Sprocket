@@ -52,9 +52,8 @@ Sprocket::Application* Sprocket::CreateApplication() {
     Renderer::SetQuadModelMatrix(index, glm::translate(glm::mat4(1.0f), glm::vec3(0, i, 0)));
   }*/
 
-  
-  
   SceneManager::Init();
+  SceneManager::RegisterEventCallback(std::bind(&Application::OnEvent, app, std::placeholders::_1));
   app->RegisterEventCallback(SceneManager::OnEvent, EventCategory::UNCATEGORIZED);
 
   return app;

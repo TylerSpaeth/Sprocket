@@ -1,7 +1,7 @@
 #ifndef COMPONENT_H
 #define COMPONENT_H
 
-//#include "ECS/Entity.h"
+#include "Events/Event.h"
 
 #include "ThirdParty/glm/glm.hpp"
 
@@ -11,8 +11,6 @@ namespace Sprocket {
     TRANSFORM_COMPONENT,
     TEST_COMPONENT
   };
-
-  class Entity;
 
   class Component {
     private:

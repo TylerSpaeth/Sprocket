@@ -152,8 +152,6 @@ namespace Sprocket {
 
   void Window::RegisterEventCallbackInstance(const std::function<void(Event&)> eventCallback) {
     m_EventCallback = eventCallback;
-    KeyPressedEvent e(KEY_0);
-    eventCallback(e);
   }
 
   void Window::EnableVSyncInstance(bool enable) {

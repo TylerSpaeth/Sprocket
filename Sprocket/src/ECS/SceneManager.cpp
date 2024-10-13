@@ -38,6 +38,8 @@ namespace Sprocket {
       throw std::invalid_argument("No scene exists with this index.");
     }
     s_Instance->m_ActiveSceneIndex = index;
+    // Make sure the active scene has the callback to send events to the application
+    s_Instance->GetActiveScene()->m_EventCallback = s_Instance->m_EventCallback;
   }
 
   Scene* SceneManager::GetActiveScene() {
@@ -51,6 +53,12 @@ namespace Sprocket {
     // Propogate the call to the active scene
     GetActiveScene()->OnEvent(event); 
     // TODO handle events
+  }
+
+  void SceneManager::RegisterEventCallback(const std::function<void(Event&)> eventCallback) {
+    s_Instance->m_EventCallback = eventCallback;
+    // Make sure the active scene has the callback to send events to the application
+    s_Instance->GetActiveScene()->m_EventCallback = eventCallback;
   }
 
 } 
