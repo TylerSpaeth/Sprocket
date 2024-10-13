@@ -30,11 +30,12 @@ namespace Sprocket {
     
     EventHandler eventHandler(event);
 
-    // Traverse the callbacks in reverse order. This is done so that window the last things 
-    // that happen are the renderer drawing and the buffers being swapped
-    int callbackCount = m_EventCallbacks.size();
-    for(int i = callbackCount-1; i >= 0; i--) {
+    // Traverse the callbacks in reverse order. Right now this is done so we can register the window
+    // and renderer first. That way we can assure they receive events, mainly update, last
+    for(int i = m_EventCallbacks.size()-1; i >= 0; i--) {
+
       if(event.IsCategory(m_EventCallbacks[i].second)) {
+
          // Post the event to the subscriber
         eventHandler.Post(m_EventCallbacks[i].first);
       }

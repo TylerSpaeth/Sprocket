@@ -20,7 +20,6 @@ namespace Sprocket {
       int64_t m_LastTimeChecked = std::chrono::duration_cast<std::chrono::microseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
       int64_t GetTimeSinceLastChecked();
       std::vector<std::pair<std::function<void(Event&)>, EventCategory>> m_EventCallbacks;
-      //std::vector<std::function<void(Event&)>> m_EventCallbacks;
     public:
       Application();
       virtual ~Application();
@@ -50,6 +49,8 @@ namespace Sprocket {
       /// recieved. Anything that wishes to subscribe directly to the central event system should 
       /// register a callback with this function.
       /// @param eventCallback a function that will take in an Event when an event occurs.
+      /// @param category The category of events that should be sent to the callback. UNCATEGORIZED 
+      /// will send all events.
       void RegisterEventCallback(std::function<void(Event&)> eventCallback, EventCategory category);
   };
 

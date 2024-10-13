@@ -58,20 +58,6 @@ namespace Sprocket {
       static void OnUpdate();
       static void OnClose();
 
-    public:
-      /// @brief Initializes the singleton and sets the appropriate parameters. This must be called
-      /// before any other Renderer function.
-      /// @param maxQuads the maximum number of quads that the Renderer should accept.
-      /// @param xDimension The width of the projection matrix. It is recommended that this value 
-      /// the same as the width of the window's native resolution in pixels.
-      /// @param yDimension The height of the projection matrix. It is recommended that this value 
-      /// the same as the height of the window's native resolution in pixels.
-      static void Init(const unsigned int maxQuads, const unsigned int xDimension, const unsigned int yDimension);
-
-      /// @brief Handles incoming events. Should be registered as a callback to recieve events.
-      /// @param event The event the should be handled.
-      static void OnEvent(Event& event);
-
       /// @brief Adds a new quads of the given size at coordinates 0,0 with a texture corresponding
       /// textureID and a color of white be default.
       /// @param size The size of the quad in whatever unit was used to specify the x and y 
@@ -108,6 +94,20 @@ namespace Sprocket {
       /// @brief Sets the view matrix of the renderer to the given matrix.
       /// @param viewMatrix The view matrix that should be applied.
       static void SetViewMatrix(glm::mat4 viewMatrix);
+
+    public:
+      /// @brief Initializes the singleton and sets the appropriate parameters. This must be called
+      /// before any other Renderer function.
+      /// @param maxQuads the maximum number of quads that the Renderer should accept.
+      /// @param xDimension The width of the projection matrix. It is recommended that this value 
+      /// the same as the width of the window's native resolution in pixels.
+      /// @param yDimension The height of the projection matrix. It is recommended that this value 
+      /// the same as the height of the window's native resolution in pixels.
+      static void Init(const unsigned int maxQuads, const unsigned int xDimension, const unsigned int yDimension);
+
+      /// @brief Handles incoming events. Should be registered as a callback to recieve events.
+      /// @param event The event the should be handled.
+      static void OnEvent(Event& event);
 
       static void UpdateTextureUniform(unsigned int uniqueTextures);
       static void AddTexture(const std::string& path, unsigned int slot);

@@ -29,8 +29,20 @@ namespace Sprocket {
     QUAD_TEX_ID
   };
 
-  // The various variables in this class can have different purposed depending on the 
-  // RenderUpdateType of this event. 
+  /// @brief This class is used to transfer rendering data through the event system. The various
+  /// public variables describe different attributes that could be needed for different 
+  /// RenderUpdateTypes.
+  /// @details Below are the variables used by each RenderUpdateType:
+  /// - MODEL_MATRIX
+  ///   - m_QuadIndex and m_Matrix
+  /// - VIEW_MATRIX
+  ///   - m_Matrix
+  /// - QUAD_COLOR
+  ///   - m_QuadIndex and m_Vec1
+  /// - QUAD_TEX_COORDS
+  ///   - m_QuadIndex, m_Vec1, and m_Vec2
+  /// - QUAD_TEX_COORDS
+  ///   - m_QuadIndex and m_TextureID
   class RenderUpdateEvent : public Event {
     private:
       RenderUpdateType m_Type;

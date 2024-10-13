@@ -6,6 +6,8 @@
 
 namespace Sprocket {
 
+  // TODO decide if additional functionality will be implemented in this class, otherwise it may 
+  // just be a wasteful abstraction.
   class EventHandler {
     private:
       Event& m_Event;

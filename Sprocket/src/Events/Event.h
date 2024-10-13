@@ -20,21 +20,25 @@ namespace Sprocket {
   // For future use
   enum class EventCategory {
     UNCATEGORIZED, // Every event type can be classified as uncategorized
-    APPLICATION,
-    WINDOW,
-    INPUT,
-    KEYBOARD,
-    MOUSE,
-    RENDER,
+      APPLICATION,
+        WINDOW,
+        INPUT,
+          KEYBOARD,
+          MOUSE,
+      RENDER,
   };
 
   class Event {
+
     private:
       EventType m_EventType = EventType::NONE;
-    public:
+
+    protected:
       void SetType(EventType type) {
         m_EventType = type;
       }
+      
+    public:
 
       EventType GetEventType() const {return m_EventType;}
       
