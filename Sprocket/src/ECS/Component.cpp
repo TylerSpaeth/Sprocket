@@ -27,14 +27,21 @@ namespace Sprocket {
 
     if(callback != nullptr) {
       
-      RenderNewEvent* event = new RenderNewEvent(m_Size, m_TextureID);
+      RenderNewEvent* event = new RenderNewEvent(m_Size);
       callback(*event);
       m_QuadID = event->m_QuadID;
     
       RenderUpdateEvent* update = new RenderUpdateEvent(RenderUpdateType::MODEL_MATRIX);
       update->m_QuadIndex = m_QuadID;
-      // TODO add rotation
-      update->m_Matrix = glm::scale(glm::mat4(1), t.m_Scale)* glm::translate(glm::mat4(1), t.m_Position);
+
+      glm::mat4 translate = glm::translate(glm::mat4(1), t.m_Position);
+      glm::mat4 xrot = glm::rotate(glm::mat4(1), glm::radians(-t.m_Rotation.x), glm::vec3(1,0,0));
+      glm::mat4 yrot = glm::rotate(glm::mat4(1), glm::radians(-t.m_Rotation.y), glm::vec3(0,1,0));
+      glm::mat4 zrot = glm::rotate(glm::mat4(1), glm::radians(-t.m_Rotation.z), glm::vec3(0,0,1));
+      glm::mat4 rotation = xrot * yrot * zrot;
+      glm::mat4 scale = glm::scale(glm::mat4(1), t.m_Scale);
+      
+      update->m_Matrix = translate * rotation * scale;
       callback(*update);
     }
 
@@ -42,6 +49,24 @@ namespace Sprocket {
 
   void QuadRenderer::OnDetach() {
     
+  }
+
+  void QuadRenderer::SetTexture(const std::string& path) {
+    RenderUpdateEvent* e = new RenderUpdateEvent(RenderUpdateType::QUAD_TEX);
+    e->m_QuadIndex = m_QuadID;
+    e->m_TexturePath = path;
+
+    Entity* parent = m_Entity;
+    while(!parent->IsRoot()) {
+      parent = (Entity*)parent->GetParent();
+    }
+
+    auto callback = ((RootEntity*)parent)->GetEventCallback();
+
+    if(callback != nullptr) {
+      callback(*e);
+    }
+
   }
 
 }

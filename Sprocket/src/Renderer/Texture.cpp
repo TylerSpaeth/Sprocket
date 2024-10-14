@@ -7,7 +7,7 @@
 namespace Sprocket {
 
   // Binds the texture specified in the path to the given slot
-  Texture::Texture(const std::string& path, unsigned int slot) 
+  Texture::Texture(const std::string& path) 
       : filePath(path), localBuffer(nullptr), width(0), height(0), bitsPerPixel(0) {  
 
     // OpenGL sets 0,0 to bottom left while nomally it would be top left
@@ -40,6 +40,7 @@ namespace Sprocket {
   }
 
   void Texture::Bind(unsigned int slot) const {
+    m_Slot = slot;
     glActiveTexture(GL_TEXTURE0 + slot);
     glBindTexture(GL_TEXTURE_2D, textureID);
   }

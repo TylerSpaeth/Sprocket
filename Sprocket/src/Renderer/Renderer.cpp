@@ -129,7 +129,7 @@ namespace Sprocket {
         OnClose();
         break;
       case EventType::RENDER_NEW:
-        ((RenderNewEvent&) event).m_QuadID = AddQuad(((RenderNewEvent&) event).GetSize(), ((RenderNewEvent&) event).GetTextureID());
+        ((RenderNewEvent&) event).m_QuadID = AddQuad(((RenderNewEvent&) event).GetSize());
         break;
       case EventType::RENDER_UPDATE: {
         switch(((RenderUpdateEvent&)event).GetType()) {
@@ -139,9 +139,12 @@ namespace Sprocket {
           case RenderUpdateType::MODEL_MATRIX:
             SetQuadModelMatrix(((RenderUpdateEvent&)event).m_QuadIndex, ((RenderUpdateEvent&)event).m_Matrix);
             break;
-          case RenderUpdateType::QUAD_TEX_ID:
-            SetQuadTextureID(((RenderUpdateEvent&)event).m_QuadIndex, ((RenderUpdateEvent&)event).m_TextureID);
+          case RenderUpdateType::QUAD_TEX: {
+            auto slot = AddTexture(((RenderUpdateEvent&)event).m_TexturePath);
+            SetQuadTextureID(((RenderUpdateEvent&)event).m_QuadIndex, slot);
+            UpdateTextureUniform(s_Instance->m_BoundTextures.size());
             break;
+          }
           case RenderUpdateType::QUAD_COLOR:
             SetQuadColor(((RenderUpdateEvent&)event).m_QuadIndex, ((RenderUpdateEvent&)event).m_Vec1);
             break;
@@ -177,12 +180,12 @@ namespace Sprocket {
 
   ////////////////////////////////// QUAD FUNCTIONS //////////////////////////////////
 
-  unsigned int Renderer::AddQuad(float size, float textureID) {
+  unsigned int Renderer::AddQuad(float size) {
     if(s_Instance->m_Quads.size() >= s_Instance->m_MaxQuads) {
       return -1;
     }
     // Create a quad and add it to the back of the quads vector
-    auto quad = CreateQuad(size, textureID);
+    auto quad = CreateQuad(size, 0);
     s_Instance->m_Quads.push_back(quad);
     s_Instance->m_CalculatedQuads.push_back(quad);
     // Add a new model matrix to the back of the quads vector set to the identity matrix
@@ -247,10 +250,18 @@ namespace Sprocket {
     s_Instance->m_Shader->Unbind();
   }
 
-  void Renderer::AddTexture(const std::string& path, unsigned int slot) {
-    Texture* texture = new Texture(path, slot);
-    s_Instance->m_BoundTextures.push_back(texture);
-    texture->Bind(slot);
+  unsigned int Renderer::AddTexture(const std::string& path) {
+
+    for(Texture* t : s_Instance->m_BoundTextures) {
+      if(path.compare(t->filePath) == 0) {
+        return t->m_Slot;
+      }
+    }
+
+    Texture* texture = new Texture(path);
+    s_Instance->m_BoundTextures.push_back(texture); 
+    texture->Bind(s_Instance->m_BoundTextures.size());
+    return s_Instance->m_BoundTextures.size();
   }
 
   ////////////////////////////////////////////////////////////////////////////////////

@@ -13,16 +13,13 @@ class TestApplication : public Sprocket::Application {
       RootEntity* const root = scene->GetSceneRoot();
       Entity* e = new Entity(root);
       e->GetLocalTransform().m_Position = glm::vec3(50,100,0);
+      e->GetLocalTransform().m_Scale.x = .5;
+      e->GetLocalTransform().m_Rotation.z = 45;
 
-      e->AddComponent(QuadRenderer(100,1));
-
-      /*RenderNewEvent* ev = new RenderNewEvent(100,1.0f);
-      this->OnEvent(*ev);
-
-      RenderUpdateEvent* ev2 = new RenderUpdateEvent(RenderUpdateType::MODEL_MATRIX);
-      ev2->m_QuadIndex = ev->m_QuadID;
-      ev2->m_Matrix = glm::translate(glm::mat4(1.0f), glm::vec3(100, 200, 0));
-      this->OnEvent(*ev2);*/
+      QuadRenderer q(100);
+      auto id = e->AddComponent(q);
+      ((QuadRenderer&)e->GetComponent(id)).SetTexture("../res/textures/BiggerBetterTree.png");
+    
     }
     void Update(float deltaTime) {
       //std::cout << (int) (1000000 / (deltaTime * 1000000)) << "\n";
@@ -43,13 +40,6 @@ Sprocket::Application* Sprocket::CreateApplication() {
   
   Renderer::Init(100000, 1066, 600);
   app->RegisterEventCallback(Renderer::OnEvent, EventCategory::UNCATEGORIZED);
-
-  Renderer::AddTexture("../res/textures/BiggerBetterTree.png", 1);
-  Renderer::UpdateTextureUniform(1);
-  /*for(int i = 0; i < 100000; i++) {
-    auto index = Renderer::AddQuad(100, 1);
-    Renderer::SetQuadModelMatrix(index, glm::translate(glm::mat4(1.0f), glm::vec3(0, i, 0)));
-  }*/
 
   SceneManager::Init();
   SceneManager::RegisterEventCallback(std::bind(&Application::OnEvent, app, std::placeholders::_1));

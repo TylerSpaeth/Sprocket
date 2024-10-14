@@ -10,15 +10,13 @@ namespace Sprocket {
   class RenderNewEvent : public Event {
     private:
       const float m_Size;
-      const float m_TextureID;
 
     public:
       unsigned int m_QuadID = -1;
-      RenderNewEvent(float size, float textureID) : m_Size(size), m_TextureID(textureID){
+      RenderNewEvent(float size) : m_Size(size){
         this->SetType(EventType::RENDER_NEW);
       }
       float GetSize() const {return m_Size;}
-      float GetTextureID() const {return m_TextureID;}
   };
 
   enum class RenderUpdateType {
@@ -26,7 +24,7 @@ namespace Sprocket {
     VIEW_MATRIX,
     QUAD_COLOR, 
     QUAD_TEX_COORDS, 
-    QUAD_TEX_ID
+    QUAD_TEX
   };
 
   /// @brief This class is used to transfer rendering data through the event system. The various
@@ -41,15 +39,15 @@ namespace Sprocket {
   ///   - m_QuadIndex and m_Vec1
   /// - QUAD_TEX_COORDS
   ///   - m_QuadIndex, m_Vec1, and m_Vec2
-  /// - QUAD_TEX_COORDS
-  ///   - m_QuadIndex and m_TextureID
+  /// - QUAD_TEX
+  ///   - m_QuadIndex and m_TexturePath
   class RenderUpdateEvent : public Event {
     private:
       RenderUpdateType m_Type;
 
     public:
       unsigned int m_QuadIndex = -1;
-      float m_TextureID = -1;
+      std::string m_TexturePath;
       // Used to store either quad or model matrix depending on the RenderUpdateType
       glm::mat4 m_Matrix;
       // Used to store the color for a QUAD_COLOR update, or xCoords for QUAD_TEX_COORDS

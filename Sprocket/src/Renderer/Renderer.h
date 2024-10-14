@@ -62,11 +62,9 @@ namespace Sprocket {
       /// textureID and a color of white be default.
       /// @param size The size of the quad in whatever unit was used to specify the x and y 
       /// dimensions of the Renderer on initialization. It is reccomended that this is in pixels.
-      /// @param textureID The id that corresponds to the texture slot where a given texture is 
-      /// stored.
       /// @return An ID corresponding to this quad that allows it to be accessed and modified in 
       /// the future.
-      static unsigned int AddQuad(float size, float textureID);
+      static unsigned int AddQuad(float size);
 
       /// @brief Sets the model matrix of the quad at a given matrix.
       /// @param quadIndex The index of the quad.
@@ -95,6 +93,9 @@ namespace Sprocket {
       /// @param viewMatrix The view matrix that should be applied.
       static void SetViewMatrix(glm::mat4 viewMatrix);
 
+      static void UpdateTextureUniform(unsigned int uniqueTextures);
+      static unsigned int AddTexture(const std::string& path);
+
     public:
       /// @brief Initializes the singleton and sets the appropriate parameters. This must be called
       /// before any other Renderer function.
@@ -109,8 +110,6 @@ namespace Sprocket {
       /// @param event The event the should be handled.
       static void OnEvent(Event& event);
 
-      static void UpdateTextureUniform(unsigned int uniqueTextures);
-      static void AddTexture(const std::string& path, unsigned int slot);
   };
 
 }

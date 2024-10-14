@@ -10,13 +10,15 @@ namespace Sprocket {
   // TODO the texture system needs reworking to be more flexible
 
   class SPROCKET_API Texture {
+    friend class Renderer;
     private:
       unsigned int textureID;
       std::string filePath;
       unsigned char* localBuffer;
       int width, height, bitsPerPixel;
+      mutable unsigned int m_Slot = -1;
     public:
-      Texture(const std::string& path, unsigned int slot);
+      Texture(const std::string& path);
       ~Texture();
 
       void Bind(unsigned int slot = 0) const;

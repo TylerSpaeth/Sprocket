@@ -5,6 +5,8 @@
 
 #include "ThirdParty/glm/glm.hpp"
 
+#include <string>
+
 namespace Sprocket {
 
   enum class ComponentType {
@@ -44,10 +46,10 @@ namespace Sprocket {
       void OnAttach() override;
       void OnDetach() override;
       unsigned int m_QuadID = -1;
-      float m_TextureID;
       float m_Size;
     public:
-      QuadRenderer(float size, float textureID) : Component(ComponentType::QUAD_RENDERER), m_Size(size), m_TextureID(textureID){}
+      QuadRenderer(float size) : Component(ComponentType::QUAD_RENDERER), m_Size(size){}
+      void SetTexture(const std::string& path);
   };
 
   class SPROCKET_API TestComponent : public Component {
