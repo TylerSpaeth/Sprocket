@@ -94,6 +94,15 @@ namespace Sprocket {
         switch(component.GetComponentType()) {
           case Sprocket::ComponentType::TEST_COMPONENT: {
             TestComponent* toAdd = new TestComponent((const TestComponent&)component);
+            toAdd->m_Entity = this;
+            toAdd->OnAttach();
+            m_Components.at(i) = toAdd;
+            return i;
+          }
+          case Sprocket::ComponentType::QUAD_RENDERER: {
+            QuadRenderer* toAdd = new QuadRenderer((const QuadRenderer&)component);
+            toAdd->m_Entity = this;
+            toAdd->OnAttach();
             m_Components.at(i) = toAdd;
             return i;
           }
@@ -107,6 +116,15 @@ namespace Sprocket {
     switch(component.GetComponentType()) {
       case Sprocket::ComponentType::TEST_COMPONENT: {
         TestComponent* toAdd = new TestComponent((const TestComponent&)component);
+        toAdd->m_Entity = this;
+        toAdd->OnAttach();
+        m_Components.push_back(toAdd);
+        return m_Components.size()-1;
+      }
+      case Sprocket::ComponentType::QUAD_RENDERER: {
+        QuadRenderer* toAdd = new QuadRenderer((const QuadRenderer&)component);
+        toAdd->m_Entity = this;
+        toAdd->OnAttach();
         m_Components.push_back(toAdd);
         return m_Components.size()-1;
       }
@@ -124,6 +142,7 @@ namespace Sprocket {
 
       // Make the component that is being deleted a nullptr to indicate that it is a free id in 
       // the vector.
+      m_Components.at(id)->OnDetach();
       m_Components.at(id) = nullptr;
     }
     catch(const std::out_of_range& e) {

@@ -37,9 +37,15 @@ namespace Sprocket {
     if(s_Instance->m_Scenes.find(index) == s_Instance->m_Scenes.cend()) {
       throw std::invalid_argument("No scene exists with this index.");
     }
+
+    // Remove the callback from the old active scene so that it can no longer submit events.
+    s_Instance->GetActiveScene()->m_EventCallback = nullptr;
+    s_Instance->GetActiveScene()->m_Root->m_EventCallback = nullptr;
+
     s_Instance->m_ActiveSceneIndex = index;
     // Make sure the active scene has the callback to send events to the application
     s_Instance->GetActiveScene()->m_EventCallback = s_Instance->m_EventCallback;
+    s_Instance->GetActiveScene()->m_Root->m_EventCallback = s_Instance->m_EventCallback;
   }
 
   Scene* SceneManager::GetActiveScene() {
@@ -59,6 +65,7 @@ namespace Sprocket {
     s_Instance->m_EventCallback = eventCallback;
     // Make sure the active scene has the callback to send events to the application
     s_Instance->GetActiveScene()->m_EventCallback = eventCallback;
+    s_Instance->GetActiveScene()->m_Root->m_EventCallback = eventCallback;
   }
 
 } 

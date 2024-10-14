@@ -9,21 +9,20 @@ class TestApplication : public Sprocket::Application {
     ~TestApplication() {}
     void Start() {
       using namespace Sprocket;
-      /*Scene* scene = SceneManager::GetActiveScene();
+      Scene* scene = SceneManager::GetActiveScene();
       RootEntity* const root = scene->GetSceneRoot();
       Entity* e = new Entity(root);
-      Entity* e2 = new Entity(e);
-      e->GetLocalTransform().m_Scale.x = 2;
-      e2->GetLocalTransform().m_Scale.x = 0.75;
-      std::cout << e2->GetGlobalTransform().m_Scale.x << "\n";*/
+      e->GetLocalTransform().m_Position = glm::vec3(50,100,0);
 
-      RenderNewEvent* ev = new RenderNewEvent(100,1.0f);
+      e->AddComponent(QuadRenderer(100,1));
+
+      /*RenderNewEvent* ev = new RenderNewEvent(100,1.0f);
       this->OnEvent(*ev);
 
       RenderUpdateEvent* ev2 = new RenderUpdateEvent(RenderUpdateType::MODEL_MATRIX);
       ev2->m_QuadIndex = ev->m_QuadID;
       ev2->m_Matrix = glm::translate(glm::mat4(1.0f), glm::vec3(100, 200, 0));
-      this->OnEvent(*ev2);
+      this->OnEvent(*ev2);*/
     }
     void Update(float deltaTime) {
       //std::cout << (int) (1000000 / (deltaTime * 1000000)) << "\n";

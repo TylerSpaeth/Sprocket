@@ -3,8 +3,10 @@
 
 #include "Core/Macros.h"
 #include "ECS/Component.h"
+#include "Events/Event.h"
 
 #include <vector>
+#include <functional>
 
 namespace Sprocket {
 
@@ -104,17 +106,22 @@ namespace Sprocket {
   class RootEntity : public EntityNode {
 
     friend class Scene;
+    friend class SceneManager;
 
     private:
-
       RootEntity() : EntityNode(true) {}
-
       // If a root entity is destroyed, destroy all children first
       ~RootEntity() {
         while(m_Children.size() != 0) {
           delete m_Children.at(0);
         }
       }
+
+      std::function<void(Event&)> m_EventCallback;
+
+    public:
+      std::function<void(Event&)> GetEventCallback() const {return m_EventCallback;}
+
   };  
 
 } 
