@@ -23,7 +23,7 @@ target_include_directories(${PROJECT_NAME} PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/.
 target_sources(${PROJECT_NAME} PRIVATE src/EventTests.cpp src/EntityTests.cpp)
 
 # Sprocket Sources
-target_sources(${PROJECT_NAME} PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/../src/ECS/Entity.cpp ${CMAKE_CURRENT_SOURCE_DIR}/../src/ECS/Component.cpp)
+target_sources(${PROJECT_NAME} PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/../src/ECS/Entity.cpp )
 
 target_link_libraries(${PROJECT_NAME} GTest::gtest_main GTest::gmock_main)
 include(GoogleTest)

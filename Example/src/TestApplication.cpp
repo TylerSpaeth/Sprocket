@@ -12,14 +12,18 @@ class TestApplication : public Sprocket::Application {
       Scene* scene = SceneManager::GetActiveScene();
       RootEntity* const root = scene->GetSceneRoot();
       Entity* e = new Entity(root);
-      e->GetLocalTransform().m_Position = glm::vec3(50,100,0);
-      e->GetLocalTransform().m_Scale.x = .5;
-      e->GetLocalTransform().m_Rotation.z = 45;
+      e->GetLocalTransform().position = glm::vec3(50,100,0);
+      e->GetLocalTransform().scale.x = 3;
+      e->GetLocalTransform().rotation.z = 45;
 
-      QuadRenderer q(100);
-      auto id = e->AddComponent(q);
-      ((QuadRenderer&)e->GetComponent(id)).SetTexture("../res/textures/BiggerBetterTree.png");
-    
+      QuadRendererComponent qcomp;
+      qcomp.size = 100;
+      qcomp.texturePath = "../res/textures/BiggerBetterTree.png";
+      qcomp.quadColor = {0.5, 0.5, 0, 1};
+
+      QuadRenderer::RenderNewQuad(e->GetGlobalTransform(), qcomp);
+      //QuadRenderer::SetTexture(qcomp);
+      QuadRenderer::SetQuadColor(qcomp);
     }
     void Update(float deltaTime) {
       //std::cout << (int) (1000000 / (deltaTime * 1000000)) << "\n";

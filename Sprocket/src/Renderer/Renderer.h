@@ -23,7 +23,7 @@ namespace Sprocket {
     float TextureID;
   };
 
-  // TODO the texture and shader system for the renderer needs rework
+  // TODO the shader system for the renderer needs rework
 
   /// @brief This is a singleton that handles all of the rendering functionality for a Sprocket
   /// application using OpenGL. This is an event subscriber.
@@ -58,8 +58,8 @@ namespace Sprocket {
       static void OnUpdate();
       static void OnClose();
 
-      /// @brief Adds a new quads of the given size at coordinates 0,0 with a texture corresponding
-      /// textureID and a color of white be default.
+      /// @brief Adds a new quads of the given size at coordinates 0,0 and a color of white by 
+      /// default.
       /// @param size The size of the quad in whatever unit was used to specify the x and y 
       /// dimensions of the Renderer on initialization. It is reccomended that this is in pixels.
       /// @return An ID corresponding to this quad that allows it to be accessed and modified in 

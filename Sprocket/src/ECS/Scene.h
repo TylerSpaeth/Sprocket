@@ -5,8 +5,6 @@
 #include "ECS/Entity.h"
 #include "Events/Event.h"
 
-#include <functional>
-
 namespace Sprocket {
 
   /// @brief This is the foundation for Sprocket applications. An application is a collection of 
@@ -15,7 +13,7 @@ namespace Sprocket {
     friend class SceneManager;
     private:
       RootEntity* const m_Root = new RootEntity();
-      std::function<void(Event&)> m_EventCallback;
+      
     public:
       RootEntity* const GetSceneRoot() const {return m_Root;}
 

@@ -5,6 +5,8 @@
 
 #include "ThirdParty/glm/glm.hpp"
 
+#include <string>
+
 namespace Sprocket {
 
   class RenderNewEvent : public Event {
@@ -48,7 +50,7 @@ namespace Sprocket {
     public:
       unsigned int m_QuadIndex = -1;
       std::string m_TexturePath;
-      // Used to store either quad or model matrix depending on the RenderUpdateType
+      // Used to store either view or model matrix depending on the RenderUpdateType
       glm::mat4 m_Matrix;
       // Used to store the color for a QUAD_COLOR update, or xCoords for QUAD_TEX_COORDS
       glm::vec4 m_Vec1;

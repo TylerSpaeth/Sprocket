@@ -6,7 +6,6 @@
 #include "Events/Event.h"
 
 #include <vector>
-#include <functional>
 
 namespace Sprocket {
 
@@ -106,7 +105,6 @@ namespace Sprocket {
   class RootEntity : public EntityNode {
 
     friend class Scene;
-    friend class SceneManager;
 
     private:
       RootEntity() : EntityNode(true) {}
@@ -116,12 +114,6 @@ namespace Sprocket {
           delete m_Children.at(0);
         }
       }
-
-      std::function<void(Event&)> m_EventCallback;
-
-    public:
-      std::function<void(Event&)> GetEventCallback() const {return m_EventCallback;}
-
   };  
 
 } 

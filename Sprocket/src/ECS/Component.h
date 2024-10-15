@@ -10,52 +10,30 @@
 namespace Sprocket {
 
   enum class ComponentType {
+    DELETED_COMPONENT,
     TRANSFORM_COMPONENT,
-    QUAD_RENDERER,
-    TEST_COMPONENT
+    QUAD_RENDERER
   };
 
-  class Entity;
-
-  class Component {
-    friend class Entity;
-    private:
-      ComponentType m_ComponentType;
-      virtual void OnAttach(){}
-      virtual void OnDetach(){}
-    protected:
-      Component(ComponentType componentType) : m_ComponentType(componentType){}
-      Entity* m_Entity;
-    public:
-      ComponentType GetComponentType() const {return m_ComponentType;}
+  struct Component {
+    ComponentType componentType;
   };
 
-  class SPROCKET_API TransformComponent : public Component {
-    friend class Entity;
-    private:
-      TransformComponent() : Component(ComponentType::TRANSFORM_COMPONENT){}
-    public:
-      glm::vec3 m_Position = glm::vec3(0,0,0);
-      glm::vec3 m_Rotation = glm::vec3(0,0,0);
-      glm::vec3 m_Scale = glm::vec3(1,1,1);
+  struct TransformComponent : public Component {
+    glm::vec3 position = glm::vec3(0,0,0);
+    glm::vec3 rotation = glm::vec3(0,0,0);
+    glm::vec3 scale = glm::vec3(1,1,1);
+    TransformComponent() {componentType = ComponentType::TRANSFORM_COMPONENT;}
   };
 
-  class SPROCKET_API QuadRenderer : public Component {
-    friend class Entity;
-    private:
-      void OnAttach() override;
-      void OnDetach() override;
-      unsigned int m_QuadID = -1;
-      float m_Size;
-    public:
-      QuadRenderer(float size) : Component(ComponentType::QUAD_RENDERER), m_Size(size){}
-      void SetTexture(const std::string& path);
-  };
-
-  class SPROCKET_API TestComponent : public Component {
-    public:
-      int value;
-      TestComponent() : Component(ComponentType::TEST_COMPONENT), value(0) {}
+  struct QuadRendererComponent : public Component {
+    unsigned int quadID;
+    float size;
+    std::string texturePath;
+    glm::vec4 quadColor = {1,1,1,1};
+    glm::vec4 quadXCoords = {1,1,0,0};
+    glm::vec4 quadYCoords = {0,1,1,0};
+    QuadRendererComponent() {componentType = ComponentType::QUAD_RENDERER;}
   };
 
 }

@@ -12,6 +12,7 @@
 #include "ECS/Entity.h"
 #include "ECS/Component.h"
 #include "Events/RenderEvent.h"
+#include "ECS/QuadRenderer.h"
 
 // Sprocket EntryPoint
 #include "Core/EntryPoint.hpp"
