@@ -83,7 +83,8 @@ namespace Sprocket {
       /// @brief Adds a new component to this Entity.
       /// @param component The component that should be added.
       /// @return an id that allows retreival and deletion of the component from this Entity.
-      /// @throws std::invalid_argument if the given component can not be added.
+      /// @throws std::invalid_argument if the given component can not be added because there is 
+      /// already a component of that type on the entity.
       unsigned int AddComponent(const Component& component);
 
       /// @brief Removes the component with the given id.

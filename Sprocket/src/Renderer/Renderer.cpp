@@ -140,7 +140,10 @@ namespace Sprocket {
             SetQuadModelMatrix(((RenderUpdateEvent&)event).m_QuadIndex, ((RenderUpdateEvent&)event).m_Matrix);
             break;
           case RenderUpdateType::QUAD:
-            auto slot = AddTexture(((RenderUpdateEvent&)event).m_TexturePath);
+          unsigned int slot = 0;
+            if(((RenderUpdateEvent&)event).m_TexturePath != "") {
+              slot = AddTexture(((RenderUpdateEvent&)event).m_TexturePath);
+            }
             SetQuadTextureID(((RenderUpdateEvent&)event).m_QuadIndex, slot);
             UpdateTextureUniform(s_Instance->m_BoundTextures.size());
             SetQuadColor(((RenderUpdateEvent&)event).m_QuadIndex, ((RenderUpdateEvent&)event).m_QuadColor);

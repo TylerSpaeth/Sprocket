@@ -71,6 +71,7 @@ namespace Sprocket {
     QuadRenderer::s_Instance->m_EventCallback = eventCallback;
   }
 
+  // TODO make sure this is well optimized because it is a limiting factor of the framerate
   void SceneManager::CheckModifiedComponents() {
     RootEntity* root = s_Instance->GetActiveScene()->GetSceneRoot();
 

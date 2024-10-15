@@ -36,7 +36,7 @@ namespace Sprocket {
 
     public:
       unsigned int m_QuadIndex = -1;
-      std::string m_TexturePath;
+      std::string m_TexturePath; // A path of "" represents no texture and uses the quadcolor 
       // Used to store either view or model matrix depending on the RenderUpdateType
       glm::mat4 m_Matrix;
       glm::vec4 m_QuadColor;

@@ -84,10 +84,16 @@ namespace Sprocket {
       throw std::invalid_argument("TransformComponents exist by default on Entities. More can not added.");
     }
 
+    // Check to see if this component type already exists
+    for(int i = 0; i < m_Components.size(); i++) {
+      if(m_Components.at(i)->componentType == component.componentType) {
+        throw std::invalid_argument("Entities may only have one component of each type.");
+      }
+    }
+
     // Iterate through the vector to see if there are any empty spaces
     // TODO add a counter for number of components that are actually in the vector to know if this 
     // will be fruitful 
-
     for(int i = 0; i < m_Components.size(); i++) {
       if(m_Components.at(i)->componentType == ComponentType::DELETED_COMPONENT) {
         switch(component.componentType) {

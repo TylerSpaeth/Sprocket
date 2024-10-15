@@ -16,7 +16,7 @@ namespace Sprocket {
   };
 
   struct Component {
-    ComponentType componentType;
+    ComponentType componentType; // Do not modify in user applicaions
     bool modified = false; // Must be set true for modifications to be sent to systems
     bool initialized = false; 
   };
@@ -34,7 +34,7 @@ namespace Sprocket {
   struct QuadRendererComponent : public Component {
     unsigned int quadID;
     float size;
-    std::string texturePath;
+    std::string texturePath; // Set to "" in order to use the quad color instead
     glm::vec4 quadColor = {1,1,1,1};
     glm::vec4 quadXCoords = {1,1,0,0};
     glm::vec4 quadYCoords = {1,0,0,1};
