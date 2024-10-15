@@ -16,17 +16,17 @@ namespace Sprocket {
   };
 
   struct Component {
-    ComponentType componentType; // Do not modify in user applicaions
+    const ComponentType componentType;
     bool modified = false; // Must be set true for modifications to be sent to systems
     bool initialized = false; 
+    Component(ComponentType type) : componentType(type){}
   };
 
   struct TransformComponent : public Component {
     glm::vec3 position = glm::vec3(0,0,0);
     glm::vec3 rotation = glm::vec3(0,0,0);
     glm::vec3 scale = glm::vec3(1,1,1);
-    TransformComponent() {
-      componentType = ComponentType::TRANSFORM_COMPONENT;
+    TransformComponent() : Component(ComponentType::TRANSFORM_COMPONENT){
       initialized = true; // For not transforms components do not need to be intialized
     }
   };
@@ -38,7 +38,7 @@ namespace Sprocket {
     glm::vec4 quadColor = {1,1,1,1};
     glm::vec4 quadXCoords = {1,1,0,0};
     glm::vec4 quadYCoords = {1,0,0,1};
-    QuadRendererComponent() {componentType = ComponentType::QUAD_RENDERER;}
+    QuadRendererComponent() : Component(ComponentType::QUAD_RENDERER){}
   };
 
 }

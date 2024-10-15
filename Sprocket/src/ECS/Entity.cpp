@@ -98,7 +98,10 @@ namespace Sprocket {
       if(m_Components.at(i)->componentType == ComponentType::DELETED_COMPONENT) {
         switch(component.componentType) {
           case ComponentType::QUAD_RENDERER:
+            // Swap out this component for the deleted component and delete the deleted component
+            Component* del = m_Components.at(i);
             m_Components.at(i) = new QuadRendererComponent((QuadRendererComponent&) component);
+            delete del;
             return i;
         }
       }
@@ -120,7 +123,11 @@ namespace Sprocket {
         throw std::invalid_argument("The component at the given id has already been deleted.");
       }
 
-      m_Components.at(id)->componentType = ComponentType::DELETED_COMPONENT;
+      // Swap in a deleted component and delete the old component
+      Component* del = m_Components.at(id);
+      m_Components.at(id) = new Component(ComponentType::DELETED_COMPONENT);
+      delete del;
+
     }
     catch(const std::out_of_range& e) {
       throw std::invalid_argument("The given id does not correspond to a valid component.");

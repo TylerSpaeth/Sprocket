@@ -4,7 +4,6 @@
 #include "Events/Event.h"
 #include "Events/RenderEvent.h"
 #include "ECS/Component.h"
-#include "Core/Macros.h"
 
 #include "ThirdParty/glm/glm.hpp"
 #include "ThirdParty/glm/gtc/matrix_transform.hpp"
@@ -13,7 +12,7 @@
 
 namespace Sprocket {
   
-  class SPROCKET_API QuadRenderer {
+  class QuadRenderer {
     friend class SceneManager;
     private:
       // Singleton Components

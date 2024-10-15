@@ -3,13 +3,11 @@
 
 #include <string>
 
-#include "Core/Macros.h"
-
 namespace Sprocket {
 
   // TODO the texture system needs reworking to be more flexible
 
-  class SPROCKET_API Texture {
+  class Texture {
     friend class Renderer;
     private:
       unsigned int textureID;
