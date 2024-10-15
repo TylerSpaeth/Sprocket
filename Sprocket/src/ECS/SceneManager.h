@@ -73,6 +73,11 @@ namespace Sprocket {
       /// produced here to become part of the central event system.
       /// @param eventCallback a function that will take in an Event when an event occurs.
       static void RegisterEventCallback(const std::function<void(Event&)> eventCallback);
+
+      /// @brief Interate through the active scene tree and check what components have been 
+      /// modified. If a component has been modified, send modififed data to the systems that depend
+      /// on it.
+      static void CheckModifiedComponents();
   };
 
 }

@@ -26,25 +26,14 @@ namespace Sprocket {
     s_Instance->m_EventCallback(*update);
   }
 
-  void QuadRenderer::SetQuadColor(QuadRendererComponent& renderer) {
-    RenderUpdateEvent* update = new RenderUpdateEvent(RenderUpdateType::QUAD_COLOR);
+  void QuadRenderer::UpdateQuad(TransformComponent transform, QuadRendererComponent& renderer) {
+    RenderUpdateEvent* update = new RenderUpdateEvent(RenderUpdateType::QUAD);
     update->m_QuadIndex = renderer.quadID;
-    update->m_Vec1 = renderer.quadColor;
-    s_Instance->m_EventCallback(*update);
-  }
-
-  void QuadRenderer::SetTexture(QuadRendererComponent& renderer) {
-    RenderUpdateEvent* update = new RenderUpdateEvent(RenderUpdateType::QUAD_TEX);
-    update->m_QuadIndex = renderer.quadID;
+    update->m_QuadColor = renderer.quadColor;
     update->m_TexturePath = renderer.texturePath;
+    update->m_TexXCoords = renderer.quadXCoords;
+    update->m_TexYCoords = renderer.quadYCoords;
     s_Instance->m_EventCallback(*update);
   }
 
-  void QuadRenderer::SetTextureCoords(QuadRendererComponent& renderer) {
-    RenderUpdateEvent* update = new RenderUpdateEvent(RenderUpdateType::QUAD_TEX_COORDS);
-    update->m_QuadIndex = renderer.quadID;
-    update->m_Vec1 = renderer.quadXCoords;
-    update->m_Vec1 = renderer.quadYCoords;
-    s_Instance->m_EventCallback(*update);
-  }
 }

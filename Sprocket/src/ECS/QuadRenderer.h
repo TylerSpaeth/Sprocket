@@ -33,12 +33,7 @@ namespace Sprocket {
 
       static void SetModelMatrix(TransformComponent transform, QuadRendererComponent& renderer);
 
-      static void SetQuadColor(QuadRendererComponent& renderer);
-
-      static void SetTexture(QuadRendererComponent& renderer);
-
-      static void SetTextureCoords(QuadRendererComponent& renderer);
-
+      static void UpdateQuad(TransformComponent transform, QuadRendererComponent& renderer);
   };
 
 }

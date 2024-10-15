@@ -97,6 +97,8 @@ namespace Sprocket {
       /// @throws std::invalid_argument if the id does not correspond to a valid component.
       Component& GetComponent(const unsigned int id);
 
+      std::vector<Component*> GetComponents() const {return m_Components;}
+
       TransformComponent& GetLocalTransform() {return m_Transform;}
       TransformComponent GetGlobalTransform() const;
  
