@@ -4,7 +4,12 @@
 
 #include "ThirdParty/glad/glad.h"
 
+#include <iostream>
+
 namespace Sprocket {
+
+  Vertex ClearedVertex = {{0,0,0},{0,0,0,0},{0,0},0};
+  std::array<Vertex,4> ClearedQuad = {ClearedVertex, ClearedVertex, ClearedVertex, ClearedVertex};
 
   ////////////////////////////////////////////////////////////////////////////////////
   //////////////////////////////// NONCLASS FUNCTIONS ////////////////////////////////
@@ -60,6 +65,13 @@ namespace Sprocket {
     v3.TextureID = textureID;
 
     return {v0, v1, v2, v3};
+  }
+
+  static bool IsQuadEmpty(std::array<Vertex, 4> quad) {
+    return quad[0] == ClearedVertex &&
+           quad[1] == ClearedVertex &&
+           quad[2] == ClearedVertex &&
+           quad[3] == ClearedVertex;
   }
   ////////////////////////////////////////////////////////////////////////////////////
   ////////////////////////////////////////////////////////////////////////////////////
@@ -182,12 +194,23 @@ namespace Sprocket {
 
   ////////////////////////////////// QUAD FUNCTIONS //////////////////////////////////
 
+
+
   unsigned int Renderer::AddQuad(float size) {
-    if(s_Instance->m_Quads.size() >= s_Instance->m_MaxQuads) {
-      return -1;
-    }
-    // Create a quad and add it to the back of the quads vector
+
     auto quad = CreateQuad(size, 0);
+
+    // Check for an open slot in the vector from a deleted quad 
+    for(int i = 0; i < s_Instance->m_Quads.size(); i++) {
+      if(IsQuadEmpty(s_Instance->m_Quads.at(i))) {
+        s_Instance->m_Quads.at(i) = quad;
+        s_Instance->UpdateCalculatedQuads(i);
+        return i;
+      }
+    }
+
+    // If there is no gap in the vector
+
     s_Instance->m_Quads.push_back(quad);
     s_Instance->m_CalculatedQuads.push_back(quad);
     // Add a new model matrix to the back of the quads vector set to the identity matrix
@@ -197,12 +220,8 @@ namespace Sprocket {
     // Return the index where the quad and model matrix are set
     return s_Instance->m_Quads.size()-1;
   }
-  
-  Vertex ClearedVertex = {{0,0,0},{0,0,0,0},{0,0},0};
-  std::array<Vertex,4> ClearedQuad = {ClearedVertex, ClearedVertex, ClearedVertex, ClearedVertex};
 
   void Renderer::RemoveQuad(const unsigned int quadIndex) {
-    // TODO add a way to reuse the indexes of quads that get removed
     s_Instance->m_Quads.at(quadIndex) = ClearedQuad;
     s_Instance->m_ModelMatrices.at(quadIndex) = glm::translate(glm::mat4(1), glm::vec3(0,0,0));
     s_Instance->UpdateCalculatedQuads(quadIndex);

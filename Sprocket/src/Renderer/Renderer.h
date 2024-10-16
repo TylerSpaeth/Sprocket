@@ -21,6 +21,12 @@ namespace Sprocket {
     glm::vec4 Color;
     glm::vec2 TextureCoords;
     float TextureID;
+    bool operator==(const Vertex& other) {
+      return other.Position == this->Position && 
+             other.Color == this->Color && 
+             other.TextureCoords == this->TextureCoords && 
+             other.TextureID == this->TextureID;
+    }
   };
 
   // TODO the shader system for the renderer needs rework

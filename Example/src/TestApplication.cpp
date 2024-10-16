@@ -32,12 +32,13 @@ class TestApplication : public Sprocket::Application {
 
       e->AddComponent(qcomp);
 
+
     }
 
     bool increase = true;
     void Update(float deltaTime) {
       using namespace Sprocket;
-      std::cout << (int) (1000000 / (deltaTime * 1000000)) << "\n";
+      //std::cout << (int) (1000000 / (deltaTime * 1000000)) << "\n";
       
       // Rotate the first child clockwise if space is pressed
       if(Sprocket::Input::IsKeyPressed(Sprocket::KEY_SPACE)) {
@@ -73,6 +74,11 @@ class TestApplication : public Sprocket::Application {
       if(Sprocket::Input::IsKeyPressed(KEY_D)) {
         RenderDeleteEvent* e = new RenderDeleteEvent(0);
         Renderer::OnEvent(*e);
+
+        RenderNewEvent* rn = new RenderNewEvent(100);
+        Renderer::OnEvent(*rn);
+
+        //std::cout << rn->m_QuadID << "\n";
         
       }
     }
