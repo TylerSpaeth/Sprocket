@@ -14,7 +14,7 @@ namespace Sprocket {
     // APPLICATION
     APP_UPDATE,
     // RENDER
-    RENDER_NEW, RENDER_UPDATE
+    RENDER_NEW, RENDER_UPDATE, RENDER_DELETE
   };
 
   // For future use
@@ -62,6 +62,7 @@ namespace Sprocket {
             return eventCategory == EventCategory::APPLICATION;
           case EventType::RENDER_NEW:
           case EventType::RENDER_UPDATE:
+          case EventType::RENDER_DELETE:
             return eventCategory == EventCategory::RENDER;
         }
 

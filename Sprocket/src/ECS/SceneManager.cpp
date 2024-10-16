@@ -101,7 +101,7 @@ namespace Sprocket {
         
         // If the component is uninitialized
         if(c->initialized == false) {
-          if(c->componentType == ComponentType::QUAD_RENDERER) {
+          if(c->componentType == ComponentType::QUAD_RENDERER_COMPONENT) {
             QuadRenderer::RenderNewQuad(e->GetGlobalTransform(), *(QuadRendererComponent*)c);
             c->initialized = true;
           }
@@ -109,7 +109,7 @@ namespace Sprocket {
         
         // If the transform is modified
         if(e->GetLocalTransform().modified) {
-          if(c->componentType == ComponentType::QUAD_RENDERER) {
+          if(c->componentType == ComponentType::QUAD_RENDERER_COMPONENT) {
             QuadRenderer::SetModelMatrix(e->GetGlobalTransform(), *(QuadRendererComponent*)c);
             if(c->modified) {
               QuadRenderer::UpdateQuad(e->GetGlobalTransform(), *(QuadRendererComponent*)c);
@@ -119,7 +119,7 @@ namespace Sprocket {
         }
         // If the transform is not modified
         else {
-          if(c->componentType == ComponentType::QUAD_RENDERER && c->modified) {
+          if(c->componentType == ComponentType::QUAD_RENDERER_COMPONENT && c->modified) {
              QuadRenderer::UpdateQuad(e->GetGlobalTransform(), *(QuadRendererComponent*)c);
               c->modified = false;
           }

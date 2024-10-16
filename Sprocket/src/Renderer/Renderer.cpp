@@ -150,7 +150,11 @@ namespace Sprocket {
             SetQuadTextureCoords(((RenderUpdateEvent&)event).m_QuadIndex, ((RenderUpdateEvent&)event).m_TexXCoords, ((RenderUpdateEvent&)event).m_TexYCoords);
             break;
         }
+        break;
       }
+      case EventType::RENDER_DELETE:
+        RemoveQuad(((RenderDeleteEvent&)event).m_QuadIndex);
+        break;
 
     }
   }
@@ -192,6 +196,16 @@ namespace Sprocket {
     s_Instance->UpdateCalculatedQuads(s_Instance->m_Quads.size()-1);
     // Return the index where the quad and model matrix are set
     return s_Instance->m_Quads.size()-1;
+  }
+  
+  Vertex ClearedVertex = {{0,0,0},{0,0,0,0},{0,0},0};
+  std::array<Vertex,4> ClearedQuad = {ClearedVertex, ClearedVertex, ClearedVertex, ClearedVertex};
+
+  void Renderer::RemoveQuad(const unsigned int quadIndex) {
+    // TODO add a way to reuse the indexes of quads that get removed
+    s_Instance->m_Quads.at(quadIndex) = ClearedQuad;
+    s_Instance->m_ModelMatrices.at(quadIndex) = glm::translate(glm::mat4(1), glm::vec3(0,0,0));
+    s_Instance->UpdateCalculatedQuads(quadIndex);
   }
 
   // Set the model matrix for the corresponding index, should have scale, rotation,
@@ -289,18 +303,18 @@ namespace Sprocket {
   }
 
   void Renderer::UpdateCalculatedQuads(const unsigned int index) {
-    auto quad = m_Quads.at(index);
-    auto modelMatrix = m_ModelMatrices.at(index);
+    auto quad = s_Instance->m_Quads.at(index);
+    auto modelMatrix = s_Instance->m_ModelMatrices.at(index);
     for(int j = 0; j < 4; j++) {
       quad[j].Position = modelMatrix * glm::vec4(quad.at(j).Position, 1.0f);
     }
 
-    m_CalculatedQuads[index] = quad;
+    s_Instance->m_CalculatedQuads[index] = quad;
 
     // Update the GPU's data to reflect this
-    m_VertexBuffer->Bind();
-    glBufferSubData(GL_ARRAY_BUFFER, index*4*sizeof(Vertex), sizeof(Vertex) * 4, &m_CalculatedQuads[index]);
-    m_VertexBuffer->Unbind();
+    s_Instance->m_VertexBuffer->Bind();
+    glBufferSubData(GL_ARRAY_BUFFER, index*4*sizeof(Vertex), sizeof(Vertex) * 4, &s_Instance->m_CalculatedQuads[index]);
+    s_Instance->m_VertexBuffer->Unbind();
   }
 
   ////////////////////////////////////////////////////////////////////////////////////

@@ -62,6 +62,11 @@ TEST(EventTests, VerifyEventTypes) {
     Sprocket::EventType type = event.GetEventType();
     EXPECT_EQ(type, Sprocket::EventType::RENDER_UPDATE);
   }
+  {
+    Sprocket::RenderDeleteEvent event(0);
+    Sprocket::EventType type = event.GetEventType();
+    EXPECT_EQ(type, Sprocket::EventType::RENDER_DELETE);
+  }
 }
 
 TEST(EventTests, ApplicationEventTest) {

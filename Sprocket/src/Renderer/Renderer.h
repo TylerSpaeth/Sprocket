@@ -47,7 +47,7 @@ namespace Sprocket {
       /// @brief Updates the quad at the given index to reflect any any changes to the 
       /// uncalculated quads or modelMatrices. Passes this new data to the GPU
       /// @param index the quad that needs to be updated
-      void UpdateCalculatedQuads(const unsigned int index);
+      static void UpdateCalculatedQuads(const unsigned int index);
 
       // Singleton Components
       static Renderer* s_Instance;
@@ -65,6 +65,10 @@ namespace Sprocket {
       /// @return An ID corresponding to this quad that allows it to be accessed and modified in 
       /// the future.
       static unsigned int AddQuad(float size);
+
+      /// @brief Removes the quad at the given index. The quad will no longer be rendered.
+      /// @param quadIndex The quad to be removed.
+      static void RemoveQuad(const unsigned int quadIndex);
 
       /// @brief Sets the model matrix of the quad at a given matrix.
       /// @param quadIndex The index of the quad.

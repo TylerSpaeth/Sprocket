@@ -6,6 +6,8 @@
 #include "Core/Application.h"
 #include "Core/Input.h"
 
+#include "Events/RenderEvent.h"
+
 #include "ECS/Scene.h"
 #include "ECS/SceneManager.h"
 #include "ECS/Entity.h"

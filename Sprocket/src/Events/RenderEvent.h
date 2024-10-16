@@ -50,6 +50,14 @@ namespace Sprocket {
       RenderUpdateType GetType() const {return m_Type;}
   };
 
+  class RenderDeleteEvent : public Event {
+    public:
+      unsigned int m_QuadIndex;
+      RenderDeleteEvent(const unsigned int quadIndex) : m_QuadIndex(quadIndex) {
+        this->SetType(EventType::RENDER_DELETE);
+      } 
+  };
+
 }
 
 #endif

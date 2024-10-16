@@ -69,6 +69,12 @@ class TestApplication : public Sprocket::Application {
         q->modified = true;
         
       }
+
+      if(Sprocket::Input::IsKeyPressed(KEY_D)) {
+        RenderDeleteEvent* e = new RenderDeleteEvent(0);
+        Renderer::OnEvent(*e);
+        
+      }
     }
 };
 
