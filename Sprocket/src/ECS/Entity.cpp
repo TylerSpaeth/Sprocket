@@ -97,7 +97,7 @@ namespace Sprocket {
     for(int i = 0; i < m_Components.size(); i++) {
       if(m_Components.at(i)->componentType == ComponentType::DELETED_COMPONENT) {
         switch(component.componentType) {
-          case ComponentType::QUAD_RENDERER:
+          case ComponentType::QUAD_RENDERER_COMPONENT:
             // Swap out this component for the deleted component and delete the deleted component
             Component* del = m_Components.at(i);
             m_Components.at(i) = new QuadRendererComponent((QuadRendererComponent&) component);
@@ -108,7 +108,7 @@ namespace Sprocket {
     }
 
     switch(component.componentType) {
-      case ComponentType::QUAD_RENDERER:
+      case ComponentType::QUAD_RENDERER_COMPONENT:
         m_Components.push_back(new QuadRendererComponent((QuadRendererComponent&)component));
         break;
     }

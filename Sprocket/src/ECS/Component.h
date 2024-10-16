@@ -12,7 +12,10 @@ namespace Sprocket {
   enum class ComponentType {
     DELETED_COMPONENT,
     TRANSFORM_COMPONENT,
-    QUAD_RENDERER
+    QUAD_RENDERER_COMPONENT,
+    CAMERA_COMPONENT,
+    BOX_COLLIDER_COMPONENT,
+    CIRCLE_COLLIDER_COMPONENT
   };
 
   struct Component {
@@ -38,7 +41,23 @@ namespace Sprocket {
     glm::vec4 quadColor = {1,1,1,1};
     glm::vec4 quadXCoords = {1,1,0,0};
     glm::vec4 quadYCoords = {1,0,0,1};
-    QuadRendererComponent() : Component(ComponentType::QUAD_RENDERER){}
+    QuadRendererComponent() : Component(ComponentType::QUAD_RENDERER_COMPONENT){}
+  };
+
+  struct CameraComponent : public Component {
+    CameraComponent() : Component(ComponentType::CAMERA_COMPONENT){}
+  };
+
+  struct ColliderComponent : public Component {
+    ColliderComponent(ComponentType type) : Component(type){}
+  };
+
+  struct BoxColliderComponent : public ColliderComponent {
+    BoxColliderComponent() : ColliderComponent(ComponentType::BOX_COLLIDER_COMPONENT){}
+  };
+
+  struct CircleColliderComponent : public ColliderComponent {
+    CircleColliderComponent() : ColliderComponent(ComponentType::CIRCLE_COLLIDER_COMPONENT){}
   };
 
 }
