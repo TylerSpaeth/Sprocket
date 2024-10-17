@@ -194,37 +194,46 @@ namespace Sprocket {
 
   ////////////////////////////////// QUAD FUNCTIONS //////////////////////////////////
 
-
-
   unsigned int Renderer::AddQuad(float size) {
 
     auto quad = CreateQuad(size, 0);
+
+    // If there are no gaps in the vector then just push to the back
+    if(s_Instance->m_DeletedQuads == 0) {
+      s_Instance->m_Quads.push_back(quad);
+      s_Instance->m_CalculatedQuads.push_back(quad);
+      // Add a new model matrix to the back of the quads vector set to the identity matrix
+        s_Instance->m_ModelMatrices.push_back(glm::mat4(1.0f)); 
+
+      s_Instance->UpdateCalculatedQuads(s_Instance->m_Quads.size()-1);
+      // Return the index where the quad and model matrix are set
+      return s_Instance->m_Quads.size()-1;
+    }
 
     // Check for an open slot in the vector from a deleted quad 
     for(int i = 0; i < s_Instance->m_Quads.size(); i++) {
       if(IsQuadEmpty(s_Instance->m_Quads.at(i))) {
         s_Instance->m_Quads.at(i) = quad;
         s_Instance->UpdateCalculatedQuads(i);
+        s_Instance->m_DeletedQuads--;
         return i;
       }
     }
 
-    // If there is no gap in the vector
-
-    s_Instance->m_Quads.push_back(quad);
-    s_Instance->m_CalculatedQuads.push_back(quad);
-    // Add a new model matrix to the back of the quads vector set to the identity matrix
-    s_Instance->m_ModelMatrices.push_back(glm::mat4(1.0f)); 
-
-    s_Instance->UpdateCalculatedQuads(s_Instance->m_Quads.size()-1);
-    // Return the index where the quad and model matrix are set
-    return s_Instance->m_Quads.size()-1;
+    return -1; // Some kind of error occured if this is reached
   }
+
+  // FIXME deleted quads can still be modified by using the index in another function. It is not 
+  // crucial to fix this immediately, but this will cause problems if the index of a deleted quad 
+  // is used because the number of deleted quads will not equal the running count. This will 
+  // eventually result in errors adding quads since a new quad may not be added and -1 will be 
+  // returned.
 
   void Renderer::RemoveQuad(const unsigned int quadIndex) {
     s_Instance->m_Quads.at(quadIndex) = ClearedQuad;
+    s_Instance->m_CalculatedQuads.at(quadIndex) = ClearedQuad;
     s_Instance->m_ModelMatrices.at(quadIndex) = glm::translate(glm::mat4(1), glm::vec3(0,0,0));
-    s_Instance->UpdateCalculatedQuads(quadIndex);
+    s_Instance->m_DeletedQuads++;
   }
 
   // Set the model matrix for the corresponding index, should have scale, rotation,

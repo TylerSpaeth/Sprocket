@@ -7,6 +7,7 @@
 #include "Core/Input.h"
 
 #include "Events/RenderEvent.h"
+#include "Events/WindowEvents.h"
 
 #include "ECS/Scene.h"
 #include "ECS/SceneManager.h"

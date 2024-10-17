@@ -47,7 +47,10 @@ namespace Sprocket {
       // These are the quads that have had the model matrix applied
       mutable std::vector<std::array<Vertex, 4>> m_CalculatedQuads;
       mutable std::vector<glm::mat4> m_ModelMatrices;
-      mutable std::vector<Texture*> m_BoundTextures;
+      mutable std::vector<Texture*> m_BoundTextures; 
+      // TODO maybe use a priority to queue to store all the indexes of deleted quads. 
+      // Then linear search is not needed
+      unsigned int m_DeletedQuads = 0; 
       void Draw();
 
       /// @brief Updates the quad at the given index to reflect any any changes to the 
