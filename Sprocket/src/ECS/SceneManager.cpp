@@ -2,7 +2,6 @@
 #include "ECS/QuadRenderer.h"
 
 #include <stdexcept>
-#include <stack>
 
 namespace Sprocket {
 
@@ -56,82 +55,12 @@ namespace Sprocket {
   void SceneManager::OnEvent(Event& event) {
     // Propogate the call to the active scene
     GetActiveScene()->OnEvent(event); 
-
-    switch(event.GetEventType()) {
-      case EventType::APP_UPDATE:
-        CheckModifiedComponents();
-        break;
-    }
-
   }
 
   void SceneManager::RegisterEventCallback(const std::function<void(Event&)> eventCallback) {
     s_Instance->m_EventCallback = eventCallback;
     // TODO register the eventcallback for all ECS systems
     QuadRenderer::s_Instance->m_EventCallback = eventCallback;
-  }
-
-  // TODO make sure this is well optimized because it is a limiting factor of the framerate
-  void SceneManager::CheckModifiedComponents() {
-    RootEntity* root = s_Instance->GetActiveScene()->GetSceneRoot();
-
-    std::stack<Entity*> entities;
-
-    for(Entity* e : root->GetChildren()) {
-      entities.push(e);
-    }
-
-    while(!entities.empty()) {
-      Entity* e = entities.top();
-      entities.pop();
-
-      // Add all children of current entity to the stack and if the transform of this
-      // entity is modified, set the transform of the children as modified too
-      for(Entity* ent : e->GetChildren()) {
-        entities.push(ent);
-        if(e->GetLocalTransform().modified) {
-          ent->GetLocalTransform().modified = true;
-        }
-      } 
-
-      // TODO go through here and check every component to see if it is modified and update the 
-        // relevant systems with the updated data. If the transform of e is modified, then update 
-        // all systems that use the transform
-      for(Component* c : e->GetComponents()) {
-        
-        // If the component is uninitialized
-        if(c->initialized == false) {
-          if(c->componentType == ComponentType::QUAD_RENDERER_COMPONENT) {
-            QuadRenderer::RenderNewQuad(e->GetGlobalTransform(), *(QuadRendererComponent*)c);
-            c->initialized = true;
-          }
-        }
-        
-        // If the transform is modified
-        if(e->GetLocalTransform().modified) {
-          if(c->componentType == ComponentType::QUAD_RENDERER_COMPONENT) {
-            QuadRenderer::SetModelMatrix(e->GetGlobalTransform(), *(QuadRendererComponent*)c);
-            if(c->modified) {
-              QuadRenderer::UpdateQuad(e->GetGlobalTransform(), *(QuadRendererComponent*)c);
-              c->modified = false;
-            }
-          }
-        }
-        // If the transform is not modified
-        else {
-          if(c->componentType == ComponentType::QUAD_RENDERER_COMPONENT && c->modified) {
-             QuadRenderer::UpdateQuad(e->GetGlobalTransform(), *(QuadRendererComponent*)c);
-              c->modified = false;
-          }
-        }
-        
-      }
-
-      e->GetLocalTransform().modified = false;
-      
-    }
-
-
   }
 
 } 

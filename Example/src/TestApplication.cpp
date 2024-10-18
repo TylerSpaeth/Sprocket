@@ -10,28 +10,24 @@ class TestApplication : public Sprocket::Application {
     void Start() {
       using namespace Sprocket;
       Scene* scene = SceneManager::GetActiveScene();
-      RootEntity* const root = scene->GetSceneRoot();
-      Entity* e = new Entity(root);
-      e->GetLocalTransform().position = glm::vec3(50,50,0);
-      e->GetLocalTransform().scale.x = 1.5;
-      e->GetLocalTransform().rotation.z = 45;
 
       QuadRendererComponent qcomp;
       qcomp.size = 100;
-      //qcomp.texturePath = "../res/textures/BiggerBetterTree.png";
+      qcomp.texturePath = "../res/textures/BiggerBetterTree.png";
       qcomp.quadColor = {0.5, 0.5, 0, 1};
-      qcomp.modified = true;
 
-      /*for(int i = 0; i < 100; i++) {
-        Entity* ent = new Entity(e);
-        ent->AddComponent(qcomp);
-        ent->GetLocalTransform().position.y += i;
-        ent->GetLocalTransform().rotation.z += i;
-        ent->GetLocalTransform().modified = true;
-      }*/
+      auto id = scene->CreateEntity();
+      scene->AddComponent(id, qcomp);
 
-      e->AddComponent(qcomp);
+      auto id2 = scene->CreateEntity();
+      scene->AddComponent(id2, qcomp);
 
+      scene->SetEntityParent(id2, id);
+      auto t = scene->GetTransform(id2);
+      t.position.x += 100;
+      scene->UpdateComponent(id2, t);
+      
+      
     }
 
     bool increase = true;
@@ -47,31 +43,28 @@ class TestApplication : public Sprocket::Application {
       // Rotate the first child clockwise if space is pressed
       if(Sprocket::Input::IsKeyPressed(Sprocket::KEY_SPACE)) {
         Scene* scene = SceneManager::GetActiveScene();
-        RootEntity* const root = scene->GetSceneRoot();
-        Entity* e = root->GetChildren().at(0);
-        e->GetLocalTransform().rotation.z += deltaTime*40;
-        e->GetLocalTransform().modified = true;
+        TransformComponent t = scene->GetTransform(0);
+        t.rotation.z += deltaTime*40;
+        scene->UpdateComponent(0,t);
       }
 
       // Change the color of the first quad if x is pressed
       if(Sprocket::Input::IsKeyPressed(Sprocket::KEY_X)) {
         Scene* scene = SceneManager::GetActiveScene();
-        RootEntity* const root = scene->GetSceneRoot();
-        Entity* e = root->GetChildren().at(0);
-        QuadRendererComponent* q = (QuadRendererComponent*)e->GetComponents().at(0);
+        QuadRendererComponent q = scene->GetQuadRenderer(0);
         if(increase) {
-          q->quadColor.x = q->quadColor.x + deltaTime;
+          q.quadColor.x = q.quadColor.x + deltaTime;
         }
         else {
-          q->quadColor.x = q->quadColor.x - deltaTime;
+          q.quadColor.x = q.quadColor.x - deltaTime;
         }
-        if(q->quadColor.x >= .99) {
+        if(q.quadColor.x >= .99) {
           increase = false;
         }
-        else if(q->quadColor.x <= .01) {
+        else if(q.quadColor.x <= .01) {
           increase = true;
         }
-        q->modified = true;
+        scene->UpdateComponent(0,q);
         
       }
 
@@ -81,8 +74,6 @@ class TestApplication : public Sprocket::Application {
 
         RenderNewEvent* rn = new RenderNewEvent(100);
         Renderer::OnEvent(*rn);
-
-        //std::cout << rn->m_QuadID << "\n";
         
       }
     }

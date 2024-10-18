@@ -20,8 +20,6 @@ namespace Sprocket {
 
   struct Component {
     const ComponentType componentType;
-    bool modified = false; // Must be set true for modifications to be sent to systems
-    bool initialized = false; 
     Component(ComponentType type) : componentType(type){}
   };
 
@@ -29,9 +27,7 @@ namespace Sprocket {
     glm::vec3 position = glm::vec3(0,0,0);
     glm::vec3 rotation = glm::vec3(0,0,0);
     glm::vec3 scale = glm::vec3(1,1,1);
-    TransformComponent() : Component(ComponentType::TRANSFORM_COMPONENT){
-      initialized = true; // For not transforms components do not need to be intialized
-    }
+    TransformComponent() : Component(ComponentType::TRANSFORM_COMPONENT){}
   };
 
   struct QuadRendererComponent : public Component {

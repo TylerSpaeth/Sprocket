@@ -39,7 +39,6 @@ target_sources(${PROJECT_NAME} PRIVATE
 target_sources(${PROJECT_NAME} PRIVATE 
   src/ECS/SceneManager.cpp
   src/ECS/Scene.cpp
-  src/ECS/Entity.cpp
   src/ECS/QuadRenderer.cpp
 )
 
