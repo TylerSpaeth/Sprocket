@@ -1,5 +1,6 @@
 #include "SceneManager.h"
 #include "ECS/QuadRenderer.h"
+#include "ECS/Camera.h"
 
 #include <stdexcept>
 
@@ -7,12 +8,14 @@ namespace Sprocket {
 
   SceneManager* SceneManager::s_Instance = nullptr;
   QuadRenderer* QuadRenderer::s_Instance = nullptr;
+  Camera* Camera::s_Instance = nullptr;
   void SceneManager::Init() {
     if(!s_Instance) {
       s_Instance = new SceneManager();
       s_Instance->AddScene(0, new Scene());
       // TODO construct all ECS singletons here
       QuadRenderer::Init();
+      Camera::Init();
     }
   }
 
@@ -61,6 +64,7 @@ namespace Sprocket {
     s_Instance->m_EventCallback = eventCallback;
     // TODO register the eventcallback for all ECS systems
     QuadRenderer::s_Instance->m_EventCallback = eventCallback;
+    Camera::s_Instance->m_EventCallback = eventCallback;
   }
 
 } 

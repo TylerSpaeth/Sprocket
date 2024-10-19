@@ -19,7 +19,7 @@ namespace Sprocket {
   };
 
   struct Component {
-    const ComponentType componentType;
+    const ComponentType componentType; // TODO we may be able to remove this
     Component(ComponentType type) : componentType(type){}
   };
 

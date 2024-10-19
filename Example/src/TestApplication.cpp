@@ -23,6 +23,7 @@ class TestApplication : public Sprocket::Application {
       scene->AddComponent(id2, qcomp);
 
       auto id3 = scene->CreateEntity();
+      scene->AddComponent(id3, CameraComponent());
 
       scene->SetEntityParent(id2, id3);
       scene->SetEntityParent(id2, id);
@@ -71,13 +72,30 @@ class TestApplication : public Sprocket::Application {
         
       }
 
+      // Moving the camera around the scene
+      if(Sprocket::Input::IsKeyPressed(KEY_W)) {
+        Scene* scene = SceneManager::GetActiveScene();
+        TransformComponent t = scene->GetTransform(2);
+        t.position.y += 40*deltaTime;
+        scene->UpdateComponent(2,t);
+      } 
+      if(Sprocket::Input::IsKeyPressed(KEY_A)) {
+        Scene* scene = SceneManager::GetActiveScene();
+        TransformComponent t = scene->GetTransform(2);
+        t.position.x -= 40*deltaTime;
+        scene->UpdateComponent(2,t);
+      }
+      if(Sprocket::Input::IsKeyPressed(KEY_S)) {
+        Scene* scene = SceneManager::GetActiveScene();
+        TransformComponent t = scene->GetTransform(2);
+        t.position.y -= 40*deltaTime;
+        scene->UpdateComponent(2,t);
+      }
       if(Sprocket::Input::IsKeyPressed(KEY_D)) {
-        RenderDeleteEvent* e = new RenderDeleteEvent(0);
-        Renderer::OnEvent(*e);
-
-        RenderNewEvent* rn = new RenderNewEvent(100);
-        Renderer::OnEvent(*rn);
-        
+        Scene* scene = SceneManager::GetActiveScene();
+        TransformComponent t = scene->GetTransform(2);
+        t.position.x += 40*deltaTime;
+        scene->UpdateComponent(2,t);
       }
     }
 };

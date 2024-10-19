@@ -15,12 +15,13 @@ namespace Sprocket {
   class SPROCKET_API Scene {
 
     private:
-      
+
+      // FIXME change these to vectors to utilize contiguous memory blocks
+
       unsigned int m_EntityCount = 0;
       // Stores the parentID of a given entity, if the parentID is -1, that indicates no parent
       std::vector<int> m_Parents;
       std::vector<std::vector<unsigned int>> m_Children;
-      // FIXME change these to vectors to utilize contiguous memory blocks
       // Local space transforms
       std::vector<TransformComponent> m_Transforms;
       // Global space transforms. Note that the global transform for a given entity actually 
@@ -28,6 +29,7 @@ namespace Sprocket {
       // local transform needs to be applied.
       std::vector<TransformComponent> m_GlobalTransforms;
       std::map<unsigned int, QuadRendererComponent> m_QuadRenderers;
+      unsigned int m_CameraEntityID = -1;
       
     public:
 
@@ -40,8 +42,13 @@ namespace Sprocket {
       unsigned int CreateEntity(); 
       void SetEntityParent(const unsigned int entityID, const unsigned int parentID);
 
-      void AddComponent(const unsigned int entityID, const Component& component);
-      void UpdateComponent(const unsigned int enitityID, const Component& replacement);
+      // TODO overload for all component types that can be added
+      void AddComponent(const unsigned int entityID, const QuadRendererComponent& component);
+      void AddComponent(const unsigned int entityID, const CameraComponent& component);
+      
+      // TODO overload for all component types that can be added
+      void UpdateComponent(const unsigned int entityID, const TransformComponent& replacement);
+      void UpdateComponent(const unsigned int entityID, const QuadRendererComponent& replacement);
       
       TransformComponent GetTransform(const unsigned int entityID);
       QuadRendererComponent GetQuadRenderer(const unsigned int entityID);

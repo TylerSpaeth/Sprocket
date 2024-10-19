@@ -19,7 +19,7 @@ namespace Sprocket {
       static QuadRenderer* s_Instance;
       QuadRenderer(){}
       QuadRenderer(const QuadRenderer&) = delete;
-      QuadRenderer operator=(const QuadRenderer*) = delete;
+      QuadRenderer operator=(const QuadRenderer&) = delete;
 
       std::function<void(Event&)> m_EventCallback;
 
