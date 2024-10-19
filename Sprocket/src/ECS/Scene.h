@@ -11,15 +11,22 @@
 namespace Sprocket {
 
   /// @brief This is the foundation for Sprocket applications. An application is a collection of 
-  /// scenes that are made up of entities and components that define application behaviors.
+  /// scenes that are made up components, grouped into entities, that define application behaviors.
   class SPROCKET_API Scene {
 
     private:
       
       unsigned int m_EntityCount = 0;
-      std::map<unsigned int, std::vector<unsigned int>> m_Children;
+      // Stores the parentID of a given entity, if the parentID is -1, that indicates no parent
+      std::vector<int> m_Parents;
+      std::vector<std::vector<unsigned int>> m_Children;
       // FIXME change these to vectors to utilize contiguous memory blocks
-      std::map<unsigned int, TransformComponent> m_Transforms;
+      // Local space transforms
+      std::vector<TransformComponent> m_Transforms;
+      // Global space transforms. Note that the global transform for a given entity actually 
+      // corresponds to the global position for its parent. To get the true global position, the 
+      // local transform needs to be applied.
+      std::vector<TransformComponent> m_GlobalTransforms;
       std::map<unsigned int, QuadRendererComponent> m_QuadRenderers;
       
     public:

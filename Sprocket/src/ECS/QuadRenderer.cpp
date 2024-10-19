@@ -26,7 +26,7 @@ namespace Sprocket {
     s_Instance->m_EventCallback(*update);
   }
 
-  void QuadRenderer::UpdateQuad(TransformComponent transform, QuadRendererComponent& renderer) {
+  void QuadRenderer::UpdateQuad(QuadRendererComponent& renderer) {
     RenderUpdateEvent* update = new RenderUpdateEvent(RenderUpdateType::QUAD);
     update->m_QuadIndex = renderer.quadID;
     update->m_QuadColor = renderer.quadColor;

@@ -1,5 +1,7 @@
 #include "ECS/Scene.h"
 #include "ECS/QuadRenderer.h"
+#include <iostream>
+#include <algorithm>
 
 namespace Sprocket {
 
@@ -8,14 +10,38 @@ namespace Sprocket {
   }
 
   unsigned int Scene::CreateEntity() {
-    m_Transforms.insert({m_EntityCount, TransformComponent()});
-    m_Children.insert({m_EntityCount, std::vector<unsigned int>()});
+    m_Transforms.push_back(TransformComponent());
+    m_GlobalTransforms.push_back(TransformComponent());
+    m_Children.push_back(std::vector<unsigned int>());
+    m_Parents.push_back(-1);
     return m_EntityCount++;
   }
 
   // TODO there is a better way to do this, this is just going to work for now
   void Scene::SetEntityParent(const unsigned int entityID, const unsigned int parentID) {
-    (*m_Children.find(parentID)).second.push_back(entityID);
+
+    int currentParent = m_Parents.at(entityID);
+
+    // If this entity has a parent, remove it from the parents children list and change the parentID
+    if(currentParent != -1) {
+      auto it = std::find(m_Children.at(currentParent).begin(), m_Children.at(currentParent).end(), entityID);
+      m_Children.at(currentParent).erase(it);
+      m_Parents.at(entityID) = parentID;
+    }
+   
+    // Add this entity as a child of the given parent
+    m_Children.at(parentID).push_back(entityID);
+
+    // Calculate the global position of the parent and set that as the global position of the child
+    TransformComponent global = m_GlobalTransforms.at(parentID);
+    global.position += m_Transforms.at(parentID).position;
+    global.rotation += m_Transforms.at(parentID).rotation;
+    global.scale *= m_Transforms.at(parentID).scale;
+    
+    m_GlobalTransforms.at(entityID).position = global.position;
+    m_GlobalTransforms.at(entityID).rotation = global.rotation;
+    m_GlobalTransforms.at(entityID).scale = global.scale;
+
   }
 
   void Scene::AddComponent(const unsigned int entityID, const Component& component) {
@@ -30,38 +56,58 @@ namespace Sprocket {
         catch(const std::exception& e) {
           m_QuadRenderers.insert({entityID,(QuadRendererComponent&)component});
         }
+
         QuadRenderer::RenderNewQuad(m_Transforms.at(entityID), m_QuadRenderers.at(entityID));
-        QuadRenderer::UpdateQuad(m_Transforms.at(entityID), m_QuadRenderers.at(entityID));
-        QuadRenderer::SetModelMatrix(m_Transforms.at(entityID), m_QuadRenderers.at(entityID));
+        QuadRenderer::UpdateQuad(m_QuadRenderers.at(entityID));
+
+        TransformComponent globalTransform = m_GlobalTransforms.at(entityID);
+        TransformComponent localTransform = m_Transforms.at(entityID);
+        globalTransform.position += localTransform.position;
+        globalTransform.rotation += localTransform.rotation;
+        globalTransform.scale *= localTransform.scale;
+
+        QuadRenderer::SetModelMatrix(globalTransform, m_QuadRenderers.at(entityID));
         break;
     }
   }
 
   void Scene::UpdateComponent(const unsigned int entityID, const Component& replacement) {
     switch(replacement.componentType) {
-      case ComponentType::TRANSFORM_COMPONENT:
+      case ComponentType::TRANSFORM_COMPONENT: {
         // Try to remove the old transform if there is one and replace it with the new transform, 
         // then update the model matrix in the quad renderer
         try {
-          m_Transforms.extract(entityID);
+          m_Transforms.at(entityID).position = ((TransformComponent&)replacement).position;
+          m_Transforms.at(entityID).rotation = ((TransformComponent&)replacement).rotation;
+          m_Transforms.at(entityID).scale = ((TransformComponent&)replacement).scale;
         } 
         catch(const std::exception& e) {}
-        m_Transforms.insert({entityID,(TransformComponent&)replacement});
-        QuadRenderer::SetModelMatrix(m_Transforms.at(entityID), m_QuadRenderers.at(entityID));
 
-        // FIXME This is not working properly due to the fact that everything is being stored as 
-        // global position, may want to create seperate transform arrays with global and local 
-        // positions
+        TransformComponent globalTransform = m_GlobalTransforms.at(entityID);
+        TransformComponent localTransform = m_Transforms.at(entityID);
+        globalTransform.position += localTransform.position;
+        globalTransform.rotation += localTransform.rotation;
+        globalTransform.scale *= localTransform.scale;
+
+        QuadRenderer::SetModelMatrix(globalTransform, m_QuadRenderers.at(entityID));
+
         for(unsigned int i : m_Children.at(entityID)) {
-          TransformComponent t = m_Transforms.at(i);
-          t.position += m_Transforms.at(entityID).position;
-          t.rotation += m_Transforms.at(entityID).rotation;
-          t.scale *= m_Transforms.at(entityID).scale;
-          UpdateComponent(i,t);
+          TransformComponent global = m_GlobalTransforms.at(entityID);
+          TransformComponent localTransform = m_Transforms.at(entityID);
+          global.position += localTransform.position;
+          global.rotation += localTransform.rotation;
+          global.scale *= localTransform.scale;
+
+          m_GlobalTransforms.at(i).position = global.position;
+          m_GlobalTransforms.at(i).rotation = global.rotation;
+          m_GlobalTransforms.at(i).scale = global.scale;
+
+          UpdateComponent(i,m_Transforms.at(i));
         }
 
         break;
-      case ComponentType::QUAD_RENDERER_COMPONENT:
+      }
+      case ComponentType::QUAD_RENDERER_COMPONENT: {
         // Try to remove the old quad renderer and replace it with the new one. Then send an update 
         // quad call to the quad renderer so the updated data is reflected.
         try {
@@ -69,8 +115,9 @@ namespace Sprocket {
         } 
         catch(const std::exception& e) {}
         m_QuadRenderers.insert({entityID,(QuadRendererComponent&)replacement});
-        QuadRenderer::UpdateQuad(m_Transforms.at(entityID), m_QuadRenderers.at(entityID));
+        QuadRenderer::UpdateQuad(m_QuadRenderers.at(entityID));
         break;
+      }
     }
   }
 

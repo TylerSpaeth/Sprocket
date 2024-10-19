@@ -22,6 +22,9 @@ class TestApplication : public Sprocket::Application {
       auto id2 = scene->CreateEntity();
       scene->AddComponent(id2, qcomp);
 
+      auto id3 = scene->CreateEntity();
+
+      scene->SetEntityParent(id2, id3);
       scene->SetEntityParent(id2, id);
       auto t = scene->GetTransform(id2);
       t.position.x += 100;
