@@ -73,21 +73,26 @@ namespace Sprocket {
       /// dimensions of the Renderer on initialization. It is reccomended that this is in pixels.
       /// @return An ID corresponding to this quad that allows it to be accessed and modified in 
       /// the future.
+      /// @throws std::invalid_argument if size is not greater than 0
+      /// @throws std::runtime_error if the maxQuads number has already been reached.
       static unsigned int AddQuad(float size);
 
       /// @brief Removes the quad at the given index. The quad will no longer be rendered.
       /// @param quadIndex The quad to be removed.
-      static void RemoveQuad(const unsigned int quadIndex);
+      /// @return true if the quad is successfully remove, false otherwise
+      static bool RemoveQuad(const unsigned int quadIndex);
 
       /// @brief Sets the model matrix of the quad at a given matrix.
       /// @param quadIndex The index of the quad.
       /// @param modelMatrix The new matrix that should be applied to the quad.
-      static void SetQuadModelMatrix(const unsigned int quadIndex, const glm::mat4 modelMatrix);
+      /// @return true if the model matrix is set successfully, false otherwise
+      static bool SetQuadModelMatrix(const unsigned int quadIndex, const glm::mat4 modelMatrix);
 
       /// @brief Sets the color of the quad to the given color.
       /// @param quadIndex The index of the quad.
       /// @param color The color that the quad should be changed to in RGBA.
-      static void SetQuadColor(const unsigned int quadIndex, const glm::vec4 color);
+      /// @return true if the quad color is set successfully, false otherwise
+      static bool SetQuadColor(const unsigned int quadIndex, const glm::vec4 color);
 
       /// @brief Sets the texture coordinates of the quad. 
       /// @param quadIndex The index of the quad.
@@ -95,12 +100,14 @@ namespace Sprocket {
       /// The vector should order the quads starting with the right and going clockwise.
       /// @param yCoords The y coordinates that correspond to coordinates on this quads texture.
       /// The vector should order the quads starting with the right and going clockwise.
-      static void SetQuadTextureCoords(const unsigned int quadIndex, const glm::vec4 xCoords, const glm::vec4 yCoords);
+      /// @return true if the texture coords are set successfully, false otherwise
+      static bool SetQuadTextureCoords(const unsigned int quadIndex, const glm::vec4 xCoords, const glm::vec4 yCoords);
 
       /// @brief Sets the textureID of the quad.
       /// @param quadIndex The index of the quad.
       /// @param textureID The ID of the texture that should be applied to the quad.
-      static void SetQuadTextureID(const unsigned int quadIndex, const float textureID);
+      /// @return true if the textureID is set successfully, false otherwise
+      static bool SetQuadTextureID(const unsigned int quadIndex, const float textureID);
 
       /// @brief Sets the view matrix of the renderer to the given matrix.
       /// @param viewMatrix The view matrix that should be applied.
@@ -117,6 +124,7 @@ namespace Sprocket {
       /// the same as the width of the window's native resolution in pixels.
       /// @param yDimension The height of the projection matrix. It is recommended that this value 
       /// the same as the height of the window's native resolution in pixels.
+      /// @throws std::invalid_argument if either xDimension or yDimension is negative
       static void Init(const unsigned int maxQuads, const unsigned int xDimension, const unsigned int yDimension);
 
       /// @brief Handles incoming events. Should be registered as a callback to recieve events.

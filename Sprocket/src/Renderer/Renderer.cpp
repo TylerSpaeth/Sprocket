@@ -5,6 +5,7 @@
 #include "ThirdParty/glad/glad.h"
 
 #include <iostream>
+#include <stdexcept>
 
 namespace Sprocket {
 
@@ -84,6 +85,11 @@ namespace Sprocket {
   Renderer* Renderer::s_Instance = nullptr;
   void Renderer::Init(const unsigned int maxQuads, const unsigned int xDimension, const unsigned int yDimension) {
     if(!s_Instance) {
+
+      if(xDimension < 0 || yDimension < 0) {
+        std::invalid_argument("Renderer dimensions can not be negative.");
+      }
+
       s_Instance = new Renderer(maxQuads);
 
       // Setup blending
@@ -106,6 +112,7 @@ namespace Sprocket {
         s_Instance->m_Shader = new Shader("Default.vert", "Default32.frag");
       }
 
+      // Define the layout of the vertex buffer
       s_Instance->m_VertexArray->Bind();
       s_Instance->m_VertexBuffer->Bind();
       glEnableVertexAttribArray(0);
@@ -152,7 +159,7 @@ namespace Sprocket {
             SetQuadModelMatrix(((RenderUpdateEvent&)event).m_QuadIndex, ((RenderUpdateEvent&)event).m_Matrix);
             break;
           case RenderUpdateType::QUAD:
-          unsigned int slot = 0;
+            unsigned int slot = 0;
             if(((RenderUpdateEvent&)event).m_TexturePath != "") {
               slot = AddTexture(((RenderUpdateEvent&)event).m_TexturePath);
             }
@@ -188,6 +195,7 @@ namespace Sprocket {
     }
     // Clear Vectors
     s_Instance->m_Quads.clear();
+    s_Instance->m_CalculatedQuads.clear();
     s_Instance->m_ModelMatrices.clear();
     s_Instance->m_BoundTextures.clear();
   }
@@ -195,6 +203,14 @@ namespace Sprocket {
   ////////////////////////////////// QUAD FUNCTIONS //////////////////////////////////
 
   unsigned int Renderer::AddQuad(float size) {
+
+    if(size <= 0) {
+      std::invalid_argument("A quad must have a positive, nonzero size.");
+    }
+
+    if(s_Instance->m_Quads.size() - s_Instance->m_DeletedQuads >= s_Instance->m_MaxQuads) {
+      std::runtime_error("The maximum number of quads has already been reached. To use more quads, change the increase the amount at intialization.");
+    }
 
     auto quad = CreateQuad(size, 0);
 
@@ -229,46 +245,75 @@ namespace Sprocket {
   // eventually result in errors adding quads since a new quad may not be added and -1 will be 
   // returned.
 
-  void Renderer::RemoveQuad(const unsigned int quadIndex) {
-    s_Instance->m_Quads.at(quadIndex) = ClearedQuad;
-    s_Instance->m_CalculatedQuads.at(quadIndex) = ClearedQuad;
-    s_Instance->m_ModelMatrices.at(quadIndex) = glm::translate(glm::mat4(1), glm::vec3(0,0,0));
-    s_Instance->m_DeletedQuads++;
+  bool Renderer::RemoveQuad(const unsigned int quadIndex) {
+
+    try {
+      s_Instance->m_Quads.at(quadIndex) = ClearedQuad;
+      s_Instance->m_CalculatedQuads.at(quadIndex) = ClearedQuad;
+      s_Instance->m_ModelMatrices.at(quadIndex) = glm::translate(glm::mat4(1), glm::vec3(0,0,0));
+      s_Instance->m_DeletedQuads++;
+    }
+    catch(const std::exception& e) {
+      return false;
+    }
+    return true;
+    
   }
 
   // Set the model matrix for the corresponding index, should have scale, rotation,
   // and transform already applied
-  void Renderer::SetQuadModelMatrix(const unsigned int quadIndex, const glm::mat4 modelMatrix) {
-    if(quadIndex == -1) {
-      return;
+  bool Renderer::SetQuadModelMatrix(const unsigned int quadIndex, const glm::mat4 modelMatrix) {
+    try {
+      s_Instance->m_ModelMatrices[quadIndex] = modelMatrix;
+      s_Instance->UpdateCalculatedQuads(quadIndex);
     }
-    s_Instance->m_ModelMatrices[quadIndex] = modelMatrix;
-    s_Instance->UpdateCalculatedQuads(quadIndex);
+    catch(const std::exception& e) {
+      return false;
+    }
+    return true;
   }
 
   // Sets the color of the quad at the given index to the given color
-  void Renderer::SetQuadColor(const unsigned int quadIndex, const glm::vec4 color) {
-    auto quad = s_Instance->m_Quads.at(quadIndex);
-    for(int i = 0; i < 4; i++) {
-      quad.at(i).Color = color;
+  bool Renderer::SetQuadColor(const unsigned int quadIndex, const glm::vec4 color) {
+    try {
+      auto quad = s_Instance->m_Quads.at(quadIndex);
+      for(int i = 0; i < 4; i++) {
+        quad.at(i).Color = color;
+      }
+      s_Instance->m_Quads.at(quadIndex) = quad;
+      s_Instance->UpdateCalculatedQuads(quadIndex);
     }
-    s_Instance->m_Quads.at(quadIndex) = quad;
-    s_Instance->UpdateCalculatedQuads(quadIndex);
+    catch(const std::exception& e) {
+      return false;
+    }
+    return true;
   }
 
   // The coords should start in the top right corner and go clockwise
-  void Renderer::SetQuadTextureCoords(const unsigned int quadIndex, const glm::vec4 xCoords, const glm::vec4 yCoords) {
-    for(int i = 0; i < 4; i++) {
-      s_Instance->m_Quads.at(quadIndex).at(i).TextureCoords = glm::vec2(xCoords[i], yCoords[i]);
+  bool Renderer::SetQuadTextureCoords(const unsigned int quadIndex, const glm::vec4 xCoords, const glm::vec4 yCoords) {
+    try {
+      for(int i = 0; i < 4; i++) {
+        s_Instance->m_Quads.at(quadIndex).at(i).TextureCoords = glm::vec2(xCoords[i], yCoords[i]);
+      }
+      s_Instance->UpdateCalculatedQuads(quadIndex);
     }
-    s_Instance->UpdateCalculatedQuads(quadIndex);
+    catch(const std::exception& e) {
+      return false;
+    }
+    return true;
   }
 
-  void Renderer::SetQuadTextureID(const unsigned int quadIndex, const float textureID) {
-    for(int i = 0; i < 4; i++) {
-      s_Instance->m_Quads.at(quadIndex).at(i).TextureID = textureID;
+  bool Renderer::SetQuadTextureID(const unsigned int quadIndex, const float textureID) {
+    try {
+      for(int i = 0; i < 4; i++) {
+        s_Instance->m_Quads.at(quadIndex).at(i).TextureID = textureID;
+      }
+      s_Instance->UpdateCalculatedQuads(quadIndex);
     }
-    s_Instance->UpdateCalculatedQuads(quadIndex);
+    catch(const std::exception& e) {
+      return false;
+    }
+    return true;
   }
 
   ///////////////////////////// SHADER UNIFORM FUNCTIONS /////////////////////////////
