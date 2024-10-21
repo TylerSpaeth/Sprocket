@@ -15,6 +15,10 @@ void main()
   if(v_TextureID != 0.0) {
     vec4 texColor = texture(u_Texture[int(v_TextureID-1)], v_TexCoord);
     FragColor = texColor;
+    // Do not render the fragment if the alpha is really low
+    if(FragColor.a < 0.01) {
+      discard;
+    }
   }
   else {
     FragColor = v_Color;

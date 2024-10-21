@@ -49,10 +49,13 @@ namespace Sprocket {
   };
 
   struct BoxColliderComponent : public ColliderComponent {
+    float width;
+    float height;
     BoxColliderComponent() : ColliderComponent(ComponentType::BOX_COLLIDER_COMPONENT){}
   };
 
   struct CircleColliderComponent : public ColliderComponent {
+    float radius;
     CircleColliderComponent() : ColliderComponent(ComponentType::CIRCLE_COLLIDER_COMPONENT){}
   };
 

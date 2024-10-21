@@ -96,6 +96,9 @@ namespace Sprocket {
       glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
       glEnable(GL_BLEND);
 
+      // Allow sorting by z position
+      glEnable(GL_DEPTH_TEST);
+
       s_Instance->m_VertexBuffer = new VertexBuffer(nullptr, sizeof(Vertex)*s_Instance->m_MaxQuads * 4);;
       s_Instance->m_IndexBuffer = GenerateIndexBuffer(s_Instance->m_MaxQuads * 6);
       s_Instance->m_VertexArray = new VertexArray();
@@ -179,7 +182,7 @@ namespace Sprocket {
   }
 
   void Renderer::OnUpdate() {
-    glClear(GL_COLOR_BUFFER_BIT);
+    glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
     s_Instance->Draw();
   }
 

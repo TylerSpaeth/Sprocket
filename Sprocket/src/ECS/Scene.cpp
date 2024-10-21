@@ -70,6 +70,7 @@ namespace Sprocket {
   }
 
   void Scene::AddComponent(const unsigned int entityID, const CameraComponent& component) {
+
     if(m_CameraEntityID != -1) {
       std::runtime_error("There is already a camera in this scene.");
     }
@@ -94,6 +95,7 @@ namespace Sprocket {
     globalTransform.rotation += localTransform.rotation;
     globalTransform.scale *= localTransform.scale;
 
+    // TODO also check that the entity has a QuadRendererComponent
     // Check whether this transform change will affect a camera or model matrix
     if(m_CameraEntityID != entityID) {
       // Set the model matrix with the global transform

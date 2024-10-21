@@ -31,13 +31,41 @@ class TestApplication : public Sprocket::Application {
       t.position.x += 100;
       scene->UpdateComponent(id2, t);
       
-      
+      // Checkered background
+      {
+        for(int i = -2000; i < 2000; i+=200) {
+          for(int j = -2000; j < 2000; j+=200) {
+            auto id4 = scene->CreateEntity();
+            qcomp.texturePath = "";
+            scene->AddComponent(id4,qcomp);
+            TransformComponent tr = scene->GetTransform(id4);
+            tr.position.x = i;
+            tr.position.y = j;
+            tr.position.z-=.01;
+            scene->UpdateComponent(id4,tr);
+          }
+        }
+
+        for(int i = -1900; i < 2100; i+=200) {
+          for(int j = -1900; j < 2100; j+=200) {
+            auto id4 = scene->CreateEntity();
+            qcomp.texturePath = "";
+            scene->AddComponent(id4,qcomp);
+            TransformComponent tr = scene->GetTransform(id4);
+            tr.position.x = i;
+            tr.position.y = j;
+            tr.position.z-=.01;
+            scene->UpdateComponent(id4,tr);
+          }
+        }
+      }
+     
     }
 
     bool increase = true;
     void Update(float deltaTime) {
       using namespace Sprocket;
-      //std::cout << (int) (1000000 / (deltaTime * 1000000)) << "\n";
+      std::cout << (int) (1000000 / (deltaTime * 1000000)) << "\n";
 
       if(Input::IsKeyPressed(KEY_ESCAPE)) {
         WindowCloseEvent* wc = new WindowCloseEvent();
