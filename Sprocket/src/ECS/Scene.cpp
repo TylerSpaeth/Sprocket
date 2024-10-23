@@ -82,6 +82,15 @@ namespace Sprocket {
 
   }
 
+  void Scene::AddComponent(const unsigned int entityID, const BoxColliderComponent& component) {
+    try {
+      m_BoxColliders.at(entityID);
+    }
+    catch(const std::exception& e) {
+      m_BoxColliders.insert({entityID,component});
+    }
+  }
+
   void Scene::UpdateComponent(const unsigned int entityID, const TransformComponent& replacement) {
     // Update the local transform
     m_Transforms.at(entityID).position = replacement.position;
@@ -124,8 +133,16 @@ namespace Sprocket {
       m_QuadRenderers.extract(entityID);
     } 
     catch(const std::exception& e) {}
-    m_QuadRenderers.insert({entityID,(QuadRendererComponent&)replacement});
+    m_QuadRenderers.insert({entityID,replacement});
     QuadRenderer::UpdateQuad(m_QuadRenderers.at(entityID));
+  }
+
+  void Scene::UpdateComponent(const unsigned int entityID, const BoxColliderComponent& replacement) {
+    try {
+      m_BoxColliders.extract(entityID);
+    }
+    catch(const std::exception& e){}
+    m_BoxColliders.insert({entityID,replacement});
   }
 
   TransformComponent Scene::GetTransform(const unsigned int entityID) {
@@ -134,6 +151,10 @@ namespace Sprocket {
 
   QuadRendererComponent Scene::GetQuadRenderer(const unsigned int entityID) {
     return m_QuadRenderers.at(entityID);
+  }
+
+  BoxColliderComponent Scene::GetBoxCollider(const unsigned int entityID) {
+    return m_BoxColliders.at(entityID);
   }
   
   

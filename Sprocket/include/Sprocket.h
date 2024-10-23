@@ -13,6 +13,8 @@
 #include "ECS/SceneManager.h"
 #include "ECS/Component.h"
 
+#include "ECS/Collision.h"
+
 // Sprocket EntryPoint
 #include "Core/EntryPoint.hpp"
 

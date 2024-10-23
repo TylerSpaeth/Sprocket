@@ -3,7 +3,8 @@
 #include <iostream>
 
 class TestApplication : public Sprocket::Application {
-
+  int id6 = 0;
+  int id5 = 0;
   public:
     TestApplication() : Sprocket::Application() {}
     ~TestApplication() {}
@@ -59,13 +60,69 @@ class TestApplication : public Sprocket::Application {
           }
         }
       }
-     
+
+      id5 = scene->CreateEntity();
+      qcomp.quadColor = {1,0,0,1};
+      scene->AddComponent(id5, qcomp);
+      BoxColliderComponent b;
+      TransformComponent transf = scene->GetTransform(id5);
+      transf.position.x = -200;
+      scene->UpdateComponent(id5,transf);
+      b.height = 100;
+      b.width = 100;
+      scene->AddComponent(id5, b);
+
+      id6 = scene->CreateEntity();
+      qcomp.quadColor = {0,1,0,1};
+      BoxColliderComponent b2;
+      b2.height = 100;
+      b2.width = 100;
+      scene->AddComponent(id6,qcomp);
+      scene->AddComponent(id6,b2);
+      TransformComponent tc = scene->GetTransform(id6);
+      tc.scale.x = .5;
+      tc.scale.y = .5;
+      tc.rotation.z = 45;
+      scene->UpdateComponent(id6,tc);
+      
     }
 
     bool increase = true;
     void Update(float deltaTime) {
       using namespace Sprocket;
-      std::cout << (int) (1000000 / (deltaTime * 1000000)) << "\n";
+      //std::cout << (int) (1000000 / (deltaTime * 1000000)) << "\n";
+      
+      {
+        Scene* scene = SceneManager::GetActiveScene();
+        auto c1 = scene->GetBoxCollider(id5);
+        auto t1 = scene->GetTransform(id5);
+        auto c2 = scene->GetBoxCollider(id6);
+        auto t2 = scene->GetTransform(id6);
+
+        std::cout << Collision(c1,t1,c2,t2).Collides() << "\n";
+
+        if(Input::IsKeyPressed(KEY_UP)) {
+          Scene* scene = SceneManager::GetActiveScene();
+          t2.position.y += deltaTime*80;
+          scene->UpdateComponent(id6,t2);
+        }
+        if(Input::IsKeyPressed(KEY_DOWN)) {
+          Scene* scene = SceneManager::GetActiveScene();
+          t2.position.y -= deltaTime*80;
+          scene->UpdateComponent(id6,t2);
+        }
+        if(Input::IsKeyPressed(KEY_LEFT)) {
+          Scene* scene = SceneManager::GetActiveScene();
+          t2.position.x -= deltaTime*80;
+          scene->UpdateComponent(id6,t2);
+        }
+        if(Input::IsKeyPressed(KEY_RIGHT)) {
+          Scene* scene = SceneManager::GetActiveScene();
+          t2.position.x += deltaTime*80;
+          scene->UpdateComponent(id6,t2);
+        }
+      }
+
 
       if(Input::IsKeyPressed(KEY_ESCAPE)) {
         WindowCloseEvent* wc = new WindowCloseEvent();
@@ -104,25 +161,25 @@ class TestApplication : public Sprocket::Application {
       if(Sprocket::Input::IsKeyPressed(KEY_W)) {
         Scene* scene = SceneManager::GetActiveScene();
         TransformComponent t = scene->GetTransform(2);
-        t.position.y += 40*deltaTime;
+        t.position.y += 80*deltaTime;
         scene->UpdateComponent(2,t);
       } 
       if(Sprocket::Input::IsKeyPressed(KEY_A)) {
         Scene* scene = SceneManager::GetActiveScene();
         TransformComponent t = scene->GetTransform(2);
-        t.position.x -= 40*deltaTime;
+        t.position.x -= 80*deltaTime;
         scene->UpdateComponent(2,t);
       }
       if(Sprocket::Input::IsKeyPressed(KEY_S)) {
         Scene* scene = SceneManager::GetActiveScene();
         TransformComponent t = scene->GetTransform(2);
-        t.position.y -= 40*deltaTime;
+        t.position.y -= 80*deltaTime;
         scene->UpdateComponent(2,t);
       }
       if(Sprocket::Input::IsKeyPressed(KEY_D)) {
         Scene* scene = SceneManager::GetActiveScene();
         TransformComponent t = scene->GetTransform(2);
-        t.position.x += 40*deltaTime;
+        t.position.x += 80*deltaTime;
         scene->UpdateComponent(2,t);
       }
     }
