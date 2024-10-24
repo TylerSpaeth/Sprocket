@@ -15,6 +15,8 @@ namespace Sprocket {
     localBuffer = stbi_load(path.c_str(), &width, &height, &bitsPerPixel, 4);
     
     glGenTextures(1, &textureID);
+    // FIXME for some reason this needs to be called in order to be able to render multiple textures at the same time. This should be done a different way because there is no guarentee that the textureID and slot will always be the same
+    glActiveTexture(GL_TEXTURE0 + textureID); 
     glBindTexture(GL_TEXTURE_2D, textureID);
 
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
