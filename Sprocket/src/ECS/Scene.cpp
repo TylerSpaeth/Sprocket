@@ -91,6 +91,15 @@ namespace Sprocket {
     }
   }
 
+  void Scene::AddComponent(const unsigned int entityID, const CircleColliderComponent& component) {
+    try {
+      m_CircleColliders.at(entityID);
+    }
+    catch(const std::exception& e) {
+      m_CircleColliders.insert({entityID,component});
+    }
+  }
+
   void Scene::UpdateComponent(const unsigned int entityID, const TransformComponent& replacement) {
     // Update the local transform
     m_Transforms.at(entityID).position = replacement.position;
@@ -145,6 +154,14 @@ namespace Sprocket {
     m_BoxColliders.insert({entityID,replacement});
   }
 
+  void Scene::UpdateComponent(const unsigned int entityID, const CircleColliderComponent& replacement) {
+    try {
+      m_CircleColliders.extract(entityID);
+    }
+    catch(const std::exception& e){}
+    m_CircleColliders.insert({entityID,replacement});
+  }
+
   TransformComponent Scene::GetTransform(const unsigned int entityID) {
     return m_Transforms.at(entityID);
   }
@@ -155,6 +172,10 @@ namespace Sprocket {
 
   BoxColliderComponent Scene::GetBoxCollider(const unsigned int entityID) {
     return m_BoxColliders.at(entityID);
+  }
+
+  CircleColliderComponent Scene::GetCircleCollider(const unsigned int entityID) {
+    return m_CircleColliders.at(entityID);
   }
   
   

@@ -32,6 +32,7 @@ namespace Sprocket {
       unsigned int m_CameraEntityID = -1;
 
       std::map<unsigned int, BoxColliderComponent> m_BoxColliders;
+      std::map<unsigned int, CircleColliderComponent> m_CircleColliders;
       
     public:
 
@@ -48,15 +49,18 @@ namespace Sprocket {
       void AddComponent(const unsigned int entityID, const QuadRendererComponent& component);
       void AddComponent(const unsigned int entityID, const CameraComponent& component);
       void AddComponent(const unsigned int entityID, const BoxColliderComponent& component);
+      void AddComponent(const unsigned int entityID, const CircleColliderComponent& component);
       
       // TODO overload for all component types that can be added
       void UpdateComponent(const unsigned int entityID, const TransformComponent& replacement);
       void UpdateComponent(const unsigned int entityID, const QuadRendererComponent& replacement);
       void UpdateComponent(const unsigned int entityID, const BoxColliderComponent& replacement);
+      void UpdateComponent(const unsigned int entityID, const CircleColliderComponent& replacement);
       
       TransformComponent GetTransform(const unsigned int entityID);
       QuadRendererComponent GetQuadRenderer(const unsigned int entityID);
       BoxColliderComponent GetBoxCollider(const unsigned int entityID);
+      CircleColliderComponent GetCircleCollider(const unsigned int entityID);
 
   };
 
