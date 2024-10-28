@@ -4,6 +4,7 @@
 #include "Core/Macros.h"
 #include "Events/Event.h"
 #include "ECS/Component.h"
+#include "ECS/Collision.h"
 
 #include <map>
 #include <vector>
@@ -18,19 +19,26 @@ namespace Sprocket {
 
       // FIXME change these to vectors to utilize contiguous memory blocks
 
+      // SCENE TREE COMPONENTS
       unsigned int m_EntityCount = 0;
       // Stores the parentID of a given entity, if the parentID is -1, that indicates no parent
       std::vector<int> m_Parents;
       std::vector<std::vector<unsigned int>> m_Children;
+
+      // POSITION COMPONENTS
       // Local space transforms
       std::vector<TransformComponent> m_Transforms;
       // Global space transforms. Note that the global transform for a given entity actually 
       // corresponds to the global position for its parent. To get the true global position, the 
       // local transform needs to be applied.
       std::vector<TransformComponent> m_GlobalTransforms;
+
+      // RENDERING COMPONENTS
       std::map<unsigned int, QuadRendererComponent> m_QuadRenderers;
       unsigned int m_CameraEntityID = -1;
 
+      // TODO only allow an entity to have one or another
+      // PHYSICS COMPONENTS
       std::map<unsigned int, BoxColliderComponent> m_BoxColliders;
       std::map<unsigned int, CircleColliderComponent> m_CircleColliders;
       
@@ -61,6 +69,9 @@ namespace Sprocket {
       QuadRendererComponent GetQuadRenderer(const unsigned int entityID);
       BoxColliderComponent GetBoxCollider(const unsigned int entityID);
       CircleColliderComponent GetCircleCollider(const unsigned int entityID);
+
+      bool CheckCollides(const unsigned int entityID) const;
+      bool CheckCollides(const unsigned int entityID, const unsigned int otherEntityID) const;
 
   };
 

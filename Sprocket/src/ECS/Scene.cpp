@@ -178,7 +178,47 @@ namespace Sprocket {
     return m_CircleColliders.at(entityID);
   }
   
-  
+  bool Scene::CheckCollides(const unsigned int entityID) const {
+    //TODO
+    return false;
+  }
+
+  bool Scene::CheckCollides(const unsigned int entityID, const unsigned int otherEntityID) const {
+
+    try {
+
+      TransformComponent t = m_Transforms.at(entityID);
+      TransformComponent global = m_GlobalTransforms.at(entityID);
+      t.position += global.position;
+      t.rotation += global.rotation;
+      t.scale *= global.scale;
+
+      TransformComponent otherT = m_Transforms.at(otherEntityID);
+      TransformComponent otherGlobal = m_GlobalTransforms.at(otherEntityID);
+      otherT.position += otherGlobal.position;
+      otherT.rotation += otherGlobal.rotation;
+      otherT.scale *= otherGlobal.scale;
+
+      // If box colliders are found for both entities
+      if(m_BoxColliders.find(entityID) != m_BoxColliders.cend() && m_BoxColliders.find(otherEntityID) != m_BoxColliders.cend()) {
+        return Collision::Collides(m_BoxColliders.at(entityID), t, m_BoxColliders.at(otherEntityID), otherT);
+      }
+
+      // If circle colliders are found for both entities
+      else if(m_CircleColliders.find(entityID) != m_CircleColliders.cend() && m_CircleColliders.find(otherEntityID) != m_CircleColliders.cend()) {
+        return Collision::Collides(m_CircleColliders.at(entityID), t, m_CircleColliders.at(otherEntityID), otherT);
+      }
+
+      // TODO add box-circle collision
+
+    }
+    catch(const std::exception& e) {
+      return false; // If an exception occurs somewhere then return false
+    }
+
+    // If this is somehow reached, return false
+    return false;
+  }
   
 
 }

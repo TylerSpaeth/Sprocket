@@ -94,12 +94,10 @@ class TestApplication : public Sprocket::Application {
       
       {
         Scene* scene = SceneManager::GetActiveScene();
-        auto c1 = scene->GetBoxCollider(id5);
         auto t1 = scene->GetTransform(id5);
-        auto c2 = scene->GetBoxCollider(id6);
         auto t2 = scene->GetTransform(id6);
 
-        std::cout << Collision(c1,t1,c2,t2).Collides() << "\n";
+        std::cout << scene->CheckCollides(id5,id6) << "\n";
 
         if(Input::IsKeyPressed(KEY_UP)) {
           Scene* scene = SceneManager::GetActiveScene();
