@@ -107,9 +107,76 @@ namespace Sprocket {
       distance = sqrt(pow(xOffset,2) + pow(yOffset,2));
 
       // If the distance between the circles is less than the sum of the radii, then there is a collision
-      if(distance < c1.radius + c2.radius) return true;
+      if(distance < c1.radius*c1t.scale.x + c2.radius*c2t.scale.x) return true;
 
       return false;
+    }
+
+    //TODO verify that this all works properly with various scales and rotations 
+
+    // Box-Circle Collision
+    bool Collides(BoxColliderComponent b, TransformComponent bt, CircleColliderComponent c, TransformComponent ct) {
+
+      auto verts = GetVerts(b,bt);
+
+      // Iterate through edges
+      for(int i = 0; i < 4; i++) {
+        glm::vec2 p1 = verts[i];
+        glm::vec2 p2 = verts[(i+1)%4]; // Loop around
+
+        // Calculate the edge 
+        glm::vec2 edge = p2-p1;
+
+        // Calculate the vector from p1 to the center of the circle
+        glm::vec2 cToP1 = glm::vec2(ct.position.x, ct.position.y) - p1;
+
+        // Square the edge vector to normalize the edge
+        float el2 = glm::dot(edge,edge);
+
+        // Project the circles center onto the edge and clamp 
+        float t = glm::dot(cToP1,edge) / el2;
+        t = glm::clamp(t,0.0f,1.0f);
+
+        // Find the closest point on the edge from the circle
+        glm::vec2 closestPoint = p1 + t * edge;
+
+        // Calculate the distance between the closest point at the center of the circle
+        float distance = glm::length(glm::vec2(ct.position.x,ct.position.y)-closestPoint);
+
+        // If the distance between the circles center and the closest point on the box is not 
+        // greater than the scaled radius, then a collision occured
+        if(distance <= c.radius*ct.scale.x) {
+          return true;
+        }
+
+      }
+
+      // Check if the center of the circle is inside of the box
+      { 
+        // Get the circle center position relative to the box's position
+        glm::vec2 localCenter = ct.position - bt.position;
+
+        // Calculate the angles needs to rotate the circle into the correct local position
+        float cosAngle = cos(-ct.rotation.z);
+        float sinAngle = sin(-ct.rotation.z);
+
+        // Calculate the rotated center
+        glm::vec2 rotatedCenter;
+        rotatedCenter.x = localCenter.x * cosAngle - localCenter.y * sinAngle;
+        rotatedCenter.y = localCenter.x * sinAngle + localCenter.y * cosAngle;
+
+        // Check if the center falls within the bounds of the box
+        if(rotatedCenter.x < b.width/2*bt.scale.x && rotatedCenter.x > -b.width/2*bt.scale.x && 
+          rotatedCenter.y < b.height/2*bt.scale.y && rotatedCenter.y > -b.height/2*bt.scale.y) {
+          return true;
+        }
+      }
+
+      return false; // No collision found
+    }
+
+    bool Collides(CircleColliderComponent c, TransformComponent ct, BoxColliderComponent b, TransformComponent bt) {
+      return Collides(b,bt,c,ct);
     }
 
   }

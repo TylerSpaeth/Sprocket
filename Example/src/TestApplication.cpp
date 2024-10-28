@@ -73,18 +73,16 @@ class TestApplication : public Sprocket::Application {
       scene->AddComponent(id5, b);
 
       id6 = scene->CreateEntity();
-      qcomp.quadColor = {0,1,0,1};
-      BoxColliderComponent b2;
-      b2.height = 100;
-      b2.width = 100;
+      qcomp.texturePath = "../res/textures/Circle.png";
       scene->AddComponent(id6,qcomp);
-      scene->AddComponent(id6,b2);
+      CircleColliderComponent c;
+      c.radius = 50;
+      scene->AddComponent(id6,c);
+
       TransformComponent tc = scene->GetTransform(id6);
       tc.scale.x = .5;
       tc.scale.y = .5;
-      tc.rotation.z = 45;
       scene->UpdateComponent(id6,tc);
-      
     }
 
     bool increase = true;
