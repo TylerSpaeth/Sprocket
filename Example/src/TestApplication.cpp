@@ -72,7 +72,7 @@ class TestApplication : public Sprocket::Application {
       b.width = 100;
       scene->AddComponent(id5, b);
 
-      /*id6 = scene->CreateEntity();
+      id6 = scene->CreateEntity();
       qcomp.quadColor = {0,1,0,1};
       BoxColliderComponent b2;
       b2.height = 100;
@@ -83,18 +83,7 @@ class TestApplication : public Sprocket::Application {
       tc.scale.x = .5;
       tc.scale.y = .5;
       tc.rotation.z = 45;
-      scene->UpdateComponent(id6,tc);*/
-      qcomp.texturePath = "../res/textures/Circle.png";
-      id6 = scene->CreateEntity();
-      qcomp.quadColor = {0,1,0,1};
-      CircleColliderComponent b2;
-      b2.radius = 50;
-      scene->AddComponent(id6,qcomp);
-      scene->AddComponent(id6,b2);
-      //TransformComponent tc = scene->GetTransform(id6);
-      //tc.scale.x = .5;
-      //tc.scale.y = .5;
-      //scene->UpdateComponent(id6,tc);
+      scene->UpdateComponent(id6,tc);
       
     }
 
@@ -107,11 +96,10 @@ class TestApplication : public Sprocket::Application {
         Scene* scene = SceneManager::GetActiveScene();
         auto c1 = scene->GetBoxCollider(id5);
         auto t1 = scene->GetTransform(id5);
-        auto c2 = scene->GetCircleCollider(id6);
+        auto c2 = scene->GetBoxCollider(id6);
         auto t2 = scene->GetTransform(id6);
 
-        //std::cout << Collision(c1,t1,c2,t2).Collides() << "\n";
-        Collision(c1,t1,c2,t2);
+        std::cout << Collision(c1,t1,c2,t2).Collides() << "\n";
 
         if(Input::IsKeyPressed(KEY_UP)) {
           Scene* scene = SceneManager::GetActiveScene();

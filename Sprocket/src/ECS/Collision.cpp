@@ -59,19 +59,6 @@ namespace Sprocket {
 
   }
 
-  float DistanceToVert(const glm::vec2& vert, TransformComponent& point) {
-    float xOffset;
-    float yOffset;
-    float distance;
-
-    // Calculate the distance between the centers of the circles
-    xOffset = vert.x - point.position.x;
-    yOffset = vert.y - point.position.y;
-    distance = sqrt(exp2(xOffset) + exp2(yOffset));
-
-    return distance;
-  }
-
   /////////////////////////////////////////////////////////////////////////////////////////////////
   /////////////////////////////////////////////////////////////////////////////////////////////////
   /////////////////////////////////////////////////////////////////////////////////////////////////
@@ -117,7 +104,7 @@ namespace Sprocket {
     // Calculate the distance between the centers of the circles
     xOffset = c1t.position.x - c2t.position.x;
     yOffset = c1t.position.y - c2t.position.y;
-    distance = sqrt(exp2(xOffset) + exp2(yOffset));
+    distance = sqrt(pow(xOffset,2) + pow(yOffset,2));
 
     // If the distance between the circles is less than the sum of the radii, then there is a collision
     if(distance < c1.radius + c2.radius) m_Collide = true;
@@ -125,30 +112,6 @@ namespace Sprocket {
 
   // Box-Circle Collision
   Collision::Collision(BoxColliderComponent b, TransformComponent bt, CircleColliderComponent c, TransformComponent ct) {
-    std::vector<glm::vec2> normals = CalculateNormals(b, bt);
-
-    auto verts = GetVerts(b,bt);
-
-     for(glm::vec2 normal : normals) {
-      auto boxProjection = ProjectToAxis(b, bt, normal);
-
-      float proj = glm::dot({ct.position.x, ct.position.y},normal);
-      
-      if((boxProjection.second < proj - c.radius && boxProjection.first < proj - c.radius) || 
-        (boxProjection.second > proj + c.radius && boxProjection.first > proj + c.radius)) {
-        m_Collide = false;
-        return;
-      }
-    } 
-
-    std::cout << DistanceToVert(verts.at(1), ct) << "\n";
-
-    if(DistanceToVert(verts.at(0), ct) > c.radius && DistanceToVert(verts.at(1), ct) > c.radius && DistanceToVert(verts.at(2), ct) > c.radius && DistanceToVert(verts.at(3), ct) > c.radius) {
-        m_Collide = false;
-        return;
-    }
-
-    m_Collide = true;
 
     // TODO complete this kind of collision detection
   }

@@ -17,6 +17,8 @@ namespace Sprocket {
       Collision(BoxColliderComponent b1, TransformComponent b1t, BoxColliderComponent b2, TransformComponent b2t);
       // Circle-Circle Collision
       Collision(CircleColliderComponent c1, TransformComponent c1t, CircleColliderComponent c2, TransformComponent c2t);
+
+      // TODO implement these
       // Box-Circle Collision
       Collision(BoxColliderComponent b, TransformComponent bt, CircleColliderComponent c, TransformComponent ct);
       // Box-Circle Collision
