@@ -16,9 +16,16 @@ namespace Sprocket {
       int width, height, bitsPerPixel;
       mutable unsigned int m_Slot = -1;
     public:
+
+      /// @brief Constructs a new texture based on the given path.
+      /// @param path the filepath to the texture.
       Texture(const std::string& path);
+
+      /// @brief Removes this texture from OpenGL's textures.
       ~Texture();
 
+      /// @brief Binds this texture to the given texture slot.
+      /// @param slot the texture slot to bind this texture to.
       void Bind(unsigned int slot = 0) const;
       void Unbind() const;
 

@@ -52,6 +52,8 @@ namespace Sprocket {
       // TODO maybe use a priority to queue to store all the indexes of deleted quads. 
       // Then linear search is not needed
       unsigned int m_DeletedQuads = 0; 
+
+      /// @brief Draws the calculated quads to the screen
       void Draw();
 
       /// @brief Updates the quad at the given index to reflect any any changes to the 
@@ -114,7 +116,13 @@ namespace Sprocket {
       /// @param viewMatrix The view matrix that should be applied.
       static void SetViewMatrix(glm::mat4 viewMatrix);
 
+      /// @brief Updates the texture uniform for the given number of unique textures.
+      /// @param uniqueTextures the number of unique textures that are being used
       static void UpdateTextureUniform(unsigned int uniqueTextures);
+
+      /// @brief Adds a new texture based on the given path.
+      /// @param path the file path to the texture
+      /// @return the texture slot that the texture has been bound to
       static unsigned int AddTexture(const std::string& path);
 
     public:
