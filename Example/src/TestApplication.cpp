@@ -28,7 +28,7 @@ class TestApplication : public Sprocket::Application {
 
       scene->SetEntityParent(id2, id3);
       scene->SetEntityParent(id2, id);
-      auto t = scene->GetTransform(id2);
+      auto t = scene->GetComponent<TransformComponent>(id2);
       t.position.x += 100;
       scene->UpdateComponent(id2, t);
       
@@ -39,7 +39,7 @@ class TestApplication : public Sprocket::Application {
             auto id4 = scene->CreateEntity();
             qcomp.texturePath = "";
             scene->AddComponent(id4,qcomp);
-            TransformComponent tr = scene->GetTransform(id4);
+            TransformComponent tr = scene->GetComponent<TransformComponent>(id4);
             tr.position.x = i;
             tr.position.y = j;
             tr.position.z-=.01;
@@ -52,7 +52,7 @@ class TestApplication : public Sprocket::Application {
             auto id4 = scene->CreateEntity();
             qcomp.texturePath = "";
             scene->AddComponent(id4,qcomp);
-            TransformComponent tr = scene->GetTransform(id4);
+            TransformComponent tr = scene->GetComponent<TransformComponent>(id4);
             tr.position.x = i;
             tr.position.y = j;
             tr.position.z-=.01;
@@ -65,7 +65,7 @@ class TestApplication : public Sprocket::Application {
       qcomp.quadColor = {1,0,0,1};
       scene->AddComponent(id5, qcomp);
       BoxColliderComponent b;
-      TransformComponent transf = scene->GetTransform(id5);
+      TransformComponent transf = scene->GetComponent<TransformComponent>(id5);
       transf.position.x = -200;
       scene->UpdateComponent(id5,transf);
       b.height = 100;
@@ -79,7 +79,7 @@ class TestApplication : public Sprocket::Application {
       c.radius = 50;
       scene->AddComponent(id6,c);
 
-      TransformComponent tc = scene->GetTransform(id6);
+      TransformComponent tc = scene->GetComponent<TransformComponent>(id6);
       tc.scale.x = .5;
       tc.scale.y = .5;
       scene->UpdateComponent(id6,tc);
@@ -92,8 +92,8 @@ class TestApplication : public Sprocket::Application {
       
       {
         Scene* scene = SceneManager::GetActiveScene();
-        auto t1 = scene->GetTransform(id5);
-        auto t2 = scene->GetTransform(id6);
+        auto t1 = scene->GetComponent<TransformComponent>(id5);
+        auto t2 = scene->GetComponent<TransformComponent>(id6);
 
         std::cout << scene->CheckCollides(id5,id6) << "\n";
 
@@ -128,7 +128,7 @@ class TestApplication : public Sprocket::Application {
       // Rotate the first child clockwise if space is pressed
       if(Sprocket::Input::IsKeyPressed(Sprocket::KEY_SPACE)) {
         Scene* scene = SceneManager::GetActiveScene();
-        TransformComponent t = scene->GetTransform(0);
+        TransformComponent t = scene->GetComponent<TransformComponent>(0);
         t.rotation.z += deltaTime*40;
         scene->UpdateComponent(0,t);
       }
@@ -136,7 +136,7 @@ class TestApplication : public Sprocket::Application {
       // Change the color of the first quad if x is pressed
       if(Sprocket::Input::IsKeyPressed(Sprocket::KEY_X)) {
         Scene* scene = SceneManager::GetActiveScene();
-        QuadRendererComponent q = scene->GetQuadRenderer(0);
+        QuadRendererComponent q = scene->GetComponent<QuadRendererComponent>(0);
         if(increase) {
           q.quadColor.x = q.quadColor.x + deltaTime;
         }
@@ -156,25 +156,25 @@ class TestApplication : public Sprocket::Application {
       // Moving the camera around the scene
       if(Sprocket::Input::IsKeyPressed(KEY_W)) {
         Scene* scene = SceneManager::GetActiveScene();
-        TransformComponent t = scene->GetTransform(2);
+        TransformComponent t = scene->GetComponent<TransformComponent>(2);
         t.position.y += 80*deltaTime;
         scene->UpdateComponent(2,t);
       } 
       if(Sprocket::Input::IsKeyPressed(KEY_A)) {
         Scene* scene = SceneManager::GetActiveScene();
-        TransformComponent t = scene->GetTransform(2);
+        TransformComponent t = scene->GetComponent<TransformComponent>(2);
         t.position.x -= 80*deltaTime;
         scene->UpdateComponent(2,t);
       }
       if(Sprocket::Input::IsKeyPressed(KEY_S)) {
         Scene* scene = SceneManager::GetActiveScene();
-        TransformComponent t = scene->GetTransform(2);
+        TransformComponent t = scene->GetComponent<TransformComponent>(2);
         t.position.y -= 80*deltaTime;
         scene->UpdateComponent(2,t);
       }
       if(Sprocket::Input::IsKeyPressed(KEY_D)) {
         Scene* scene = SceneManager::GetActiveScene();
-        TransformComponent t = scene->GetTransform(2);
+        TransformComponent t = scene->GetComponent<TransformComponent>(2);
         t.position.x += 80*deltaTime;
         scene->UpdateComponent(2,t);
       }

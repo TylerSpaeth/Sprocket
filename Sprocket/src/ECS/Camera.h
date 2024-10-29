@@ -30,6 +30,9 @@ namespace Sprocket {
       }
     
     public:
+
+      /// @brief Sets the position, rotation, and scale of the camera to the given transform
+      /// @param transform the new transform for the camera
       static void UpdateCameraPosition(TransformComponent transform) {
         RenderUpdateEvent* update = new RenderUpdateEvent(RenderUpdateType::VIEW_MATRIX);
         

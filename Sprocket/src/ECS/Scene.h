@@ -8,6 +8,7 @@
 
 #include <map>
 #include <vector>
+#include <stdexcept>
 
 namespace Sprocket {
 
@@ -64,16 +65,39 @@ namespace Sprocket {
       void UpdateComponent(const unsigned int entityID, const QuadRendererComponent& replacement);
       void UpdateComponent(const unsigned int entityID, const BoxColliderComponent& replacement);
       void UpdateComponent(const unsigned int entityID, const CircleColliderComponent& replacement);
-      
-      TransformComponent GetTransform(const unsigned int entityID);
-      QuadRendererComponent GetQuadRenderer(const unsigned int entityID);
-      BoxColliderComponent GetBoxCollider(const unsigned int entityID);
-      CircleColliderComponent GetCircleCollider(const unsigned int entityID);
+
+      template<typename T>
+      T GetComponent(const unsigned int entityID) {
+        std::invalid_argument("You can only get components of a valid component type.");
+      }
 
       bool CheckCollides(const unsigned int entityID) const;
       bool CheckCollides(const unsigned int entityID, const unsigned int otherEntityID) const;
 
   };
+
+
+  // TODO Add template for all component types
+  
+  template<>
+  inline TransformComponent Scene::GetComponent<TransformComponent>(const unsigned int entityID) {
+    return m_Transforms.at(entityID);
+  }
+
+  template<>
+  inline QuadRendererComponent Scene::GetComponent<QuadRendererComponent>(const unsigned int entityID) {
+    return m_QuadRenderers.at(entityID);
+  }
+
+  template<>
+  inline BoxColliderComponent Scene::GetComponent<BoxColliderComponent>(const unsigned int entityID) {
+    return m_BoxColliders.at(entityID);
+  }
+
+  template<>
+  inline CircleColliderComponent Scene::GetComponent<CircleColliderComponent>(const unsigned int entityID) {
+    return m_CircleColliders.at(entityID);
+  }
 
 }
 
