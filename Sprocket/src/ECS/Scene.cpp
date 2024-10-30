@@ -62,8 +62,10 @@ namespace Sprocket {
   /////////////////////////////////////////////////////////////////////////////////////////////////
 
   void Scene::AddComponent(const unsigned int entityID, const QuadRendererComponent& component) {
+
     try {
       m_QuadRenderers.at(entityID);
+      std::invalid_argument("This entity already has a QuadRendererComponent. An entity may only hold a single quad renderer.");
     } 
     catch(const std::exception& e) {
       m_QuadRenderers.insert({entityID,component});
@@ -95,8 +97,14 @@ namespace Sprocket {
   }
 
   void Scene::AddComponent(const unsigned int entityID, const BoxColliderComponent& component) {
+
+    if(m_CircleColliders.find(entityID) != m_CircleColliders.cend()) {
+      std::invalid_argument("This entity already has a circle collider. An entity may only have a single collider of any type.");
+    }
+
     try {
       m_BoxColliders.at(entityID);
+      std::invalid_argument("This entity already has a box collider. An entity may only have a single collider of any type.");
     }
     catch(const std::exception& e) {
       m_BoxColliders.insert({entityID,component});
@@ -104,8 +112,14 @@ namespace Sprocket {
   }
 
   void Scene::AddComponent(const unsigned int entityID, const CircleColliderComponent& component) {
+
+    if(m_BoxColliders.find(entityID) != m_BoxColliders.cend()) {
+      std::invalid_argument("This entity already has a box collider. An entity may only have a single collider of any type.");
+    }
+
     try {
       m_CircleColliders.at(entityID);
+      std::invalid_argument("This entity already has a circle collider. An entity may only have a single collider of any type.");
     }
     catch(const std::exception& e) {
       m_CircleColliders.insert({entityID,component});

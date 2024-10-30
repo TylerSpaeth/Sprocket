@@ -38,7 +38,6 @@ namespace Sprocket {
       std::map<unsigned int, QuadRendererComponent> m_QuadRenderers;
       unsigned int m_CameraEntityID = -1;
 
-      // TODO only allow an entity to have one or another
       // PHYSICS COMPONENTS
       std::map<unsigned int, BoxColliderComponent> m_BoxColliders;
       std::map<unsigned int, CircleColliderComponent> m_CircleColliders;
