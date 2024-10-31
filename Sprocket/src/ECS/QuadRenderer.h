@@ -33,6 +33,9 @@ namespace Sprocket {
       static void SetModelMatrix(TransformComponent transform, QuadRendererComponent& renderer);
 
       static void UpdateQuad(QuadRendererComponent& renderer);
+
+      // TODO verify this works
+      static void DeleteQuad(QuadRendererComponent& renderer);
   };
 
 }

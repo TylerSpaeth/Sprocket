@@ -34,6 +34,7 @@ namespace Sprocket {
       // local transform needs to be applied.
       std::vector<TransformComponent> m_GlobalTransforms;
 
+      // TODO do not allow the camera to have a quad renderer
       // RENDERING COMPONENTS
       std::map<unsigned int, QuadRendererComponent> m_QuadRenderers;
       unsigned int m_CameraEntityID = -1;
@@ -67,7 +68,12 @@ namespace Sprocket {
 
       template<typename T>
       T GetComponent(const unsigned int entityID) {
-        std::invalid_argument("You can only get components of a valid component type.");
+        throw std::invalid_argument("You can only get components of a valid component type.");
+      }
+
+      template<typename T>
+      void RemoveComponent(const unsigned int entityID) {
+        throw std::invalid_argument("You can only remove components of a valid component type.");
       }
 
       bool CheckCollides(const unsigned int entityID) const;

@@ -36,4 +36,9 @@ namespace Sprocket {
     s_Instance->m_EventCallback(*update);
   }
 
+  void QuadRenderer::DeleteQuad(QuadRendererComponent& renderer) {
+    RenderDeleteEvent* e = new RenderDeleteEvent(renderer.quadID);
+    s_Instance->m_EventCallback(*e);
+  }
+
 }
