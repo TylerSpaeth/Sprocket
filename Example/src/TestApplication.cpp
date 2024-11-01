@@ -85,18 +85,35 @@ class TestApplication : public Sprocket::Application {
       scene->UpdateComponent(id6,tc);
     }
 
-    bool increase = true;
+    bool collide = false;
     void Update(float deltaTime) {
       using namespace Sprocket;
-      //std::cout << (int) (1000000 / (deltaTime * 1000000)) << "\n";
+
+      // Print frame time and fps
+      //std::cout << deltaTime * 1000 << "ms " <<(int) (1000000 / (deltaTime * 1000000)) << "fps\n";
       
       {
         Scene* scene = SceneManager::GetActiveScene();
         auto t1 = scene->GetComponent<TransformComponent>(id5);
         auto t2 = scene->GetComponent<TransformComponent>(id6);
 
-        std::cout << scene->CheckCollides(id5,id6) << "\n";
+        if(!collide) {
+        // Set id5 quad to white if collides with id6, otherwise blue
+        if(scene->CheckCollides(id5,id6)) {
+          auto tq = scene->GetComponent<QuadRendererComponent>(id5);
+          tq.quadColor = {1.0f,1.0f,1.0f,1.0f};
+          scene->UpdateComponent(id5,tq);
+          scene->DeleteEntity(id6);
+          collide = true;
+        }
+        else {
+          auto tq = scene->GetComponent<QuadRendererComponent>(id5);
+          tq.quadColor = {0.0f,0.0f,1.0f,1.0f};
+          scene->UpdateComponent(id5,tq);
+        }
+        }
 
+        // Move id6 around the screen with arrow keys
         if(Input::IsKeyPressed(KEY_UP)) {
           Scene* scene = SceneManager::GetActiveScene();
           t2.position.y += deltaTime*80;
@@ -119,7 +136,7 @@ class TestApplication : public Sprocket::Application {
         }
       }
 
-
+      // Close on escape
       if(Input::IsKeyPressed(KEY_ESCAPE)) {
         WindowCloseEvent* wc = new WindowCloseEvent();
         OnEvent(*wc);
@@ -131,26 +148,6 @@ class TestApplication : public Sprocket::Application {
         TransformComponent t = scene->GetComponent<TransformComponent>(0);
         t.rotation.z += deltaTime*40;
         scene->UpdateComponent(0,t);
-      }
-
-      // Change the color of the first quad if x is pressed
-      if(Sprocket::Input::IsKeyPressed(Sprocket::KEY_X)) {
-        Scene* scene = SceneManager::GetActiveScene();
-        QuadRendererComponent q = scene->GetComponent<QuadRendererComponent>(0);
-        if(increase) {
-          q.quadColor.x = q.quadColor.x + deltaTime;
-        }
-        else {
-          q.quadColor.x = q.quadColor.x - deltaTime;
-        }
-        if(q.quadColor.x >= .99) {
-          increase = false;
-        }
-        else if(q.quadColor.x <= .01) {
-          increase = true;
-        }
-        scene->UpdateComponent(0,q);
-        
       }
 
       // Moving the camera around the scene

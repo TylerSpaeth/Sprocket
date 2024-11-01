@@ -34,7 +34,6 @@ namespace Sprocket {
 
       static void UpdateQuad(QuadRendererComponent& renderer);
 
-      // TODO verify this works
       static void DeleteQuad(QuadRendererComponent& renderer);
   };
 

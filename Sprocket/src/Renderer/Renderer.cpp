@@ -249,12 +249,13 @@ namespace Sprocket {
   // returned.
 
   bool Renderer::RemoveQuad(const unsigned int quadIndex) {
-
+    // FIXME there is some ineffiency here
     try {
       s_Instance->m_Quads.at(quadIndex) = ClearedQuad;
       s_Instance->m_CalculatedQuads.at(quadIndex) = ClearedQuad;
       s_Instance->m_ModelMatrices.at(quadIndex) = glm::translate(glm::mat4(1), glm::vec3(0,0,0));
       s_Instance->m_DeletedQuads++;
+      UpdateCalculatedQuads(quadIndex);
     }
     catch(const std::exception& e) {
       return false;

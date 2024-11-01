@@ -24,6 +24,37 @@ namespace Sprocket {
     return m_EntityCount++;
   }
 
+  // FIXME right now this only deletes all of the components except for the transform. Need to finish this
+  void Scene::DeleteEntity(const unsigned int entityID) {
+
+    // Try to delete the quad renderer
+    if(m_QuadRenderers.count(entityID)) {
+      QuadRenderer::DeleteQuad(m_QuadRenderers.at(entityID));
+      m_QuadRenderers.erase(entityID);
+    }
+
+    // Delete a collider if it has one
+    if(m_BoxColliders.count(entityID)) {
+      m_BoxColliders.extract(entityID);
+    }
+    else if(m_CircleColliders.count(entityID)) {
+      m_CircleColliders.extract(entityID);
+    }
+
+    // If this has a camera component remove it
+    if(m_CameraEntityID == entityID) {
+      m_CameraEntityID = -1;
+    }
+
+    // Set the parent of all children to the parent of this entity
+    for(auto child : m_Children.at(entityID)) {
+      SetEntityParent(child, m_Parents.at(entityID));
+    }
+
+    SetEntityParent(entityID,-1);
+
+  }
+
   // TODO there is a better way to do this, this is just going to work for now
   void Scene::SetEntityParent(const unsigned int entityID, const unsigned int parentID) {
 
@@ -34,12 +65,22 @@ namespace Sprocket {
       auto it = std::find(m_Children.at(currentParent).begin(), m_Children.at(currentParent).end(), entityID);
       m_Children.at(currentParent).erase(it);
     }
-   
-    // Add this entity as a child of the given parent
-    m_Children.at(parentID).push_back(entityID);
 
     // Set the parentID
     m_Parents.at(entityID) = parentID;
+
+    // If attempting to set the entity to have no parent, makes its global transfrom default
+    if(parentID == -1) {
+      m_GlobalTransforms.at(entityID).position = {0,0,0};
+      m_GlobalTransforms.at(entityID).position = {0,0,0};
+      m_GlobalTransforms.at(entityID).scale = {1,1,1};
+      return;
+    }
+
+    // All of the below only occurs if setting an actual parent
+   
+    // Add this entity as a child of the given parent
+    m_Children.at(parentID).push_back(entityID);
 
     // Calculate the global position of the parent and set that as the global position of the child
     TransformComponent global = m_GlobalTransforms.at(parentID);
@@ -62,14 +103,12 @@ namespace Sprocket {
   /////////////////////////////////////////////////////////////////////////////////////////////////
 
   void Scene::AddComponent(const unsigned int entityID, const QuadRendererComponent& component) {
-
-    try {
-      m_QuadRenderers.at(entityID);
+    
+    if(m_QuadRenderers.count(entityID)) {
       throw std::invalid_argument("This entity already has a QuadRendererComponent. An entity may only hold a single quad renderer.");
-    } 
-    catch(const std::exception& e) {
-      m_QuadRenderers.insert({entityID,component});
     }
+   
+    m_QuadRenderers.insert({entityID,component});
 
     QuadRenderer::RenderNewQuad(m_Transforms.at(entityID), m_QuadRenderers.at(entityID));
     QuadRenderer::UpdateQuad(m_QuadRenderers.at(entityID));
@@ -135,6 +174,7 @@ namespace Sprocket {
   /////////////////////////////////////////////////////////////////////////////////////////////////
 
   void Scene::UpdateComponent(const unsigned int entityID, const TransformComponent& replacement) {
+
     // Update the local transform
     m_Transforms.at(entityID).position = replacement.position;
     m_Transforms.at(entityID).rotation = replacement.rotation;
@@ -149,7 +189,7 @@ namespace Sprocket {
 
     // TODO also check that the entity has a QuadRendererComponent
     // Check whether this transform change will affect a camera or model matrix
-    if(m_CameraEntityID != entityID && m_QuadRenderers.find(entityID) != m_QuadRenderers.cend()) {
+    if(m_CameraEntityID != entityID && m_QuadRenderers.count(entityID)) {
       // Set the model matrix with the global transform
       QuadRenderer::SetModelMatrix(globalTransform, m_QuadRenderers.at(entityID));
     }
@@ -171,28 +211,26 @@ namespace Sprocket {
   void Scene::UpdateComponent(const unsigned int entityID, const QuadRendererComponent& replacement) {
     // Try to remove the old quad renderer and replace it with the new one. Then send an update 
     // quad call to the quad renderer so the updated data is reflected.
-    try {
+    if(m_QuadRenderers.count(entityID)) {
       m_QuadRenderers.extract(entityID);
-    } 
-    catch(const std::exception& e) {}
-    m_QuadRenderers.insert({entityID,replacement});
-    QuadRenderer::UpdateQuad(m_QuadRenderers.at(entityID));
+      m_QuadRenderers.insert({entityID,replacement});
+      QuadRenderer::UpdateQuad(m_QuadRenderers.at(entityID));
+    }
+    
   }
 
   void Scene::UpdateComponent(const unsigned int entityID, const BoxColliderComponent& replacement) {
-    try {
+    if(m_BoxColliders.count(entityID)) {
       m_BoxColliders.extract(entityID);
+      m_BoxColliders.insert({entityID,replacement});
     }
-    catch(const std::exception& e){}
-    m_BoxColliders.insert({entityID,replacement});
   }
 
   void Scene::UpdateComponent(const unsigned int entityID, const CircleColliderComponent& replacement) {
-    try {
+    if(m_CircleColliders.count(entityID)) {
       m_CircleColliders.extract(entityID);
+      m_CircleColliders.insert({entityID,replacement});
     }
-    catch(const std::exception& e){}
-    m_CircleColliders.insert({entityID,replacement});
   }
 
   /////////////////////////////////////////////////////////////////////////////////////////////////

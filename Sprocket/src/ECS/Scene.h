@@ -27,6 +27,9 @@ namespace Sprocket {
       std::vector<std::vector<unsigned int>> m_Children;
 
       // POSITION COMPONENTS
+      // These can not be added or removed, only updated. To remove a transform would be to delete
+      // the entity.
+
       // Local space transforms
       std::vector<TransformComponent> m_Transforms;
       // Global space transforms. Note that the global transform for a given entity actually 
@@ -51,7 +54,8 @@ namespace Sprocket {
       void OnEvent(Event& event);
 
       // Creates a transform and sets an id for a new entity
-      unsigned int CreateEntity(); 
+      unsigned int CreateEntity();
+      void DeleteEntity(const unsigned int entityID); 
       void SetEntityParent(const unsigned int entityID, const unsigned int parentID);
 
       // TODO overload for all component types that can be added
@@ -91,16 +95,25 @@ namespace Sprocket {
 
   template<>
   inline QuadRendererComponent Scene::GetComponent<QuadRendererComponent>(const unsigned int entityID) {
+    if(!m_QuadRenderers.count(entityID)) {
+      throw std::invalid_argument("There is no QuadRendererComponent for this entity.");
+    }
     return m_QuadRenderers.at(entityID);
   }
 
   template<>
   inline BoxColliderComponent Scene::GetComponent<BoxColliderComponent>(const unsigned int entityID) {
+    if(!m_BoxColliders.count(entityID)) {
+      throw std::invalid_argument("There is no BoxColliderComponent for this entity.");
+    }
     return m_BoxColliders.at(entityID);
   }
 
   template<>
   inline CircleColliderComponent Scene::GetComponent<CircleColliderComponent>(const unsigned int entityID) {
+    if(!m_CircleColliders.count(entityID)) {
+      throw std::invalid_argument("There is no CircleColliderComponent for this entity.");
+    }
     return m_CircleColliders.at(entityID);
   }
 
