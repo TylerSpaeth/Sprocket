@@ -37,7 +37,6 @@ namespace Sprocket {
       // local transform needs to be applied.
       std::vector<TransformComponent> m_GlobalTransforms;
 
-      // TODO do not allow the camera to have a quad renderer
       // RENDERING COMPONENTS
       std::map<unsigned int, QuadRendererComponent> m_QuadRenderers;
       unsigned int m_CameraEntityID = -1;

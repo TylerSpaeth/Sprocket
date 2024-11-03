@@ -211,14 +211,14 @@ namespace Sprocket {
       std::invalid_argument("A quad must have a positive, nonzero size.");
     }
 
-    if(s_Instance->m_Quads.size() - s_Instance->m_DeletedQuads >= s_Instance->m_MaxQuads) {
+    if(s_Instance->m_Quads.size() - s_Instance->m_DeletedQuadIndexes.size() >= s_Instance->m_MaxQuads) {
       std::runtime_error("The maximum number of quads has already been reached. To use more quads, change the increase the amount at intialization.");
     }
 
     auto quad = CreateQuad(size, 0);
 
     // If there are no gaps in the vector then just push to the back
-    if(s_Instance->m_DeletedQuads == 0) {
+    if(s_Instance->m_DeletedQuadIndexes.size() == 0) {
       s_Instance->m_Quads.push_back(quad);
       s_Instance->m_CalculatedQuads.push_back(quad);
       // Add a new model matrix to the back of the quads vector set to the identity matrix
@@ -229,16 +229,13 @@ namespace Sprocket {
       return s_Instance->m_Quads.size()-1;
     }
 
-    // Check for an open slot in the vector from a deleted quad 
-    for(int i = 0; i < s_Instance->m_Quads.size(); i++) {
-      if(IsQuadEmpty(s_Instance->m_Quads.at(i))) {
-        s_Instance->m_Quads.at(i) = quad;
-        s_Instance->UpdateCalculatedQuads(i);
-        s_Instance->m_DeletedQuads--;
-        return i;
-      }
-    }
-
+    // Find the next deleted Quad in the vector
+    auto nextOpen = s_Instance->m_DeletedQuadIndexes.top();
+    s_Instance->m_Quads.at(nextOpen) = quad;
+    s_Instance->UpdateCalculatedQuads(nextOpen);
+    s_Instance->m_DeletedQuadIndexes.pop();
+    return nextOpen;
+    
     return -1; // Some kind of error occured if this is reached
   }
 
@@ -254,7 +251,7 @@ namespace Sprocket {
       s_Instance->m_Quads.at(quadIndex) = ClearedQuad;
       s_Instance->m_CalculatedQuads.at(quadIndex) = ClearedQuad;
       s_Instance->m_ModelMatrices.at(quadIndex) = glm::translate(glm::mat4(1), glm::vec3(0,0,0));
-      s_Instance->m_DeletedQuads++;
+      s_Instance->m_DeletedQuadIndexes.push(quadIndex);
       UpdateCalculatedQuads(quadIndex);
     }
     catch(const std::exception& e) {

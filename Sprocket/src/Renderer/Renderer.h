@@ -13,6 +13,7 @@
 
 #include <array>
 #include <vector>
+#include <queue>
 
 namespace Sprocket {
 
@@ -49,9 +50,8 @@ namespace Sprocket {
       mutable std::vector<std::array<Vertex, 4>> m_CalculatedQuads;
       mutable std::vector<glm::mat4> m_ModelMatrices;
       mutable std::vector<Texture*> m_BoundTextures; 
-      // TODO maybe use a priority to queue to store all the indexes of deleted quads. 
-      // Then linear search is not needed
-      unsigned int m_DeletedQuads = 0; 
+
+      std::priority_queue<unsigned int, std::vector<unsigned int>, std::greater<unsigned int>> m_DeletedQuadIndexes;
 
       /// @brief Draws the calculated quads to the screen
       void Draw();

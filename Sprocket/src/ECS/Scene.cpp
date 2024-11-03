@@ -107,6 +107,10 @@ namespace Sprocket {
     if(m_QuadRenderers.count(entityID)) {
       throw std::invalid_argument("This entity already has a QuadRendererComponent. An entity may only hold a single quad renderer.");
     }
+
+    if(m_CameraEntityID == entityID) {
+      throw std::invalid_argument("This entity has a camera component attached and therefor can not have a QuadRendererComponent.");
+    }
    
     m_QuadRenderers.insert({entityID,component});
 
@@ -125,7 +129,11 @@ namespace Sprocket {
   void Scene::AddComponent(const unsigned int entityID, const CameraComponent& component) {
 
     if(m_CameraEntityID != -1) {
-      std::runtime_error("There is already a camera in this scene.");
+      throw std::runtime_error("There is already a camera in this scene.");
+    }
+
+    if(m_QuadRenderers.count(entityID)) {
+      throw std::invalid_argument("This entity has a QuadRendererComponent attached to it. Remove that before adding a CameraComponent.");
     }
 
     m_CameraEntityID = entityID;
@@ -187,7 +195,6 @@ namespace Sprocket {
     globalTransform.rotation += localTransform.rotation;
     globalTransform.scale *= localTransform.scale;
 
-    // TODO also check that the entity has a QuadRendererComponent
     // Check whether this transform change will affect a camera or model matrix
     if(m_CameraEntityID != entityID && m_QuadRenderers.count(entityID)) {
       // Set the model matrix with the global transform
