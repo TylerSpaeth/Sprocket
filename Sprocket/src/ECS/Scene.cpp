@@ -2,6 +2,8 @@
 #include "ECS/QuadRenderer.h"
 #include "ECS/Camera.h"
 
+#include "Events/ApplicationEvent.h"
+
 #include <iostream>
 #include <algorithm>
 #include <stdexcept>
@@ -9,7 +11,23 @@
 namespace Sprocket {
 
   void Scene::OnEvent(Event& event) {
+    switch(event.GetEventType()) {
+      case EventType::APP_UPDATE:
+        OnUpdate(((ApplicationUpdateEvent&)event).GetDeltaTime());
+        break;
+      case EventType::WINDOW_CLOSE:
+        OnClose();
+        break;
+    }
     //TODO handle events
+  }
+
+  void Scene::OnUpdate(float deltaTime) {
+
+  }
+
+  void Scene::OnClose() {
+
   }
 
   /////////////////////////////////////////////////////////////////////////////////////////////////
@@ -313,6 +331,10 @@ namespace Sprocket {
   /////////////////////////////////////////////////////////////////////////////////////////////////
   /////////////////////////////////////////////////////////////////////////////////////////////////
   /////////////////////////////////////////////////////////////////////////////////////////////////
-  
+
+  // TODO make sure this is valid to do
+  void Scene::RemoveQuadRenderer(const unsigned int entityID) {
+    QuadRenderer::DeleteQuad(m_QuadRenderers.at(entityID));
+  }
 
 }

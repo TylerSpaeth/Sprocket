@@ -9,6 +9,7 @@
 #include <map>
 #include <vector>
 #include <stdexcept>
+#include <iostream>
 
 namespace Sprocket {
 
@@ -44,6 +45,11 @@ namespace Sprocket {
       // PHYSICS COMPONENTS
       std::map<unsigned int, BoxColliderComponent> m_BoxColliders;
       std::map<unsigned int, CircleColliderComponent> m_CircleColliders;
+
+      void RemoveQuadRenderer(const unsigned int entityID);
+
+      void OnUpdate(float deltaTime);
+      void OnClose();
       
     public:
 
@@ -86,6 +92,8 @@ namespace Sprocket {
 
 
   // TODO Add template for all component types
+
+  // Retrieval Functions
   
   template<>
   inline TransformComponent Scene::GetComponent<TransformComponent>(const unsigned int entityID) {
@@ -115,6 +123,64 @@ namespace Sprocket {
     }
     return m_CircleColliders.at(entityID);
   }
+
+  // Removal Functions
+
+  template<>
+  inline void Scene::RemoveComponent<QuadRendererComponent>(const unsigned int entityID) {
+    if(m_QuadRenderers.count(entityID)) {
+      RemoveQuadRenderer(entityID);
+      return;
+    }
+    
+    throw std::invalid_argument("This entity does not have a QuadRendererComponent.");
+  }
+
+  template<>
+  inline void Scene::RemoveComponent<BoxColliderComponent>(const unsigned int entityID) {
+    if(m_BoxColliders.count(entityID)) {
+      m_BoxColliders.extract(entityID);
+      return;
+    }
+    
+    throw std::invalid_argument("This entity does not have a BoxColliderComponent.");
+  }
+
+  template<>
+  inline void Scene::RemoveComponent<CircleColliderComponent>(const unsigned int entityID) {
+    if(m_CircleColliders.count(entityID)) {
+      m_CircleColliders.extract(entityID);
+      return;
+    }
+    
+    throw std::invalid_argument("This entity does not have a CircleColliderComponent.");
+  }
+
+  template<>
+  inline void Scene::RemoveComponent<ColliderComponent>(const unsigned int entityID) {
+    // First try to remove BoxColliderComponent, if that fails try to remove a 
+    // CircleColliderComponent. If that too fails, then there are no colliders on this entity.
+    try {
+      RemoveComponent<BoxColliderComponent>(entityID);
+    }
+    catch(const std::exception& e) {
+      try {
+        RemoveComponent<CircleColliderComponent>(entityID);
+      }
+      catch(const std::exception& e) {
+        throw std::invalid_argument("This entity does not have a collider.");
+      }
+    }
+  }
+
+  template<>
+  inline void Scene::RemoveComponent<CameraComponent>(const unsigned int entityID) {
+    if(entityID != m_CameraEntityID) {
+      throw std::invalid_argument("This entity does not have a camera component.");
+    }
+    m_CameraEntityID = -1;
+  }
+
 
 }
 
