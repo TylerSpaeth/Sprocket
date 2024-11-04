@@ -350,6 +350,21 @@ namespace Sprocket {
     return s_Instance->m_BoundTextures.size();
   }
 
+  void Renderer::UpdateCalculatedQuads(const unsigned int index) {
+    auto quad = s_Instance->m_Quads.at(index);
+    auto modelMatrix = s_Instance->m_ModelMatrices.at(index);
+    for(int j = 0; j < 4; j++) {
+      quad[j].Position = modelMatrix * glm::vec4(quad.at(j).Position, 1.0f);
+    }
+
+    s_Instance->m_CalculatedQuads[index] = quad;
+
+    // Update the GPU's data to reflect this
+    s_Instance->m_VertexBuffer->Bind();
+    glBufferSubData(GL_ARRAY_BUFFER, index*4*sizeof(Vertex), sizeof(Vertex) * 4, &s_Instance->m_CalculatedQuads[index]);
+    s_Instance->m_VertexBuffer->Unbind();
+  }
+
   ////////////////////////////////////////////////////////////////////////////////////
   ////////////////////////////////////////////////////////////////////////////////////
   ////////////////////////////////////////////////////////////////////////////////////
@@ -374,21 +389,6 @@ namespace Sprocket {
     m_IndexBuffer->Unbind();
     m_VertexArray->Unbind();
     m_Shader->Unbind();
-  }
-
-  void Renderer::UpdateCalculatedQuads(const unsigned int index) {
-    auto quad = s_Instance->m_Quads.at(index);
-    auto modelMatrix = s_Instance->m_ModelMatrices.at(index);
-    for(int j = 0; j < 4; j++) {
-      quad[j].Position = modelMatrix * glm::vec4(quad.at(j).Position, 1.0f);
-    }
-
-    s_Instance->m_CalculatedQuads[index] = quad;
-
-    // Update the GPU's data to reflect this
-    s_Instance->m_VertexBuffer->Bind();
-    glBufferSubData(GL_ARRAY_BUFFER, index*4*sizeof(Vertex), sizeof(Vertex) * 4, &s_Instance->m_CalculatedQuads[index]);
-    s_Instance->m_VertexBuffer->Unbind();
   }
 
   ////////////////////////////////////////////////////////////////////////////////////

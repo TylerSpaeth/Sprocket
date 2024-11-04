@@ -4,7 +4,6 @@
 #include "Core/Macros.h"
 #include "Events/Event.h"
 #include "ECS/Component.h"
-#include "ECS/Collision.h"
 
 #include <map>
 #include <vector>
@@ -43,8 +42,10 @@ namespace Sprocket {
       unsigned int m_CameraEntityID = -1;
 
       // PHYSICS COMPONENTS
+      void* m_Physics; // A pointer to a Physics object
       std::map<unsigned int, BoxColliderComponent> m_BoxColliders;
       std::map<unsigned int, CircleColliderComponent> m_CircleColliders;
+      std::map<unsigned int, PhysicsComponent> m_PhysicsComponents;
 
       void RemoveQuadRenderer(const unsigned int entityID);
 
@@ -52,6 +53,9 @@ namespace Sprocket {
       void OnClose();
       
     public:
+
+      Scene();
+      ~Scene();
 
       /// @brief Handles incoming events. Does not need to be registered as a callback. Should 
       /// instead be called directly be the Scene Manager when it recieves an event.
@@ -63,17 +67,21 @@ namespace Sprocket {
       void DeleteEntity(const unsigned int entityID); 
       void SetEntityParent(const unsigned int entityID, const unsigned int parentID);
 
+      // TODO make sure that these functions make appropriate calls to the physics system.
+
       // TODO overload for all component types that can be added
       void AddComponent(const unsigned int entityID, const QuadRendererComponent& component);
       void AddComponent(const unsigned int entityID, const CameraComponent& component);
       void AddComponent(const unsigned int entityID, const BoxColliderComponent& component);
       void AddComponent(const unsigned int entityID, const CircleColliderComponent& component);
+      void AddComponent(const unsigned int entityID, const PhysicsComponent& component);
       
       // TODO overload for all component types that can be added
       void UpdateComponent(const unsigned int entityID, const TransformComponent& replacement);
       void UpdateComponent(const unsigned int entityID, const QuadRendererComponent& replacement);
       void UpdateComponent(const unsigned int entityID, const BoxColliderComponent& replacement);
       void UpdateComponent(const unsigned int entityID, const CircleColliderComponent& replacement);
+      void UpdateComponent(const unsigned int entityID, const PhysicsComponent& component);
 
       template<typename T>
       T GetComponent(const unsigned int entityID) {
@@ -93,7 +101,9 @@ namespace Sprocket {
 
   // TODO Add template for all component types
 
-  // Retrieval Functions
+  /////////////////////////////////////////////////////////////////////////////////////////////////
+  /////////////////////////////////////////// RETRIEVAL ///////////////////////////////////////////
+  /////////////////////////////////////////////////////////////////////////////////////////////////
   
   template<>
   inline TransformComponent Scene::GetComponent<TransformComponent>(const unsigned int entityID) {
@@ -124,7 +134,21 @@ namespace Sprocket {
     return m_CircleColliders.at(entityID);
   }
 
-  // Removal Functions
+  template<>
+  inline PhysicsComponent Scene::GetComponent<PhysicsComponent>(const unsigned int entityID) {
+    if(!m_PhysicsComponents.count(entityID)) {
+      throw std::invalid_argument("There is not PhysicsComponent for this entity.");
+    }
+    return m_PhysicsComponents.at(entityID);
+  }
+
+  /////////////////////////////////////////////////////////////////////////////////////////////////
+  /////////////////////////////////////////////////////////////////////////////////////////////////
+  /////////////////////////////////////////////////////////////////////////////////////////////////
+
+  /////////////////////////////////////////////////////////////////////////////////////////////////
+  //////////////////////////////////////////// REMOVAL ////////////////////////////////////////////
+  /////////////////////////////////////////////////////////////////////////////////////////////////
 
   template<>
   inline void Scene::RemoveComponent<QuadRendererComponent>(const unsigned int entityID) {
@@ -180,6 +204,20 @@ namespace Sprocket {
     }
     m_CameraEntityID = -1;
   }
+
+  template<>
+  inline void Scene::RemoveComponent<PhysicsComponent>(const unsigned int entityID) {
+    if(m_PhysicsComponents.count(entityID)) {
+      m_PhysicsComponents.extract(entityID);
+      return;
+    }
+
+    throw std::invalid_argument("This entity does not have a PhysicsComponent.");
+  }
+
+  /////////////////////////////////////////////////////////////////////////////////////////////////
+  /////////////////////////////////////////////////////////////////////////////////////////////////
+  /////////////////////////////////////////////////////////////////////////////////////////////////
 
 
 }

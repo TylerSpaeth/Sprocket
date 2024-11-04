@@ -15,7 +15,8 @@ namespace Sprocket {
     QUAD_RENDERER_COMPONENT,
     CAMERA_COMPONENT,
     BOX_COLLIDER_COMPONENT,
-    CIRCLE_COLLIDER_COMPONENT
+    CIRCLE_COLLIDER_COMPONENT,
+    PHYSICS_COMPONENT
   };
 
   struct Component {
@@ -57,6 +58,15 @@ namespace Sprocket {
   struct CircleColliderComponent : public ColliderComponent {
     float radius;
     CircleColliderComponent() : ColliderComponent(ComponentType::CIRCLE_COLLIDER_COMPONENT){}
+  };
+
+  struct PhysicsComponent : public Component {
+    // PhysicsComponents that are marked as dynamic are expected to move and is the default.
+    // If set to false, then it is not expected to move.
+    bool dynamic = true;
+    // This ID is used to reference a physic object in the physics system
+    int phyiscsID = -1;
+    PhysicsComponent() : Component(ComponentType::PHYSICS_COMPONENT){}
   };
 
 }

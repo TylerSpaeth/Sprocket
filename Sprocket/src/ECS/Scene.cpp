@@ -1,6 +1,8 @@
 #include "ECS/Scene.h"
 #include "ECS/QuadRenderer.h"
 #include "ECS/Camera.h"
+#include "ECS/Collision.h"
+#include "ECS/Physics.h"
 
 #include "Events/ApplicationEvent.h"
 
@@ -9,6 +11,16 @@
 #include <stdexcept>
 
 namespace Sprocket {
+
+  Scene::Scene() : m_Physics(new Physics()) {}
+
+  Scene::~Scene() {
+    delete (Physics*)m_Physics;
+  }
+
+  /////////////////////////////////////////////////////////////////////////////////////////////////
+  //////////////////////////////////////// EVENT HANDLING /////////////////////////////////////////
+  /////////////////////////////////////////////////////////////////////////////////////////////////
 
   void Scene::OnEvent(Event& event) {
     switch(event.GetEventType()) {
@@ -23,12 +35,17 @@ namespace Sprocket {
   }
 
   void Scene::OnUpdate(float deltaTime) {
-
+    // Perform a physics update
+    ((Physics*)m_Physics)->OnUpdate(deltaTime);
   }
 
   void Scene::OnClose() {
 
   }
+
+  /////////////////////////////////////////////////////////////////////////////////////////////////
+  /////////////////////////////////////////////////////////////////////////////////////////////////
+  /////////////////////////////////////////////////////////////////////////////////////////////////
 
   /////////////////////////////////////////////////////////////////////////////////////////////////
   ///////////////////////////////////// SCENE TREE FUNCTIONS //////////////////////////////////////
@@ -57,6 +74,10 @@ namespace Sprocket {
     }
     else if(m_CircleColliders.count(entityID)) {
       m_CircleColliders.extract(entityID);
+    }
+
+    if(m_PhysicsComponents.count(entityID)) {
+      m_PhysicsComponents.extract(entityID);
     }
 
     // If this has a camera component remove it
@@ -173,6 +194,12 @@ namespace Sprocket {
     }
     catch(const std::exception& e) {
       m_BoxColliders.insert({entityID,component});
+      
+      // Check if the entity already has a physics component, and if not, add one
+      if(!m_PhysicsComponents.count(entityID)) {
+        m_PhysicsComponents.insert({entityID,PhysicsComponent()});
+      }
+
     }
   }
 
@@ -188,7 +215,21 @@ namespace Sprocket {
     }
     catch(const std::exception& e) {
       m_CircleColliders.insert({entityID,component});
+
+      // Check if the entity already has a physics component, and if not, add one
+      if(!m_PhysicsComponents.count(entityID)) {
+        m_PhysicsComponents.insert({entityID,PhysicsComponent()});
+      }
+
     }
+  }
+
+  void Scene::AddComponent(const unsigned int entityID, const PhysicsComponent& component) {
+    if(m_PhysicsComponents.count(entityID)) {
+      throw std::invalid_argument("This entity already has a PhysicsComponent. An entity may only hold a single PhysicsComponent.");
+    }
+
+    m_PhysicsComponents.insert({entityID,component});
   }
 
   /////////////////////////////////////////////////////////////////////////////////////////////////
@@ -255,6 +296,14 @@ namespace Sprocket {
     if(m_CircleColliders.count(entityID)) {
       m_CircleColliders.extract(entityID);
       m_CircleColliders.insert({entityID,replacement});
+    }
+  }
+
+  // TODO this may not work as desired along with the physics system
+  void Scene::UpdateComponent(const unsigned int entityID, const PhysicsComponent& component) {
+    if(m_PhysicsComponents.count(entityID)) {
+      m_PhysicsComponents.extract(entityID);
+      m_PhysicsComponents.insert({entityID,component});
     }
   }
 

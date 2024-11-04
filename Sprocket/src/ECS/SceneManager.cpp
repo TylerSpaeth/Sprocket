@@ -6,6 +6,26 @@
 
 namespace Sprocket {
 
+  /////////////////////////////////////////////////////////////////////////////////////////////////
+  //////////////////////////////////////// EVENT HANDLING /////////////////////////////////////////
+  /////////////////////////////////////////////////////////////////////////////////////////////////
+
+   void SceneManager::OnEvent(Event& event) {
+    // Propogate the call to the active scene
+    GetActiveScene()->OnEvent(event); 
+  }
+
+  void SceneManager::RegisterEventCallback(const std::function<void(Event&)> eventCallback) {
+    s_Instance->m_EventCallback = eventCallback;
+    // TODO register the eventcallback for all ECS systems that need access to main event system
+    QuadRenderer::s_Instance->m_EventCallback = eventCallback;
+    Camera::s_Instance->m_EventCallback = eventCallback;
+  }
+
+  /////////////////////////////////////////////////////////////////////////////////////////////////
+  /////////////////////////////////////////////////////////////////////////////////////////////////
+  /////////////////////////////////////////////////////////////////////////////////////////////////
+
   SceneManager* SceneManager::s_Instance = nullptr;
   QuadRenderer* QuadRenderer::s_Instance = nullptr;
   Camera* Camera::s_Instance = nullptr;
@@ -53,18 +73,6 @@ namespace Sprocket {
       throw std::invalid_argument("No scene exists with this index.");
     }
     return (Scene*) s_Instance->m_Scenes.at(s_Instance->m_ActiveSceneIndex);
-  }
-
-  void SceneManager::OnEvent(Event& event) {
-    // Propogate the call to the active scene
-    GetActiveScene()->OnEvent(event); 
-  }
-
-  void SceneManager::RegisterEventCallback(const std::function<void(Event&)> eventCallback) {
-    s_Instance->m_EventCallback = eventCallback;
-    // TODO register the eventcallback for all ECS systems
-    QuadRenderer::s_Instance->m_EventCallback = eventCallback;
-    Camera::s_Instance->m_EventCallback = eventCallback;
   }
 
 } 
