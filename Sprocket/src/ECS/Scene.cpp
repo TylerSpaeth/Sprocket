@@ -413,4 +413,14 @@ namespace Sprocket {
     QuadRenderer::DeleteQuad(m_QuadRenderers.at(entityID));
   }
 
+  void Scene::RemovePhysicsObjectCollider(const unsigned int entityID) {
+    ((Physics*)m_Physics)->RemoveCollider(m_PhysicsComponents.at(entityID).phyiscsID);
+  }
+
+  void Scene::RemovePhysicsObject(const unsigned int entityID) {
+    // Get the physicsID and delete the correspond physics object
+    int id = m_PhysicsComponents.at(entityID).phyiscsID;
+    ((Physics*)m_Physics)->DeletePhysicsObject(id);
+  }
+
 }

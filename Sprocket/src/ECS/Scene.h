@@ -48,6 +48,8 @@ namespace Sprocket {
       std::map<unsigned int, PhysicsComponent> m_PhysicsComponents;
 
       void RemoveQuadRenderer(const unsigned int entityID);
+      void RemovePhysicsObjectCollider(const unsigned int entityID);
+      void RemovePhysicsObject(const unsigned int entityID);
 
       void OnUpdate(float deltaTime);
       void OnClose();
@@ -167,7 +169,7 @@ namespace Sprocket {
 
       // Since any entity with a collider must have physics component, remove the collider
       // from the corresponding physics object
-      ((Physics*)m_Physics)->RemoveCollider(m_PhysicsComponents.at(entityID).phyiscsID);
+      RemovePhysicsObjectCollider(entityID);
 
       return;
     }
@@ -182,7 +184,7 @@ namespace Sprocket {
       
       // Since any entity with a collider must have physics component, remove the collider
       // from the corresponding physics object
-      ((Physics*)m_Physics)->RemoveCollider(m_PhysicsComponents.at(entityID).phyiscsID);
+      RemovePhysicsObjectCollider(entityID);
 
       return;
     }
@@ -219,9 +221,7 @@ namespace Sprocket {
   inline void Scene::RemoveComponent<PhysicsComponent>(const unsigned int entityID) {
     if(m_PhysicsComponents.count(entityID)) {
 
-      // Get the physicsID and delete the correspond physics object
-      int id = m_PhysicsComponents.at(entityID).phyiscsID;
-      ((Physics*)m_Physics)->DeletePhysicsObject(id);
+      RemovePhysicsObject(entityID);
 
       m_PhysicsComponents.extract(entityID);
       return;
