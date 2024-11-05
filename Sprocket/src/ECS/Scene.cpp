@@ -75,8 +75,10 @@ namespace Sprocket {
     else if(m_CircleColliders.count(entityID)) {
       m_CircleColliders.extract(entityID);
     }
-
+    
+    // If there is a physics component delete it from the physics system and remove it from the map
     if(m_PhysicsComponents.count(entityID)) {
+      ((Physics*)m_Physics)->DeletePhysicsObject(m_PhysicsComponents.at(entityID).phyiscsID);
       m_PhysicsComponents.extract(entityID);
     }
 
@@ -197,7 +199,14 @@ namespace Sprocket {
       
       // Check if the entity already has a physics component, and if not, add one
       if(!m_PhysicsComponents.count(entityID)) {
-        m_PhysicsComponents.insert({entityID,PhysicsComponent()});
+        AddComponent(entityID,PhysicsComponent());
+      }
+
+      // If it already has a physics component, update set the collider of the corresponding 
+      // physics object
+      else {
+        auto p = m_PhysicsComponents.at(entityID);
+        ((Physics*)m_Physics)->SetCollider(p.phyiscsID,m_BoxColliders.at(entityID));
       }
 
     }
@@ -218,7 +227,13 @@ namespace Sprocket {
 
       // Check if the entity already has a physics component, and if not, add one
       if(!m_PhysicsComponents.count(entityID)) {
-        m_PhysicsComponents.insert({entityID,PhysicsComponent()});
+        AddComponent(entityID,PhysicsComponent());
+      }
+      // If it already has a physics component, update set the collider of the corresponding 
+      // physics object
+      else {
+        auto p = m_PhysicsComponents.at(entityID);
+        ((Physics*)m_Physics)->SetCollider(p.phyiscsID,m_CircleColliders.at(entityID));
       }
 
     }
@@ -230,6 +245,17 @@ namespace Sprocket {
     }
 
     m_PhysicsComponents.insert({entityID,component});
+
+    // Register the component with the physics system based on the other components of the entity
+    if(m_BoxColliders.count(entityID)) {
+      ((Physics*)m_Physics)->RegisterNewPhysicsObject(m_Transforms.at(entityID),m_GlobalTransforms.at(entityID), m_PhysicsComponents.at(entityID), m_BoxColliders.at(entityID));
+    }
+    else if(m_CircleColliders.count(entityID)) {
+      ((Physics*)m_Physics)->RegisterNewPhysicsObject(m_Transforms.at(entityID),m_GlobalTransforms.at(entityID), m_PhysicsComponents.at(entityID), m_CircleColliders.at(entityID));
+    }
+    else {
+      ((Physics*)m_Physics)->RegisterNewPhysicsObject(m_Transforms.at(entityID),m_GlobalTransforms.at(entityID), m_PhysicsComponents.at(entityID));
+    }
   }
 
   /////////////////////////////////////////////////////////////////////////////////////////////////
@@ -299,9 +325,10 @@ namespace Sprocket {
     }
   }
 
-  // TODO this may not work as desired along with the physics system
+  // TODO This may need change in the future. Right now it checks to make sure that the new 
+  // component has the same physicsID as the old component. This is not a fool proof solution.
   void Scene::UpdateComponent(const unsigned int entityID, const PhysicsComponent& component) {
-    if(m_PhysicsComponents.count(entityID)) {
+    if(m_PhysicsComponents.count(entityID) && m_PhysicsComponents.at(entityID).phyiscsID == component.phyiscsID) {
       m_PhysicsComponents.extract(entityID);
       m_PhysicsComponents.insert({entityID,component});
     }

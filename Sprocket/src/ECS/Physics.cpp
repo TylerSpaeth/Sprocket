@@ -30,7 +30,7 @@ namespace Sprocket {
   ///////////////////////////////////////// REGISTRATION //////////////////////////////////////////
   /////////////////////////////////////////////////////////////////////////////////////////////////
 
-  bool Physics::RegisterNewPhysicsObject(TransformComponent& tcomp, PhysicsComponent& pcomp) {
+  bool Physics::RegisterNewPhysicsObject(TransformComponent& localtcomp, TransformComponent& globaltcomp, PhysicsComponent& pcomp) {
     
     if(pcomp.phyiscsID != -1) {
       return false;
@@ -38,7 +38,8 @@ namespace Sprocket {
 
     // Create a new physics object and assign its transform and physics components
     PhysicsObject object;
-    object.m_Transform = &tcomp;
+    object.m_LocalTransform = &localtcomp;
+    object.m_GlobalTransform = &globaltcomp;
     object.m_Physics = &pcomp;
 
     // If there is a deleted object that has not been replaced
@@ -62,11 +63,11 @@ namespace Sprocket {
 
   }
 
-  bool Physics::RegisterNewPhysicsObject(TransformComponent& tcomp, PhysicsComponent& pcomp, ColliderComponent& ccomp) {
+  bool Physics::RegisterNewPhysicsObject(TransformComponent& localtcomp, TransformComponent& globaltcomp, PhysicsComponent& pcomp, ColliderComponent& ccomp) {
 
     // Register the physics object without the collider and then add the collider after based on 
     // the physicsID that gets assigned at registration.
-    if(!RegisterNewPhysicsObject(tcomp,pcomp)) return false;
+    if(!RegisterNewPhysicsObject(localtcomp,globaltcomp,pcomp)) return false;
 
     // Should setting the collider fail, delete the object to prevent many partial objects being 
     // created without the user realizing.
@@ -98,10 +99,11 @@ namespace Sprocket {
     // Reset the physicsID to unassigned
     object->m_Physics->phyiscsID = -1;
 
-    // Having all three of these set to nullptr indicates deleted
+    // Having all four of these set to nullptr indicates deleted
     object->m_Collider = nullptr;
     object->m_Physics = nullptr;
-    object->m_Transform = nullptr;
+    object->m_LocalTransform = nullptr;
+    object->m_GlobalTransform = nullptr;
 
     return true;
 

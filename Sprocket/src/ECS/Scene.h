@@ -164,9 +164,14 @@ namespace Sprocket {
   inline void Scene::RemoveComponent<BoxColliderComponent>(const unsigned int entityID) {
     if(m_BoxColliders.count(entityID)) {
       m_BoxColliders.extract(entityID);
+
+      // Since any entity with a collider must have physics component, remove the collider
+      // from the corresponding physics object
+      ((Physics*)m_Physics)->RemoveCollider(m_PhysicsComponents.at(entityID).phyiscsID);
+
       return;
     }
-    
+
     throw std::invalid_argument("This entity does not have a BoxColliderComponent.");
   }
 
@@ -174,6 +179,11 @@ namespace Sprocket {
   inline void Scene::RemoveComponent<CircleColliderComponent>(const unsigned int entityID) {
     if(m_CircleColliders.count(entityID)) {
       m_CircleColliders.extract(entityID);
+      
+      // Since any entity with a collider must have physics component, remove the collider
+      // from the corresponding physics object
+      ((Physics*)m_Physics)->RemoveCollider(m_PhysicsComponents.at(entityID).phyiscsID);
+
       return;
     }
     
@@ -208,6 +218,11 @@ namespace Sprocket {
   template<>
   inline void Scene::RemoveComponent<PhysicsComponent>(const unsigned int entityID) {
     if(m_PhysicsComponents.count(entityID)) {
+
+      // Get the physicsID and delete the correspond physics object
+      int id = m_PhysicsComponents.at(entityID).phyiscsID;
+      ((Physics*)m_Physics)->DeletePhysicsObject(id);
+
       m_PhysicsComponents.extract(entityID);
       return;
     }

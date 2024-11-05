@@ -12,7 +12,8 @@ namespace Sprocket {
   class PhysicsObject {
     friend class Physics;
     private:
-      TransformComponent* m_Transform;
+      TransformComponent* m_LocalTransform; // Local transform relative to the parent
+      TransformComponent* m_GlobalTransform; // The global transform of the parent
       ColliderComponent* m_Collider;
       PhysicsComponent* m_Physics;
   };
@@ -43,8 +44,8 @@ namespace Sprocket {
       /// @param event The event the should be handled.
       void OnEvent(Event& event);
       
-      bool RegisterNewPhysicsObject(TransformComponent& tcomp, PhysicsComponent& pcomp);
-      bool RegisterNewPhysicsObject(TransformComponent& tcomp, PhysicsComponent& qcomp, ColliderComponent& ccomp);
+      bool RegisterNewPhysicsObject(TransformComponent& localtcomp, TransformComponent& globaltcomp, PhysicsComponent& pcomp);
+      bool RegisterNewPhysicsObject(TransformComponent& tcomp, TransformComponent& globaltcomp,PhysicsComponent& qcomp, ColliderComponent& ccomp);
 
       bool DeletePhysicsObject(const int physicsID);
 
