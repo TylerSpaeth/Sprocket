@@ -111,7 +111,7 @@ namespace Sprocket {
       distance = sqrt(pow(xOffset,2) + pow(yOffset,2));
 
       // If the distance between the circles is less than the sum of the radii, then there is a collision
-      if(distance < c1.radius*c1t.scale.x + c2.radius*c2t.scale.x) return true;
+      if(distance <= c1.radius*c1t.scale.x + c2.radius*c2t.scale.x) return true;
 
       return false;
     }
@@ -179,6 +179,7 @@ namespace Sprocket {
       return false; // No collision found
     }
 
+    // This function just allows the circle and box collider to be supplied in the opposite order
     bool Collides(CircleColliderComponent c, TransformComponent ct, BoxColliderComponent b, TransformComponent bt) {
       return Collides(b,bt,c,ct);
     }

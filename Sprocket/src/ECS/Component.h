@@ -46,6 +46,10 @@ namespace Sprocket {
   };
 
   struct ColliderComponent : public Component {
+    // A Collider that is a trigger will allow other colliders to pass through it when then collide.
+    // If it is not a trigger, then colliding with other non-trigger colliders will not allow 
+    // Soverlap.
+    bool isTrigger = false;
     ColliderComponent(ComponentType type) : Component(type){}
   };
 
@@ -63,7 +67,7 @@ namespace Sprocket {
   struct PhysicsComponent : public Component {
     // PhysicsComponents that are marked as dynamic are expected to move and is the default.
     // If set to false, then it is not expected to move.
-    bool dynamic = true;
+    bool isDynamic = true;
     // This ID is used to reference a physic object in the physics system
     int phyiscsID = -1;
     PhysicsComponent() : Component(ComponentType::PHYSICS_COMPONENT){}

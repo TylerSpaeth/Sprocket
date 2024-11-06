@@ -218,3 +218,42 @@ TEST(CollisionTests, BoxBox) {
   }
 
 }
+
+TEST(CollisionTests, CircleCircle) {
+
+  Sprocket::TransformComponent t1;
+  t1.position = {0,0,0};
+  t1.rotation = {0,0,0};
+  t1.scale = {1,1,1};
+
+  Sprocket::TransformComponent t2;
+  t2.position = {100.00,0,0};
+  t2.rotation = {0,0,0};
+  t2.scale = {1,1,1};
+
+  Sprocket::CircleColliderComponent c;
+  c.radius = 50;
+
+  for(int i = 1; i <= 360; i++) {
+    t2.position.x = 100.01 * cos((M_PI * i /360) * 2);
+    t2.position.y = 100.01 * sin((M_PI * i /360) * 2);
+    EXPECT_FALSE(Sprocket::Collision::Collides(c,t1,c,t2));
+  }
+
+  for(int i = 1; i <= 360; i++) {
+    t2.position.x = 100 * cos((M_PI * i /360) * 2);
+    t2.position.y = 100 * sin((M_PI * i /360) * 2);
+    EXPECT_TRUE(Sprocket::Collision::Collides(c,t1,c,t2));
+  }
+
+  t2.position = {0,0,0};
+  EXPECT_TRUE(Sprocket::Collision::Collides(c,t1,c,t2));
+
+  t2.scale.x = .5;
+  EXPECT_TRUE(Sprocket::Collision::Collides(c,t1,c,t2));
+  EXPECT_TRUE(Sprocket::Collision::Collides(c,t2,c,t1));
+
+  t2.scale.x = 1;
+
+  // TODO complete this
+}
