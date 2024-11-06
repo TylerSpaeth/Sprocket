@@ -7,8 +7,8 @@
 
 #include <map>
 #include <vector>
+#include <queue>
 #include <stdexcept>
-#include <iostream>
 
 namespace Sprocket {
 
@@ -25,6 +25,8 @@ namespace Sprocket {
       // Stores the parentID of a given entity, if the parentID is -1, that indicates no parent
       std::vector<int> m_Parents;
       std::vector<std::vector<unsigned int>> m_Children;
+      // A queue holding the index of deleted entities 
+      std::priority_queue<unsigned int, std::vector<unsigned int>, std::greater<unsigned int>> m_DeletedEntities;
 
       // POSITION COMPONENTS
       // These can not be added or removed, only updated. To remove a transform would be to delete
@@ -47,12 +49,13 @@ namespace Sprocket {
       std::map<unsigned int, CircleColliderComponent> m_CircleColliders;
       std::map<unsigned int, PhysicsComponent> m_PhysicsComponents;
 
+      void OnUpdate(float deltaTime);
+      void OnClose();
+
+      // HELPER FUNCTIONS
       void RemoveQuadRenderer(const unsigned int entityID);
       void RemovePhysicsObjectCollider(const unsigned int entityID);
       void RemovePhysicsObject(const unsigned int entityID);
-
-      void OnUpdate(float deltaTime);
-      void OnClose();
       
     public:
 
@@ -66,6 +69,7 @@ namespace Sprocket {
 
       // Creates a transform and sets an id for a new entity
       unsigned int CreateEntity();
+      // Functionality of functions is undefined if entityID is used after deletion
       void DeleteEntity(const unsigned int entityID); 
       void SetEntityParent(const unsigned int entityID, const unsigned int parentID);
 

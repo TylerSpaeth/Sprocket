@@ -52,6 +52,26 @@ namespace Sprocket {
   /////////////////////////////////////////////////////////////////////////////////////////////////
 
   unsigned int Scene::CreateEntity() {
+
+    // If there is a free spot in the vector of transforms
+    if(m_DeletedEntities.size()) {
+
+      // Get the index of the slot
+      auto index = m_DeletedEntities.top();
+      m_DeletedEntities.pop();
+
+      // Reset the local transform
+      m_Transforms.at(index).position = {0,0,0};
+      m_Transforms.at(index).rotation = {0,0,0};
+      m_Transforms.at(index).scale = {1,1,1};
+
+      // Reset the global transform
+      m_GlobalTransforms.at(index).position = {0,0,0};
+      m_GlobalTransforms.at(index).rotation = {0,0,0};
+      m_GlobalTransforms.at(index).scale = {1,1,1};
+
+    }
+
     m_Transforms.push_back(TransformComponent());
     m_GlobalTransforms.push_back(TransformComponent());
     m_Children.push_back(std::vector<unsigned int>());
@@ -59,8 +79,17 @@ namespace Sprocket {
     return m_EntityCount++;
   }
 
-  // FIXME right now this only deletes all of the components except for the transform. Need to finish this
   void Scene::DeleteEntity(const unsigned int entityID) {
+
+    try {
+      // See if there is a transfrom for this entity, and if there is, add this id to the queue of deleted ids
+      m_Transforms.at(entityID);
+      m_DeletedEntities.push(entityID);
+    } 
+    // If there is not transform for this entity, then the entity does not exist
+    catch(const std::exception& e) {
+      return;
+    }
 
     // Try to delete the quad renderer
     if(m_QuadRenderers.count(entityID)) {
@@ -408,7 +437,10 @@ namespace Sprocket {
   /////////////////////////////////////////////////////////////////////////////////////////////////
   /////////////////////////////////////////////////////////////////////////////////////////////////
 
-  // TODO make sure this is valid to do
+  /////////////////////////////////////////////////////////////////////////////////////////////////
+  //////////////////////////////////////// PRIVATE HELPERS ////////////////////////////////////////
+  /////////////////////////////////////////////////////////////////////////////////////////////////
+
   void Scene::RemoveQuadRenderer(const unsigned int entityID) {
     QuadRenderer::DeleteQuad(m_QuadRenderers.at(entityID));
   }
@@ -422,5 +454,9 @@ namespace Sprocket {
     int id = m_PhysicsComponents.at(entityID).phyiscsID;
     ((Physics*)m_Physics)->DeletePhysicsObject(id);
   }
+
+  /////////////////////////////////////////////////////////////////////////////////////////////////
+  /////////////////////////////////////////////////////////////////////////////////////////////////
+  /////////////////////////////////////////////////////////////////////////////////////////////////
 
 }
