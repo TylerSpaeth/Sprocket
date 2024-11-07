@@ -32,10 +32,13 @@ namespace Sprocket {
 
       // TODO use some sort of spacial data structure to improve runtime
       std::vector<PhysicsObject> m_Objects;
+      std::vector<std::vector<unsigned int>> m_CollidesWith;
 
       std::priority_queue<unsigned int, std::vector<unsigned int>, std::greater<unsigned int>> m_DeletedPhysicsObjects;
 
       void OnUpdate(float deltaTime);
+      void ClearPreviousCollisions();
+      void ProcessCollisions();
 
     public:
 
@@ -51,6 +54,9 @@ namespace Sprocket {
 
       bool SetCollider(const int physicsID, ColliderComponent& ccomp);
       bool RemoveCollider(const int physicsID);
+
+      int CountCollisions(const int physiscsID);
+      bool CollidesWith(const int physicsID, const int otherPhysicsID);
 
   };
 

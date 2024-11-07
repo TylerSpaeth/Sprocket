@@ -46,10 +46,6 @@ namespace Sprocket {
   };
 
   struct ColliderComponent : public Component {
-    // A Collider that is a trigger will allow other colliders to pass through it when then collide.
-    // If it is not a trigger, then colliding with other non-trigger colliders will not allow 
-    // Soverlap.
-    bool isTrigger = false;
     ColliderComponent(ComponentType type) : Component(type){}
   };
 

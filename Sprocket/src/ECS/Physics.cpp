@@ -4,6 +4,7 @@
 #include "Events/ApplicationEvent.h"
 
 #include <stdexcept>
+#include <algorithm>
 
 namespace Sprocket {
 
@@ -12,6 +13,11 @@ namespace Sprocket {
   /////////////////////////////////////////////////////////////////////////////////////////////////
 
   void Physics::OnUpdate(float deltaTime) {
+
+    ClearPreviousCollisions();
+
+    ProcessCollisions();
+
     // TODO
   }
 
@@ -57,6 +63,7 @@ namespace Sprocket {
     // Otherwise if the vector is contiguous from 0 to size(), then put the new object at the back
     else {
       pcomp.phyiscsID = m_Objects.size();
+      m_CollidesWith.push_back(std::vector<unsigned int>());
       m_Objects.push_back(object);
     }
 
@@ -149,5 +156,137 @@ namespace Sprocket {
   /////////////////////////////////////////////////////////////////////////////////////////////////
   /////////////////////////////////////////////////////////////////////////////////////////////////
   /////////////////////////////////////////////////////////////////////////////////////////////////
+
+  void Physics::ClearPreviousCollisions() {
+    for(auto c : m_CollidesWith) {
+      c.clear();
+    }
+  }
+
+  void Physics::ProcessCollisions() {
+    // LOOKHERE this is currently implemented is a naive solution. This is quite a poor solution and
+    // and should be changed.
+
+    // Compare every object to every other object
+    for(int i = 0; i < m_Objects.size(); i++) {
+
+      if(m_Objects.at(i).m_Physics == nullptr) break;
+
+      auto obj1 = m_Objects.at(i);
+      if(obj1.m_Collider == nullptr) break;
+      // If true, obj1 has a box collider, if false then circle collider
+      bool boxCollider1 = obj1.m_Collider->componentType == ComponentType::BOX_COLLIDER_COMPONENT;
+
+      TransformComponent obj1ComputedTransform = *obj1.m_GlobalTransform;
+      obj1ComputedTransform.position += obj1.m_LocalTransform->position;
+      obj1ComputedTransform.rotation += obj1.m_LocalTransform->rotation;
+      obj1ComputedTransform.scale *= obj1.m_LocalTransform->scale;
+
+      // Only need to compare i to objects that come after it in the vector. That way multiple 
+      // comparisons are not being made on the same objects
+      for(int j = i+1; j < m_Objects.size(); j++) {
+
+        if(m_Objects.at(j).m_Physics == nullptr) break;
+
+        auto obj2 = m_Objects.at(j);
+        if(obj2.m_Collider == nullptr) break;
+        // If true, obj2 has a box collider, if false then circle collider
+        bool boxCollider2 = obj2.m_Collider->componentType == ComponentType::BOX_COLLIDER_COMPONENT;
+
+        TransformComponent obj2ComputedTransform = *obj2.m_GlobalTransform;
+        obj2ComputedTransform.position += obj2.m_LocalTransform->position;
+        obj2ComputedTransform.rotation += obj2.m_LocalTransform->rotation;
+        obj2ComputedTransform.scale *= obj2.m_LocalTransform->scale;
+
+        // Check box-box collision
+        if(boxCollider1 && boxCollider2) {
+
+          // If there is a collision between the boxes
+          if(Collision::Collides(*(BoxColliderComponent*)obj1.m_Collider, obj1ComputedTransform, *(BoxColliderComponent*)obj2.m_Collider, obj2ComputedTransform)) {
+            
+            // Update the m_CollidesWith vector so that the vectors corresponding to each object are
+            // are updated to collide with each other.
+            m_CollidesWith.at(obj1.m_Physics->phyiscsID).push_back(obj2.m_Physics->phyiscsID);
+            m_CollidesWith.at(obj2.m_Physics->phyiscsID).push_back(obj1.m_Physics->phyiscsID);
+
+            //TODO handle any transform updates that are needed as a result of a collision
+          }
+
+        }
+
+        // Check box-circle collision
+        else if(boxCollider1 && !boxCollider2) {
+          
+          // If there is a collision between the shapes
+          if(Collision::Collides(*(BoxColliderComponent*)obj1.m_Collider, obj1ComputedTransform, *(CircleColliderComponent*)obj2.m_Collider, obj2ComputedTransform)) {
+
+            // Update the m_CollidesWith vector so that the vectors corresponding to each object are
+            // are updated to collide with each other.
+            m_CollidesWith.at(obj1.m_Physics->phyiscsID).push_back(obj2.m_Physics->phyiscsID);
+            m_CollidesWith.at(obj2.m_Physics->phyiscsID).push_back(obj1.m_Physics->phyiscsID);
+
+            //TODO handle any transform updates that are needed as a result of a collision
+          }
+
+        }
+
+        // Check circle-box collision
+        else if(boxCollider2 && !boxCollider1) {
+
+          // If there is a collision between the shapes
+          if(Collision::Collides(*(CircleColliderComponent*)obj1.m_Collider, obj1ComputedTransform, *(BoxColliderComponent*)obj2.m_Collider, obj2ComputedTransform)) {
+
+            // Update the m_CollidesWith vector so that the vectors corresponding to each object are
+            // are updated to collide with each other.
+            m_CollidesWith.at(obj1.m_Physics->phyiscsID).push_back(obj2.m_Physics->phyiscsID);
+            m_CollidesWith.at(obj2.m_Physics->phyiscsID).push_back(obj1.m_Physics->phyiscsID);
+
+            //TODO handle any transform updates that are needed as a result of a collision
+          }
+
+        }
+
+        // Check circle-circle collision
+        else {
+
+          // If there is a collision between the circles
+          if(Collision::Collides(*(CircleColliderComponent*)obj1.m_Collider, obj1ComputedTransform, *(CircleColliderComponent*)obj2.m_Collider, obj2ComputedTransform)) {
+
+            // Update the m_CollidesWith vector so that the vectors corresponding to each object are
+            // are updated to collide with each other.
+            m_CollidesWith.at(obj1.m_Physics->phyiscsID).push_back(obj2.m_Physics->phyiscsID);
+            m_CollidesWith.at(obj2.m_Physics->phyiscsID).push_back(obj1.m_Physics->phyiscsID);
+
+            //TODO handle any transform updates that are needed as a result of a collision
+          }
+
+        }
+        
+      }
+
+    }
+  }
+
+  // TODO error checking
+  int Physics::CountCollisions(const int physiscsID) { 
+    try {
+      return m_CollidesWith.at(physiscsID).size();
+    }
+    catch(const std::exception& e) {
+      return 0;
+    }
+
+  }
+
+  // TODO error checking
+  bool Physics::CollidesWith(const int physicsID, const int otherPhysicsID) {
+    try {
+      auto collisions = m_CollidesWith.at(physicsID);
+      return std::find(collisions.begin(), collisions.end(), otherPhysicsID) != collisions.end();
+    }
+    catch(const std::exception& e) {
+      return 0;
+    }
+  }
 
 }
