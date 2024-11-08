@@ -1,10 +1,18 @@
 #include "Sprocket.h"
 #include <functional>
 #include <iostream>
+#include <random>
 
 class TestApplication : public Sprocket::Application {
-  int id6 = 0;
-  int id5 = 0;
+
+  unsigned int user;
+  unsigned int top;
+  unsigned int right;
+  unsigned int bottom;
+  unsigned int left;
+
+  unsigned int redBox;
+
   public:
     TestApplication() : Sprocket::Application() {}
     ~TestApplication() {}
@@ -12,169 +20,190 @@ class TestApplication : public Sprocket::Application {
       using namespace Sprocket;
       Scene* scene = SceneManager::GetActiveScene();
 
-      QuadRendererComponent qcomp;
-      qcomp.size = 100;
-      qcomp.texturePath = "../res/textures/BiggerBetterTree.png";
-      qcomp.quadColor = {0.5, 0.5, 0, 1};
-
-      auto id = scene->CreateEntity();
-      scene->AddComponent(id, qcomp);
-
-      auto id2 = scene->CreateEntity();
-      scene->AddComponent(id2, qcomp);
-
-      auto id3 = scene->CreateEntity();
-      scene->AddComponent(id3, CameraComponent());
-
-      scene->SetEntityParent(id2, id3);
-      scene->SetEntityParent(id2, id);
-      auto t = scene->GetComponent<TransformComponent>(id2);
-      t.position.x += 100;
-      scene->UpdateComponent(id2, t);
-      
-      // Checkered background
+      // Create a border around the window
       {
-        for(int i = -2000; i < 2000; i+=200) {
-          for(int j = -2000; j < 2000; j+=200) {
-            auto id4 = scene->CreateEntity();
-            qcomp.texturePath = "";
-            scene->AddComponent(id4,qcomp);
-            TransformComponent tr = scene->GetComponent<TransformComponent>(id4);
-            tr.position.x = i;
-            tr.position.y = j;
-            tr.position.z-=.01;
-            scene->UpdateComponent(id4,tr);
-          }
+        QuadRendererComponent qcomp;
+        qcomp.size = 100;
+        qcomp.quadColor = {0.5, 0.5, 0, 1};
+        TransformComponent tcomp;
+        tcomp.position.x = -500;
+        tcomp.position.y = -300;
+        BoxColliderComponent bcomp;
+        bcomp.height = 100;
+        bcomp.width = 100;
+        for(int i = 0 ; i < 6; i++) {
+          auto id = scene->CreateEntity();
+          scene->AddComponent(id,qcomp);
+          scene->AddComponent(id,bcomp);
+          scene->UpdateComponent(id,tcomp);
+          tcomp.position.y += 100;
+          auto phy = scene->GetComponent<PhysicsComponent>(id);
+          phy.isDynamic = false;
+          scene->UpdateComponent(id, phy);
         }
-
-        for(int i = -1900; i < 2100; i+=200) {
-          for(int j = -1900; j < 2100; j+=200) {
-            auto id4 = scene->CreateEntity();
-            qcomp.texturePath = "";
-            scene->AddComponent(id4,qcomp);
-            TransformComponent tr = scene->GetComponent<TransformComponent>(id4);
-            tr.position.x = i;
-            tr.position.y = j;
-            tr.position.z-=.01;
-            scene->UpdateComponent(id4,tr);
-          }
+        for(int i = 0 ; i < 10; i++) {
+          auto id = scene->CreateEntity();
+          scene->AddComponent(id,qcomp);
+          scene->AddComponent(id,bcomp);
+          scene->UpdateComponent(id,tcomp);
+          tcomp.position.x += 100;
+          auto phy = scene->GetComponent<PhysicsComponent>(id);
+          phy.isDynamic = false;
+          scene->UpdateComponent(id, phy);
+        }
+        for(int i = 0 ; i < 6; i++) {
+          auto id = scene->CreateEntity();
+          scene->AddComponent(id,qcomp);
+          scene->AddComponent(id,bcomp);
+          scene->UpdateComponent(id,tcomp);
+          tcomp.position.y -= 100;
+          auto phy = scene->GetComponent<PhysicsComponent>(id);
+          phy.isDynamic = false;
+          scene->UpdateComponent(id, phy);
+        }
+        for(int i = 0 ; i < 10; i++) {
+          auto id = scene->CreateEntity();
+          scene->AddComponent(id,qcomp);
+          scene->AddComponent(id,bcomp);
+          scene->UpdateComponent(id,tcomp);
+          tcomp.position.x -= 100;
+          auto phy = scene->GetComponent<PhysicsComponent>(id);
+          phy.isDynamic = false;
+          scene->UpdateComponent(id, phy);
         }
       }
 
-      id5 = scene->CreateEntity();
-      qcomp.quadColor = {1,0,0,1};
-      scene->AddComponent(id5, qcomp);
-      BoxColliderComponent b;
-      TransformComponent transf = scene->GetComponent<TransformComponent>(id5);
-      transf.position.x = -200;
-      scene->UpdateComponent(id5,transf);
-      b.height = 100;
-      b.width = 100;
-      scene->AddComponent(id5, b);
+      {
+        user = scene->CreateEntity();
+        QuadRendererComponent qcomp;
+        qcomp.size = 100;
+        scene->AddComponent(user,qcomp);
 
-      id6 = scene->CreateEntity();
-      qcomp.texturePath = "../res/textures/Circle.png";
-      scene->AddComponent(id6,qcomp);
-      CircleColliderComponent c;
-      c.radius = 50;
-      scene->AddComponent(id6,c);
+        top = scene->CreateEntity();
+        scene->SetEntityParent(top,user);
+        TransformComponent t1;
+        t1.position.y = 51;
+        scene->UpdateComponent(top,t1);
 
-      TransformComponent tc = scene->GetComponent<TransformComponent>(id6);
-      tc.scale.x = .5;
-      tc.scale.y = .5;
-      scene->UpdateComponent(id6,tc);
+        right = scene->CreateEntity();
+        scene->SetEntityParent(right,user);
+        TransformComponent t2;
+        t2.position.x = 51;
+         scene->UpdateComponent(right, t2);
+
+        bottom = scene->CreateEntity();
+        scene->SetEntityParent(bottom,user);
+        TransformComponent t3;
+        t3.position.y = -51;
+         scene->UpdateComponent(bottom, t3);
+
+        left = scene->CreateEntity();
+        scene->SetEntityParent(left,user);
+        TransformComponent t4;
+        t4.position.x = -51;
+         scene->UpdateComponent(left, t4);
+
+        BoxColliderComponent h;
+        h.height = 1;
+        h.width = 100;
+        scene->AddComponent(top, h);
+        scene->AddComponent(bottom, h);
+      
+        BoxColliderComponent v;
+        v.height = 100;
+        v.width = 1;
+        scene->AddComponent(left, v);
+        scene->AddComponent(right, v);
+
+      }
+
+      {
+        redBox = scene->CreateEntity();
+        QuadRendererComponent qcomp;
+        qcomp.size = 50;
+        qcomp.quadColor = {1,0,0,1};
+        scene->AddComponent(redBox,qcomp);
+        BoxColliderComponent bcomp;
+        bcomp.width = 50;
+        bcomp.height = 50;
+        scene->AddComponent(redBox,bcomp);
+        TransformComponent tcomp = scene->GetComponent<TransformComponent>(redBox);
+        
+        std::random_device r;
+        std::mt19937 gen(r());
+        std::uniform_real_distribution<float> distx(-424,424);
+        std::uniform_real_distribution<float> disty(-224,224);
+        tcomp.position.x = distx(gen);
+        tcomp.position.y = disty(gen);
+
+        scene->UpdateComponent(redBox,tcomp);
+
+        
+      }
+
+      
+
     }
 
-    bool collide = false;
     void Update(float deltaTime) {
       using namespace Sprocket;
+      Scene* scene = SceneManager::GetActiveScene();
 
       // Print frame time and fps
-      //std::cout << deltaTime * 1000 << "ms " <<(int) (1000000 / (deltaTime * 1000000)) << "fps\n";
-      
-      {
-        Scene* scene = SceneManager::GetActiveScene();
-        auto t1 = scene->GetComponent<TransformComponent>(id5);
-        auto t2 = scene->GetComponent<TransformComponent>(id6);
-
-        if(!collide) {
-        // Set id5 quad to white if collides with id6, otherwise blue
-        if(scene->CheckCollides(id5,id6)) {
-          auto tq = scene->GetComponent<QuadRendererComponent>(id5);
-          tq.quadColor = {1.0f,1.0f,1.0f,1.0f};
-          scene->UpdateComponent(id5,tq);
-          scene->DeleteEntity(id6);
-          collide = true;
-        }
-        else {
-          auto tq = scene->GetComponent<QuadRendererComponent>(id5);
-          tq.quadColor = {0.0f,0.0f,1.0f,1.0f};
-          scene->UpdateComponent(id5,tq);
-        }
-        }
-
-        // Move id6 around the screen with arrow keys
-        if(Input::IsKeyPressed(KEY_UP)) {
-          Scene* scene = SceneManager::GetActiveScene();
-          t2.position.y += deltaTime*80;
-          scene->UpdateComponent(id6,t2);
-        }
-        if(Input::IsKeyPressed(KEY_DOWN)) {
-          Scene* scene = SceneManager::GetActiveScene();
-          t2.position.y -= deltaTime*80;
-          scene->UpdateComponent(id6,t2);
-        }
-        if(Input::IsKeyPressed(KEY_LEFT)) {
-          Scene* scene = SceneManager::GetActiveScene();
-          t2.position.x -= deltaTime*80;
-          scene->UpdateComponent(id6,t2);
-        }
-        if(Input::IsKeyPressed(KEY_RIGHT)) {
-          Scene* scene = SceneManager::GetActiveScene();
-          t2.position.x += deltaTime*80;
-          scene->UpdateComponent(id6,t2);
-        }
-      }
+      std::cout << deltaTime * 1000 << "ms " <<(int) (1000000 / (deltaTime * 1000000)) << "fps\n";
 
       // Close on escape
       if(Input::IsKeyPressed(KEY_ESCAPE)) {
         WindowCloseEvent* wc = new WindowCloseEvent();
         OnEvent(*wc);
       }
-      
-      // Rotate the first child clockwise if space is pressed
-      if(Sprocket::Input::IsKeyPressed(Sprocket::KEY_SPACE)) {
-        Scene* scene = SceneManager::GetActiveScene();
-        TransformComponent t = scene->GetComponent<TransformComponent>(0);
-        t.rotation.z += deltaTime*40;
-        scene->UpdateComponent(0,t);
+
+      if(scene->CheckCollides(redBox)) {
+        scene->DeleteEntity(redBox);
+
+        redBox = scene->CreateEntity();
+        QuadRendererComponent qcomp;
+        qcomp.size = 50;
+        qcomp.quadColor = {1,0,0,1};
+        scene->AddComponent(redBox,qcomp);
+        BoxColliderComponent bcomp;
+        bcomp.width = 50;
+        bcomp.height = 50;
+        scene->AddComponent(redBox,bcomp);
+        TransformComponent tcomp = scene->GetComponent<TransformComponent>(redBox);
+        
+        std::random_device r;
+        std::mt19937 gen(r());
+        std::uniform_real_distribution<float> distx(-450,450);
+        std::uniform_real_distribution<float> disty(-224,224);
+        tcomp.position.x = distx(gen);
+        tcomp.position.y = disty(gen);
+
+        scene->UpdateComponent(redBox,tcomp);
+
       }
 
-      // Moving the camera around the scene
-      if(Sprocket::Input::IsKeyPressed(KEY_W)) {
-        Scene* scene = SceneManager::GetActiveScene();
-        TransformComponent t = scene->GetComponent<TransformComponent>(2);
-        t.position.y += 80*deltaTime;
-        scene->UpdateComponent(2,t);
-      } 
-      if(Sprocket::Input::IsKeyPressed(KEY_A)) {
-        Scene* scene = SceneManager::GetActiveScene();
-        TransformComponent t = scene->GetComponent<TransformComponent>(2);
-        t.position.x -= 80*deltaTime;
-        scene->UpdateComponent(2,t);
+      {
+        TransformComponent tcomp = scene->GetComponent<TransformComponent>(user);
+
+        if(Input::IsKeyPressed(KEY_W) && !scene->CheckCollides(top)) {
+          tcomp.position.y += deltaTime * 150;
+          scene->UpdateComponent(user,tcomp);
+        }
+        if(Input::IsKeyPressed(KEY_S) && !scene->CheckCollides(bottom)) {
+          tcomp.position.y -= deltaTime * 150;
+          scene->UpdateComponent(user,tcomp);
+        }
+        if(Input::IsKeyPressed(KEY_A) && !scene->CheckCollides(left)) {
+          tcomp.position.x -= deltaTime * 150;
+          scene->UpdateComponent(user,tcomp);
+        }
+        if(Input::IsKeyPressed(KEY_D) && !scene->CheckCollides(right)) {
+          tcomp.position.x += deltaTime * 150;
+          scene->UpdateComponent(user,tcomp);
+        }
       }
-      if(Sprocket::Input::IsKeyPressed(KEY_S)) {
-        Scene* scene = SceneManager::GetActiveScene();
-        TransformComponent t = scene->GetComponent<TransformComponent>(2);
-        t.position.y -= 80*deltaTime;
-        scene->UpdateComponent(2,t);
-      }
-      if(Sprocket::Input::IsKeyPressed(KEY_D)) {
-        Scene* scene = SceneManager::GetActiveScene();
-        TransformComponent t = scene->GetComponent<TransformComponent>(2);
-        t.position.x += 80*deltaTime;
-        scene->UpdateComponent(2,t);
-      }
+      
     }
 };
 

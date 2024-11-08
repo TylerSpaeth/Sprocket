@@ -5,6 +5,7 @@
 
 #include <stdexcept>
 #include <algorithm>
+#include <iostream>
 
 namespace Sprocket {
 
@@ -158,8 +159,8 @@ namespace Sprocket {
   /////////////////////////////////////////////////////////////////////////////////////////////////
 
   void Physics::ClearPreviousCollisions() {
-    for(auto c : m_CollidesWith) {
-      c.clear();
+    for(int i = 0; i < m_CollidesWith.size(); i++) {
+      m_CollidesWith.at(i).clear();
     }
   }
 
@@ -167,10 +168,12 @@ namespace Sprocket {
     // LOOKHERE this is currently implemented is a naive solution. This is quite a poor solution and
     // and should be changed.
 
-    // Compare every object to every other object
+    // Compare every dynamic object to every other object except itself
     for(int i = 0; i < m_Objects.size(); i++) {
 
-      if(m_Objects.at(i).m_Physics == nullptr) break;
+      if(m_Objects.at(i).m_Physics == nullptr) continue;
+      // If the object is not dynamic, no need to check further
+      if(m_Objects.at(i).m_Physics->isDynamic == false) continue;
 
       auto obj1 = m_Objects.at(i);
       if(obj1.m_Collider == nullptr) break;
@@ -182,11 +185,10 @@ namespace Sprocket {
       obj1ComputedTransform.rotation += obj1.m_LocalTransform->rotation;
       obj1ComputedTransform.scale *= obj1.m_LocalTransform->scale;
 
-      // Only need to compare i to objects that come after it in the vector. That way multiple 
-      // comparisons are not being made on the same objects
-      for(int j = i+1; j < m_Objects.size(); j++) {
+      for(int j = 0; j < m_Objects.size(); j++) {
 
         if(m_Objects.at(j).m_Physics == nullptr) break;
+        if(j == i) break;
 
         auto obj2 = m_Objects.at(j);
         if(obj2.m_Collider == nullptr) break;
@@ -268,6 +270,7 @@ namespace Sprocket {
   }
 
   // TODO error checking
+  // Note that this function only returns a valid value when used on a dynamic physics object
   int Physics::CountCollisions(const int physiscsID) { 
     try {
       return m_CollidesWith.at(physiscsID).size();
@@ -279,6 +282,7 @@ namespace Sprocket {
   }
 
   // TODO error checking
+  // Note that this function only returns a valid value when used on a dynamic physics object
   bool Physics::CollidesWith(const int physicsID, const int otherPhysicsID) {
     try {
       auto collisions = m_CollidesWith.at(physicsID);

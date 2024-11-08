@@ -12,7 +12,15 @@
 
 namespace Sprocket {
 
-  Scene::Scene() : m_Physics(new Physics()) {}
+  Scene::Scene() : m_Physics(new Physics()) {
+    // TODO this is really not optimal. It would be best not to have this be a fixed number, and 
+    // definitly not hard coded here. If reserving space for the vector is the way this stays, then
+    // it would probably be best to set this number to the same as the maximum number of quads. It 
+    // may even be worth it at this point, to stick with maps and take the performance hit at scale
+    // for more efficient memory usage
+    m_Transforms.reserve(100000);
+    m_GlobalTransforms.reserve(100000);
+  }
 
   Scene::~Scene() {
     delete (Physics*)m_Physics;
@@ -35,6 +43,7 @@ namespace Sprocket {
   }
 
   void Scene::OnUpdate(float deltaTime) {
+
     // Perform a physics update
     ((Physics*)m_Physics)->OnUpdate(deltaTime);
   }
@@ -342,15 +351,14 @@ namespace Sprocket {
 
   void Scene::UpdateComponent(const unsigned int entityID, const BoxColliderComponent& replacement) {
     if(m_BoxColliders.count(entityID)) {
-      m_BoxColliders.extract(entityID);
-      m_BoxColliders.insert({entityID,replacement});
+      m_BoxColliders.at(entityID).height = replacement.height;
+      m_BoxColliders.at(entityID).width = replacement.width;
     }
   }
 
   void Scene::UpdateComponent(const unsigned int entityID, const CircleColliderComponent& replacement) {
     if(m_CircleColliders.count(entityID)) {
-      m_CircleColliders.extract(entityID);
-      m_CircleColliders.insert({entityID,replacement});
+      m_CircleColliders.at(entityID).radius = replacement.radius;
     }
   }
 
@@ -358,8 +366,9 @@ namespace Sprocket {
   // component has the same physicsID as the old component. This is not a fool proof solution.
   void Scene::UpdateComponent(const unsigned int entityID, const PhysicsComponent& component) {
     if(m_PhysicsComponents.count(entityID) && m_PhysicsComponents.at(entityID).phyiscsID == component.phyiscsID) {
-      m_PhysicsComponents.extract(entityID);
-      m_PhysicsComponents.insert({entityID,component});
+      m_PhysicsComponents.at(entityID).isDynamic = component.isDynamic;
+      m_PhysicsComponents.at(entityID).phyiscsID = component.phyiscsID;
+
     }
   }
 
@@ -372,20 +381,16 @@ namespace Sprocket {
   /////////////////////////////////////////////////////////////////////////////////////////////////
   
   bool Scene::CheckCollides(const unsigned int entityID) const {
-    
-    for(auto const& b : m_BoxColliders) {
-      if(CheckCollides(entityID,b.first) && entityID != b.first) {
-        return true;
-      }
+
+    try {
+      return ((Physics*)m_Physics)->CountCollisions(m_PhysicsComponents.at(entityID).phyiscsID);
+    }
+    // If an exception occurs, which would most likely happen trying to retrieve a physics component
+    // return false since no collision could occur
+    catch(const std::exception& e) {
+      return false;
     }
 
-    for(auto const& c : m_CircleColliders) {
-      if(CheckCollides(entityID,c.first) && entityID != c.first) {
-        return true;
-      }
-    }
-
-    return false;
   }
 
   bool Scene::CheckCollides(const unsigned int entityID, const unsigned int otherEntityID) const {
