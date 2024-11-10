@@ -45,13 +45,13 @@ namespace Sprocket {
       std::vector<TransformComponent> m_GlobalTransforms;
 
       // RENDERING COMPONENTS
-      void* m_QuadRenderer;
-      void* m_Camera;
+      void* m_QuadRenderer = nullptr;
+      void* m_Camera = nullptr;
       std::map<unsigned int, QuadRendererComponent> m_QuadRenderers;
       unsigned int m_CameraEntityID = -1;
 
       // PHYSICS COMPONENTS
-      void* m_Physics; // A pointer to a Physics object
+      void* m_Physics = nullptr; // A pointer to a Physics object
       std::map<unsigned int, BoxColliderComponent> m_BoxColliders;
       std::map<unsigned int, CircleColliderComponent> m_CircleColliders;
       std::map<unsigned int, PhysicsComponent> m_PhysicsComponents;
@@ -69,6 +69,13 @@ namespace Sprocket {
       /// produced here to become part of the central event system.
       /// @param eventCallback a function that will take in an Event when an event occurs.
       void RegisterEventCallback(const std::function<void(Event&)> eventCallback);
+
+      bool m_IsLoaded = false;
+
+      /// @brief Functionality that is to occur any time a scene is set as the active scene.
+      void OnLoad();
+      /// @brief Fucntionality that is to occur any time a scene is no longer the active scene.
+      void OnUnload();
       
     public:
 
@@ -156,7 +163,7 @@ namespace Sprocket {
   template<>
   inline PhysicsComponent Scene::GetComponent<PhysicsComponent>(const unsigned int entityID) {
     if(!m_PhysicsComponents.count(entityID)) {
-      throw std::invalid_argument("There is not PhysicsComponent for this entity.");
+      throw std::invalid_argument("There is no PhysicsComponent for this entity.");
     }
     return m_PhysicsComponents.at(entityID);
   }
@@ -172,7 +179,12 @@ namespace Sprocket {
   template<>
   inline void Scene::RemoveComponent<QuadRendererComponent>(const unsigned int entityID) {
     if(m_QuadRenderers.count(entityID)) {
+
+      // Do not go further than this if the scene is not loaded
+      if(!m_IsLoaded) return;
+
       RemoveQuadRenderer(entityID);
+
       return;
     }
     
@@ -183,6 +195,9 @@ namespace Sprocket {
   inline void Scene::RemoveComponent<BoxColliderComponent>(const unsigned int entityID) {
     if(m_BoxColliders.count(entityID)) {
       m_BoxColliders.extract(entityID);
+
+      // Do not go further than this if the scene is not loaded
+      if(!m_IsLoaded) return;
 
       // Since any entity with a collider must have physics component, remove the collider
       // from the corresponding physics object
@@ -199,6 +214,9 @@ namespace Sprocket {
     if(m_CircleColliders.count(entityID)) {
       m_CircleColliders.extract(entityID);
       
+      // Do not go further than this if the scene is not loaded
+      if(!m_IsLoaded) return;
+
       // Since any entity with a collider must have physics component, remove the collider
       // from the corresponding physics object
       RemovePhysicsObjectCollider(entityID);
@@ -237,10 +255,14 @@ namespace Sprocket {
   template<>
   inline void Scene::RemoveComponent<PhysicsComponent>(const unsigned int entityID) {
     if(m_PhysicsComponents.count(entityID)) {
-
-      RemovePhysicsObject(entityID);
+      
+      // Removing from the physics system only needs to happen if the scene is loaded
+      if(!m_IsLoaded) {
+         RemovePhysicsObject(entityID);
+      }
 
       m_PhysicsComponents.extract(entityID);
+
       return;
     }
 

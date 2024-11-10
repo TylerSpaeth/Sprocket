@@ -37,7 +37,7 @@ namespace Sprocket {
   // to specify the size of individual quads, but instead specify a single quad size and then just 
   // use scale for quads that should be rendered as different sizes
   struct QuadRendererComponent : public Component {
-    unsigned int quadID;
+    unsigned int quadID = -1;
     float size;
     std::string texturePath; // Set to "" in order to use the quad color instead
     glm::vec4 quadColor = {1,1,1,1};

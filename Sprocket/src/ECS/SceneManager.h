@@ -30,7 +30,9 @@ namespace Sprocket {
     public:
       /// @brief Initializes the SceneManager singleton. This function
       /// must be called before any other SceneManager functions.
-      static void Init();
+      /// @param eventCallback an event callback to be used by the scene manager and any connected 
+      /// components
+      static void Init(const std::function<void(Event&)> eventCallback);
 
       /// @brief Adds a new scene that can be retrieved at the given index.
       /// @param index the index that the scene should be stored at
@@ -68,12 +70,6 @@ namespace Sprocket {
       /// @brief Handles incoming events. Should be registered as a callback to receive events.
       /// @param event The event the should be handled.
       static void OnEvent(Event& event);
-
-      /// @brief Registers the given function as an Event callback to be run when an event occurs 
-      /// in the ECS system.. The event handler should subscribe to this in order for events 
-      /// produced here to become part of the central event system.
-      /// @param eventCallback a function that will take in an Event when an event occurs.
-      static void RegisterEventCallback(const std::function<void(Event&)> eventCallback);
       
   };
 

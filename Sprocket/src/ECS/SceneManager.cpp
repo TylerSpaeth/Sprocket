@@ -1,6 +1,7 @@
 #include "SceneManager.h"
 
 #include <stdexcept>
+#include <iostream>
 
 namespace Sprocket {
 
@@ -13,23 +14,22 @@ namespace Sprocket {
     GetActiveScene()->OnEvent(event); 
   }
 
-  void SceneManager::RegisterEventCallback(const std::function<void(Event&)> eventCallback) {
-    s_Instance->m_EventCallback = eventCallback;
-
-    // Register the event callback with the active scene as well
-    GetActiveScene()->RegisterEventCallback(eventCallback);
-  }
-
   /////////////////////////////////////////////////////////////////////////////////////////////////
   /////////////////////////////////////////////////////////////////////////////////////////////////
   /////////////////////////////////////////////////////////////////////////////////////////////////
 
   SceneManager* SceneManager::s_Instance = nullptr;
-  void SceneManager::Init() {
+  void SceneManager::Init(const std::function<void(Event&)> eventCallback) {
     if(!s_Instance) {
       s_Instance = new SceneManager();
       // Create a default scene with an index of 0
       s_Instance->AddScene(0, new Scene());
+
+      // Store the event callback and register it with the newly created scene. Also load the scene
+      // so that any of its subsystems can be activated.
+      s_Instance->m_EventCallback = eventCallback;
+      GetActiveScene()->RegisterEventCallback(eventCallback);
+      GetActiveScene()->OnLoad();
     }
   }
 
@@ -62,11 +62,16 @@ namespace Sprocket {
       throw std::invalid_argument("No scene exists with this index.");
     }
 
+    // Unload the active scene so it can perform any needed cleanup
+    GetActiveScene()->OnUnload();
     // Remove the event callback of the current scene
     GetActiveScene()->RegisterEventCallback(nullptr);
     s_Instance->m_ActiveSceneIndex = index;
     // Set the event callback of the new scene
     GetActiveScene()->RegisterEventCallback(s_Instance->m_EventCallback);
+    // Load the scene
+    GetActiveScene()->OnLoad();
+    
   }
 
   Scene* SceneManager::GetActiveScene() {

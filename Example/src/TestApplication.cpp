@@ -18,7 +18,8 @@ class TestApplication : public Sprocket::Application {
     ~TestApplication() {}
     void Start() {
       using namespace Sprocket;
-      Scene* scene = SceneManager::GetActiveScene();
+      //Scene* scene = SceneManager::GetActiveScene();
+      Scene* scene = new Scene();
 
       // Create a border around the window
       {
@@ -141,7 +142,8 @@ class TestApplication : public Sprocket::Application {
         
       }
 
-      
+      SceneManager::AddScene(1,scene);
+      SceneManager::SetActiveScene(1);
 
     }
 
@@ -229,8 +231,7 @@ Sprocket::Application* Sprocket::CreateApplication() {
   Renderer::Init(500000, 1066, 600);
   app->RegisterEventCallback(Renderer::OnEvent, EventCategory::UNCATEGORIZED);
 
-  SceneManager::Init();
-  SceneManager::RegisterEventCallback(std::bind(&Application::OnEvent, app, std::placeholders::_1));
+  SceneManager::Init(std::bind(&Application::OnEvent, app, std::placeholders::_1));
   app->RegisterEventCallback(SceneManager::OnEvent, EventCategory::UNCATEGORIZED);
 
   return app;

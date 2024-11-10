@@ -12,7 +12,7 @@
 
 namespace Sprocket {
 
-  Scene::Scene() : m_Physics(new Physics()), m_QuadRenderer(new QuadRenderer()), m_Camera(new Camera()) {
+  Scene::Scene() {
     // TODO this is really not optimal. It would be best not to have this be a fixed number, and 
     // definitly not hard coded here. If reserving space for the vector is the way this stays, then
     // it would probably be best to set this number to the same as the maximum number of quads. It 
@@ -29,6 +29,17 @@ namespace Sprocket {
   /////////////////////////////////////////////////////////////////////////////////////////////////
   //////////////////////////////////////// EVENT HANDLING /////////////////////////////////////////
   /////////////////////////////////////////////////////////////////////////////////////////////////
+
+  void Scene::RegisterEventCallback(const std::function<void(Event&)> eventCallback) {
+    m_EventCallback = eventCallback;
+
+    // Give the ECS systems the eventCallback if the scene has been loaded
+    if(m_IsLoaded) {
+      ((QuadRenderer*)m_QuadRenderer)->m_EventCallback = eventCallback;
+      ((Camera*)m_Camera)->m_EventCallback = eventCallback;
+    }
+    
+  }
 
   void Scene::OnEvent(Event& event) {
     switch(event.GetEventType()) {
@@ -116,7 +127,12 @@ namespace Sprocket {
     
     // If there is a physics component delete it from the physics system and remove it from the map
     if(m_PhysicsComponents.count(entityID)) {
-      ((Physics*)m_Physics)->DeletePhysicsObject(m_PhysicsComponents.at(entityID).phyiscsID);
+
+      // Deletion from the physics system only needs to happen if the scene is loaded
+      if(m_IsLoaded) {
+        ((Physics*)m_Physics)->DeletePhysicsObject(m_PhysicsComponents.at(entityID).phyiscsID);
+      }
+      
       m_PhysicsComponents.extract(entityID);
     }
 
@@ -171,6 +187,13 @@ namespace Sprocket {
     m_GlobalTransforms.at(entityID).rotation = global.rotation;
     m_GlobalTransforms.at(entityID).scale = global.scale;
 
+    // Perform a component update so that rendering is updated properly, and the global transform
+    // changes are propagated down the tree.
+    UpdateComponent(entityID, m_Transforms.at(entityID));
+    for(auto child : m_Children.at(entityID)) {
+      UpdateComponent(child, m_Transforms.at(child));
+    }
+
   }
 
   /////////////////////////////////////////////////////////////////////////////////////////////////
@@ -192,6 +215,9 @@ namespace Sprocket {
     }
    
     m_QuadRenderers.insert({entityID,component});
+
+    // Do not go further than this if the scene is not loaded
+    if(!m_IsLoaded) return;
 
     ((QuadRenderer*)m_QuadRenderer)->RenderNewQuad(m_Transforms.at(entityID), m_QuadRenderers.at(entityID));
     ((QuadRenderer*)m_QuadRenderer)->UpdateQuad(m_QuadRenderers.at(entityID));
@@ -216,6 +242,17 @@ namespace Sprocket {
     }
 
     m_CameraEntityID = entityID;
+
+    // Do not go further than this if the scene is not loaded
+    if(!m_IsLoaded) return;
+
+    // Pass the camera transform to the system
+    auto localT = m_Transforms.at(m_CameraEntityID);
+    auto globalT = m_GlobalTransforms.at(m_CameraEntityID);
+    globalT.position += localT.position;
+    globalT.rotation += localT.rotation;
+    globalT.scale *= localT.scale;
+    ((Camera*)m_Camera)->UpdateCameraPosition(globalT);
 
     // TODO implement actual storage of a CameraComponent once the CameraComponent has actual 
     // data associated with it
@@ -243,6 +280,8 @@ namespace Sprocket {
       // If it already has a physics component, update set the collider of the corresponding 
       // physics object
       else {
+        // Do not go further than this if the scene is not loaded
+        if(!m_IsLoaded) return;
         auto p = m_PhysicsComponents.at(entityID);
         ((Physics*)m_Physics)->SetCollider(p.phyiscsID,m_BoxColliders.at(entityID));
       }
@@ -270,6 +309,8 @@ namespace Sprocket {
       // If it already has a physics component, update set the collider of the corresponding 
       // physics object
       else {
+        // Do not go further than this if the scene is not loaded
+        if(!m_IsLoaded) return;
         auto p = m_PhysicsComponents.at(entityID);
         ((Physics*)m_Physics)->SetCollider(p.phyiscsID,m_CircleColliders.at(entityID));
       }
@@ -283,6 +324,9 @@ namespace Sprocket {
     }
 
     m_PhysicsComponents.insert({entityID,component});
+
+    // Do not go further than this if the scene is not loaded
+    if(!m_IsLoaded) return;
 
     // Register the component with the physics system based on the other components of the entity
     if(m_BoxColliders.count(entityID)) {
@@ -318,12 +362,13 @@ namespace Sprocket {
     globalTransform.rotation += localTransform.rotation;
     globalTransform.scale *= localTransform.scale;
 
-    // Check whether this transform change will affect a camera or model matrix
-    if(m_CameraEntityID != entityID && m_QuadRenderers.count(entityID)) {
-      // Set the model matrix with the global transform
+    // Check whether this transform change will affect a camera or model matrix. Only if the scene is loaded
+    if(m_CameraEntityID != entityID && m_QuadRenderers.count(entityID) && m_IsLoaded) {
+      // Set the model matrix with the global transform.
       ((QuadRenderer*)m_QuadRenderer)->SetModelMatrix(globalTransform, m_QuadRenderers.at(entityID));
-    }
-    else if(m_CameraEntityID == entityID) {
+    } 
+    // Only if the scene is loaded
+    else if(m_CameraEntityID == entityID && m_IsLoaded) {
       ((Camera*)m_Camera)->UpdateCameraPosition(globalTransform);
     }  
 
@@ -344,6 +389,10 @@ namespace Sprocket {
     if(m_QuadRenderers.count(entityID)) {
       m_QuadRenderers.extract(entityID);
       m_QuadRenderers.insert({entityID,replacement});
+
+      // Do not go further than this if the scene is not loaded
+      if(!m_IsLoaded) return;
+
       ((QuadRenderer*)m_QuadRenderer)->UpdateQuad(m_QuadRenderers.at(entityID));
     }
     
@@ -432,10 +481,90 @@ namespace Sprocket {
   /////////////////////////////////////////////////////////////////////////////////////////////////
   /////////////////////////////////////////////////////////////////////////////////////////////////
 
-  void Scene::RegisterEventCallback(const std::function<void(Event&)> eventCallback) {
-    m_EventCallback = eventCallback;
-    ((QuadRenderer*)m_QuadRenderer)->m_EventCallback = eventCallback;
-    ((Camera*)m_Camera)->m_EventCallback = eventCallback;
+  void Scene::OnLoad() {
+
+    // Create the systems
+    m_Physics = new Physics();
+    m_QuadRenderer = new QuadRenderer();
+    ((QuadRenderer*)m_QuadRenderer)->m_EventCallback = m_EventCallback;
+    m_Camera = new Camera();
+    ((Camera*)m_Camera)->m_EventCallback = m_EventCallback;
+
+    // Load the physics system with all of the related components
+    for(auto it = m_PhysicsComponents.begin(); it != m_PhysicsComponents.end(); it++) {
+
+      auto entityID = it->first;
+
+      ((Physics*)m_Physics)->RegisterNewPhysicsObject(m_Transforms.at(entityID), m_GlobalTransforms.at(entityID), m_PhysicsComponents.at(entityID));
+
+      if(m_BoxColliders.count(entityID)) {
+        ((Physics*)m_Physics)->SetCollider(it->second.phyiscsID, m_BoxColliders.at(entityID));
+      }
+      else if(m_CircleColliders.count(entityID)) {
+        ((Physics*)m_Physics)->SetCollider(it->second.phyiscsID, m_CircleColliders.at(entityID));
+      }
+    }
+
+    // Load the QuadRenderer with all of the related components
+    for(auto it = m_QuadRenderers.begin(); it != m_QuadRenderers.end(); it++) {
+
+      auto entityID = it->first;
+
+      ((QuadRenderer*)m_QuadRenderer)->RenderNewQuad(m_Transforms.at(entityID), m_QuadRenderers.at(entityID));
+      ((QuadRenderer*)m_QuadRenderer)->UpdateQuad(m_QuadRenderers.at(entityID));
+
+      TransformComponent globalTransform = m_GlobalTransforms.at(entityID);
+      TransformComponent localTransform = m_Transforms.at(entityID);
+      globalTransform.position += localTransform.position;
+      globalTransform.rotation += localTransform.rotation;
+      globalTransform.scale *= localTransform.scale;
+
+      ((QuadRenderer*)m_QuadRenderer)->SetModelMatrix(globalTransform, m_QuadRenderers.at(entityID));
+
+    } 
+
+    // Apply the camera transform if there is one
+    if(m_CameraEntityID != -1) {
+      auto localT = m_Transforms.at(m_CameraEntityID);
+      auto globalT = m_GlobalTransforms.at(m_CameraEntityID);
+
+      globalT.position += localT.position;
+      globalT.rotation += localT.rotation;
+      globalT.scale *= localT.scale;
+    
+      ((Camera*)m_Camera)->UpdateCameraPosition(globalT);
+    }
+
+    // Set the scene as loaded
+    m_IsLoaded = true;
+      
   }
+
+  void Scene::OnUnload() {
+
+    // Reset the physicsID of all phyics components
+    for(auto it = m_PhysicsComponents.begin(); it != m_PhysicsComponents.end(); it++) {
+      m_PhysicsComponents.at(it->first).phyiscsID = -1;
+    }
+
+    // Remove the quads from the renderer and reset the quadId of all quad renderers
+    for(auto it = m_QuadRenderers.begin(); it != m_QuadRenderers.end(); it++) {
+      ((QuadRenderer*)m_QuadRenderer)->DeleteQuad(m_QuadRenderers.at(it->first));
+      m_QuadRenderers.at(it->first).quadID = -1;
+    }
+    
+    // Delete the ECS systems
+    delete (Physics*)m_Physics;
+    delete (QuadRenderer*)m_QuadRenderer;
+    delete (Camera*)m_Camera;
+
+    m_Physics = nullptr;
+    m_QuadRenderer = nullptr;
+    m_Camera = nullptr;
+
+    m_IsLoaded = false;
+  }
+
+  
 
 }
