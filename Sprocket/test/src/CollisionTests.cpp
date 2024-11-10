@@ -234,26 +234,187 @@ TEST(CollisionTests, CircleCircle) {
   Sprocket::CircleColliderComponent c;
   c.radius = 50;
 
+  // Rotate one circle around the other just far enough apart not to collide
   for(int i = 1; i <= 360; i++) {
     t2.position.x = 100.01 * cos((M_PI * i /360) * 2);
     t2.position.y = 100.01 * sin((M_PI * i /360) * 2);
     EXPECT_FALSE(Sprocket::Collision::Collides(c,t1,c,t2));
   }
-
+  // Rotate one circle around the other with edges touching the whole time
   for(int i = 1; i <= 360; i++) {
     t2.position.x = 100 * cos((M_PI * i /360) * 2);
     t2.position.y = 100 * sin((M_PI * i /360) * 2);
     EXPECT_TRUE(Sprocket::Collision::Collides(c,t1,c,t2));
   }
 
+  // Verify that stacked circles does not cause a problem
   t2.position = {0,0,0};
-  EXPECT_TRUE(Sprocket::Collision::Collides(c,t1,c,t2));
-
+  EXPECT_TRUE(Sprocket::Collision::Collides(c,t1,c,t2));  
   t2.scale.x = .5;
   EXPECT_TRUE(Sprocket::Collision::Collides(c,t1,c,t2));
   EXPECT_TRUE(Sprocket::Collision::Collides(c,t2,c,t1));
 
+  // Verify rotation has no effect
   t2.scale.x = 1;
+  t2.position = {100.00,0,0};
+  t2.rotation.z = 45;
 
-  // TODO complete this
+  // Rotate one circle around the other just far enough apart not to collide
+  for(int i = 1; i <= 360; i++) {
+    t2.position.x = 100.01 * cos((M_PI * i /360) * 2);
+    t2.position.y = 100.01 * sin((M_PI * i /360) * 2);
+    EXPECT_FALSE(Sprocket::Collision::Collides(c,t1,c,t2));
+  }
+  // Rotate one circle around the other with edges touching the whole time
+  for(int i = 1; i <= 360; i++) {
+    t2.position.x = 100 * cos((M_PI * i /360) * 2);
+    t2.position.y = 100 * sin((M_PI * i /360) * 2);
+    EXPECT_TRUE(Sprocket::Collision::Collides(c,t1,c,t2));
+  }
+
+}
+
+// TODO perform more intensive tests on the corners and rotation 
+TEST(CollisionTests, BoxCircle) {
+
+  Sprocket::TransformComponent bt;
+  bt.position = {0,0,0};
+  bt.rotation = {0,0,0};
+  bt.scale = {1,1,1};
+
+  Sprocket::TransformComponent ct;
+  ct.position = {100.001,-50,0};
+  ct.rotation = {0,0,0};
+  ct.scale = {1,1,1};
+
+  Sprocket::BoxColliderComponent b;
+  b.height = 100;
+  b.width = 100;
+
+  Sprocket::CircleColliderComponent c;
+  c.radius = 50;
+
+  ////////// NO COLLISION //////////
+
+  // Run circle along right edge
+  for(int i = 0; i < 100; i++) {
+    EXPECT_FALSE(Sprocket::Collision::Collides(b,bt,c,ct));
+    EXPECT_FALSE(Sprocket::Collision::Collides(c,ct,b,bt));
+    ct.position.y++;
+  }
+
+  // Check circle at btop right corner
+  ct.position.x = 50 + sqrt(pow(50,2)/2) + .001;
+  ct.position.y = 50 + sqrt(pow(50,2)/2) + .001;
+  EXPECT_FALSE(Sprocket::Collision::Collides(b,bt,c,ct));
+  EXPECT_FALSE(Sprocket::Collision::Collides(c,ct,b,bt));
+
+  // Run circle along top edge
+  ct.position.x = 50;
+  ct.position.y = 100.001;
+  for(int i = 0; i < 100; i++) {
+    EXPECT_FALSE(Sprocket::Collision::Collides(b,bt,c,ct));
+    EXPECT_FALSE(Sprocket::Collision::Collides(c,ct,b,bt));
+    ct.position.x--;
+  }
+
+  // Check circle at top left corner
+  ct.position.x = -50 - sqrt(pow(50,2)/2) - .001;
+  ct.position.y = 50 + sqrt(pow(50,2)/2) + .001;
+  EXPECT_FALSE(Sprocket::Collision::Collides(b,bt,c,ct));
+  EXPECT_FALSE(Sprocket::Collision::Collides(c,ct,b,bt));
+
+  // Run circle along left edge
+  ct.position.x = -100.001;
+  ct.position.y = 50;
+  for(int i = 0; i < 100; i++) {
+    EXPECT_FALSE(Sprocket::Collision::Collides(b,bt,c,ct));
+    EXPECT_FALSE(Sprocket::Collision::Collides(c,ct,b,bt));
+    ct.position.y--;
+  }
+
+  // Check circle at bottom left corner
+  ct.position.x = -50 - sqrt(pow(50,2)/2) - .001;
+  ct.position.y = -50 - sqrt(pow(50,2)/2) - .001;
+  EXPECT_FALSE(Sprocket::Collision::Collides(b,bt,c,ct));
+  EXPECT_FALSE(Sprocket::Collision::Collides(c,ct,b,bt));
+
+  // Run circle along bottom edge
+  ct.position.x = -50;
+  ct.position.y = -100.001;
+  for(int i = 0; i < 100; i++) {
+    EXPECT_FALSE(Sprocket::Collision::Collides(b,bt,c,ct));
+    EXPECT_FALSE(Sprocket::Collision::Collides(c,ct,b,bt));
+    ct.position.x++;
+  }
+
+  // Check circle at bottom right corner
+  ct.position.x = 50 + sqrt(pow(50,2)/2) + .001;
+  ct.position.y = -50 - sqrt(pow(50,2)/2) - .001;
+  EXPECT_FALSE(Sprocket::Collision::Collides(b,bt,c,ct));
+  EXPECT_FALSE(Sprocket::Collision::Collides(c,ct,b,bt));
+
+
+  ////////// COLLISION //////////
+
+  ct.position.x = 100;
+  ct.position.y = -50;
+  // Run circle along right edge
+  for(int i = 0; i < 100; i++) {
+    EXPECT_TRUE(Sprocket::Collision::Collides(b,bt,c,ct));
+    EXPECT_TRUE(Sprocket::Collision::Collides(c,ct,b,bt));
+    ct.position.y++;
+  }
+
+  // Check circle at btop right corner
+  ct.position.x = 50 + sqrt(pow(50,2)/2);
+  ct.position.y = 50 + sqrt(pow(50,2)/2);
+  EXPECT_TRUE(Sprocket::Collision::Collides(b,bt,c,ct));
+  EXPECT_TRUE(Sprocket::Collision::Collides(c,ct,b,bt));
+
+  // Run circle along top edge
+  ct.position.x = 50;
+  ct.position.y = 100.;
+  for(int i = 0; i < 100; i++) {
+    EXPECT_TRUE(Sprocket::Collision::Collides(b,bt,c,ct));
+    EXPECT_TRUE(Sprocket::Collision::Collides(c,ct,b,bt));
+    ct.position.x--;
+  }
+
+  // Check circle at top left corner
+  ct.position.x = -50 - sqrt(pow(50,2)/2);
+  ct.position.y = 50 + sqrt(pow(50,2)/2);
+  EXPECT_TRUE(Sprocket::Collision::Collides(b,bt,c,ct));
+  EXPECT_TRUE(Sprocket::Collision::Collides(c,ct,b,bt));
+
+  // Run circle along left edge
+  ct.position.x = -100;
+  ct.position.y = 50;
+  for(int i = 0; i < 100; i++) {
+    EXPECT_TRUE(Sprocket::Collision::Collides(b,bt,c,ct));
+    EXPECT_TRUE(Sprocket::Collision::Collides(c,ct,b,bt));
+    ct.position.y--;
+  }
+
+  // Check circle at bottom left corner
+  ct.position.x = -50 - sqrt(pow(50,2)/2);
+  ct.position.y = -50 - sqrt(pow(50,2)/2);
+  EXPECT_TRUE(Sprocket::Collision::Collides(b,bt,c,ct));
+  EXPECT_TRUE(Sprocket::Collision::Collides(c,ct,b,bt));
+
+  // Run circle along bottom edge
+  ct.position.x = -50;
+  ct.position.y = -100;
+  for(int i = 0; i < 100; i++) {
+    EXPECT_TRUE(Sprocket::Collision::Collides(b,bt,c,ct));
+    EXPECT_TRUE(Sprocket::Collision::Collides(c,ct,b,bt));
+    ct.position.x++;
+  }
+
+  // Check circle at bottom right corner
+  ct.position.x = 50 + sqrt(pow(50,2)/2);
+  ct.position.y = -50 - sqrt(pow(50,2)/2);
+  EXPECT_TRUE(Sprocket::Collision::Collides(b,bt,c,ct));
+  EXPECT_TRUE(Sprocket::Collision::Collides(c,ct,b,bt));
+  
 }

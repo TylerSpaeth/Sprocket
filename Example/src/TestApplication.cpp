@@ -181,6 +181,13 @@ class TestApplication : public Sprocket::Application {
 
         scene->UpdateComponent(redBox,tcomp);
 
+        QuadRendererComponent userQComp = scene->GetComponent<QuadRendererComponent>(user);
+        if(userQComp.quadColor.g > 0 && userQComp.quadColor.b > 0) {
+          userQComp.quadColor.g -= .05;
+          userQComp.quadColor.b -= .05;
+          scene->UpdateComponent(user,userQComp);
+        }
+
       }
 
       {
