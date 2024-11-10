@@ -1,6 +1,4 @@
 #include "SceneManager.h"
-#include "ECS/QuadRenderer.h"
-#include "ECS/Camera.h"
 
 #include <stdexcept>
 
@@ -17,9 +15,9 @@ namespace Sprocket {
 
   void SceneManager::RegisterEventCallback(const std::function<void(Event&)> eventCallback) {
     s_Instance->m_EventCallback = eventCallback;
-    // TODO register the eventcallback for all ECS systems that need access to main event system
-    QuadRenderer::s_Instance->m_EventCallback = eventCallback;
-    Camera::s_Instance->m_EventCallback = eventCallback;
+
+    // Register the event callback with the active scene as well
+    GetActiveScene()->RegisterEventCallback(eventCallback);
   }
 
   /////////////////////////////////////////////////////////////////////////////////////////////////
@@ -27,15 +25,11 @@ namespace Sprocket {
   /////////////////////////////////////////////////////////////////////////////////////////////////
 
   SceneManager* SceneManager::s_Instance = nullptr;
-  QuadRenderer* QuadRenderer::s_Instance = nullptr;
-  Camera* Camera::s_Instance = nullptr;
   void SceneManager::Init() {
     if(!s_Instance) {
       s_Instance = new SceneManager();
+      // Create a default scene with an index of 0
       s_Instance->AddScene(0, new Scene());
-      // TODO construct all ECS singletons here
-      QuadRenderer::Init();
-      Camera::Init();
     }
   }
 
@@ -49,6 +43,9 @@ namespace Sprocket {
   void SceneManager::RemoveScene(const int index) {
     if(s_Instance->m_Scenes.find(index) == s_Instance->m_Scenes.cend()) {
       throw std::invalid_argument("No scene exists with this index.");
+    }
+    if(s_Instance->m_ActiveSceneIndex == index) {
+      throw std::invalid_argument("The active scene can not be removed.");
     }
     s_Instance->m_Scenes.erase(index);
   }
@@ -65,7 +62,11 @@ namespace Sprocket {
       throw std::invalid_argument("No scene exists with this index.");
     }
 
+    // Remove the event callback of the current scene
+    GetActiveScene()->RegisterEventCallback(nullptr);
     s_Instance->m_ActiveSceneIndex = index;
+    // Set the event callback of the new scene
+    GetActiveScene()->RegisterEventCallback(s_Instance->m_EventCallback);
   }
 
   Scene* SceneManager::GetActiveScene() {

@@ -1,17 +1,30 @@
 #include "ECS/QuadRenderer.h"
 
+#include <stdexcept>
+
 namespace Sprocket {
+
+  void QuadRenderer::VerifyCallback() {
+    if(m_EventCallback == nullptr) {
+      throw std::runtime_error("QuadRenderer can not be used without an active event callback.");
+    }
+  }
   
   void QuadRenderer::RenderNewQuad(TransformComponent transform, QuadRendererComponent& renderer) {
+
+    VerifyCallback();
         
     RenderNewEvent* event = new RenderNewEvent(renderer.size);
-    s_Instance->m_EventCallback(*event);
+    m_EventCallback(*event);
     renderer.quadID = event->m_QuadID;
 
     SetModelMatrix(transform, renderer);
   }
 
   void QuadRenderer::SetModelMatrix(TransformComponent transform, QuadRendererComponent& renderer) {
+
+    VerifyCallback();
+
     RenderUpdateEvent* update = new RenderUpdateEvent(RenderUpdateType::MODEL_MATRIX);
     update->m_QuadIndex = renderer.quadID;
     
@@ -23,22 +36,28 @@ namespace Sprocket {
     glm::mat4 scale = glm::scale(glm::mat4(1), transform.scale);
     update->m_Matrix = translate * rotation * scale;
 
-    s_Instance->m_EventCallback(*update);
+    m_EventCallback(*update);
   }
 
   void QuadRenderer::UpdateQuad(QuadRendererComponent& renderer) {
+
+    VerifyCallback();
+
     RenderUpdateEvent* update = new RenderUpdateEvent(RenderUpdateType::QUAD);
     update->m_QuadIndex = renderer.quadID;
     update->m_QuadColor = renderer.quadColor;
     update->m_TexturePath = renderer.texturePath;
     update->m_TexXCoords = renderer.quadXCoords;
     update->m_TexYCoords = renderer.quadYCoords;
-    s_Instance->m_EventCallback(*update);
+    m_EventCallback(*update);
   }
 
   void QuadRenderer::DeleteQuad(QuadRendererComponent& renderer) {
+
+    VerifyCallback();
+
     RenderDeleteEvent* e = new RenderDeleteEvent(renderer.quadID);
-    s_Instance->m_EventCallback(*e);
+    m_EventCallback(*e);
   }
 
 }

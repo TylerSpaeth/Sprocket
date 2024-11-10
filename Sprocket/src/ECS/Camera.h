@@ -9,31 +9,34 @@
 #include "ThirdParty/glm/gtc/matrix_transform.hpp"
 
 #include <functional>
+#include <stdexcept>
 
 namespace Sprocket {
 
   class Camera {
 
-    friend class SceneManager;
+    friend class Scene;
 
     private:
-      // Singleton Components
-      static Camera* s_Instance;
+
       Camera(){}
-      Camera(const Camera&) = delete;
-      Camera operator=(const Camera&) = delete;
-      
+
       std::function<void(Event&)> m_EventCallback;
 
-      static void Init() {
-        if(!s_Instance) s_Instance = new Camera();
+      void VerifyCallback() {
+        if(m_EventCallback == nullptr) {
+          throw std::runtime_error("The Camera system can not be used without an active event callback.");
+        }
       }
     
     public:
 
       /// @brief Sets the position, rotation, and scale of the camera to the given transform
       /// @param transform the new transform for the camera
-      static void UpdateCameraPosition(TransformComponent transform) {
+      void UpdateCameraPosition(TransformComponent transform) {
+
+        VerifyCallback();
+
         RenderUpdateEvent* update = new RenderUpdateEvent(RenderUpdateType::VIEW_MATRIX);
         
         glm::mat4 translate = glm::translate(glm::mat4(1), -transform.position);
@@ -47,7 +50,7 @@ namespace Sprocket {
 
         update->m_Matrix = translate * rotation * scale;
 
-        s_Instance->m_EventCallback(*update);
+        m_EventCallback(*update);
       }
   };
 

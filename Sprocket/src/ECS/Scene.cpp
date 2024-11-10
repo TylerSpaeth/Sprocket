@@ -12,7 +12,7 @@
 
 namespace Sprocket {
 
-  Scene::Scene() : m_Physics(new Physics()) {
+  Scene::Scene() : m_Physics(new Physics()), m_QuadRenderer(new QuadRenderer()), m_Camera(new Camera()) {
     // TODO this is really not optimal. It would be best not to have this be a fixed number, and 
     // definitly not hard coded here. If reserving space for the vector is the way this stays, then
     // it would probably be best to set this number to the same as the maximum number of quads. It 
@@ -102,7 +102,7 @@ namespace Sprocket {
 
     // Try to delete the quad renderer
     if(m_QuadRenderers.count(entityID)) {
-      QuadRenderer::DeleteQuad(m_QuadRenderers.at(entityID));
+      ((QuadRenderer*)m_QuadRenderer)->DeleteQuad(m_QuadRenderers.at(entityID));
       m_QuadRenderers.erase(entityID);
     }
 
@@ -193,8 +193,8 @@ namespace Sprocket {
    
     m_QuadRenderers.insert({entityID,component});
 
-    QuadRenderer::RenderNewQuad(m_Transforms.at(entityID), m_QuadRenderers.at(entityID));
-    QuadRenderer::UpdateQuad(m_QuadRenderers.at(entityID));
+    ((QuadRenderer*)m_QuadRenderer)->RenderNewQuad(m_Transforms.at(entityID), m_QuadRenderers.at(entityID));
+    ((QuadRenderer*)m_QuadRenderer)->UpdateQuad(m_QuadRenderers.at(entityID));
 
     TransformComponent globalTransform = m_GlobalTransforms.at(entityID);
     TransformComponent localTransform = m_Transforms.at(entityID);
@@ -202,7 +202,7 @@ namespace Sprocket {
     globalTransform.rotation += localTransform.rotation;
     globalTransform.scale *= localTransform.scale;
 
-    QuadRenderer::SetModelMatrix(globalTransform, m_QuadRenderers.at(entityID));
+    ((QuadRenderer*)m_QuadRenderer)->SetModelMatrix(globalTransform, m_QuadRenderers.at(entityID));
   }
 
   void Scene::AddComponent(const unsigned int entityID, const CameraComponent& component) {
@@ -321,10 +321,10 @@ namespace Sprocket {
     // Check whether this transform change will affect a camera or model matrix
     if(m_CameraEntityID != entityID && m_QuadRenderers.count(entityID)) {
       // Set the model matrix with the global transform
-      QuadRenderer::SetModelMatrix(globalTransform, m_QuadRenderers.at(entityID));
+      ((QuadRenderer*)m_QuadRenderer)->SetModelMatrix(globalTransform, m_QuadRenderers.at(entityID));
     }
     else if(m_CameraEntityID == entityID) {
-      Camera::UpdateCameraPosition(globalTransform);
+      ((Camera*)m_Camera)->UpdateCameraPosition(globalTransform);
     }  
 
     // Update the global transform of the children, and then recurse on the child transform
@@ -344,7 +344,7 @@ namespace Sprocket {
     if(m_QuadRenderers.count(entityID)) {
       m_QuadRenderers.extract(entityID);
       m_QuadRenderers.insert({entityID,replacement});
-      QuadRenderer::UpdateQuad(m_QuadRenderers.at(entityID));
+      ((QuadRenderer*)m_QuadRenderer)->UpdateQuad(m_QuadRenderers.at(entityID));
     }
     
   }
@@ -415,7 +415,7 @@ namespace Sprocket {
   /////////////////////////////////////////////////////////////////////////////////////////////////
 
   void Scene::RemoveQuadRenderer(const unsigned int entityID) {
-    QuadRenderer::DeleteQuad(m_QuadRenderers.at(entityID));
+    ((QuadRenderer*)m_QuadRenderer)->DeleteQuad(m_QuadRenderers.at(entityID));
   }
 
   void Scene::RemovePhysicsObjectCollider(const unsigned int entityID) {
@@ -431,5 +431,11 @@ namespace Sprocket {
   /////////////////////////////////////////////////////////////////////////////////////////////////
   /////////////////////////////////////////////////////////////////////////////////////////////////
   /////////////////////////////////////////////////////////////////////////////////////////////////
+
+  void Scene::RegisterEventCallback(const std::function<void(Event&)> eventCallback) {
+    m_EventCallback = eventCallback;
+    ((QuadRenderer*)m_QuadRenderer)->m_EventCallback = eventCallback;
+    ((Camera*)m_Camera)->m_EventCallback = eventCallback;
+  }
 
 }

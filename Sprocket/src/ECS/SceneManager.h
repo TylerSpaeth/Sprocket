@@ -40,7 +40,8 @@ namespace Sprocket {
 
       /// @brief Removes the scene at the given index.
       /// @param index the index of the scene that should be removed
-      /// @throws invalid_argument if there are no scenes at the given index
+      /// @throws invalid_argument if there are no scenes at the given index or if the index is that
+      /// of the active scene.
       static void RemoveScene(const int index);
 
       /// @brief Gets the scene at the given index.

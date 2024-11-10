@@ -13,28 +13,26 @@
 namespace Sprocket {
   
   class QuadRenderer {
-    friend class SceneManager;
+
+    friend class Scene;
+    
     private:
-      // Singleton Components
-      static QuadRenderer* s_Instance;
+
       QuadRenderer(){}
-      QuadRenderer(const QuadRenderer&) = delete;
-      QuadRenderer operator=(const QuadRenderer&) = delete;
 
       std::function<void(Event&)> m_EventCallback;
 
-      static void Init() {
-        if(!s_Instance) s_Instance = new QuadRenderer();
-      }
+      void VerifyCallback();
+
     public:
 
-      static void RenderNewQuad(TransformComponent transform, QuadRendererComponent& renderer);
+      void RenderNewQuad(TransformComponent transform, QuadRendererComponent& renderer);
 
-      static void SetModelMatrix(TransformComponent transform, QuadRendererComponent& renderer);
+      void SetModelMatrix(TransformComponent transform, QuadRendererComponent& renderer);
 
-      static void UpdateQuad(QuadRendererComponent& renderer);
+      void UpdateQuad(QuadRendererComponent& renderer);
 
-      static void DeleteQuad(QuadRendererComponent& renderer);
+      void DeleteQuad(QuadRendererComponent& renderer);
   };
 
 }

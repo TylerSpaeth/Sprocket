@@ -9,6 +9,7 @@
 #include <vector>
 #include <queue>
 #include <stdexcept>
+#include <functional>
 
 namespace Sprocket {
 
@@ -16,7 +17,11 @@ namespace Sprocket {
   /// scenes that are made up components, grouped into entities, that define application behaviors.
   class SPROCKET_API Scene {
 
+    friend class SceneManager;
+
     private:
+
+      std::function<void(Event&)> m_EventCallback;
 
       // FIXME change these to vectors to utilize contiguous memory blocks
 
@@ -40,6 +45,8 @@ namespace Sprocket {
       std::vector<TransformComponent> m_GlobalTransforms;
 
       // RENDERING COMPONENTS
+      void* m_QuadRenderer;
+      void* m_Camera;
       std::map<unsigned int, QuadRendererComponent> m_QuadRenderers;
       unsigned int m_CameraEntityID = -1;
 
@@ -56,6 +63,12 @@ namespace Sprocket {
       void RemoveQuadRenderer(const unsigned int entityID);
       void RemovePhysicsObjectCollider(const unsigned int entityID);
       void RemovePhysicsObject(const unsigned int entityID);
+
+      /// @brief Registers the given function as an Event callback to be run when an event occurs 
+      /// in the ECS system.. The event handler should subscribe to this in order for events 
+      /// produced here to become part of the central event system.
+      /// @param eventCallback a function that will take in an Event when an event occurs.
+      void RegisterEventCallback(const std::function<void(Event&)> eventCallback);
       
     public:
 
