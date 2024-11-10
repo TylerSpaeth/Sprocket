@@ -7,8 +7,6 @@
 #include <vector>
 #include <limits>
 
-#include <iostream>
-
 namespace Sprocket {
 
   namespace Collision {
@@ -115,8 +113,6 @@ namespace Sprocket {
 
       return false;
     }
-
-    //TODO verify that this all works properly with various scales and rotations 
 
     // Box-Circle Collision
     bool Collides(BoxColliderComponent b, TransformComponent bt, CircleColliderComponent c, TransformComponent ct) {

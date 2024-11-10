@@ -1,5 +1,4 @@
 #include "Application.h"
-#include "Events/EventHandler.h"
 #include "Events/ApplicationEvent.h"
 
 #include <iostream>
@@ -17,18 +16,19 @@ namespace Sprocket {
   void Application::Run() {
     this->Start();
 
-    // TODO everything here is just for testing
     while(m_AppRunning) {
+
+      // Calculate the time since last frame in seconds
       float deltaTime = GetTimeSinceLastChecked() / 1000000.0f;
       this->Update(deltaTime);
+
+      // Send an app update into the event system
       ApplicationUpdateEvent event(deltaTime);
       OnEvent(event);
     }
   }
 
   void Application::OnEvent(Event& event) {
-    
-    EventHandler eventHandler(event);
 
     // Traverse the callbacks in reverse order. Right now this is done so we can register the window
     // and renderer first. That way we can assure they receive events, mainly update, last
@@ -36,8 +36,9 @@ namespace Sprocket {
 
       if(event.IsCategory(m_EventCallbacks[i].second)) {
 
-         // Post the event to the subscriber
-        eventHandler.Post(m_EventCallbacks[i].first);
+        // Post the event to the subscriber
+        m_EventCallbacks[i].first(event);
+
       }
     }
 
