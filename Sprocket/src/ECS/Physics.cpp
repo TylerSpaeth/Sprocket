@@ -178,7 +178,7 @@ namespace Sprocket {
       auto obj1 = m_Objects.at(i);
       if(obj1.m_Collider == nullptr) break;
       // If true, obj1 has a box collider, if false then circle collider
-      bool boxCollider1 = obj1.m_Collider->componentType == ComponentType::BOX_COLLIDER_COMPONENT;
+      bool boxCollider1 = obj1.m_Collider->isBoxCollider;
 
       TransformComponent obj1ComputedTransform = *obj1.m_GlobalTransform;
       obj1ComputedTransform.position += obj1.m_LocalTransform->position;
@@ -193,7 +193,7 @@ namespace Sprocket {
         auto obj2 = m_Objects.at(j);
         if(obj2.m_Collider == nullptr) break;
         // If true, obj2 has a box collider, if false then circle collider
-        bool boxCollider2 = obj2.m_Collider->componentType == ComponentType::BOX_COLLIDER_COMPONENT;
+        bool boxCollider2 = obj2.m_Collider->isBoxCollider;
 
         TransformComponent obj2ComputedTransform = *obj2.m_GlobalTransform;
         obj2ComputedTransform.position += obj2.m_LocalTransform->position;
