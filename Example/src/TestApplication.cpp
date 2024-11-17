@@ -13,6 +13,8 @@ class TestApplication : public Sprocket::Application {
 
   unsigned int redBox;
 
+  unsigned int tileMap;
+
   public:
     TestApplication() : Sprocket::Application() {}
     ~TestApplication() {}
@@ -83,36 +85,36 @@ class TestApplication : public Sprocket::Application {
         top = scene->CreateEntity();
         scene->SetEntityParent(top,user);
         TransformComponent t1;
-        t1.position.y = 51;
+        t1.position.y = 50.5;
         scene->UpdateComponent(top,t1);
 
         right = scene->CreateEntity();
         scene->SetEntityParent(right,user);
         TransformComponent t2;
-        t2.position.x = 51;
+        t2.position.x = 50.5;
          scene->UpdateComponent(right, t2);
 
         bottom = scene->CreateEntity();
         scene->SetEntityParent(bottom,user);
         TransformComponent t3;
-        t3.position.y = -51;
+        t3.position.y = -50.5;
          scene->UpdateComponent(bottom, t3);
 
         left = scene->CreateEntity();
         scene->SetEntityParent(left,user);
         TransformComponent t4;
-        t4.position.x = -51;
+        t4.position.x = -50.5;
          scene->UpdateComponent(left, t4);
 
         BoxColliderComponent h;
-        h.height = 1;
+        h.height = .5;
         h.width = 100;
         scene->AddComponent(top, h);
         scene->AddComponent(bottom, h);
       
         BoxColliderComponent v;
         v.height = 100;
-        v.width = 1;
+        v.width = .5;
         scene->AddComponent(left, v);
         scene->AddComponent(right, v);
 
@@ -139,7 +141,22 @@ class TestApplication : public Sprocket::Application {
 
         scene->UpdateComponent(redBox,tcomp);
 
+      }
+
+      // TileMap of trees
+      {
+        TileMapComponent tile;
+        tile.spriteMapPath = "../res/tilemaps/SpriteTileMap.txt";
+        tile.tileSize = 100;
+        tile.texturePaths.at(0) = "../res/textures/BiggerBetterTree.png";
+        tile.texturePaths.at(1) = "../res/textures/Circle.png";
+        tile.colliderMapPath = "../res/tilemaps/ColliderTileMap.txt";
         
+        tileMap = scene->CreateEntity();
+        scene->AddComponent(tileMap,tile);
+        auto transform = scene->GetComponent<TransformComponent>(tileMap);
+        transform.position.z -= .01;
+        scene->UpdateComponent(tileMap,transform);
       }
 
       SceneManager::AddScene(1,scene);
@@ -152,7 +169,7 @@ class TestApplication : public Sprocket::Application {
       Scene* scene = SceneManager::GetActiveScene();
 
       // Print frame time and fps
-      std::cout << deltaTime * 1000 << "ms " <<(int) (1000000 / (deltaTime * 1000000)) << "fps\n";
+      //std::cout << deltaTime * 1000 << "ms " <<(int) (1000000 / (deltaTime * 1000000)) << "fps\n";
 
       // Close on escape
       if(Input::IsKeyPressed(KEY_ESCAPE)) {

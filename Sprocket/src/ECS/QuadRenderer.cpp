@@ -52,11 +52,11 @@ namespace Sprocket {
     m_EventCallback(*update);
   }
 
-  void QuadRenderer::DeleteQuad(QuadRendererComponent& renderer) {
+  void QuadRenderer::DeleteQuad(const unsigned int quadID) {
 
     VerifyCallback();
 
-    RenderDeleteEvent* e = new RenderDeleteEvent(renderer.quadID);
+    RenderDeleteEvent* e = new RenderDeleteEvent(quadID);
     m_EventCallback(*e);
   }
 

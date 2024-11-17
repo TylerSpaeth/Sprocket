@@ -32,7 +32,7 @@ namespace Sprocket {
 
       void UpdateQuad(QuadRendererComponent& renderer);
 
-      void DeleteQuad(QuadRendererComponent& renderer);
+      void DeleteQuad(const unsigned int quadID);
   };
 
 }

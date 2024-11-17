@@ -56,13 +56,22 @@ namespace Sprocket {
       std::map<unsigned int, CircleColliderComponent> m_CircleColliders;
       std::map<unsigned int, PhysicsComponent> m_PhysicsComponents;
 
-      void OnUpdate(float deltaTime);
-      void OnClose();
+      // TILEMAPS
+      void* m_TileMap = nullptr;
+      std::map<unsigned int, TileMapComponent> m_TileMaps;
 
       // HELPER FUNCTIONS
       void RemoveQuadRenderer(const unsigned int entityID);
       void RemovePhysicsObjectCollider(const unsigned int entityID);
       void RemovePhysicsObject(const unsigned int entityID);
+      void RemoveTileMap(const unsigned int entityID);
+
+      void InstantiateSystems();
+      void DestructSystems();
+      void LoadPhysicsSystem();
+      void LoadTileMapSystem();
+      void LoadQuadRendererSystem();
+      void LoadCameraSystem();
 
       /// @brief Registers the given function as an Event callback to be run when an event occurs 
       /// in the ECS system.. The event handler should subscribe to this in order for events 
@@ -70,13 +79,14 @@ namespace Sprocket {
       /// @param eventCallback a function that will take in an Event when an event occurs.
       void RegisterEventCallback(const std::function<void(Event&)> eventCallback);
 
-      bool m_IsLoaded = false;
+      void OnUpdate(float deltaTime);
 
+      bool m_IsLoaded = false;
       /// @brief Functionality that is to occur any time a scene is set as the active scene.
       void OnLoad();
       /// @brief Fucntionality that is to occur any time a scene is no longer the active scene.
       void OnUnload();
-      
+
     public:
 
       Scene();
@@ -101,6 +111,7 @@ namespace Sprocket {
       void AddComponent(const unsigned int entityID, const BoxColliderComponent& component);
       void AddComponent(const unsigned int entityID, const CircleColliderComponent& component);
       void AddComponent(const unsigned int entityID, const PhysicsComponent& component);
+      void AddComponent(const unsigned int entityID, const TileMapComponent& component);
       
       // TODO overload for all component types that can be added
       void UpdateComponent(const unsigned int entityID, const TransformComponent& replacement);
@@ -108,6 +119,7 @@ namespace Sprocket {
       void UpdateComponent(const unsigned int entityID, const BoxColliderComponent& replacement);
       void UpdateComponent(const unsigned int entityID, const CircleColliderComponent& replacement);
       void UpdateComponent(const unsigned int entityID, const PhysicsComponent& component);
+      // NOTE for now, TileMapComponents can not be updated
 
       template<typename T>
       T GetComponent(const unsigned int entityID) {
@@ -166,6 +178,14 @@ namespace Sprocket {
       throw std::invalid_argument("There is no PhysicsComponent for this entity.");
     }
     return m_PhysicsComponents.at(entityID);
+  }
+
+  template<>
+  inline TileMapComponent Scene::GetComponent<TileMapComponent>(const unsigned int entityID) {
+    if(!m_PhysicsComponents.count(entityID)) {
+      throw std::invalid_argument("There is no TileMapComponent for this entity.");
+    }
+    return m_TileMaps.at(entityID);
   }
 
   /////////////////////////////////////////////////////////////////////////////////////////////////
@@ -257,7 +277,7 @@ namespace Sprocket {
     if(m_PhysicsComponents.count(entityID)) {
       
       // Removing from the physics system only needs to happen if the scene is loaded
-      if(!m_IsLoaded) {
+      if(m_IsLoaded) {
          RemovePhysicsObject(entityID);
       }
 
@@ -267,6 +287,24 @@ namespace Sprocket {
     }
 
     throw std::invalid_argument("This entity does not have a PhysicsComponent.");
+  }
+
+  template<>
+  inline void Scene::RemoveComponent<TileMapComponent>(const unsigned int entityID) {
+    if(m_TileMaps.count(entityID)) {
+
+      // If the scene is loaded, remove the TileMap from the involved systems
+      if(m_IsLoaded) {
+        RemoveTileMap(entityID);
+      }
+
+      m_TileMaps.extract(entityID);
+
+      return;
+    }
+
+    throw std::invalid_argument("This entity does not have a TileMapComponent.");
+
   }
 
   /////////////////////////////////////////////////////////////////////////////////////////////////

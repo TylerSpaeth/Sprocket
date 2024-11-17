@@ -40,6 +40,7 @@ namespace Sprocket {
       // Used to store either view or model matrix depending on the RenderUpdateType
       glm::mat4 m_Matrix;
       glm::vec4 m_QuadColor;
+      // Texture coords start with the top left corner and go clockwise around the quad
       glm::vec4 m_TexXCoords;
       glm::vec4 m_TexYCoords;
 

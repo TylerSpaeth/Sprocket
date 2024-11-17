@@ -43,7 +43,7 @@ namespace Sprocket {
     public:
 
       /// @brief Handles incoming events. Does not need to be registered as a callback. Should 
-      /// instead be called directly be the Scene Manager when it recieves an event.
+      /// instead be called directly be the SceneManager when it recieves an event.
       /// @param event The event the should be handled.
       void OnEvent(Event& event);
       

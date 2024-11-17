@@ -27,13 +27,13 @@ namespace Sprocket {
       /// @brief This function is the first thing run when the Run() function is called.
       /// For the time being, this is just a way for a user application to define behaviors
       /// at the start of a the run loop. In the future this will probably be removed.
-      virtual void Start();
+      virtual void Start();// TODO remove when scripting is added
 
       /// @brief This function is called on every iteration of the Run loop. For the time being, 
       /// This is just a way for a user application to define behaviors that should be processed
       /// every frame. In the future this will probably be removed.
       /// @param deltaTime The amount of time that has elapsed since the last call to Update in seconds.
-      virtual void Update(float deltaTime);
+      virtual void Update(float deltaTime); // TODO remove when scripting is added
 
       /// @brief Runs the program. Calls the Start() and Update() functions appropriately and 
       /// disperses ApplicationUpdateEvents to all subscribers in every iteration of the loop.

@@ -3,6 +3,7 @@
 #include "ECS/Camera.h"
 #include "ECS/Collision.h"
 #include "ECS/Physics.h"
+#include "ECS/TileMap.h"
 
 #include "Events/ApplicationEvent.h"
 
@@ -46,9 +47,6 @@ namespace Sprocket {
       case EventType::APP_UPDATE:
         OnUpdate(((ApplicationUpdateEvent&)event).GetDeltaTime());
         break;
-      case EventType::WINDOW_CLOSE:
-        OnClose();
-        break;
     }
     //TODO handle events
   }
@@ -57,10 +55,6 @@ namespace Sprocket {
 
     // Perform a physics update
     ((Physics*)m_Physics)->OnUpdate(deltaTime);
-  }
-
-  void Scene::OnClose() {
-
   }
 
   /////////////////////////////////////////////////////////////////////////////////////////////////
@@ -113,7 +107,7 @@ namespace Sprocket {
 
     // Try to delete the quad renderer
     if(m_QuadRenderers.count(entityID)) {
-      ((QuadRenderer*)m_QuadRenderer)->DeleteQuad(m_QuadRenderers.at(entityID));
+      ((QuadRenderer*)m_QuadRenderer)->DeleteQuad(m_QuadRenderers.at(entityID).quadID);
       m_QuadRenderers.erase(entityID);
     }
 
@@ -340,6 +334,28 @@ namespace Sprocket {
     }
   }
 
+  void Scene::AddComponent(const unsigned int entityID, const TileMapComponent& component) {
+
+    if(m_TileMaps.count(entityID)) {
+      throw std::invalid_argument("This entity already has a TileMapComponent. An entity may only hold a single TileMapComponent.");
+    }
+
+    m_TileMaps.insert({entityID,component});
+
+    // Only go past here if the scene is loaded
+    if(!m_IsLoaded) return;
+
+    // Calculate global transform
+    auto tcomp = m_GlobalTransforms.at(entityID);
+    auto localTComp = m_Transforms.at(entityID);
+    tcomp.position += localTComp.position;
+    tcomp.rotation += localTComp.rotation;
+    tcomp.scale *= localTComp.scale;
+
+    ((TileMap*)m_TileMap)->RegisterTileMap(tcomp, m_TileMaps.at(entityID));
+
+  }
+
   /////////////////////////////////////////////////////////////////////////////////////////////////
   /////////////////////////////////////////////////////////////////////////////////////////////////
   /////////////////////////////////////////////////////////////////////////////////////////////////
@@ -464,7 +480,7 @@ namespace Sprocket {
   /////////////////////////////////////////////////////////////////////////////////////////////////
 
   void Scene::RemoveQuadRenderer(const unsigned int entityID) {
-    ((QuadRenderer*)m_QuadRenderer)->DeleteQuad(m_QuadRenderers.at(entityID));
+    ((QuadRenderer*)m_QuadRenderer)->DeleteQuad(m_QuadRenderers.at(entityID).quadID);
   }
 
   void Scene::RemovePhysicsObjectCollider(const unsigned int entityID) {
@@ -477,19 +493,79 @@ namespace Sprocket {
     ((Physics*)m_Physics)->DeletePhysicsObject(id);
   }
 
+  void Scene::RemoveTileMap(const unsigned int entityID) {
+    ((TileMap*)m_TileMap)->DeleteTileMap(m_TileMaps.at(entityID).tilemapID);
+  }
+
   /////////////////////////////////////////////////////////////////////////////////////////////////
   /////////////////////////////////////////////////////////////////////////////////////////////////
+  /////////////////////////////////////////////////////////////////////////////////////////////////
+
+  /////////////////////////////////////////////////////////////////////////////////////////////////
+  ///////////////////////////////////////// SYSTEM LOADING ////////////////////////////////////////
   /////////////////////////////////////////////////////////////////////////////////////////////////
 
   void Scene::OnLoad() {
 
+    InstantiateSystems();
+
+    LoadPhysicsSystem();
+    LoadTileMapSystem();
+    LoadQuadRendererSystem();
+    LoadCameraSystem();
+
+    // Set the scene as loaded
+    m_IsLoaded = true;
+      
+  }
+
+  void Scene::OnUnload() {
+
+    // Reset the physicsID of all phyics components
+    for(auto it = m_PhysicsComponents.begin(); it != m_PhysicsComponents.end(); it++) {
+      m_PhysicsComponents.at(it->first).phyiscsID = -1;
+    }
+
+    // Remove the quads from the renderer and reset the quadId of all quad renderers
+    for(auto it = m_QuadRenderers.begin(); it != m_QuadRenderers.end(); it++) {
+      ((QuadRenderer*)m_QuadRenderer)->DeleteQuad(m_QuadRenderers.at(it->first).quadID);
+      m_QuadRenderers.at(it->first).quadID = -1;
+    }
+
+    // TODO unload the TileMap system
+    for(auto it = m_TileMaps.begin(); it != m_TileMaps.end(); it++) {
+      ((TileMap*)m_TileMap)->DeleteTileMap(it->second.tilemapID);
+    }
+    
+    DestructSystems();
+
+    m_IsLoaded = false;
+  }
+
+  void Scene::InstantiateSystems() {
     // Create the systems
     m_Physics = new Physics();
     m_QuadRenderer = new QuadRenderer();
     ((QuadRenderer*)m_QuadRenderer)->m_EventCallback = m_EventCallback;
     m_Camera = new Camera();
     ((Camera*)m_Camera)->m_EventCallback = m_EventCallback;
+    m_TileMap = new TileMap((QuadRenderer*)m_QuadRenderer, (Physics*)m_Physics);
+  }
 
+  void Scene::DestructSystems() {
+     // Delete the ECS systems
+    delete (Physics*)m_Physics;
+    delete (QuadRenderer*)m_QuadRenderer;
+    delete (Camera*)m_Camera;
+    delete (TileMap*)m_TileMap;
+
+    m_Physics = nullptr;
+    m_QuadRenderer = nullptr;
+    m_Camera = nullptr;
+    m_TileMap = nullptr;
+  }
+
+  void Scene::LoadPhysicsSystem() {
     // Load the physics system with all of the related components
     for(auto it = m_PhysicsComponents.begin(); it != m_PhysicsComponents.end(); it++) {
 
@@ -504,7 +580,27 @@ namespace Sprocket {
         ((Physics*)m_Physics)->SetCollider(it->second.phyiscsID, m_CircleColliders.at(entityID));
       }
     }
+  }
 
+  void Scene::LoadTileMapSystem() {
+    // Load the TileMap with all of the related components
+    for(auto it = m_TileMaps.begin(); it != m_TileMaps.end(); it++) {
+
+      auto entityID = it->first;
+
+      // Calculate global transform
+      auto tcomp = m_GlobalTransforms.at(entityID);
+      auto localTComp = m_Transforms.at(entityID);
+      tcomp.position += localTComp.position;
+      tcomp.rotation += localTComp.rotation;
+      tcomp.scale *= localTComp.scale;
+
+      ((TileMap*)m_TileMap)->RegisterTileMap(tcomp, m_TileMaps.at(entityID));
+
+    }
+  }
+
+  void Scene::LoadQuadRendererSystem() {
     // Load the QuadRenderer with all of the related components
     for(auto it = m_QuadRenderers.begin(); it != m_QuadRenderers.end(); it++) {
 
@@ -522,7 +618,9 @@ namespace Sprocket {
       ((QuadRenderer*)m_QuadRenderer)->SetModelMatrix(globalTransform, m_QuadRenderers.at(entityID));
 
     } 
+  }
 
+  void Scene::LoadCameraSystem() {
     // Apply the camera transform if there is one
     if(m_CameraEntityID != -1) {
       auto localT = m_Transforms.at(m_CameraEntityID);
@@ -534,37 +632,10 @@ namespace Sprocket {
     
       ((Camera*)m_Camera)->UpdateCameraPosition(globalT);
     }
-
-    // Set the scene as loaded
-    m_IsLoaded = true;
-      
   }
 
-  void Scene::OnUnload() {
-
-    // Reset the physicsID of all phyics components
-    for(auto it = m_PhysicsComponents.begin(); it != m_PhysicsComponents.end(); it++) {
-      m_PhysicsComponents.at(it->first).phyiscsID = -1;
-    }
-
-    // Remove the quads from the renderer and reset the quadId of all quad renderers
-    for(auto it = m_QuadRenderers.begin(); it != m_QuadRenderers.end(); it++) {
-      ((QuadRenderer*)m_QuadRenderer)->DeleteQuad(m_QuadRenderers.at(it->first));
-      m_QuadRenderers.at(it->first).quadID = -1;
-    }
-    
-    // Delete the ECS systems
-    delete (Physics*)m_Physics;
-    delete (QuadRenderer*)m_QuadRenderer;
-    delete (Camera*)m_Camera;
-
-    m_Physics = nullptr;
-    m_QuadRenderer = nullptr;
-    m_Camera = nullptr;
-
-    m_IsLoaded = false;
-  }
-
-  
+  /////////////////////////////////////////////////////////////////////////////////////////////////
+  /////////////////////////////////////////////////////////////////////////////////////////////////
+  /////////////////////////////////////////////////////////////////////////////////////////////////
 
 }
