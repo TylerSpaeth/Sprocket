@@ -46,9 +46,9 @@ namespace Sprocket {
     RenderUpdateEvent* update = new RenderUpdateEvent(RenderUpdateType::QUAD);
     update->m_QuadIndex = renderer.quadID;
     update->m_QuadColor = renderer.quadColor;
-    update->m_TexturePath = renderer.texturePath;
-    update->m_TexXCoords = renderer.quadXCoords;
-    update->m_TexYCoords = renderer.quadYCoords;
+    update->m_TexturePath = renderer.sprite.texturePath;
+    update->m_TexXCoords = renderer.sprite.xUVCoords / renderer.sprite.xDimension;
+    update->m_TexYCoords = renderer.sprite.yUVCoords / renderer.sprite.yDimension;
     m_EventCallback(*update);
   }
 

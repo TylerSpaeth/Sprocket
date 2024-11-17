@@ -147,10 +147,16 @@ class TestApplication : public Sprocket::Application {
       {
         TileMapComponent tile;
         tile.spriteMapPath = "../res/tilemaps/SpriteTileMap.txt";
-        tile.tileSize = 100;
-        tile.texturePaths.at(0) = "../res/textures/BiggerBetterTree.png";
-        tile.texturePaths.at(1) = "../res/textures/Circle.png";
         tile.colliderMapPath = "../res/tilemaps/ColliderTileMap.txt";
+        tile.tileSize = 100;
+        
+        SpriteComponent tree;
+        tree.texturePath = "../res/textures/BiggerBetterTree.png";
+        SpriteComponent circle;
+        circle.texturePath = "../res/textures/Circle.png";
+
+        tile.sprites.at(0) = tree;
+        tile.sprites.at(1) = circle;
         
         tileMap = scene->CreateEntity();
         scene->AddComponent(tileMap,tile);

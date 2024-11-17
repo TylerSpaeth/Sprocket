@@ -16,6 +16,17 @@ namespace Sprocket {
     glm::vec3 scale = glm::vec3(1,1,1);
   };
 
+  struct SpriteComponent {
+    // If this is not assigned or set to "", then the sprite component will not be used
+    std::string texturePath;
+    // Size of the texture in the texture path
+    float xDimension = 1;
+    float yDimension = 1;
+    // These coordinates start in the top right corner and go clockwise around the quad
+    glm::vec4 xUVCoords = {1,1,0,0};
+    glm::vec4 yUVCoords = {1,0,0,1};
+  };
+
   // Right now, with the way other systems are setup, size can not be change after the component is
   // added to an entity. 
   // TODO this is something that should be fixed. It would probably be best not to allow the user
@@ -24,11 +35,8 @@ namespace Sprocket {
   struct QuadRendererComponent {
     int quadID = -1;
     float size;
-    std::string texturePath; // Set to "" in order to use the quad color instead
+    SpriteComponent sprite;
     glm::vec4 quadColor = {1,1,1,1};
-    // coords start in the top right corner and go clockwise around the quad
-    glm::vec4 quadXCoords = {1,1,0,0};
-    glm::vec4 quadYCoords = {1,0,0,1};
   };
 
   struct CameraComponent {
@@ -82,18 +90,11 @@ namespace Sprocket {
     std::string spriteMapPath;
     // Path to a file contain a map of how colliders should be laid out
     std::string colliderMapPath;
-    // An array of paths to the various texture to be used in the spriteMapPath
-    std::array<std::string, 10> texturePaths;
-    // TODO need a way for textures to work if a SpriteSheet is used
+    // An array of sprites to be used to render the spriteMapPath.
+    std::array<SpriteComponent, 10> sprites;
   };
   
-  // TODO switch ECS to using this instead of raw texture paths and uv coords 
-  struct SpriteComponent {
-    std::string texturePath;
-    // These coordinates start in the top right corner and go clockwise around the quad
-    glm::vec4 xUVCoords;
-    glm::vec4 yUVCoords;
-  };
+
 
 }
 

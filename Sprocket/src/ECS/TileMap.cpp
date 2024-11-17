@@ -107,11 +107,13 @@ namespace Sprocket {
           QuadRendererComponent tileQComp;
           tileQComp.size = tcomp.tileSize;
           
+          
           // Translate the char to a string and gets its integer value to get the corrsponding
           // texture path
           std::string cAsInt;
           cAsInt.push_back(c);
-          tileQComp.texturePath = tcomp.texturePaths.at(std::stoi(cAsInt));
+          tileQComp.sprite = tcomp.sprites.at(std::stoi(cAsInt));
+          //tileQComp.sprite.texturePath =  tcomp.texturePaths.at(std::stoi(cAsInt));
 
           // Render and update the quad
           m_QuadRenderer->RenderNewQuad(tileTComp,tileQComp);
@@ -120,7 +122,6 @@ namespace Sprocket {
           // Store this ID of the QuadRender in the corresponding vector
           m_QuadRendererIDs.at(tcomp.tilemapID).push_back(tileQComp.quadID);
 
-          // TODO fix to work with sprite sheets
         }
 
         col++;
