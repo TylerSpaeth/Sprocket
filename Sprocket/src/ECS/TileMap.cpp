@@ -95,10 +95,9 @@ namespace Sprocket {
 
         char c = line.at(col);
 
-        // Nothing needs to be rendered if the char at the current position is an x
-        if(c != 'x')  {
-
-          // TODO validate the character
+        // If the character at c is a number between 0 and 9, then something will be rendered, 
+        // otherwise, nothing is rendered
+        if(c >= '0' && c <= '9')  {
 
           TransformComponent tileTComp = transform;
           tileTComp.position.x += (col - xOrigin) * tcomp.tileSize;
@@ -159,7 +158,7 @@ namespace Sprocket {
 
         char c = line.at(col);
 
-        // Nothing needs to be rendered if the char at the current position is an x
+        // Only create a box collider if the character is 0
         if(c == '0')  {
 
           TransformComponent* tileTComp = new TransformComponent(transform);

@@ -243,7 +243,8 @@ namespace Sprocket {
   // crucial to fix this immediately, but this will cause problems if the index of a deleted quad 
   // is used because the number of deleted quads will not equal the running count. This will 
   // eventually result in errors adding quads since a new quad may not be added and -1 will be 
-  // returned.
+  // returned. This can probably be solved quickly by checking an index against the indexes of 
+  // deleted quads before performing any operations.
 
   bool Renderer::RemoveQuad(const unsigned int quadIndex) {
     // FIXME there is some ineffiency here

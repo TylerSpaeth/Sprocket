@@ -119,7 +119,8 @@ namespace Sprocket {
       void UpdateComponent(const unsigned int entityID, const BoxColliderComponent& replacement);
       void UpdateComponent(const unsigned int entityID, const CircleColliderComponent& replacement);
       void UpdateComponent(const unsigned int entityID, const PhysicsComponent& component);
-      // NOTE for now, TileMapComponents can not be updated
+      // NOTE any components that can not be updated will have their Update function deleted
+      void UpdateComponent(const unsigned int entityID, const TileMapComponent& component) = delete;
 
       template<typename T>
       T GetComponent(const unsigned int entityID) {
