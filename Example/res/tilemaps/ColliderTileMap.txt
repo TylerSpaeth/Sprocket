@@ -1,4 +1,8 @@
-0-0
-xxx
-x0x
-xxx
+5-3
+00000000000
+0xxxxxxxxx0
+0xxxxxxxxx0
+0xxxxxxxxx0
+0xxxxxxxxx0
+0xxxxxxxxx0
+00000000000

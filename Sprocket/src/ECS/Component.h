@@ -31,19 +31,17 @@ namespace Sprocket {
 
   // Right now, with the way other systems are setup, size can not be change after the component is
   // added to an entity. 
-  // TODO this is something that should be fixed. It would probably be best not to allow the user
-  // to specify the size of individual quads, but instead specify a single quad size and then just 
-  // use scale for quads that should be rendered as different sizes
   struct QuadRendererComponent {
     friend class Scene;
     friend class QuadRenderer;
     friend class TileMap;
     private:
       int quadID = -1;
-    public:
       float size;
+    public:
       SpriteComponent sprite;
       glm::vec4 quadColor = {1,1,1,1};
+      QuadRendererComponent(float size) : size(size){}
   };
 
   struct CameraComponent {

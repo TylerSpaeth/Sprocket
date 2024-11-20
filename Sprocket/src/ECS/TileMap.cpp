@@ -103,8 +103,7 @@ namespace Sprocket {
           tileTComp.position.x += (col - xOrigin) * tcomp.tileSize;
           tileTComp.position.y -= (row - yOrigin) * tcomp.tileSize;
 
-          QuadRendererComponent tileQComp;
-          tileQComp.size = tcomp.tileSize;
+          QuadRendererComponent tileQComp(tcomp.tileSize);
           
           
           // Translate the char to a string and gets its integer value to get the corrsponding

@@ -23,63 +23,9 @@ class TestApplication : public Sprocket::Application {
       //Scene* scene = SceneManager::GetActiveScene();
       Scene* scene = new Scene();
 
-      // Create a border around the window
-      {
-        QuadRendererComponent qcomp;
-        qcomp.size = 100;
-        qcomp.quadColor = {0.5, 0.5, 0, 1};
-        TransformComponent tcomp;
-        tcomp.position.x = -500;
-        tcomp.position.y = -300;
-        BoxColliderComponent bcomp;
-        bcomp.height = 100;
-        bcomp.width = 100;
-        for(int i = 0 ; i < 6; i++) {
-          auto id = scene->CreateEntity();
-          scene->AddComponent(id,qcomp);
-          scene->AddComponent(id,bcomp);
-          scene->UpdateComponent(id,tcomp);
-          tcomp.position.y += 100;
-          auto phy = scene->GetComponent<PhysicsComponent>(id);
-          phy.isDynamic = false;
-          scene->UpdateComponent(id, phy);
-        }
-        for(int i = 0 ; i < 10; i++) {
-          auto id = scene->CreateEntity();
-          scene->AddComponent(id,qcomp);
-          scene->AddComponent(id,bcomp);
-          scene->UpdateComponent(id,tcomp);
-          tcomp.position.x += 100;
-          auto phy = scene->GetComponent<PhysicsComponent>(id);
-          phy.isDynamic = false;
-          scene->UpdateComponent(id, phy);
-        }
-        for(int i = 0 ; i < 6; i++) {
-          auto id = scene->CreateEntity();
-          scene->AddComponent(id,qcomp);
-          scene->AddComponent(id,bcomp);
-          scene->UpdateComponent(id,tcomp);
-          tcomp.position.y -= 100;
-          auto phy = scene->GetComponent<PhysicsComponent>(id);
-          phy.isDynamic = false;
-          scene->UpdateComponent(id, phy);
-        }
-        for(int i = 0 ; i < 10; i++) {
-          auto id = scene->CreateEntity();
-          scene->AddComponent(id,qcomp);
-          scene->AddComponent(id,bcomp);
-          scene->UpdateComponent(id,tcomp);
-          tcomp.position.x -= 100;
-          auto phy = scene->GetComponent<PhysicsComponent>(id);
-          phy.isDynamic = false;
-          scene->UpdateComponent(id, phy);
-        }
-      }
-
       {
         user = scene->CreateEntity();
-        QuadRendererComponent qcomp;
-        qcomp.size = 100;
+        QuadRendererComponent qcomp(100);
         scene->AddComponent(user,qcomp);
 
         top = scene->CreateEntity();
@@ -122,8 +68,7 @@ class TestApplication : public Sprocket::Application {
 
       {
         redBox = scene->CreateEntity();
-        QuadRendererComponent qcomp;
-        qcomp.size = 50;
+        QuadRendererComponent qcomp(50);
         qcomp.quadColor = {1,0,0,1};
         scene->AddComponent(redBox,qcomp);
         BoxColliderComponent bcomp;
@@ -150,34 +95,31 @@ class TestApplication : public Sprocket::Application {
         tile.colliderMapPath = "../res/tilemaps/ColliderTileMap.txt";
         tile.tileSize = 100;
         
-        SpriteComponent tree;
-        tree.texturePath = "../res/textures/BiggerBetterTree.png";
         SpriteComponent circle;
         circle.texturePath = "../res/textures/Circle.png";
 
-        tile.sprites.at(0) = tree;
-        tile.sprites.at(1) = circle;
+        SpriteComponent grass;
+        grass.texturePath = "../res/textures/NewDirtTopDownTiles.png";
+        grass.xDimension = 960;
+        grass.yDimension = 960;
+        grass.xUVCoords = {479,479,383,383};
+        grass.yUVCoords = {287,191,191,287};
+
+        SpriteComponent dirt;
+        dirt.texturePath = "../res/textures/NewDirtTopDownTiles.png";
+        dirt.xDimension = 960;
+        dirt.yDimension = 960;
+        dirt.xUVCoords = {383,383,287,287};
+        dirt.yUVCoords = {863,767,767,863};
+
+        tile.sprites.at(0) = grass;
+        tile.sprites.at(1) = dirt;
         
         tileMap = scene->CreateEntity();
         scene->AddComponent(tileMap,tile);
         auto transform = scene->GetComponent<TransformComponent>(tileMap);
         transform.position.z -= .01;
         scene->UpdateComponent(tileMap,transform);
-      }
-
-      {
-        QuadRendererComponent q;
-        q.sprite.texturePath = "../res/textures/Bandit-Idle96x96.png";
-        q.sprite.xDimension = 384;
-        q.sprite.xUVCoords = {191,191,96,96};
-        q.sprite.yUVCoords = {1,0,0,1};
-
-        
-        auto b1 = scene->CreateEntity();
-        auto transform = scene->GetComponent<TransformComponent>(b1);
-        transform.position.x-=150;
-        scene->UpdateComponent(b1,transform);
-        scene->AddComponent(b1,q);
       }
 
       SceneManager::AddScene(1,scene);
@@ -202,8 +144,7 @@ class TestApplication : public Sprocket::Application {
         scene->DeleteEntity(redBox);
 
         redBox = scene->CreateEntity();
-        QuadRendererComponent qcomp;
-        qcomp.size = 50;
+        QuadRendererComponent qcomp(50);
         qcomp.quadColor = {1,0,0,1};
         scene->AddComponent(redBox,qcomp);
         BoxColliderComponent bcomp;
