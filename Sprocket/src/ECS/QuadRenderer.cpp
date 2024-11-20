@@ -47,6 +47,7 @@ namespace Sprocket {
     update->m_QuadIndex = renderer.quadID;
     update->m_QuadColor = renderer.quadColor;
     update->m_TexturePath = renderer.sprite.texturePath;
+    // TODO determine if sprites are being fully captured or if there is an issue at the edges when using a sprite sheet
     update->m_TexXCoords = renderer.sprite.xUVCoords / renderer.sprite.xDimension;
     update->m_TexYCoords = renderer.sprite.yUVCoords / renderer.sprite.yDimension;
     m_EventCallback(*update);

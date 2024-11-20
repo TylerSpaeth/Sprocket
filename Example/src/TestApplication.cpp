@@ -165,6 +165,21 @@ class TestApplication : public Sprocket::Application {
         scene->UpdateComponent(tileMap,transform);
       }
 
+      {
+        QuadRendererComponent q;
+        q.sprite.texturePath = "../res/textures/Bandit-Idle96x96.png";
+        q.sprite.xDimension = 384;
+        q.sprite.xUVCoords = {191,191,96,96};
+        q.sprite.yUVCoords = {1,0,0,1};
+
+        
+        auto b1 = scene->CreateEntity();
+        auto transform = scene->GetComponent<TransformComponent>(b1);
+        transform.position.x-=150;
+        scene->UpdateComponent(b1,transform);
+        scene->AddComponent(b1,q);
+      }
+
       SceneManager::AddScene(1,scene);
       SceneManager::SetActiveScene(1);
 

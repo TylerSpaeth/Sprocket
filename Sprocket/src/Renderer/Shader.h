@@ -10,7 +10,7 @@
 namespace Sprocket {
 
   /// @brief This acts as an abstraction for OpenGL shader functionality.
-  class SPROCKET_API Shader {
+  class Shader {
     private:
       unsigned int programID;
       mutable std::unordered_map<std::string, int> uniformLocationCache;
