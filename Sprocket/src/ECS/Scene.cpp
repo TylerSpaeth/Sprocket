@@ -510,8 +510,8 @@ namespace Sprocket {
     InstantiateSystems();
 
     LoadPhysicsSystem();
-    LoadTileMapSystem();
     LoadQuadRendererSystem();
+    LoadTileMapSystem();
     LoadCameraSystem();
 
     // Set the scene as loaded

@@ -114,6 +114,9 @@ namespace Sprocket {
     object->m_LocalTransform = nullptr;
     object->m_GlobalTransform = nullptr;
 
+    // Set the ID for reuse
+    m_DeletedPhysicsObjects.push(physicsID);
+
     return true;
 
   }

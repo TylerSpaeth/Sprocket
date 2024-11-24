@@ -5,6 +5,8 @@
 
 class TestApplication : public Sprocket::Application {
 
+  unsigned int camera;
+
   unsigned int user;
   unsigned int top;
   unsigned int right;
@@ -122,6 +124,9 @@ class TestApplication : public Sprocket::Application {
         scene->UpdateComponent(tileMap,transform);
       }
 
+      camera = scene->CreateEntity();
+      scene->AddComponent(camera, CameraComponent());
+
       SceneManager::AddScene(1,scene);
       SceneManager::SetActiveScene(1);
 
@@ -132,13 +137,16 @@ class TestApplication : public Sprocket::Application {
       Scene* scene = SceneManager::GetActiveScene();
 
       // Print frame time and fps
-      //std::cout << deltaTime * 1000 << "ms " <<(int) (1000000 / (deltaTime * 1000000)) << "fps\n";
+      std::cout << deltaTime * 1000 << "ms " <<(int) (1000000 / (deltaTime * 1000000)) << "fps\n";
 
       // Close on escape
       if(Input::IsKeyPressed(KEY_ESCAPE)) {
         WindowCloseEvent* wc = new WindowCloseEvent();
         OnEvent(*wc);
       }
+
+      // Have the camera stay centered on the user's cube
+      scene->UpdateComponent(camera, scene->GetComponent<TransformComponent>(user));
 
       if(scene->CheckCollides(redBox)) {
         scene->DeleteEntity(redBox);
