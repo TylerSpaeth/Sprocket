@@ -14,7 +14,10 @@ namespace Sprocket {
     // APPLICATION
     APP_UPDATE,
     // RENDER
-    RENDER_NEW, RENDER_UPDATE, RENDER_DELETE
+    RENDER_NEW, RENDER_UPDATE, RENDER_DELETE,
+    // ECS - These sort of exist in their own ecosystem, so the subtypes will be defined seperately 
+    // with the implementation of ECSEvents
+    ECS
   };
 
   // For future use
@@ -26,6 +29,7 @@ namespace Sprocket {
           KEYBOARD,
           MOUSE,
       RENDER,
+      ECS
   };
 
   class Event {
@@ -64,6 +68,8 @@ namespace Sprocket {
           case EventType::RENDER_UPDATE:
           case EventType::RENDER_DELETE:
             return eventCategory == EventCategory::RENDER;
+          case EventType::ECS:
+            return eventCategory == EventCategory::ECS;
         }
 
         return false;
