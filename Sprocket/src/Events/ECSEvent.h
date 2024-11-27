@@ -4,6 +4,8 @@
 #include "Event.h"
 #include "ECS/Component.h"
 
+#include <optional>
+
 // TODO test
 namespace Sprocket {
 
@@ -102,29 +104,25 @@ namespace Sprocket {
       }
   };
 
-  // NOTE that in all of the add and update functions, the component must be assigned for the 
-  // event to work properly. For the get functions, the pointer will be assigned by the system
-  // function that operates on the component.
-
   //////////////////////////////////////////// TRANSFORM //////////////////////////////////////////
 
   class AddTransformComponentEvent : public ECSEvent {
     public:
-      TransformComponent* m_Component = nullptr; // The component to add
-      AddTransformComponentEvent(int entityID) : 
-          ECSEvent(ECSEventType::ADD_TRANSFORM_COMPONENT, entityID) {}
+      TransformComponent m_Component; // The component to add
+      AddTransformComponentEvent(int entityID, TransformComponent tcomp) : 
+          ECSEvent(ECSEventType::ADD_TRANSFORM_COMPONENT, entityID), m_Component(tcomp) {}
   };
   class GetTransfromComponentEvent : public ECSEvent {
     public:
-      TransformComponent* m_Component = nullptr; // Where the retrieved component will be
+      std::optional<TransformComponent> m_Component; // Where the retrieved component will be
       GetTransfromComponentEvent(int entityID) : 
           ECSEvent(ECSEventType::GET_TRANSFORM_COMPONENT, entityID) {}
   };
   class UpdateTransformComponentEvent : public ECSEvent {
     public:
-      TransformComponent* m_Component = nullptr; // The component to use as the replacement
-      UpdateTransformComponentEvent(int entityID) : 
-          ECSEvent(ECSEventType::UPDATE_TRANSFORM_COMPONENT, entityID) {}
+      TransformComponent m_Component; // The component to use as the replacement
+      UpdateTransformComponentEvent(int entityID, TransformComponent tcomp) : 
+          ECSEvent(ECSEventType::UPDATE_TRANSFORM_COMPONENT, entityID), m_Component(tcomp) {}
   };
   class DeleteTransformComponentEvent : public ECSEvent {
     public:
@@ -136,21 +134,21 @@ namespace Sprocket {
  
   class AddCameraComponentEvent : public ECSEvent {
     public:
-      CameraComponent* m_Component = nullptr; // The component to add
-      AddCameraComponentEvent(int entityID) : 
-          ECSEvent(ECSEventType::ADD_CAMERA_COMPONENT, entityID) {}
+      CameraComponent m_Component; // The component to add
+      AddCameraComponentEvent(int entityID, CameraComponent ccomp) : 
+          ECSEvent(ECSEventType::ADD_CAMERA_COMPONENT, entityID), m_Component(ccomp) {}
   };
   class GetCameraComponentEvent : public ECSEvent {
     public:
-      CameraComponent* m_Component = nullptr; // Where the retrieved component will be
+      std::optional<CameraComponent> m_Component; // Where the retrieved component will be
       GetCameraComponentEvent(int entityID) : 
           ECSEvent(ECSEventType::GET_CAMERA_COMPONENT, entityID) {}
   };
   class UpdateCameraComponentEvent : public ECSEvent {
     public:
-      CameraComponent* m_Component = nullptr; // The component to use as the replacement
-      UpdateCameraComponentEvent(int entityID) : 
-          ECSEvent(ECSEventType::UPDATE_CAMERA_COMPONENT, entityID) {}
+      CameraComponent m_Component; // The component to use as the replacement
+      UpdateCameraComponentEvent(int entityID, CameraComponent ccomp) : 
+          ECSEvent(ECSEventType::UPDATE_CAMERA_COMPONENT, entityID), m_Component(ccomp) {}
   };
   class DeleteCameraComponentEvent : public ECSEvent {
     public:
@@ -162,21 +160,21 @@ namespace Sprocket {
 
   class AddQuadRendererComponentEvent : public ECSEvent {
     public:
-      QuadRendererComponent* m_Component = nullptr; // The component to add
-      AddQuadRendererComponentEvent(int entityID) : 
-          ECSEvent(ECSEventType::ADD_QUADRENDERER_COMPONENT, entityID) {}
+      QuadRendererComponent m_Component; // The component to add
+      AddQuadRendererComponentEvent(int entityID, QuadRendererComponent qcomp) : 
+          ECSEvent(ECSEventType::ADD_QUADRENDERER_COMPONENT, entityID), m_Component(qcomp) {}
   };
   class GetQuadRendererComponentEvent : public ECSEvent {
     public:
-      QuadRendererComponent* m_Component = nullptr; // Where the retrieved component will be
+      std::optional<QuadRendererComponent> m_Component; // Where the retrieved component will be
       GetQuadRendererComponentEvent(int entityID) : 
           ECSEvent(ECSEventType::GET_QUADRENDERER_COMPONENT, entityID) {}
   };
   class UpdateQuadRendererComponentEvent : public ECSEvent {
     public:
-      QuadRendererComponent* m_Component = nullptr; // The component to use as the replacement
-      UpdateQuadRendererComponentEvent(int entityID) : 
-          ECSEvent(ECSEventType::UPDATE_QUADRENDERER_COMPONENT, entityID) {}
+      QuadRendererComponent m_Component; // The component to use as the replacement
+      UpdateQuadRendererComponentEvent(int entityID, QuadRendererComponent qcomp) : 
+          ECSEvent(ECSEventType::UPDATE_QUADRENDERER_COMPONENT, entityID), m_Component(qcomp) {}
   };
   class DeleteQuadRendererComponentEvent : public ECSEvent {
     public:
@@ -188,24 +186,32 @@ namespace Sprocket {
 
   class AddPhysicsComponentEvent : public ECSEvent {
     public:
-      PhysicsComponent* m_Component = nullptr; // The component to add
+      PhysicsComponent m_Component; // The component to add
       ColliderComponent* m_Collider = nullptr; // An optional parameter for a collider
-      AddPhysicsComponentEvent(int entityID) : 
-          ECSEvent(ECSEventType::ADD_PHYSICS_COMPONENT, entityID) {}
+      AddPhysicsComponentEvent(int entityID, PhysicsComponent pcomp) : 
+          ECSEvent(ECSEventType::ADD_PHYSICS_COMPONENT, entityID), m_Component(pcomp) {}
+      AddPhysicsComponentEvent(int entityID, PhysicsComponent pcomp, ColliderComponent* ccomp) : 
+          ECSEvent(ECSEventType::ADD_PHYSICS_COMPONENT, entityID), 
+              m_Component(pcomp), 
+              m_Collider (ccomp) {}
   };
   class GetPhysicsComponentEvent : public ECSEvent {
     public:
-      PhysicsComponent* m_Component = nullptr; // Where the retrieved component will be
-      ColliderComponent* m_Collider = nullptr; // Where the retrieved collider will be (optional)
+      std::optional<PhysicsComponent> m_Component; // Where the retrieved component will be
+      std::optional<ColliderComponent> m_Collider; // Where the retrieved collider will be (optional)
       GetPhysicsComponentEvent(int entityID) : 
           ECSEvent(ECSEventType::GET_PHYSICS_COMPONENT, entityID) {}
   };
   class UpdatePhysicsComponentEvent : public ECSEvent {
     public:
-      PhysicsComponent* m_Component = nullptr; // The component to use as the replacement
+      PhysicsComponent m_Component; // The component to use as the replacement
       ColliderComponent* m_Collider = nullptr; // The collider to use as a replacement
-      UpdatePhysicsComponentEvent(int entityID) : 
-          ECSEvent(ECSEventType::UPDATE_PHYSICS_COMPONENT, entityID) {}
+      UpdatePhysicsComponentEvent(int entityID, PhysicsComponent pcomp) : 
+          ECSEvent(ECSEventType::UPDATE_PHYSICS_COMPONENT, entityID), m_Component(pcomp) {}
+      UpdatePhysicsComponentEvent(int entityID, PhysicsComponent pcomp, ColliderComponent* ccomp) : 
+          ECSEvent(ECSEventType::UPDATE_PHYSICS_COMPONENT, entityID), 
+              m_Component(pcomp), 
+              m_Collider(ccomp) {}
   };
   class DeletePhysicsComponentEvent : public ECSEvent {
     public:
@@ -217,21 +223,21 @@ namespace Sprocket {
 
   class AddTileMapComponentEvent : public ECSEvent {
     public:
-      TileMapComponent* m_Component = nullptr; // The component to add
-      AddTileMapComponentEvent(int entityID) : 
-          ECSEvent(ECSEventType::ADD_TILEMAP_COMPONENT, entityID) {}
+      TileMapComponent m_Component; // The component to add
+      AddTileMapComponentEvent(int entityID, TileMapComponent tcomp) : 
+          ECSEvent(ECSEventType::ADD_TILEMAP_COMPONENT, entityID), m_Component(tcomp) {}
   };
   class GetTileMapComponentEvent : public ECSEvent {
     public:
-      TileMapComponent* m_Component = nullptr; // Where the retrieved component will be
+      std::optional<TileMapComponent> m_Component; // Where the retrieved component will be
       GetTileMapComponentEvent(int entityID) : 
           ECSEvent(ECSEventType::GET_TILEMAP_COMPONENT, entityID) {}
   };
   class UpdateTileMapComponentEvent : public ECSEvent {
     public:
-      TileMapComponent* m_Component = nullptr; // The component to use as the replacement
-      UpdateTileMapComponentEvent(int entityID) : 
-          ECSEvent(ECSEventType::UPDATE_TILEMAP_COMPONENT, entityID) {}
+      TileMapComponent m_Component; // The component to use as the replacement
+      UpdateTileMapComponentEvent(int entityID, TileMapComponent tcomp) : 
+          ECSEvent(ECSEventType::UPDATE_TILEMAP_COMPONENT, entityID), m_Component(tcomp) {}
   };
   class DeleteTileMapComponentEvent : public ECSEvent {
     public:

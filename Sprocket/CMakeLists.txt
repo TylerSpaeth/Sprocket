@@ -43,6 +43,7 @@ target_sources(${PROJECT_NAME} PRIVATE
   src/ECS/Collision.cpp
   src/ECS/Physics.cpp
   src/ECS/TileMap.cpp
+  src/ECS/Transform.cpp
 )
 
 target_include_directories(${PROJECT_NAME} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include)
