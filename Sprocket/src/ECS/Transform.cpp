@@ -9,6 +9,10 @@ namespace Sprocket {
     
   }
 
+  void Transform::RegsisterEventCallback(const std::function<void(Event&)> eventCallback) {
+    m_EventCallback = eventCallback;
+  }
+
   void Transform::OnEvent(Event& event) {
 
     switch(event.GetEventType()) {
@@ -73,7 +77,7 @@ namespace Sprocket {
 
   }
 
-  bool Transform::RegisterNewTransform(int entityID, TransformComponent& tcomp) {
+  bool Transform::RegisterNewTransform(unsigned int entityID, TransformComponent& tcomp) {
 
     // Ensure the entityID does not already have a TransformComponent
     if(m_EntityMapping.count(entityID) != 0) return false;
@@ -97,13 +101,13 @@ namespace Sprocket {
 
   }
 
-  TransformComponent Transform::GetTransform(int entityID) const {
+  TransformComponent Transform::GetTransform(unsigned int entityID) const {
 
     return m_LocalTransforms.at(m_EntityMapping.at(entityID));
 
   }
 
-  bool Transform::UpdateTransform(int entityID, TransformComponent& tcomp) {
+  bool Transform::UpdateTransform(unsigned int entityID, TransformComponent& tcomp) {
     
     // Verify that the given entityID corresponds to a valid TransformComponent
     if(m_EntityMapping.count(entityID) == 0) return false;
@@ -113,7 +117,7 @@ namespace Sprocket {
     return true;
   }
 
-  bool Transform::DeleteTransform(int entityID) {
+  bool Transform::DeleteTransform(unsigned int entityID) {
 
     // TODO implement maintance to clear values at the end of the vector if the last element in the 
     // transform vector has been deleted.
