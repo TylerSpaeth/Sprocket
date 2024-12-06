@@ -51,6 +51,7 @@ namespace Sprocket {
   struct ColliderComponent {
     friend class Scene;
     friend class Physics;
+    friend class PhysicsObject;
     friend class TileMap;
     protected:
       bool isBoxCollider;
@@ -82,7 +83,7 @@ namespace Sprocket {
     friend class TileMap;
     private:
       // This ID is used to reference a physic object in the physics system
-      int phyiscsID = -1;
+      int physicsID = -1;
     public:
       // PhysicsComponents that are marked as dynamic are expected to move and is the default.
       // If set to false, then it is not expected to move.

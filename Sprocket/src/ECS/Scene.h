@@ -87,6 +87,8 @@ namespace Sprocket {
       /// @brief Fucntionality that is to occur any time a scene is no longer the active scene.
       void OnUnload();
 
+      TransformComponent CalculateGlobalTransform(const unsigned int entityID);
+
     public:
 
       Scene();

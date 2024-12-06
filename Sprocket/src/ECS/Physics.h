@@ -2,39 +2,46 @@
 #define PHYSICS_H
 
 #include "ECS/Component.h"
+
 #include "Events/Event.h"
 
-#include <vector>
 #include <queue>
+#include <vector>
+#include <optional>
 
 namespace Sprocket {
 
   class PhysicsObject {
     friend class Physics;
     private:
-      TransformComponent* m_LocalTransform; // Local transform relative to the parent
-      TransformComponent* m_GlobalTransform; // The global transform of the parent
-      ColliderComponent* m_Collider;
-      PhysicsComponent* m_Physics;
-  };
+      TransformComponent m_Transform;
+      PhysicsComponent m_Physics;
 
-  // There should be a seperate physics object for each scene. Unlike renderering, physics is 
-  // tightly coupled to the ECS. This prevents the need for physics events from wastefully clogging
-  // up the event system. It the future this could be changed by making a physics singleton owned 
-  // by the SceneManager and then utilize physics events that the SceneManager does not allow to 
-  // escape into the larger application.
+      // The appropriate variable is used based on the type of collider that is assigned
+      std::optional<BoxColliderComponent> m_BCollider;
+      std::optional<CircleColliderComponent> m_CCollider;
+
+      PhysicsObject(TransformComponent& tcomp, PhysicsComponent& pcomp) : m_Transform(tcomp), m_Physics(pcomp){}
+      PhysicsObject(TransformComponent& tcomp, PhysicsComponent& pcomp, ColliderComponent& ccomp) : m_Transform(tcomp), m_Physics(pcomp) {
+        if(ccomp.isBoxCollider) {
+          m_BCollider = BoxColliderComponent((BoxColliderComponent&)ccomp);
+        }
+        else {
+          m_CCollider = CircleColliderComponent((CircleColliderComponent&)ccomp);
+        }
+      }
+  };
 
   class Physics {
     friend class Scene;
     private:
+      
+      Physics();
 
-      Physics(){}
-
-      // TODO use some sort of spacial data structure to improve runtime
       std::vector<PhysicsObject> m_Objects;
       std::vector<std::vector<unsigned int>> m_CollidesWith;
 
-      std::priority_queue<unsigned int, std::vector<unsigned int>, std::greater<unsigned int>> m_DeletedPhysicsObjects;
+      std::priority_queue<unsigned int, std::vector<unsigned int>, std::greater<unsigned int>> m_FreeSlots;
 
       void OnUpdate(float deltaTime);
       void ClearPreviousCollisions();
@@ -46,11 +53,13 @@ namespace Sprocket {
       /// instead be called directly be the SceneManager when it recieves an event.
       /// @param event The event the should be handled.
       void OnEvent(Event& event);
-      
-      bool RegisterNewPhysicsObject(TransformComponent& localtcomp, TransformComponent& globaltcomp, PhysicsComponent& pcomp);
-      bool RegisterNewPhysicsObject(TransformComponent& tcomp, TransformComponent& globaltcomp,PhysicsComponent& qcomp, ColliderComponent& ccomp);
+
+      bool RegisterNewPhysicsObject(TransformComponent& transform, PhysicsComponent& pcomp);
+      bool RegisterNewPhysicsObject(TransformComponent& transform, PhysicsComponent& pcomp, ColliderComponent& ccomp);
 
       bool DeletePhysicsObject(const int physicsID);
+
+      bool UpdateTransform(const int physicsID, TransformComponent& transform);
 
       bool SetCollider(const int physicsID, ColliderComponent& ccomp);
       bool RemoveCollider(const int physicsID);

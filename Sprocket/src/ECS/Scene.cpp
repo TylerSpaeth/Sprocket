@@ -124,7 +124,7 @@ namespace Sprocket {
 
       // Deletion from the physics system only needs to happen if the scene is loaded
       if(m_IsLoaded) {
-        ((Physics*)m_Physics)->DeletePhysicsObject(m_PhysicsComponents.at(entityID).phyiscsID);
+        ((Physics*)m_Physics)->DeletePhysicsObject(m_PhysicsComponents.at(entityID).physicsID);
       }
       
       m_PhysicsComponents.extract(entityID);
@@ -277,7 +277,7 @@ namespace Sprocket {
         // Do not go further than this if the scene is not loaded
         if(!m_IsLoaded) return;
         auto p = m_PhysicsComponents.at(entityID);
-        ((Physics*)m_Physics)->SetCollider(p.phyiscsID,m_BoxColliders.at(entityID));
+        ((Physics*)m_Physics)->SetCollider(p.physicsID,m_BoxColliders.at(entityID));
       }
 
     }
@@ -306,7 +306,7 @@ namespace Sprocket {
         // Do not go further than this if the scene is not loaded
         if(!m_IsLoaded) return;
         auto p = m_PhysicsComponents.at(entityID);
-        ((Physics*)m_Physics)->SetCollider(p.phyiscsID,m_CircleColliders.at(entityID));
+        ((Physics*)m_Physics)->SetCollider(p.physicsID,m_CircleColliders.at(entityID));
       }
 
     }
@@ -321,16 +321,17 @@ namespace Sprocket {
 
     // Do not go further than this if the scene is not loaded
     if(!m_IsLoaded) return;
-
+    
+    auto tmpTransform = CalculateGlobalTransform(entityID);
     // Register the component with the physics system based on the other components of the entity
     if(m_BoxColliders.count(entityID)) {
-      ((Physics*)m_Physics)->RegisterNewPhysicsObject(m_Transforms.at(entityID),m_GlobalTransforms.at(entityID), m_PhysicsComponents.at(entityID), m_BoxColliders.at(entityID));
+      ((Physics*)m_Physics)->RegisterNewPhysicsObject(tmpTransform, m_PhysicsComponents.at(entityID), m_BoxColliders.at(entityID));
     }
     else if(m_CircleColliders.count(entityID)) {
-      ((Physics*)m_Physics)->RegisterNewPhysicsObject(m_Transforms.at(entityID),m_GlobalTransforms.at(entityID), m_PhysicsComponents.at(entityID), m_CircleColliders.at(entityID));
+      ((Physics*)m_Physics)->RegisterNewPhysicsObject(tmpTransform, m_PhysicsComponents.at(entityID), m_CircleColliders.at(entityID));
     }
     else {
-      ((Physics*)m_Physics)->RegisterNewPhysicsObject(m_Transforms.at(entityID),m_GlobalTransforms.at(entityID), m_PhysicsComponents.at(entityID));
+      ((Physics*)m_Physics)->RegisterNewPhysicsObject(tmpTransform, m_PhysicsComponents.at(entityID));
     }
   }
 
@@ -388,6 +389,14 @@ namespace Sprocket {
       ((Camera*)m_Camera)->UpdateCameraPosition(globalTransform);
     }  
 
+    if(m_PhysicsComponents.count(entityID) && m_IsLoaded) {
+     
+      auto tmpTransform = CalculateGlobalTransform(entityID);
+
+      ((Physics*)m_Physics)->UpdateTransform(m_PhysicsComponents.at(entityID).physicsID, tmpTransform);
+      
+    }
+
     // Update the global transform of the children, and then recurse on the child transform
     for(unsigned int i : m_Children.at(entityID)) {
 
@@ -430,9 +439,9 @@ namespace Sprocket {
   // TODO This may need change in the future. Right now it checks to make sure that the new 
   // component has the same physicsID as the old component. This is not a fool proof solution.
   void Scene::UpdateComponent(const unsigned int entityID, const PhysicsComponent& component) {
-    if(m_PhysicsComponents.count(entityID) && m_PhysicsComponents.at(entityID).phyiscsID == component.phyiscsID) {
+    if(m_PhysicsComponents.count(entityID) && m_PhysicsComponents.at(entityID).physicsID == component.physicsID) {
       m_PhysicsComponents.at(entityID).isDynamic = component.isDynamic;
-      m_PhysicsComponents.at(entityID).phyiscsID = component.phyiscsID;
+      m_PhysicsComponents.at(entityID).physicsID = component.physicsID;
 
     }
   }
@@ -448,7 +457,7 @@ namespace Sprocket {
   bool Scene::CheckCollides(const unsigned int entityID) const {
 
     try {
-      return ((Physics*)m_Physics)->CountCollisions(m_PhysicsComponents.at(entityID).phyiscsID);
+      return ((Physics*)m_Physics)->CountCollisions(m_PhysicsComponents.at(entityID).physicsID);
     }
     // If an exception occurs, which would most likely happen trying to retrieve a physics component
     // return false since no collision could occur
@@ -461,7 +470,7 @@ namespace Sprocket {
   bool Scene::CheckCollides(const unsigned int entityID, const unsigned int otherEntityID) const {
 
     try {
-      return ((Physics*)m_Physics)->CollidesWith(m_PhysicsComponents.at(entityID).phyiscsID, m_PhysicsComponents.at(otherEntityID).phyiscsID);
+      return ((Physics*)m_Physics)->CollidesWith(m_PhysicsComponents.at(entityID).physicsID, m_PhysicsComponents.at(otherEntityID).physicsID);
     }
     // If an exception occurs, which would most likely happen trying to retrieve a physics component
     // return false since no collision could occur
@@ -484,12 +493,12 @@ namespace Sprocket {
   }
 
   void Scene::RemovePhysicsObjectCollider(const unsigned int entityID) {
-    ((Physics*)m_Physics)->RemoveCollider(m_PhysicsComponents.at(entityID).phyiscsID);
+    ((Physics*)m_Physics)->RemoveCollider(m_PhysicsComponents.at(entityID).physicsID);
   }
 
   void Scene::RemovePhysicsObject(const unsigned int entityID) {
     // Get the physicsID and delete the correspond physics object
-    int id = m_PhysicsComponents.at(entityID).phyiscsID;
+    int id = m_PhysicsComponents.at(entityID).physicsID;
     ((Physics*)m_Physics)->DeletePhysicsObject(id);
   }
 
@@ -523,7 +532,7 @@ namespace Sprocket {
 
     // Reset the physicsID of all phyics components
     for(auto it = m_PhysicsComponents.begin(); it != m_PhysicsComponents.end(); it++) {
-      m_PhysicsComponents.at(it->first).phyiscsID = -1;
+      m_PhysicsComponents.at(it->first).physicsID = -1;
     }
 
     // Remove the quads from the renderer and reset the quadId of all quad renderers
@@ -571,13 +580,15 @@ namespace Sprocket {
 
       auto entityID = it->first;
 
-      ((Physics*)m_Physics)->RegisterNewPhysicsObject(m_Transforms.at(entityID), m_GlobalTransforms.at(entityID), m_PhysicsComponents.at(entityID));
+      auto tmpTransform = CalculateGlobalTransform(entityID);
+
+      ((Physics*)m_Physics)->RegisterNewPhysicsObject(tmpTransform, m_PhysicsComponents.at(entityID));
 
       if(m_BoxColliders.count(entityID)) {
-        ((Physics*)m_Physics)->SetCollider(it->second.phyiscsID, m_BoxColliders.at(entityID));
+        ((Physics*)m_Physics)->SetCollider(it->second.physicsID, m_BoxColliders.at(entityID));
       }
       else if(m_CircleColliders.count(entityID)) {
-        ((Physics*)m_Physics)->SetCollider(it->second.phyiscsID, m_CircleColliders.at(entityID));
+        ((Physics*)m_Physics)->SetCollider(it->second.physicsID, m_CircleColliders.at(entityID));
       }
     }
   }
@@ -637,5 +648,22 @@ namespace Sprocket {
   /////////////////////////////////////////////////////////////////////////////////////////////////
   /////////////////////////////////////////////////////////////////////////////////////////////////
   /////////////////////////////////////////////////////////////////////////////////////////////////
+
+  TransformComponent Scene::CalculateGlobalTransform(const unsigned int entityID) {
+
+    if(entityID >= m_EntityCount) {
+      throw std::invalid_argument("The given entityID is invalid.");
+    }
+
+    TransformComponent toReturn = m_Transforms.at(entityID);
+    TransformComponent global = m_GlobalTransforms.at(entityID);
+
+    toReturn.position += global.position;
+    toReturn.rotation += global.rotation;
+    toReturn.scale *= global.scale;
+
+    return toReturn;
+
+  }
 
 }

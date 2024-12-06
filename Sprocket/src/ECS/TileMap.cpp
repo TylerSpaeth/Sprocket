@@ -175,10 +175,16 @@ namespace Sprocket {
           // Insert a new tuple of pointers into the map corresponding to this tilemap
           m_PhysicsPointers.at(tcomp.tilemapID).insert({(unsigned int)m_PhysicsPointers.at(tcomp.tilemapID).size(), {tileTComp, new TransformComponent(), pcomp, bcomp}});
 
+          auto t1 = *std::get<0>(m_PhysicsPointers.at(tcomp.tilemapID).at(m_PhysicsPointers.at(tcomp.tilemapID).size()-1));
+          auto t2 = *std::get<1>(m_PhysicsPointers.at(tcomp.tilemapID).at(m_PhysicsPointers.at(tcomp.tilemapID).size()-1));
+
+          t1.position += t2.position;
+          t1.rotation += t2.rotation;
+          t1.scale *= t2.scale;
+
           // Register a new physics object based on the information that was just inserted into the map
           m_Physics->RegisterNewPhysicsObject(
-            *std::get<0>(m_PhysicsPointers.at(tcomp.tilemapID).at(m_PhysicsPointers.at(tcomp.tilemapID).size()-1)), 
-            *std::get<1>(m_PhysicsPointers.at(tcomp.tilemapID).at(m_PhysicsPointers.at(tcomp.tilemapID).size()-1)), 
+            t1,
             *std::get<2>(m_PhysicsPointers.at(tcomp.tilemapID).at(m_PhysicsPointers.at(tcomp.tilemapID).size()-1)), 
             *std::get<3>(m_PhysicsPointers.at(tcomp.tilemapID).at(m_PhysicsPointers.at(tcomp.tilemapID).size()-1)));
         }
@@ -212,7 +218,7 @@ namespace Sprocket {
     
     // For each tuple of pointers in the map, use the physicsID to delete the collider
     for(auto it = m_PhysicsPointers.at(tileMapID).begin(); it != m_PhysicsPointers.at(tileMapID).end(); it++) {
-      m_Physics->DeletePhysicsObject(std::get<2>(it->second)->phyiscsID);
+      m_Physics->DeletePhysicsObject(std::get<2>(it->second)->physicsID);
     }
 
     // Remove the map from the map
