@@ -8,6 +8,7 @@
 #include <queue>
 #include <vector>
 #include <optional>
+#include <map>
 
 namespace Sprocket {
 
@@ -38,6 +39,15 @@ namespace Sprocket {
       
       Physics();
 
+      // TODO these need to not be hard coded
+      float m_BoxXSize = 200;
+      float m_BoxYSize = 200;
+      // Let the map be column number, row number, mapping to a vector of objectIDs that are in 
+      // that grid
+      std::map<std::pair<int,int>, std::vector<unsigned int>> m_Regions;
+      // Mapping of objectIDs back to the regions that they are stored in
+      std::vector<std::vector<std::pair<int,int>>> m_ReverseRegions;
+
       std::vector<PhysicsObject> m_Objects;
       std::vector<std::vector<unsigned int>> m_CollidesWith;
 
@@ -45,7 +55,16 @@ namespace Sprocket {
 
       void OnUpdate(float deltaTime);
       void ClearPreviousCollisions();
+
+      // BROAD PHASE DETECTION
+      void SetRegion(std::pair<int,int> coordinates, const int physicsID);
+      void PlaceInRegions(const int physicsID);
+      // Remove the object at this ID from all regions
+      void RemoveFromRegions(const int physicsID);
+
+      // NARROW PHASE DETECTION
       void ProcessCollisions();
+      void UpdateCollisions(const int physicsID1, const int physicsID2);
 
     public:
 

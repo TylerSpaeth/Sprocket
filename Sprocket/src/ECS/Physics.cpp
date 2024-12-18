@@ -6,6 +6,7 @@
 
 #include <algorithm>
 #include <iostream>
+#include <limits>
 
 namespace Sprocket {
 
@@ -40,114 +41,255 @@ namespace Sprocket {
 
   }
 
+  void Physics::SetRegion(std::pair<int,int> coordinates, const int physicsID) {
+    if(!m_Regions.count(coordinates)) {
+      m_Regions.insert({coordinates, std::vector<unsigned int>()});
+    }
+    m_Regions.at(coordinates).push_back(physicsID);
+    m_ReverseRegions.at(physicsID).push_back(coordinates);
+  }
+
+  void Physics::PlaceInRegions(const int physicsID) {
+
+    auto obj = m_Objects.at(physicsID);
+    bool boxCollider = obj.m_BCollider.has_value();
+
+    int startXRegion = obj.m_Transform.position.x / m_BoxXSize;
+    int startYRegion = obj.m_Transform.position.y / m_BoxYSize;
+
+    // The object must collider with the region where its center is so there is no need to check
+    // for the collision.
+    SetRegion({startXRegion,startYRegion}, physicsID);
+
+    // The number of grid regions in width and height to be checked on the current pass
+    int searchGridSize = 3;
+
+    bool collisionDetected = true;
+    BoxColliderComponent bcomp;
+    bcomp.width = m_BoxXSize;
+    bcomp.height = m_BoxYSize;
+
+    // Continue looping so long as a there was a collision found in the previous iteration
+    while(collisionDetected) {
+      
+      collisionDetected = false;
+      int tmp;
+
+      // Run along the right edge
+      int xRegion = startXRegion + (searchGridSize-1)/2;
+      int yRegion = startYRegion + (searchGridSize-1)/2;
+
+      tmp = yRegion-searchGridSize;
+      while(yRegion > tmp) {
+        
+        TransformComponent tcomp;
+        tcomp.position.x = xRegion * m_BoxXSize;
+        tcomp.position.y = yRegion * m_BoxYSize;
+
+        if(boxCollider) {
+          if(Collision::Collides(obj.m_BCollider.value(), obj.m_Transform, bcomp, tcomp)) {
+            SetRegion({xRegion,yRegion}, physicsID);
+
+            collisionDetected = true;
+          }
+        }
+        else {
+          if(Collision::Collides(obj.m_CCollider.value(), obj.m_Transform, bcomp, tcomp)) {
+            SetRegion({xRegion,yRegion}, physicsID);
+
+            collisionDetected = true;
+          }
+        }
+
+        yRegion--;
+      }
+
+      // Run along the bottom edge
+      tmp = xRegion-searchGridSize;
+      while(xRegion > tmp) {
+
+        TransformComponent tcomp;
+        tcomp.position.x = xRegion * m_BoxXSize;
+        tcomp.position.y = yRegion * m_BoxYSize;
+
+        if(boxCollider) {
+          if(Collision::Collides(obj.m_BCollider.value(), obj.m_Transform, bcomp, tcomp)) {
+            SetRegion({xRegion,yRegion}, physicsID);
+
+            collisionDetected = true;
+          }
+        }
+        else {
+          if(Collision::Collides(obj.m_CCollider.value(), obj.m_Transform, bcomp, tcomp)) {
+            SetRegion({xRegion,yRegion}, physicsID);
+
+            collisionDetected = true;
+          }
+        }
+
+        xRegion--;
+      }
+
+      // Run along left edge
+      tmp = yRegion+searchGridSize;
+      while(yRegion < tmp) {
+        
+        TransformComponent tcomp;
+        tcomp.position.x = xRegion * m_BoxXSize;
+        tcomp.position.y = yRegion * m_BoxYSize;
+
+        if(boxCollider) {
+          if(Collision::Collides(obj.m_BCollider.value(), obj.m_Transform, bcomp, tcomp)) {
+            SetRegion({xRegion,yRegion}, physicsID);
+
+            collisionDetected = true;
+          }
+        }
+        else {
+          if(Collision::Collides(obj.m_CCollider.value(), obj.m_Transform, bcomp, tcomp)) {
+            SetRegion({xRegion,yRegion}, physicsID);
+
+            collisionDetected = true;
+          }
+        }
+
+        yRegion++;
+      }
+
+      // Run along the top edge
+      tmp = xRegion+searchGridSize;
+      while(xRegion < tmp) {
+
+        TransformComponent tcomp;
+        tcomp.position.x = xRegion * m_BoxXSize;
+        tcomp.position.y = yRegion * m_BoxYSize;
+
+        if(boxCollider) {
+          if(Collision::Collides(obj.m_BCollider.value(), obj.m_Transform, bcomp, tcomp)) {
+            SetRegion({xRegion,yRegion}, physicsID);;
+
+            collisionDetected = true;
+          }
+        }
+        else {
+          if(Collision::Collides(obj.m_CCollider.value(), obj.m_Transform, bcomp, tcomp)) {
+            SetRegion({xRegion,yRegion}, physicsID);
+
+            collisionDetected = true;
+          }
+        }
+
+        xRegion++;
+      }
+
+      // Expand the grid to check 1 more grid cell on each size
+      searchGridSize += 2;
+
+    }
+
+  }
+  
+  // TODO initialize a reverse region vector for all new physicsIDs
+  void Physics::RemoveFromRegions(const int physicsID) {
+    
+    auto regions = m_ReverseRegions.at(physicsID);
+
+    for(auto region : regions) {
+      auto it = std::find(m_Regions.at(region).begin(), m_Regions.at(region).end(), physicsID);
+      m_Regions.at(region).erase(it);
+      
+      auto it2 = std::find(m_ReverseRegions.at(physicsID).begin(), m_ReverseRegions.at(physicsID).end(), region);
+      m_ReverseRegions.at(physicsID).erase(it2);
+
+    }
+
+  }
+
   void Physics::ProcessCollisions() {
 
-    // TODO clean this up. It is terrible to read.
+    for(auto cell : m_Regions) {
 
-    // LOOKHERE this is currently implemented is a naive solution. This is quite a poor solution and
-    // and should be changed.
+      auto objects = cell.second;
 
-    // Compare every dynamic object to every other object except itself
-    for(int i = 0; i < m_Objects.size(); i++) {
+      for(auto objID1 : objects) {
+        for(auto objID2 = std::find(objects.begin(), objects.end(), objID1); objID2 != objects.end(); objID2++) {
+          if(objID1 == *objID2) continue;
 
-      if(m_Objects.at(i).m_Physics.physicsID == -1) continue;
-      // If the object is not dynamic, no need to check further
-      if(m_Objects.at(i).m_Physics.isDynamic == false) continue;
+          auto obj1 = m_Objects.at(objID1);
+          auto obj2 = m_Objects.at(*objID2);
 
-      auto obj1 = m_Objects.at(i);
+          // If true, obj1 has a box collider, if false then circle collider
+          bool boxCollider1 = obj1.m_BCollider.has_value();
+          // If true, obj2 has a box collider, if false then circle collider
+          bool boxCollider2 = obj2.m_BCollider.has_value();
 
-      // If the object has not collider
-      if(!obj1.m_BCollider.has_value() && !obj1.m_CCollider.has_value()) break;
+          TransformComponent obj1Transform = obj1.m_Transform;
+          TransformComponent obj2Transform = obj2.m_Transform;
 
+          // Check box-box collision
+          if(boxCollider1 && boxCollider2) {
 
-      // If true, obj1 has a box collider, if false then circle collider
-      bool boxCollider1 = obj1.m_BCollider.has_value();
+            // If there is a collision between the boxes
+            if(Collision::Collides(obj1.m_BCollider.value(), obj1Transform, obj2.m_BCollider.value(), obj2Transform)) {
+                
+              UpdateCollisions(obj1.m_Physics.physicsID, obj2.m_Physics.physicsID);
 
-      TransformComponent obj1Transform = obj1.m_Transform;
+              //TODO handle any transform updates that are needed as a result of a collision
+            }
 
-      for(int j = 0; j < m_Objects.size(); j++) {
+          }
 
-        if(m_Objects.at(j).m_Physics.physicsID == -1) break;
-        if(j == i) break;
+          // Check box-circle collision
+          else if(boxCollider1 && !boxCollider2) {
+              
+            // If there is a collision between the shapes
+            if(Collision::Collides(obj1.m_BCollider.value(), obj1Transform, obj2.m_CCollider.value(), obj2Transform)) {
 
-        auto obj2 = m_Objects.at(j);
+              UpdateCollisions(obj1.m_Physics.physicsID, obj2.m_Physics.physicsID); 
 
-        // If the object has not collider
-        if(!obj2.m_BCollider.has_value() && !obj2.m_CCollider.has_value()) break;
+              //TODO handle any transform updates that are needed as a result of a collision
+            }
 
-        // If true, obj2 has a box collider, if false then circle collider
-        bool boxCollider2 = obj2.m_BCollider.has_value();
+          }
 
-        TransformComponent obj2Transform = obj2.m_Transform;
+          // Check circle-box collision
+          else if(boxCollider2 && !boxCollider1) {
 
-        // Check box-box collision
-        if(boxCollider1 && boxCollider2) {
+            // If there is a collision between the shapes
+            if(Collision::Collides(obj1.m_CCollider.value(), obj1Transform, obj2.m_BCollider.value(), obj2Transform)) {
 
-          // If there is a collision between the boxes
-          if(Collision::Collides(obj1.m_BCollider.value(), obj1Transform, obj2.m_BCollider.value(), obj2Transform)) {
-            
-            // Update the m_CollidesWith vector so that the vectors corresponding to each object are
-            // are updated to collide with each other.
-            m_CollidesWith.at(obj1.m_Physics.physicsID).push_back(obj2.m_Physics.physicsID);
-            m_CollidesWith.at(obj2.m_Physics.physicsID).push_back(obj1.m_Physics.physicsID);
+              UpdateCollisions(obj1.m_Physics.physicsID, obj2.m_Physics.physicsID);
 
-            //TODO handle any transform updates that are needed as a result of a collision
+              //TODO handle any transform updates that are needed as a result of a collision
+            }
+
+          }
+
+          // Check circle-circle collision
+          else {
+
+            // If there is a collision between the circles
+            if(Collision::Collides(obj1.m_CCollider.value(), obj1Transform, obj2.m_CCollider.value(), obj2Transform)) {
+
+              UpdateCollisions(obj1.m_Physics.physicsID, obj2.m_Physics.physicsID);
+
+              //TODO handle any transform updates that are needed as a result of a collision
+            }
+
           }
 
         }
-
-        // Check box-circle collision
-        else if(boxCollider1 && !boxCollider2) {
-          
-          // If there is a collision between the shapes
-          if(Collision::Collides(obj1.m_BCollider.value(), obj1Transform, obj2.m_CCollider.value(), obj2Transform)) {
-
-            // Update the m_CollidesWith vector so that the vectors corresponding to each object are
-            // are updated to collide with each other.
-            m_CollidesWith.at(obj1.m_Physics.physicsID).push_back(obj2.m_Physics.physicsID);
-            m_CollidesWith.at(obj2.m_Physics.physicsID).push_back(obj1.m_Physics.physicsID);
-
-            //TODO handle any transform updates that are needed as a result of a collision
-          }
-
-        }
-
-        // Check circle-box collision
-        else if(boxCollider2 && !boxCollider1) {
-
-          // If there is a collision between the shapes
-          if(Collision::Collides(obj1.m_CCollider.value(), obj1Transform, obj2.m_BCollider.value(), obj2Transform)) {
-
-            // Update the m_CollidesWith vector so that the vectors corresponding to each object are
-            // are updated to collide with each other.
-            m_CollidesWith.at(obj1.m_Physics.physicsID).push_back(obj2.m_Physics.physicsID);
-            m_CollidesWith.at(obj2.m_Physics.physicsID).push_back(obj1.m_Physics.physicsID);
-
-            //TODO handle any transform updates that are needed as a result of a collision
-          }
-
-        }
-
-        // Check circle-circle collision
-        else {
-
-          // If there is a collision between the circles
-          if(Collision::Collides(obj1.m_CCollider.value(), obj1Transform, obj2.m_CCollider.value(), obj2Transform)) {
-
-            // Update the m_CollidesWith vector so that the vectors corresponding to each object are
-            // are updated to collide with each other.
-            m_CollidesWith.at(obj1.m_Physics.physicsID).push_back(obj2.m_Physics.physicsID);
-            m_CollidesWith.at(obj2.m_Physics.physicsID).push_back(obj1.m_Physics.physicsID);
-
-            //TODO handle any transform updates that are needed as a result of a collision
-          }
-
-        }
-        
       }
 
     }
 
+  }
+
+  // Update the m_CollidesWith vector so that the vectors corresponding to each object are
+  // are updated to collide with each other.
+  void Physics::UpdateCollisions(const int physicsID1, const int physicsID2) {
+    m_CollidesWith.at(physicsID1).push_back(physicsID2);
+    m_CollidesWith.at(physicsID2).push_back(physicsID1);
   }
 
   bool Physics::RegisterNewPhysicsObject(TransformComponent& transform, PhysicsComponent& pcomp) {
@@ -177,6 +319,7 @@ namespace Sprocket {
     if(freeslot == m_Objects.size()) {
       m_Objects.push_back(object);
       m_CollidesWith.push_back(std::vector<unsigned int>());
+      m_ReverseRegions.push_back(std::vector<std::pair<int,int>>());
     }
     else {
       m_Objects.at(freeslot) = object;
@@ -199,7 +342,9 @@ namespace Sprocket {
     else {
       m_Objects.at(pcomp.physicsID).m_CCollider = CircleColliderComponent((CircleColliderComponent&)ccomp);
     }
-    
+
+    PlaceInRegions(pcomp.physicsID);
+
     return true;
   }
 
@@ -214,6 +359,8 @@ namespace Sprocket {
 
     m_FreeSlots.push(physicsID);
 
+    RemoveFromRegions(physicsID);
+
     return true;
   }
 
@@ -222,7 +369,10 @@ namespace Sprocket {
     if(physicsID < 0 || physicsID >= m_Objects.size()) return false;
 
     m_Objects.at(physicsID).m_Transform = transform;
-    
+
+    RemoveFromRegions(physicsID);
+    PlaceInRegions(physicsID);
+
     return true;
   }
 
@@ -242,6 +392,9 @@ namespace Sprocket {
       m_Objects.at(physicsID).m_BCollider.reset();
     }
 
+    RemoveFromRegions(physicsID);
+    PlaceInRegions(physicsID);
+
     return true;
   }
 
@@ -257,7 +410,9 @@ namespace Sprocket {
     // Reset both colliders
     m_Objects.at(physicsID).m_BCollider.reset();
     m_Objects.at(physicsID).m_CCollider.reset();
-    
+
+    RemoveFromRegions(physicsID);
+
     return true;
   }
 
