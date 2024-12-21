@@ -17,6 +17,142 @@ namespace Sprocket {
 
   }
 
+  /////////////////////////////////////////////////////////////////////////////////////////////////
+  ///////////////////////////////////// OBJECT MANIPULATION ///////////////////////////////////////
+  /////////////////////////////////////////////////////////////////////////////////////////////////
+
+  bool Physics::RegisterNewPhysicsObject(TransformComponent& transform, PhysicsComponent& pcomp) {
+
+    // Ensure this has an undefined ID
+    if(pcomp.physicsID != -1) {
+      return false;
+    }
+
+    PhysicsObject object(transform, pcomp);
+
+    auto freeslot = m_FreeSlots.top();
+    
+    // If there is only 1 entry in the queue then it must be at the end of the vector, so the next 
+    // free slot needs to be added
+    if(m_FreeSlots.size() == 1) {
+      m_FreeSlots.push(freeslot+1);
+    }
+
+    m_FreeSlots.pop();
+
+    // Assign the ID to the physics objects
+    pcomp.physicsID = freeslot;
+    object.m_Physics.physicsID = freeslot;
+
+    // Put the object in the correct slot and setup the collides with vector
+    if(freeslot == m_Objects.size()) {
+      m_Objects.push_back(object);
+      m_CollidesWith.push_back(std::vector<unsigned int>());
+      m_ReverseRegions.push_back(std::vector<std::pair<int,int>>());
+    }
+    else {
+      m_Objects.at(freeslot) = object;
+      m_CollidesWith.at(freeslot).clear();
+    }
+
+    return true;
+  }
+
+  bool Physics::RegisterNewPhysicsObject(TransformComponent& transform, PhysicsComponent& pcomp, ColliderComponent& ccomp) {
+    
+    if(!RegisterNewPhysicsObject(transform,pcomp)) {
+      return false;
+    }
+
+    // Assign the collider appropriately
+    if(ccomp.isBoxCollider) {
+      m_Objects.at(pcomp.physicsID).m_BCollider = BoxColliderComponent((BoxColliderComponent&)ccomp);
+    }
+    else {
+      m_Objects.at(pcomp.physicsID).m_CCollider = CircleColliderComponent((CircleColliderComponent&)ccomp);
+    }
+
+    PlaceInRegions(pcomp.physicsID);
+
+    return true;
+  }
+
+  bool Physics::DeletePhysicsObject(const int physicsID) {
+
+    if(physicsID < 0 || physicsID >= m_Objects.size()) return false;
+
+    // Invalidate the ID of the object at the given slot
+    m_Objects.at(physicsID).m_Physics.physicsID = -1;
+
+    m_CollidesWith.at(physicsID).clear();
+
+    m_FreeSlots.push(physicsID);
+
+    RemoveFromRegions(physicsID);
+
+    return true;
+  }
+
+  bool Physics::UpdateTransform(const int physicsID, TransformComponent& transform) {
+
+    if(physicsID < 0 || physicsID >= m_Objects.size()) return false;
+
+    m_Objects.at(physicsID).m_Transform = transform;
+
+    RemoveFromRegions(physicsID);
+    PlaceInRegions(physicsID);
+
+    return true;
+  }
+
+  bool Physics::SetCollider(const int physicsID, ColliderComponent& ccomp) {
+
+    if(physicsID < 0 || physicsID >= m_Objects.size()) return false;
+
+    // Assign the collider appropriately
+    if(ccomp.isBoxCollider) {
+      m_Objects.at(physicsID).m_BCollider = BoxColliderComponent((BoxColliderComponent&)ccomp);
+      // Clear out the other collider in case it was previously set
+      m_Objects.at(physicsID).m_CCollider.reset();
+    }
+    else {
+      m_Objects.at(physicsID).m_CCollider = CircleColliderComponent((CircleColliderComponent&)ccomp);
+      // Clear out the other collider in case it was previously set
+      m_Objects.at(physicsID).m_BCollider.reset();
+    }
+
+    RemoveFromRegions(physicsID);
+    PlaceInRegions(physicsID);
+
+    return true;
+  }
+
+  bool Physics::RemoveCollider(const int physicsID) {
+
+    if(physicsID < 0 || physicsID >= m_Objects.size()) return false;
+
+    // If neither type of collider is assigned
+    if(!m_Objects.at(physicsID).m_BCollider.has_value() && !m_Objects.at(physicsID).m_CCollider.has_value()) {
+      return false;
+    }
+    
+    // Reset both colliders
+    m_Objects.at(physicsID).m_BCollider.reset();
+    m_Objects.at(physicsID).m_CCollider.reset();
+
+    RemoveFromRegions(physicsID);
+
+    return true;
+  }
+
+  /////////////////////////////////////////////////////////////////////////////////////////////////
+  /////////////////////////////////////////////////////////////////////////////////////////////////
+  /////////////////////////////////////////////////////////////////////////////////////////////////
+
+  /////////////////////////////////////////////////////////////////////////////////////////////////
+  //////////////////////////////////////// EVENT HANDLING /////////////////////////////////////////
+  /////////////////////////////////////////////////////////////////////////////////////////////////
+
   void Physics::OnUpdate(float deltaTime) {
     
     ClearPreviousCollisions();
@@ -33,13 +169,13 @@ namespace Sprocket {
     }
   }
 
-  void Physics::ClearPreviousCollisions() {
+  /////////////////////////////////////////////////////////////////////////////////////////////////
+  /////////////////////////////////////////////////////////////////////////////////////////////////
+  /////////////////////////////////////////////////////////////////////////////////////////////////
 
-    for(int i = 0; i < m_CollidesWith.size(); i++) {
-      m_CollidesWith.at(i).clear();
-    }
-
-  }
+  /////////////////////////////////////////////////////////////////////////////////////////////////
+  //////////////////////////////////// BROAD PHASE DETECTION //////////////////////////////////////
+  /////////////////////////////////////////////////////////////////////////////////////////////////
 
   void Physics::SetRegion(std::pair<int,int> coordinates, const int physicsID) {
     if(!m_Regions.count(coordinates)) {
@@ -189,7 +325,6 @@ namespace Sprocket {
 
   }
   
-  // TODO initialize a reverse region vector for all new physicsIDs
   void Physics::RemoveFromRegions(const int physicsID) {
     
     auto regions = m_ReverseRegions.at(physicsID);
@@ -204,6 +339,24 @@ namespace Sprocket {
     }
 
   }
+
+  /////////////////////////////////////////////////////////////////////////////////////////////////
+  /////////////////////////////////////////////////////////////////////////////////////////////////
+  /////////////////////////////////////////////////////////////////////////////////////////////////
+
+  /////////////////////////////////////////////////////////////////////////////////////////////////
+  //////////////////////////////////// NARROW PHASE DETECTION /////////////////////////////////////
+  /////////////////////////////////////////////////////////////////////////////////////////////////
+
+  void Physics::ClearPreviousCollisions() {
+
+    for(int i = 0; i < m_CollidesWith.size(); i++) {
+      m_CollidesWith.at(i).clear();
+    }
+
+  }
+
+  
 
   void Physics::ProcessCollisions() {
 
@@ -232,7 +385,7 @@ namespace Sprocket {
             // If there is a collision between the boxes
             if(Collision::Collides(obj1.m_BCollider.value(), obj1Transform, obj2.m_BCollider.value(), obj2Transform)) {
                 
-              UpdateCollisions(obj1.m_Physics.physicsID, obj2.m_Physics.physicsID);
+              UpdateCollidesWith(obj1.m_Physics.physicsID, obj2.m_Physics.physicsID);
 
               //TODO handle any transform updates that are needed as a result of a collision
             }
@@ -245,7 +398,7 @@ namespace Sprocket {
             // If there is a collision between the shapes
             if(Collision::Collides(obj1.m_BCollider.value(), obj1Transform, obj2.m_CCollider.value(), obj2Transform)) {
 
-              UpdateCollisions(obj1.m_Physics.physicsID, obj2.m_Physics.physicsID); 
+              UpdateCollidesWith(obj1.m_Physics.physicsID, obj2.m_Physics.physicsID); 
 
               //TODO handle any transform updates that are needed as a result of a collision
             }
@@ -258,7 +411,7 @@ namespace Sprocket {
             // If there is a collision between the shapes
             if(Collision::Collides(obj1.m_CCollider.value(), obj1Transform, obj2.m_BCollider.value(), obj2Transform)) {
 
-              UpdateCollisions(obj1.m_Physics.physicsID, obj2.m_Physics.physicsID);
+              UpdateCollidesWith(obj1.m_Physics.physicsID, obj2.m_Physics.physicsID);
 
               //TODO handle any transform updates that are needed as a result of a collision
             }
@@ -271,7 +424,7 @@ namespace Sprocket {
             // If there is a collision between the circles
             if(Collision::Collides(obj1.m_CCollider.value(), obj1Transform, obj2.m_CCollider.value(), obj2Transform)) {
 
-              UpdateCollisions(obj1.m_Physics.physicsID, obj2.m_Physics.physicsID);
+              UpdateCollidesWith(obj1.m_Physics.physicsID, obj2.m_Physics.physicsID);
 
               //TODO handle any transform updates that are needed as a result of a collision
             }
@@ -287,136 +440,20 @@ namespace Sprocket {
 
   // Update the m_CollidesWith vector so that the vectors corresponding to each object are
   // are updated to collide with each other.
-  void Physics::UpdateCollisions(const int physicsID1, const int physicsID2) {
+  void Physics::UpdateCollidesWith(const int physicsID1, const int physicsID2) {
     m_CollidesWith.at(physicsID1).push_back(physicsID2);
     m_CollidesWith.at(physicsID2).push_back(physicsID1);
   }
 
-  bool Physics::RegisterNewPhysicsObject(TransformComponent& transform, PhysicsComponent& pcomp) {
+  /////////////////////////////////////////////////////////////////////////////////////////////////
+  /////////////////////////////////////////////////////////////////////////////////////////////////
+  /////////////////////////////////////////////////////////////////////////////////////////////////
 
-    // Ensure this has an undefined ID
-    if(pcomp.physicsID != -1) {
-      return false;
-    }
+  /////////////////////////////////////////////////////////////////////////////////////////////////
+  /////////////////////////////////////// COLLISION CHECK /////////////////////////////////////////
+  /////////////////////////////////////////////////////////////////////////////////////////////////
 
-    PhysicsObject object(transform, pcomp);
-
-    auto freeslot = m_FreeSlots.top();
-    
-    // If there is only 1 entry in the queue then it must be at the end of the vector, so the next 
-    // free slot needs to be added
-    if(m_FreeSlots.size() == 1) {
-      m_FreeSlots.push(freeslot+1);
-    }
-
-    m_FreeSlots.pop();
-
-    // Assign the ID to the physics objects
-    pcomp.physicsID = freeslot;
-    object.m_Physics.physicsID = freeslot;
-
-    // Put the object in the correct slot and setup the collides with vector
-    if(freeslot == m_Objects.size()) {
-      m_Objects.push_back(object);
-      m_CollidesWith.push_back(std::vector<unsigned int>());
-      m_ReverseRegions.push_back(std::vector<std::pair<int,int>>());
-    }
-    else {
-      m_Objects.at(freeslot) = object;
-      m_CollidesWith.at(freeslot).clear();
-    }
-
-    return true;
-  }
-
-  bool Physics::RegisterNewPhysicsObject(TransformComponent& transform, PhysicsComponent& pcomp, ColliderComponent& ccomp) {
-    
-    if(!RegisterNewPhysicsObject(transform,pcomp)) {
-      return false;
-    }
-
-    // Assign the collider appropriately
-    if(ccomp.isBoxCollider) {
-      m_Objects.at(pcomp.physicsID).m_BCollider = BoxColliderComponent((BoxColliderComponent&)ccomp);
-    }
-    else {
-      m_Objects.at(pcomp.physicsID).m_CCollider = CircleColliderComponent((CircleColliderComponent&)ccomp);
-    }
-
-    PlaceInRegions(pcomp.physicsID);
-
-    return true;
-  }
-
-  bool Physics::DeletePhysicsObject(const int physicsID) {
-
-    if(physicsID < 0 || physicsID >= m_Objects.size()) return false;
-
-    // Invalidate the ID of the object at the given slot
-    m_Objects.at(physicsID).m_Physics.physicsID = -1;
-
-    m_CollidesWith.at(physicsID).clear();
-
-    m_FreeSlots.push(physicsID);
-
-    RemoveFromRegions(physicsID);
-
-    return true;
-  }
-
-  bool Physics::UpdateTransform(const int physicsID, TransformComponent& transform) {
-
-    if(physicsID < 0 || physicsID >= m_Objects.size()) return false;
-
-    m_Objects.at(physicsID).m_Transform = transform;
-
-    RemoveFromRegions(physicsID);
-    PlaceInRegions(physicsID);
-
-    return true;
-  }
-
-  bool Physics::SetCollider(const int physicsID, ColliderComponent& ccomp) {
-
-    if(physicsID < 0 || physicsID >= m_Objects.size()) return false;
-
-    // Assign the collider appropriately
-    if(ccomp.isBoxCollider) {
-      m_Objects.at(physicsID).m_BCollider = BoxColliderComponent((BoxColliderComponent&)ccomp);
-      // Clear out the other collider in case it was previously set
-      m_Objects.at(physicsID).m_CCollider.reset();
-    }
-    else {
-      m_Objects.at(physicsID).m_CCollider = CircleColliderComponent((CircleColliderComponent&)ccomp);
-      // Clear out the other collider in case it was previously set
-      m_Objects.at(physicsID).m_BCollider.reset();
-    }
-
-    RemoveFromRegions(physicsID);
-    PlaceInRegions(physicsID);
-
-    return true;
-  }
-
-  bool Physics::RemoveCollider(const int physicsID) {
-
-    if(physicsID < 0 || physicsID >= m_Objects.size()) return false;
-
-    // If neither type of collider is assigned
-    if(!m_Objects.at(physicsID).m_BCollider.has_value() && !m_Objects.at(physicsID).m_CCollider.has_value()) {
-      return false;
-    }
-    
-    // Reset both colliders
-    m_Objects.at(physicsID).m_BCollider.reset();
-    m_Objects.at(physicsID).m_CCollider.reset();
-
-    RemoveFromRegions(physicsID);
-
-    return true;
-  }
-
-  int Physics::CountCollisions(const int physicsID) {
+    int Physics::CountCollisions(const int physicsID) {
     try {
       return m_CollidesWith.at(physicsID).size();
     }
@@ -434,5 +471,9 @@ namespace Sprocket {
       return 0;
     }
   }
+
+  /////////////////////////////////////////////////////////////////////////////////////////////////
+  /////////////////////////////////////////////////////////////////////////////////////////////////
+  /////////////////////////////////////////////////////////////////////////////////////////////////
 
 }
