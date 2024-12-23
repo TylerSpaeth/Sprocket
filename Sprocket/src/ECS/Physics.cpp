@@ -214,8 +214,7 @@ namespace Sprocket {
       // Run along the right edge
       int xRegion = startXRegion + (searchGridSize-1)/2;
       int yRegion = startYRegion + (searchGridSize-1)/2;
-
-      tmp = yRegion-searchGridSize;
+      tmp = yRegion+1-searchGridSize;
       while(yRegion > tmp) {
         
         TransformComponent tcomp;
@@ -224,7 +223,7 @@ namespace Sprocket {
 
         if(boxCollider) {
           if(Collision::Collides(obj.m_BCollider.value(), obj.m_Transform, bcomp, tcomp)) {
-            SetRegion({xRegion,yRegion}, physicsID);
+            SetRegion({xRegion,yRegion}, physicsID);     
 
             collisionDetected = true;
           }
@@ -241,7 +240,7 @@ namespace Sprocket {
       }
 
       // Run along the bottom edge
-      tmp = xRegion-searchGridSize;
+      tmp = xRegion+1-searchGridSize;
       while(xRegion > tmp) {
 
         TransformComponent tcomp;
@@ -267,7 +266,7 @@ namespace Sprocket {
       }
 
       // Run along left edge
-      tmp = yRegion+searchGridSize;
+      tmp = yRegion-1+searchGridSize;
       while(yRegion < tmp) {
         
         TransformComponent tcomp;
@@ -293,7 +292,7 @@ namespace Sprocket {
       }
 
       // Run along the top edge
-      tmp = xRegion+searchGridSize;
+      tmp = xRegion-1+searchGridSize;
       while(xRegion < tmp) {
 
         TransformComponent tcomp;
@@ -302,7 +301,7 @@ namespace Sprocket {
 
         if(boxCollider) {
           if(Collision::Collides(obj.m_BCollider.value(), obj.m_Transform, bcomp, tcomp)) {
-            SetRegion({xRegion,yRegion}, physicsID);;
+            SetRegion({xRegion,yRegion}, physicsID);
 
             collisionDetected = true;
           }

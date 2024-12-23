@@ -37,9 +37,8 @@ namespace Sprocket {
     friend class Scene;
     private:
       
-      Physics();
+      Physics(); 
 
-      // TODO these need to not be hard coded
       float m_BoxXSize = 200;
       float m_BoxYSize = 200;
       // Let the map be column number, row number, mapping to a vector of objectIDs that are in 

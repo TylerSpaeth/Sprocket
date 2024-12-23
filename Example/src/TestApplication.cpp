@@ -95,6 +95,8 @@ class TestApplication : public Sprocket::Application {
         TileMapComponent tile;
         tile.spriteMapPath = "../res/tilemaps/SpriteTileMap.txt";
         tile.colliderMapPath = "../res/tilemaps/ColliderTileMap.txt";
+        //tile.spriteMapPath = "../res/tilemaps/MazeSprite.txt";
+        //tile.colliderMapPath = "../res/tilemaps/MazeCollider.txt";
         tile.tileSize = 100;
         
         SpriteComponent circle;
