@@ -39,8 +39,16 @@ namespace Sprocket {
       
       Physics(); 
 
-      float m_BoxXSize = 200;
-      float m_BoxYSize = 200;
+      // These values represent the maximum amount above or below that the average collider width 
+      // and height can be in relation to the current box x and y sizes. A maximum decrease of .75 
+      // means that everything down to and including .75 * current box size is acceptable without 
+      // rehashing. A maximum increase of 1.25 means that everything up to and including 1.25 * 
+      // current box size is acceptable without rehashing, 
+      float m_MaximumDecrease = .75;
+      float m_MaximumIncrease = 1.25;
+
+      float m_BoxXSize = std::numeric_limits<float>::max();
+      float m_BoxYSize = std::numeric_limits<float>::max();
       // Let the map be column number, row number, mapping to a vector of objectIDs that are in 
       // that grid
       std::map<std::pair<int,int>, std::vector<unsigned int>> m_Regions;
@@ -67,6 +75,13 @@ namespace Sprocket {
       /// @brief Removes the object from all regions.
       /// @param physicsID The id of the object to be removed.
       void RemoveFromRegions(const int physicsID);
+      /// @brief Compares the average collider size to the boxXSize and boxYSize. If the average is
+      /// above of below the current size be more that the maximum decrease or increase percentage, 
+      /// the the box sizes are reset to the averages and RehashAllObjects() is called.
+      void ValidateCurrentBoxSize();
+      /// @brief Clears all objects out of all regions and then replaces all of the objects into 
+      /// regions.
+      void RehashAllObjects();
 
       // NARROW PHASE DETECTION
       

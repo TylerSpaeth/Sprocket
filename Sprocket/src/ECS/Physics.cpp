@@ -154,6 +154,8 @@ namespace Sprocket {
   /////////////////////////////////////////////////////////////////////////////////////////////////
 
   void Physics::OnUpdate(float deltaTime) {
+
+    ValidateCurrentBoxSize();
     
     ClearPreviousCollisions();
 
@@ -335,6 +337,55 @@ namespace Sprocket {
       auto it2 = std::find(m_ReverseRegions.at(physicsID).begin(), m_ReverseRegions.at(physicsID).end(), region);
       m_ReverseRegions.at(physicsID).erase(it2);
 
+    }
+
+  }
+
+  void Physics::ValidateCurrentBoxSize() {
+    float averageColliderWidth = 0;
+    float averageColliderHeight = 0;
+    int colliderCount = 0;
+
+    for(int i = 0; i < m_Objects.size(); i++) {
+      auto obj = m_Objects.at(i);
+
+      if(obj.m_BCollider.has_value()) {
+        averageColliderWidth += obj.m_BCollider.value().width * obj.m_Transform.scale.x;
+        averageColliderHeight += obj.m_BCollider.value().height * obj.m_Transform.scale.y;
+        colliderCount++;
+      }
+      else if(obj.m_CCollider.has_value()) {
+        averageColliderWidth += obj.m_CCollider.value().radius * 2 * obj.m_Transform.scale.x;
+        averageColliderHeight += obj.m_CCollider.value().radius * 2 * obj.m_Transform.scale.x;
+        colliderCount++;
+      }
+    }
+
+    averageColliderWidth /= colliderCount;
+    averageColliderHeight /= colliderCount;
+
+    float upperXLimit = m_BoxXSize * m_MaximumIncrease;
+    float lowerXLimit = m_BoxXSize * m_MaximumDecrease;
+    float upperYLimit = m_BoxYSize * m_MaximumIncrease;
+    float lowerYLimit = m_BoxYSize * m_MaximumDecrease;
+
+    if(averageColliderWidth < lowerXLimit || 
+        averageColliderWidth > upperXLimit ||
+        averageColliderHeight < lowerYLimit ||
+        averageColliderHeight > upperYLimit) {
+      m_BoxXSize = averageColliderWidth;
+      m_BoxYSize = averageColliderHeight;
+      RehashAllObjects();
+    }
+  }
+
+  void Physics::RehashAllObjects() {
+
+    for(int i = 0; i < m_Objects.size(); i++) {
+      if(m_Objects.at(i).m_BCollider.has_value() || m_Objects.at(i).m_CCollider.has_value()) {
+        RemoveFromRegions(i);
+        PlaceInRegions(i);
+      }
     }
 
   }

@@ -13,15 +13,7 @@
 
 namespace Sprocket {
 
-  Scene::Scene() {
-    // TODO this is really not optimal. It would be best not to have this be a fixed number, and 
-    // definitly not hard coded here. If reserving space for the vector is the way this stays, then
-    // it would probably be best to set this number to the same as the maximum number of quads. It 
-    // may even be worth it at this point, to stick with maps and take the performance hit at scale
-    // for more efficient memory usage
-    m_Transforms.reserve(100000);
-    m_GlobalTransforms.reserve(100000);
-  }
+  Scene::Scene() {}
 
   Scene::~Scene() {
     delete (Physics*)m_Physics;
@@ -541,9 +533,9 @@ namespace Sprocket {
       m_QuadRenderers.at(it->first).quadID = -1;
     }
 
-    // TODO unload the TileMap system
     for(auto it = m_TileMaps.begin(); it != m_TileMaps.end(); it++) {
       ((TileMap*)m_TileMap)->DeleteTileMap(it->second.tilemapID);
+      it->second.tilemapID = -1;
     }
     
     DestructSystems();
