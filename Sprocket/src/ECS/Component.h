@@ -3,6 +3,8 @@
 
 #include "Core/Macros.h"
 
+#include "ECS/ScriptableComponent.h"
+
 #include "ThirdParty/glm/glm.hpp"
 
 #include <string>
@@ -120,6 +122,21 @@ namespace Sprocket {
       std::string colliderMapPath;
       // An array of sprites to be used to render the spriteMapPath.
       std::array<SpriteComponent, 10> sprites;
+  };
+
+  struct ScriptComponent {
+
+    ScriptableComponent* instance = nullptr;
+
+    ScriptableComponent*(*InstantiateScript)();
+    void(*DestroyScript)(ScriptComponent*);
+
+    template<typename T>
+    void Bind() {
+      InstantiateScript = []() {return static_cast<ScriptableComponent*>(new T());};
+      DestroyScript = [](ScriptComponent* sc) {delete sc->instance; sc->instance = nullptr;};
+    }
+
   };
   
 

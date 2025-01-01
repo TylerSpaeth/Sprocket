@@ -76,6 +76,10 @@ namespace Sprocket {
       m_GlobalTransforms.at(index).rotation = {0,0,0};
       m_GlobalTransforms.at(index).scale = {1,1,1};
 
+      m_Children.at(index).clear();
+      m_Parents.at(index) = -1;
+      return index;
+
     }
 
     m_Transforms.push_back(TransformComponent());
