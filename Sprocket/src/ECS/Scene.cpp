@@ -93,7 +93,7 @@ namespace Sprocket {
 
     try {
       // See if there is a transfrom for this entity, and if there is, add this id to the queue of deleted ids
-      m_Transforms.at(entityID);
+      std::ignore = m_Transforms.at(entityID);
       m_DeletedEntities.push(entityID);
     } 
     // If there is not transform for this entity, then the entity does not exist
