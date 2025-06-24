@@ -5,6 +5,7 @@
 
 class TestApplication : public Sprocket::Application {
 
+  /*
   unsigned int camera;
 
   unsigned int user;
@@ -16,13 +17,23 @@ class TestApplication : public Sprocket::Application {
   unsigned int redBox;
 
   unsigned int tileMap;
+  */
+
+  Sprocket::Entity* e;
 
   public:
     TestApplication() : Sprocket::Application() {}
     ~TestApplication() {}
     void Start() {
       using namespace Sprocket;
-      //Scene* scene = SceneManager::GetActiveScene();
+      Scene* scene = SceneManager::GetActiveScene();
+
+      e = new Entity();
+      Entity* e2 = new Entity();
+      scene->SubmitEntityToScene(*e);
+      scene->SubmitEntityToScene(*e2);
+      scene->AssignEntityParent(*e, e2);
+      /*
       Scene* scene = new Scene();
 
       {
@@ -132,20 +143,37 @@ class TestApplication : public Sprocket::Application {
       SceneManager::AddScene(1,scene);
       SceneManager::SetActiveScene(1);
 
+      */
+
     }
 
     void Update(float deltaTime) {
       using namespace Sprocket;
-      Scene* scene = SceneManager::GetActiveScene();
-
+      
       // Print frame time and fps
-      std::cout << deltaTime * 1000 << "ms " <<(int) (1000000 / (deltaTime * 1000000)) << "fps\n";
+      //std::cout << deltaTime * 1000 << "ms " <<(int) (1000000 / (deltaTime * 1000000)) << "fps\n";
 
       // Close on escape
       if(Input::IsKeyPressed(KEY_ESCAPE)) {
         WindowCloseEvent* wc = new WindowCloseEvent();
         OnEvent(*wc);
       }
+
+      if(Input::IsKeyPressed(KEY_W)) {
+        e->GetComponent<TransformComponent>()->LocalPosition().y++;
+      }
+      if(Input::IsKeyPressed(KEY_S)) {
+        e->GetComponent<TransformComponent>()->LocalPosition().y--;
+      }
+      if(Input::IsKeyPressed(KEY_D)) {
+        e->GetComponent<TransformComponent>()->LocalPosition().x++;
+      }
+      if(Input::IsKeyPressed(KEY_A)) {
+        e->GetComponent<TransformComponent>()->LocalPosition().x--;
+      }
+
+      /*
+      Scene* scene = SceneManager::GetActiveScene();
 
       // Have the camera stay centered on the user's cube
       scene->UpdateComponent(camera, scene->GetComponent<TransformComponent>(user));
@@ -201,6 +229,7 @@ class TestApplication : public Sprocket::Application {
           scene->UpdateComponent(user,tcomp);
         }
       }
+      */
       
     }
 };

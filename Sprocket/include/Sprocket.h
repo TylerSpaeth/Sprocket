@@ -9,9 +9,7 @@
 #include "Events/RenderEvent.h"
 #include "Events/WindowEvents.h"
 
-#include "ECS/Scene.h"
-#include "ECS/SceneManager.h"
-#include "ECS/Component.h"
+#include "Scene/SceneManager.h"
 
 // Sprocket EntryPoint
 #include "Core/EntryPoint.hpp"
