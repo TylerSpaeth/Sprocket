@@ -3,6 +3,7 @@
 #include "Events/ApplicationEvent.h"
 
 #include <algorithm>
+#include <iostream>
 
 namespace Sprocket {
 
@@ -32,14 +33,18 @@ namespace Sprocket {
 
     if(!parent) {
       child.m_Parent = nullptr;
+      return;
     }
 
     if(parent && std::find(parent->m_Children.cbegin(), parent->m_Children.cend(), &child) == parent->m_Children.cend()) {
 
       // Remove child from children of current parent
-      Entity* parent = child.m_Parent;
-      std::vector<Entity*>::const_iterator it = std::find(parent->m_Children.cbegin(), parent->m_Children.cend(), &child);
-      parent->m_Children.erase(it);
+      Entity* currentParent = child.m_Parent;
+      if(currentParent) {
+        std::vector<Entity*>::const_iterator it = std::find(currentParent->m_Children.cbegin(), currentParent->m_Children.cend(), &child);
+
+        currentParent->m_Children.erase(it);
+      }
 
       // Assign as child of new parent
       parent->m_Children.push_back(&child);
