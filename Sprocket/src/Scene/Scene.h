@@ -28,7 +28,14 @@ namespace Sprocket {
       /// @param eventCallback a function that will take in an Event when an event occurs.
       void RegisterEventCallback(const std::function<void(Event&)> eventCallback);
 
+      /// @brief This is called when the scene becomes the active scene.
+      void OnActivate();
+      /// @brief This is called when the scene is no long the active scene.
+      void OnDeactivate();
+      /// @brief This corresponds to application updates.
+      /// @param deltaTime The time since the last update
       void OnUpdate(float deltaTime);
+      
 
     public:
 

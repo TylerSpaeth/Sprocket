@@ -61,11 +61,14 @@ namespace Sprocket {
       throw std::invalid_argument("No scene exists with this index.");
     }
 
-    // Remove the event callback of the current scene
+    // Remove the old scene
+    GetActiveScene()->OnDeactivate();
     GetActiveScene()->RegisterEventCallback(nullptr);
     s_Instance->m_ActiveSceneIndex = index;
-    // Set the event callback of the new scene
+
+    // Setup the new scene
     GetActiveScene()->RegisterEventCallback(s_Instance->m_EventCallback);
+    GetActiveScene()->OnActivate();
     
   }
 

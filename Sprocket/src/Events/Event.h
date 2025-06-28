@@ -12,7 +12,7 @@ namespace Sprocket {
     // WINDOW
     WINDOW_CLOSE,
     // APPLICATION
-    APP_UPDATE,
+    APP_UPDATE, APP_START,
     // RENDER
     RENDER_NEW, RENDER_UPDATE, RENDER_DELETE,
     // ECS - These sort of exist in their own ecosystem, so the subtypes will be defined seperately 
@@ -63,6 +63,7 @@ namespace Sprocket {
           case EventType::WINDOW_CLOSE:
             return eventCategory == EventCategory::APPLICATION || eventCategory == EventCategory::WINDOW;
           case EventType::APP_UPDATE:
+          case EventType::APP_START:
             return eventCategory == EventCategory::APPLICATION;
           case EventType::RENDER_NEW:
           case EventType::RENDER_UPDATE:

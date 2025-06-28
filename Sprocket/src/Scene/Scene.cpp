@@ -69,6 +69,14 @@ namespace Sprocket {
     //TODO handle events
   }
 
+  void Scene::OnActivate() {
+    // TODO
+  }
+
+  void Scene::OnDeactivate() {
+    // TODO
+  }
+
   void Scene::OnUpdate(float deltaTime) {
     // TODO
   }

@@ -20,6 +20,13 @@ namespace Sprocket {
       float GetDeltaTime() const {return m_DeltaTime;}
   };
 
+  class ApplicationStartEvent : public ApplicationEvent {
+    public:
+      ApplicationStartEvent() {
+        this->SetType(EventType::APP_START);
+      }
+  };
+
 }
 
 #endif

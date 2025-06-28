@@ -26,4 +26,19 @@ namespace Sprocket {
     // TODO
   }
 
+  void Entity::OnActivate() {
+    Start();
+    // TODO
+  }
+
+  void Entity::OnDeactivate() {
+    End();
+    // TODO
+  }
+
+  void Entity::OnUpdate(float deltaTime) {
+    Update(deltaTime);
+    // TODO
+  }
+
 }

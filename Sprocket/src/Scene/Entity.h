@@ -36,10 +36,29 @@ namespace Sprocket {
       /// @param event The event the should be handled.
       void OnEvent(Event& event);
 
+      // Note that these three functions below are called by the scene that they are a part of. 
+      // As part of each of these functions, they will call Start(), Update(), and End() which 
+      // are the public, overridable functions meant for user customization of the entities 
+      // behavior.
+
+      /// @brief This is called when the scene this entity is a part of becomes active or this
+      /// entity is added to an active scene
+      void OnActivate();
+      /// @brief This is called when the scene this entity is a part of is no longer the active 
+      /// scene or this entity is removed from an active scene
+      void OnDeactivate();
+      /// @brief This corresponds to application updates.
+      /// @param deltaTime The time since the last update
+      void OnUpdate(float deltaTime);
+
     public:
 
       Entity();
       ~Entity();
+
+      virtual void Start(){}
+      virtual void Update(float deltaTime){}
+      virtual void End(){}
 
       template<typename T>
       bool AddComponent() {

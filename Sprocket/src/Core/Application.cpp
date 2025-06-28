@@ -16,6 +16,9 @@ namespace Sprocket {
   void Application::Run() {
     this->Start();
 
+    ApplicationStartEvent startEvent;
+    OnEvent(startEvent);
+
     while(m_AppRunning) {
 
       // Calculate the time since last frame in seconds
