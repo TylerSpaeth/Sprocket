@@ -23,7 +23,7 @@ namespace Sprocket {
 
       std::vector<Entity*> m_Children;
 
-      std::vector<Component> m_Components;
+      std::vector<Component*> m_Components;
 
       TransformComponent m_Transform;
 
@@ -60,18 +60,50 @@ namespace Sprocket {
       virtual void Update(float deltaTime){}
       virtual void End(){}
 
+      // Only one of each component type is allowed on a single Entity
       template<typename T>
       bool AddComponent() {
-        return false;
+        // Iterate over all of the components and try to dynamic cast them to be the type of 
+        // component we are looking for. If the dynamic cast is not null then we already
+        // have this type of component.
+        for(Component* component : m_Components) {
+          T* existingComponent = dynamic_cast<T*>(component);
+          if(existingComponent != nullptr) {
+            return false;
+          }
+        }
+        m_Components.push_back(new T());
+        return true;
       }
 
+      // TODO use smart pointers to prevent the user from being able to free the pointer
       template<typename T>
       T* GetComponent() {
+        // Iterate over all of the components and try to dynamic cast them to be the type of 
+        // component we are looking for. If the dynamic cast in not null then we have found
+        // the component
+        for(Component* component : m_Components) {
+          T* existingComponent = dynamic_cast<T*>(component);
+          if(existingComponent != nullptr) {
+            return existingComponent;
+          }
+        }
         return nullptr;
       }
 
       template<typename T>
       bool RemoveComponent() {
+        // Iterate over all of the components and try to dynamic cast them to be the type of 
+        // component we are looking for. If the dynamic cast is not null then we have found
+        // the component to remove.
+        for(int i = 0; i < m_Components.size(); i++) {
+          T* existingComponent = dynamic_cast<T*>(m_Components.at(i));
+          if(existingComponent != nullptr) {
+            m_Components.erase(m_Components.begin() + i);
+            free(existingComponent);
+            return true;
+          }
+        }
         return false;
       }
 
