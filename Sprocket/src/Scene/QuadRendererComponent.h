@@ -22,7 +22,7 @@ namespace Sprocket {
       // This correspondes to the id in the rendering system. It is needed to do anything with 
       // the component in the rendering system.
       int m_QuadID = -1;
-
+      glm::vec4 m_QuadColor = {1,1,1,1};
       std::function<void(Event&)> m_EventCallback;
       
       QuadRendererComponent();
@@ -45,7 +45,10 @@ namespace Sprocket {
 
     public:
 
-      glm::vec4 m_QuadColor = {1,1,1,1};
+      glm::vec4 GetQuadColor() const {return m_QuadColor;}
+      void UpdateQuadColor(glm::vec4 newColor);
+
+
 
   };
 

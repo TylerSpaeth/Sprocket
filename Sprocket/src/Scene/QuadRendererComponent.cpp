@@ -43,4 +43,12 @@ namespace Sprocket {
     m_EventCallback(*e);
     free(e);
   }
+
+  void QuadRendererComponent::UpdateQuadColor(glm::vec4 newColor) {
+    m_QuadColor = newColor;
+    RenderUpdateEvent* e = new RenderUpdateEvent(RenderUpdateType::QUAD);
+    e->m_QuadIndex = m_QuadID;
+    e->m_QuadColor = m_QuadColor;
+    m_EventCallback(*e);
+  }
 }
