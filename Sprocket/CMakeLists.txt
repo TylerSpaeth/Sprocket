@@ -42,6 +42,7 @@ target_sources(${PROJECT_NAME} PRIVATE
   src/Scene/Entity.cpp
   src/Scene/TransformComponent.cpp
   src/Scene/QuadRendererComponent.cpp
+  src/Scene/CameraComponent.cpp
 )
 
 target_include_directories(${PROJECT_NAME} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include)

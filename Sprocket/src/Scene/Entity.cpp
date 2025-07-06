@@ -31,6 +31,11 @@ namespace Sprocket {
       if(QuadRendererComponent* qr = static_cast<QuadRendererComponent*>(component)) {
         qr->m_EventCallback = m_EventCallback;
         qr->RenderNew(m_Transform.Position(), m_Transform.Rotation(), m_Transform.Scale());
+        qr->UpdateQuadColor(qr->GetQuadColor());
+      }
+      else if(CameraComponent* camera = static_cast<CameraComponent*>(component)) {
+        camera->m_EventCallback = m_EventCallback;
+        camera->UpdateCameraPosition(m_Transform.Position(), m_Transform.Rotation(), m_Transform.Scale());
       }
     }
     Start();
@@ -55,6 +60,9 @@ namespace Sprocket {
     for(Component* component : m_Components) {
       if(QuadRendererComponent* qr = static_cast<QuadRendererComponent*>(component)) {
         qr->UpdateModelMatrix(m_Transform.Position(), m_Transform.Rotation(), m_Transform.Scale());
+      }
+      else if(CameraComponent* camera = static_cast<CameraComponent*>(component)) {
+        camera->UpdateCameraPosition(m_Transform.Position(), m_Transform.Rotation(), m_Transform.Scale());
       }
     }
 

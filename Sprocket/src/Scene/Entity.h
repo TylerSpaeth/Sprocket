@@ -8,6 +8,7 @@
 #include "Component.h"
 #include "TransformComponent.h"
 #include "QuadRendererComponent.h"
+#include "CameraComponent.h"
 
 #include <vector>
 #include <typeinfo>
@@ -28,6 +29,7 @@ namespace Sprocket {
 
       std::vector<Entity*> m_Children;
 
+      // TODO use smart pointers
       std::vector<Component*> m_Components;
 
       TransformComponent m_Transform;
@@ -118,9 +120,6 @@ namespace Sprocket {
 
   template<>
   inline bool Entity::AddComponent<QuadRendererComponent>() {
-    // Iterate over all of the components and try to static cast them to be the type of 
-    // component we are looking for. If the static cast is not null then we already
-    // have this type of component.
     for(Component* component : m_Components) {
       QuadRendererComponent* existingComponent = static_cast<QuadRendererComponent*>(component);
       if(existingComponent != nullptr) {
@@ -132,6 +131,7 @@ namespace Sprocket {
 
     if(m_EventCallback != nullptr) {
       qr->m_EventCallback = m_EventCallback;
+      qr->RenderNew(m_Transform.Position(), m_Transform.Rotation(), m_Transform.Scale());
     }
 
     m_Components.push_back(qr);
@@ -140,16 +140,46 @@ namespace Sprocket {
 
   template<>
   inline bool Entity::RemoveComponent<QuadRendererComponent>() {
-    // Iterate over all of the components and try to static cast them to be the type of 
-    // component we are looking for. If the static cast is not null then we already
-    // have this type of component.
-    for(Component* component : m_Components) {
-      QuadRendererComponent* existingComponent = static_cast<QuadRendererComponent*>(component);
+    for(int i = 0; i < m_Components.size(); i++) {
+      QuadRendererComponent* existingComponent = static_cast<QuadRendererComponent*>(m_Components.at(i));
       if(existingComponent != nullptr) {
-        if(m_EventCallback) {
-          existingComponent->RemoveRender();
-          return true;
-        }
+        m_Components.erase(m_Components.begin() + i);
+        existingComponent->RemoveRender();
+        free(existingComponent);
+        return true;
+      }
+    }
+    return false;
+  }
+
+  template<>
+  inline bool Entity::AddComponent<CameraComponent>() {
+    for(Component* component : m_Components) {
+      CameraComponent* existingComponent = static_cast<CameraComponent*>(component);
+      if(existingComponent != nullptr) {
+        return false;
+      }
+    }
+
+    CameraComponent* camera = new CameraComponent();
+
+    if(m_EventCallback != nullptr) {
+      camera->m_EventCallback = m_EventCallback;
+    }
+
+    m_Components.push_back(camera);
+    return true;
+  }
+
+  template<>
+  inline bool Entity::RemoveComponent<CameraComponent>() {
+    for(int i = 0; i < m_Components.size(); i++) {
+      CameraComponent* existingComponent = static_cast<CameraComponent*>(m_Components.at(i));
+      if(existingComponent != nullptr) {
+        m_Components.erase(m_Components.begin() + i);
+        existingComponent->UpdateCameraPosition(glm::vec3(0), glm::vec3(0), glm::vec3(1));
+        free(existingComponent);
+        return true;
       }
     }
     return false;

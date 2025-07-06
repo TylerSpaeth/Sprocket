@@ -50,5 +50,6 @@ namespace Sprocket {
     e->m_QuadIndex = m_QuadID;
     e->m_QuadColor = m_QuadColor;
     m_EventCallback(*e);
+    free(e);
   }
 }
