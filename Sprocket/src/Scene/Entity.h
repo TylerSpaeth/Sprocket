@@ -7,9 +7,12 @@
 
 #include "Component.h"
 #include "TransformComponent.h"
+#include "QuadRendererComponent.h"
 
 #include <vector>
 #include <typeinfo>
+#include <functional>
+#include <iostream>
 
 namespace Sprocket {
 
@@ -18,6 +21,8 @@ namespace Sprocket {
     friend class Scene;
 
     private:
+
+      std::function<void(Event&)> m_EventCallback;
 
       Entity* m_Parent = nullptr;
 
@@ -63,11 +68,11 @@ namespace Sprocket {
       // Only one of each component type is allowed on a single Entity
       template<typename T>
       bool AddComponent() {
-        // Iterate over all of the components and try to dynamic cast them to be the type of 
-        // component we are looking for. If the dynamic cast is not null then we already
+        // Iterate over all of the components and try to static cast them to be the type of 
+        // component we are looking for. If the static cast is not null then we already
         // have this type of component.
         for(Component* component : m_Components) {
-          T* existingComponent = dynamic_cast<T*>(component);
+          T* existingComponent = static_cast<T*>(component);
           if(existingComponent != nullptr) {
             return false;
           }
@@ -80,10 +85,10 @@ namespace Sprocket {
       template<typename T>
       T* GetComponent() {
         // Iterate over all of the components and try to dynamic cast them to be the type of 
-        // component we are looking for. If the dynamic cast in not null then we have found
+        // component we are looking for. If the static cast in not null then we have found
         // the component
         for(Component* component : m_Components) {
-          T* existingComponent = dynamic_cast<T*>(component);
+          T* existingComponent = static_cast<T*>(component);
           if(existingComponent != nullptr) {
             return existingComponent;
           }
@@ -94,10 +99,10 @@ namespace Sprocket {
       template<typename T>
       bool RemoveComponent() {
         // Iterate over all of the components and try to dynamic cast them to be the type of 
-        // component we are looking for. If the dynamic cast is not null then we have found
+        // component we are looking for. If the static cast is not null then we have found
         // the component to remove.
         for(int i = 0; i < m_Components.size(); i++) {
-          T* existingComponent = dynamic_cast<T*>(m_Components.at(i));
+          T* existingComponent = static_cast<T*>(m_Components.at(i));
           if(existingComponent != nullptr) {
             m_Components.erase(m_Components.begin() + i);
             free(existingComponent);
@@ -108,6 +113,47 @@ namespace Sprocket {
       }
 
   };
+
+  // Override AddComponent and RemoveComponent for components that have special behavior
+
+  template<>
+  inline bool Entity::AddComponent<QuadRendererComponent>() {
+    // Iterate over all of the components and try to static cast them to be the type of 
+    // component we are looking for. If the static cast is not null then we already
+    // have this type of component.
+    for(Component* component : m_Components) {
+      QuadRendererComponent* existingComponent = static_cast<QuadRendererComponent*>(component);
+      if(existingComponent != nullptr) {
+        return false;
+      }
+    }
+
+    QuadRendererComponent* qr = new QuadRendererComponent();
+
+    if(m_EventCallback != nullptr) {
+      qr->m_EventCallback = m_EventCallback;
+    }
+
+    m_Components.push_back(qr);
+    return true;
+  }
+
+  template<>
+  inline bool Entity::RemoveComponent<QuadRendererComponent>() {
+    // Iterate over all of the components and try to static cast them to be the type of 
+    // component we are looking for. If the static cast is not null then we already
+    // have this type of component.
+    for(Component* component : m_Components) {
+      QuadRendererComponent* existingComponent = static_cast<QuadRendererComponent*>(component);
+      if(existingComponent != nullptr) {
+        if(m_EventCallback) {
+          existingComponent->RemoveRender();
+          return true;
+        }
+      }
+    }
+    return false;
+  }
 
   // Override GetComponent for components not stored in m_Components
 

@@ -10,15 +10,11 @@
 namespace Sprocket {
 
   class RenderNewEvent : public Event {
-    private:
-      const float m_Size;
-
     public:
       unsigned int m_QuadID = -1;
-      RenderNewEvent(float size) : m_Size(size){
+      RenderNewEvent() {
         this->SetType(EventType::RENDER_NEW);
       }
-      float GetSize() const {return m_Size;}
   };
 
   enum class RenderUpdateType {

@@ -14,7 +14,7 @@ namespace Sprocket {
 
     VerifyCallback();
         
-    RenderNewEvent* event = new RenderNewEvent(renderer.size);
+    RenderNewEvent* event = new RenderNewEvent();
     m_EventCallback(*event);
     renderer.quadID = event->m_QuadID;
 

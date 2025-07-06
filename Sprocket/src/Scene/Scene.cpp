@@ -18,6 +18,10 @@ namespace Sprocket {
   void Scene::SubmitEntityToScene(Entity& entity) {
     // TODO validate entity before adding it to scene
     m_Entities.push_back(&entity);
+    entity.m_EventCallback = m_EventCallback;
+    if(m_EventCallback) {
+      entity.OnActivate();
+    }
   }
 
   bool Scene::RemoveEntityFromScene(Entity& entity) {
@@ -70,14 +74,24 @@ namespace Sprocket {
   }
 
   void Scene::OnActivate() {
+    for(Entity* entity : m_Entities) {
+      entity->m_EventCallback = m_EventCallback;
+      entity->OnActivate();
+    }
     // TODO
   }
 
   void Scene::OnDeactivate() {
+    for(Entity* entity : m_Entities) {
+      entity->OnDeactivate();
+    }
     // TODO
   }
 
   void Scene::OnUpdate(float deltaTime) {
+    for(Entity* entity : m_Entities) {
+      entity->OnUpdate(deltaTime);
+    }
     // TODO
   }
 

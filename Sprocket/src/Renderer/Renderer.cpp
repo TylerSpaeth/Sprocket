@@ -151,7 +151,7 @@ namespace Sprocket {
         OnClose();
         break;
       case EventType::RENDER_NEW:
-        ((RenderNewEvent&) event).m_QuadID = AddQuad(((RenderNewEvent&) event).GetSize());
+        ((RenderNewEvent&) event).m_QuadID = AddQuad(100);
         break;
       case EventType::RENDER_UPDATE: {
         switch(((RenderUpdateEvent&)event).GetType()) {
