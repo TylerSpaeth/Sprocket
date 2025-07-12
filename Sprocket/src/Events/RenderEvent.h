@@ -7,11 +7,12 @@
 
 #include <string>
 
+// TODO make the quadIDS only modifiable by the Renderer system
 namespace Sprocket {
 
   class RenderNewEvent : public Event {
     public:
-      unsigned int m_QuadID = -1;
+      int m_QuadID = -1;
       RenderNewEvent() {
         this->SetType(EventType::RENDER_NEW);
       }
@@ -31,7 +32,7 @@ namespace Sprocket {
       RenderUpdateType m_Type;
 
     public:
-      unsigned int m_QuadIndex = -1;
+      int m_QuadIndex = -1;
       std::string m_TexturePath; // A path of "" represents no texture and uses the quadcolor 
       // Used to store either view or model matrix depending on the RenderUpdateType
       glm::mat4 m_Matrix;
@@ -49,7 +50,7 @@ namespace Sprocket {
 
   class RenderDeleteEvent : public Event {
     public:
-      unsigned int m_QuadIndex;
+      int m_QuadIndex = -1;
       RenderDeleteEvent(const unsigned int quadIndex) : m_QuadIndex(quadIndex) {
         this->SetType(EventType::RENDER_DELETE);
       } 

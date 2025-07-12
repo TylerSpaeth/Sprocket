@@ -37,6 +37,7 @@ target_sources(${PROJECT_NAME} PRIVATE
 
 # Add Scene source code
 target_sources(${PROJECT_NAME} PRIVATE 
+  src/Scene/SceneUtils/Collision.cpp
   src/Scene/SceneManager.cpp
   src/Scene/Scene.cpp
   src/Scene/Entity.cpp
