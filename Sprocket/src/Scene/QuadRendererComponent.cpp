@@ -16,14 +16,13 @@ namespace Sprocket {
   void QuadRendererComponent::RenderNew(glm::vec3 position, glm::vec3 rotation, glm::vec3 scale) {
     RenderNewEvent* e = new RenderNewEvent();
     m_EventCallback(*e);
-    m_QuadID = e->m_QuadID;
+    m_QuadID = e->GetQuadID();
     free(e);
   }
 
   void QuadRendererComponent::UpdateModelMatrix(glm::vec3 position, glm::vec3 rotation, glm::vec3 scale) {
 
-    RenderUpdateEvent* e = new RenderUpdateEvent(RenderUpdateType::MODEL_MATRIX);
-    e->m_QuadIndex = m_QuadID;
+    RenderUpdateEvent* e = new RenderUpdateEvent(RenderUpdateType::MODEL_MATRIX, m_QuadID);
     
     glm::mat4 tr = glm::translate(glm::mat4(1), position);
     glm::mat4 xrot = glm::rotate(glm::mat4(1), glm::radians(-rotation.x), glm::vec3(1,0,0));
@@ -46,8 +45,7 @@ namespace Sprocket {
 
   void QuadRendererComponent::UpdateQuadColor(glm::vec4 newColor) {
     m_QuadColor = newColor;
-    RenderUpdateEvent* e = new RenderUpdateEvent(RenderUpdateType::QUAD);
-    e->m_QuadIndex = m_QuadID;
+    RenderUpdateEvent* e = new RenderUpdateEvent(RenderUpdateType::QUAD, m_QuadID);
     e->m_QuadColor = m_QuadColor;
     m_EventCallback(*e);
     free(e);

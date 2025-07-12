@@ -159,23 +159,23 @@ namespace Sprocket {
             SetViewMatrix(((RenderUpdateEvent&)event).m_Matrix);
             break;
           case RenderUpdateType::MODEL_MATRIX:
-            SetQuadModelMatrix(((RenderUpdateEvent&)event).m_QuadIndex, ((RenderUpdateEvent&)event).m_Matrix);
+            SetQuadModelMatrix(((RenderUpdateEvent&)event).m_QuadID, ((RenderUpdateEvent&)event).m_Matrix);
             break;
           case RenderUpdateType::QUAD:
             unsigned int slot = 0;
             if(((RenderUpdateEvent&)event).m_TexturePath != "") {
               slot = AddTexture(((RenderUpdateEvent&)event).m_TexturePath);
             }
-            SetQuadTextureID(((RenderUpdateEvent&)event).m_QuadIndex, slot);
+            SetQuadTextureID(((RenderUpdateEvent&)event).m_QuadID, slot);
             UpdateTextureUniform(s_Instance->m_BoundTextures.size());
-            SetQuadColor(((RenderUpdateEvent&)event).m_QuadIndex, ((RenderUpdateEvent&)event).m_QuadColor);
-            SetQuadTextureCoords(((RenderUpdateEvent&)event).m_QuadIndex, ((RenderUpdateEvent&)event).m_TexXCoords, ((RenderUpdateEvent&)event).m_TexYCoords);
+            SetQuadColor(((RenderUpdateEvent&)event).m_QuadID, ((RenderUpdateEvent&)event).m_QuadColor);
+            SetQuadTextureCoords(((RenderUpdateEvent&)event).m_QuadID, ((RenderUpdateEvent&)event).m_TexXCoords, ((RenderUpdateEvent&)event).m_TexYCoords);
             break;
         }
         break;
       }
       case EventType::RENDER_DELETE:
-        RemoveQuad(((RenderDeleteEvent&)event).m_QuadIndex);
+        RemoveQuad(((RenderDeleteEvent&)event).m_QuadID);
         break;
 
     }

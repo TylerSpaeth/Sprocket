@@ -8,7 +8,7 @@ namespace Sprocket {
 
   void CameraComponent::UpdateCameraPosition(glm::vec3 position, glm::vec3 rotation, glm::vec3 scale) {
 
-    RenderUpdateEvent* e = new RenderUpdateEvent(RenderUpdateType::VIEW_MATRIX);
+    RenderUpdateEvent* e = new RenderUpdateEvent(RenderUpdateType::VIEW_MATRIX, -1);
 
     glm::mat4 tr = glm::translate(glm::mat4(1), -position);
     glm::mat4 xrot = glm::rotate(glm::mat4(1), glm::radians(rotation.x), glm::vec3(1,0,0));
