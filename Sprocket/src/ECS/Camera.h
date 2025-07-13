@@ -37,7 +37,7 @@ namespace Sprocket {
 
         VerifyCallback();
 
-        RenderUpdateEvent* update = new RenderUpdateEvent(RenderUpdateType::VIEW_MATRIX);
+        RenderUpdateEvent* update = new RenderUpdateEvent(RenderUpdateType::VIEW_MATRIX, -1);
         
         glm::mat4 translate = glm::translate(glm::mat4(1), -transform.position);
 

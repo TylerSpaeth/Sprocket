@@ -8,6 +8,7 @@
 #include "ThirdParty/glm/glm.hpp"
 
 #include <functional>
+#include <string>
 
 namespace Sprocket {
 
@@ -24,6 +25,10 @@ namespace Sprocket {
       int m_QuadID = -1;
       glm::vec4 m_QuadColor = {1,1,1,1};
       std::function<void(Event&)> m_EventCallback;
+      std::string m_TexturePath;
+      // These coordinates start in the top right corner and go clockwise around the quad
+      glm::vec4 m_TextureXUVCoords = {1,1,0,0};
+      glm::vec4 m_TextureYUVCoords = {1,0,0,1};
       
       QuadRendererComponent();
       // The event callback should be pulled off of the scene that the entity is a part of
@@ -45,10 +50,11 @@ namespace Sprocket {
 
     public:
 
+      // NOTE currently calling either of these updates will cause the renderer to switch between 
+      // color and texture. It should be determined whether this is correct behavior.
       glm::vec4 GetQuadColor() const {return m_QuadColor;}
       void UpdateQuadColor(glm::vec4 newColor);
-
-
+      void UpdateTexturePath(std::string texturePath);
 
   };
 

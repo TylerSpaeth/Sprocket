@@ -50,4 +50,15 @@ namespace Sprocket {
     m_EventCallback(*e);
     free(e);
   }
+
+  // TODO add validation
+  void QuadRendererComponent::UpdateTexturePath(std::string texturePath) {
+    m_TexturePath = texturePath;
+    RenderUpdateEvent* e = new RenderUpdateEvent(RenderUpdateType::QUAD, m_QuadID);
+    e->m_TexturePath = m_TexturePath;
+    e->m_TexXCoords = m_TextureXUVCoords;
+    e->m_TexYCoords = m_TextureYUVCoords;
+    m_EventCallback(*e);
+    free(e);
+  }
 }
