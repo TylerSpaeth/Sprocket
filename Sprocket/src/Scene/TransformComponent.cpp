@@ -7,7 +7,7 @@ namespace Sprocket {
   }
 
   glm::vec3& TransformComponent::LocalRotation() {
-    return m_LocalPosition;
+    return m_LocalRotation;
   }
 
   glm::vec3& TransformComponent::LocalScale() {

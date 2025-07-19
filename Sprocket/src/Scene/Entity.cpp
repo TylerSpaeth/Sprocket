@@ -28,14 +28,18 @@ namespace Sprocket {
   void Entity::OnActivate() {
     for(Component* component : m_Components) {
       // If this component is of they QuadRendererComponent, remove its event callback
-      if(QuadRendererComponent* qr = static_cast<QuadRendererComponent*>(component)) {
+      if(QuadRendererComponent* qr = dynamic_cast<QuadRendererComponent*>(component)) {
         qr->m_EventCallback = m_EventCallback;
         qr->RenderNew(m_Transform.Position(), m_Transform.Rotation(), m_Transform.Scale());
         qr->UpdateQuadColor(qr->GetQuadColor());
       }
-      else if(CameraComponent* camera = static_cast<CameraComponent*>(component)) {
+      else if(CameraComponent* camera = dynamic_cast<CameraComponent*>(component)) {
         camera->m_EventCallback = m_EventCallback;
         camera->UpdateCameraPosition(m_Transform.Position(), m_Transform.Rotation(), m_Transform.Scale());
+      }
+      else if(ColliderComponent* collider = dynamic_cast<ColliderComponent*>(component)) {
+        collider->m_EventCallback = m_EventCallback;
+        collider->Register();
       }
     }
     Start();
@@ -45,9 +49,16 @@ namespace Sprocket {
 
     for(Component* component : m_Components) {
       // If this component is of they QuadRendererComponent, remove its event callback
-      if(QuadRendererComponent* qr = static_cast<QuadRendererComponent*>(component)) {
+      if(QuadRendererComponent* qr = dynamic_cast<QuadRendererComponent*>(component)) {
         qr->RemoveRender();
         qr->m_EventCallback = nullptr;
+      }
+      else if(CameraComponent* camera = dynamic_cast<CameraComponent*>(component)) {
+        camera->UpdateCameraPosition(glm::vec3(0), glm::vec3(0), glm::vec3(1));
+        camera->m_EventCallback = nullptr;
+      }
+      else if(ColliderComponent* collider = dynamic_cast<ColliderComponent*>(component)) {
+        collider->Remove();
       }
     }
 
@@ -58,11 +69,14 @@ namespace Sprocket {
   void Entity::OnUpdate(float deltaTime) {
     
     for(Component* component : m_Components) {
-      if(QuadRendererComponent* qr = static_cast<QuadRendererComponent*>(component)) {
+      if(QuadRendererComponent* qr = dynamic_cast<QuadRendererComponent*>(component)) {
         qr->UpdateModelMatrix(m_Transform.Position(), m_Transform.Rotation(), m_Transform.Scale());
       }
-      else if(CameraComponent* camera = static_cast<CameraComponent*>(component)) {
+      else if(CameraComponent* camera = dynamic_cast<CameraComponent*>(component)) {
         camera->UpdateCameraPosition(m_Transform.Position(), m_Transform.Rotation(), m_Transform.Scale());
+      }
+      else if(ColliderComponent* collider = dynamic_cast<ColliderComponent*>(component)) {
+        collider->UpdateTransform();
       }
     }
 

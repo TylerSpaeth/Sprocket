@@ -37,13 +37,21 @@ target_sources(${PROJECT_NAME} PRIVATE
 
 # Add Scene source code
 target_sources(${PROJECT_NAME} PRIVATE 
-  src/Scene/SceneUtils/Collision.cpp
   src/Scene/SceneManager.cpp
   src/Scene/Scene.cpp
   src/Scene/Entity.cpp
   src/Scene/TransformComponent.cpp
   src/Scene/QuadRendererComponent.cpp
   src/Scene/CameraComponent.cpp
+  src/Scene/ColliderComponent.cpp
+  src/Scene/BoxColliderComponent.cpp
+  src/Scene/CircleColliderComponent.cpp
+)
+
+# Add Physics source code
+target_sources(${PROJECT_NAME} PRIVATE
+  src/Physics/Physics.cpp
+  src/Physics/Collision.cpp
 )
 
 target_include_directories(${PROJECT_NAME} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include)

@@ -11,6 +11,8 @@
 
 #include "Scene/SceneManager.h"
 
+#include "Physics/Physics.h"
+
 // Sprocket EntryPoint
 #include "Core/EntryPoint.hpp"
 

@@ -1,44 +1,70 @@
 #ifndef COLLIDERCOMPONENT_H
 #define COLLIDERCOMPONENT_H
 
+#include "Component.h"
+#include "TransformComponent.h"
+
+#include "Events/Event.h"
+#include "Events/PhysicsEvent.h"
+
+#include "Core/Macros.h"
+
+#include "ThirdParty/glm/glm.hpp"
+
+#include <functional>
+
 namespace Sprocket {
 
-  class ColliderComponent {
+  // TODO Provide implementations for the pure virtual functions that are the same in both
+  // child classes
+  class SPROCKET_API ColliderComponent : public Component {
+    friend class Entity;
+    protected:
+      int m_PhysicsID = -1;
+      std::function<void(Event&)> m_EventCallback;
+      TransformComponent* m_TranformComponent = nullptr;
+      ColliderComponent(TransformComponent& transformComponent) : m_TranformComponent(&transformComponent) {}
+
+      
+      virtual void Register() = 0;
+      virtual void UpdateTransform() = 0;
+      void Remove();
     public:
-      // TODO determine what else should be passed to these functions. There needs to be a 
-      // way to determine position, but we really do not want to pass in the transform component as
-      // it would be less flexible then, but we also probably do not want to store the positions on 
-      // these components as it would increase memory usage
-      // On Second thought it may be best for each collider to have some sort of unique identifier,
-      // perhaps just its address so that we can lookup collisions in a collidion table
-      virtual bool CollidesWith(BoxColliderComponent& collider);
-      virtual bool CollidesWith(CircleColliderComponent& collider);
-  };
 
-  class BoxColliderComponent : public ColliderComponent {
+      int GetPhysicsID() const {return m_PhysicsID;}
 
-    private:
-      float m_Width;
-      float m_Height;
-
-    public:
-      float GetWidth() const;
-      void SetWidth(float width);
-
-      float GetHeight() const;
-      void SetHeight(float height);
+      bool CollidesWith(ColliderComponent& collider);
 
   };
 
-  class CircleColliderComponent : public ColliderComponent {
-
+  class SPROCKET_API BoxColliderComponent : public ColliderComponent {
+    friend class Entity;
     private:
-      float m_Radius;
+      glm::vec2 m_Size = {1,1};
+      BoxColliderComponent(TransformComponent& transformComponent) : ColliderComponent(transformComponent) {}
+
+      
+      void Register() override;
+      void UpdateTransform() override;
+
+    public:
+      glm::vec2 GetSize() const;
+      void SetSize(const glm::vec2 size);
+  };
+
+  class SPROCKET_API CircleColliderComponent : public ColliderComponent {
+    friend class Entity;
+    private:
+      float m_Radius = 1;
+      CircleColliderComponent(TransformComponent& transformComponent) : ColliderComponent(transformComponent) {}
+
+      
+      void Register() override;
+      void UpdateTransform() override;
 
     public:
       float GetRadius() const;
       void SetRadius(float radius);
-
   };
 }
 

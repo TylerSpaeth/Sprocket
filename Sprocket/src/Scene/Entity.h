@@ -9,6 +9,7 @@
 #include "TransformComponent.h"
 #include "QuadRendererComponent.h"
 #include "CameraComponent.h"
+#include "ColliderComponent.h"
 
 #include <vector>
 #include <typeinfo>
@@ -74,7 +75,7 @@ namespace Sprocket {
         // component we are looking for. If the static cast is not null then we already
         // have this type of component.
         for(Component* component : m_Components) {
-          T* existingComponent = static_cast<T*>(component);
+          T* existingComponent = dynamic_cast<T*>(component);
           if(existingComponent != nullptr) {
             return false;
           }
@@ -90,7 +91,7 @@ namespace Sprocket {
         // component we are looking for. If the static cast in not null then we have found
         // the component
         for(Component* component : m_Components) {
-          T* existingComponent = static_cast<T*>(component);
+          T* existingComponent = dynamic_cast<T*>(component);
           if(existingComponent != nullptr) {
             return existingComponent;
           }
@@ -104,7 +105,7 @@ namespace Sprocket {
         // component we are looking for. If the static cast is not null then we have found
         // the component to remove.
         for(int i = 0; i < m_Components.size(); i++) {
-          T* existingComponent = static_cast<T*>(m_Components.at(i));
+          T* existingComponent = dynamic_cast<T*>(m_Components.at(i));
           if(existingComponent != nullptr) {
             m_Components.erase(m_Components.begin() + i);
             free(existingComponent);
@@ -121,7 +122,7 @@ namespace Sprocket {
   template<>
   inline bool Entity::AddComponent<QuadRendererComponent>() {
     for(Component* component : m_Components) {
-      QuadRendererComponent* existingComponent = static_cast<QuadRendererComponent*>(component);
+      QuadRendererComponent* existingComponent = dynamic_cast<QuadRendererComponent*>(component);
       if(existingComponent != nullptr) {
         return false;
       }
@@ -141,7 +142,7 @@ namespace Sprocket {
   template<>
   inline bool Entity::RemoveComponent<QuadRendererComponent>() {
     for(int i = 0; i < m_Components.size(); i++) {
-      QuadRendererComponent* existingComponent = static_cast<QuadRendererComponent*>(m_Components.at(i));
+      QuadRendererComponent* existingComponent = dynamic_cast<QuadRendererComponent*>(m_Components.at(i));
       if(existingComponent != nullptr) {
         m_Components.erase(m_Components.begin() + i);
         existingComponent->RemoveRender();
@@ -155,7 +156,7 @@ namespace Sprocket {
   template<>
   inline bool Entity::AddComponent<CameraComponent>() {
     for(Component* component : m_Components) {
-      CameraComponent* existingComponent = static_cast<CameraComponent*>(component);
+      CameraComponent* existingComponent = dynamic_cast<CameraComponent*>(component);
       if(existingComponent != nullptr) {
         return false;
       }
@@ -174,10 +175,81 @@ namespace Sprocket {
   template<>
   inline bool Entity::RemoveComponent<CameraComponent>() {
     for(int i = 0; i < m_Components.size(); i++) {
-      CameraComponent* existingComponent = static_cast<CameraComponent*>(m_Components.at(i));
+      CameraComponent* existingComponent = dynamic_cast<CameraComponent*>(m_Components.at(i));
       if(existingComponent != nullptr) {
         m_Components.erase(m_Components.begin() + i);
         existingComponent->UpdateCameraPosition(glm::vec3(0), glm::vec3(0), glm::vec3(1));
+        free(existingComponent);
+        return true;
+      }
+    }
+    return false;
+  }
+
+  template<>
+  inline bool Entity::AddComponent<BoxColliderComponent>() {
+
+    for(Component* component : m_Components) {
+      CircleColliderComponent* existingCircleCollider = dynamic_cast<CircleColliderComponent*>(component);
+      BoxColliderComponent* existingBoxCollider = dynamic_cast<BoxColliderComponent*>(component);
+      if(existingCircleCollider != nullptr || existingBoxCollider != nullptr) {
+        return false;
+      }
+    }
+
+    BoxColliderComponent* boxCollider = new BoxColliderComponent(m_Transform);
+    
+    if(m_EventCallback != nullptr) {
+      boxCollider->m_EventCallback = m_EventCallback;
+      boxCollider->Register();
+    }
+
+    m_Components.push_back(boxCollider);
+    return true;
+  }
+
+  template<>
+  inline bool Entity::RemoveComponent<BoxColliderComponent>() {
+    for(int i = 0; i < m_Components.size(); i++) {
+      BoxColliderComponent* existingComponent = dynamic_cast<BoxColliderComponent*>(m_Components.at(i));
+      if(existingComponent != nullptr) {
+        m_Components.erase(m_Components.begin()+i);
+        existingComponent->Remove();
+        free(existingComponent);
+        return true;
+      }
+    }
+    return false;
+  }
+
+  template<>
+  inline bool Entity::AddComponent<CircleColliderComponent>() {
+    for(Component* component : m_Components) {
+      CircleColliderComponent* existingCircleCollider = dynamic_cast<CircleColliderComponent*>(component);
+      BoxColliderComponent* existingBoxCollider = dynamic_cast<BoxColliderComponent*>(component);
+      if(existingCircleCollider || existingBoxCollider) {
+        return false;
+      }
+    }
+
+    CircleColliderComponent* circleCollider = new CircleColliderComponent(m_Transform);
+    
+    if(m_EventCallback != nullptr) {
+      circleCollider->m_EventCallback = m_EventCallback;
+      circleCollider->Register();
+    }
+
+    m_Components.push_back(circleCollider);
+    return true;
+  }
+
+  template<>
+  inline bool Entity::RemoveComponent<CircleColliderComponent>() {
+    for(int i = 0; i < m_Components.size(); i++) {
+      CircleColliderComponent* existingComponent = dynamic_cast<CircleColliderComponent*>(m_Components.at(i));
+      if(existingComponent != nullptr) {
+        m_Components.erase(m_Components.begin()+i);
+        existingComponent->Remove();
         free(existingComponent);
         return true;
       }

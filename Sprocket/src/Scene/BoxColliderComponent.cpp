@@ -1,21 +1,67 @@
 #include "ColliderComponent.h"
 
+#include <iostream>
+
 namespace Sprocket {
 
-  float BoxColliderComponent::GetWidth() const {
-    return m_Width;
+  glm::vec2 BoxColliderComponent::GetSize() const {
+    return m_Size;
   }
 
-  void BoxColliderComponent::SetWidth(float width) {
-    // TODO
+  void BoxColliderComponent::SetSize(const glm::vec2 size) {
+    
+    if(size.x < 0 || size.y < 0) {
+      return;
+    }
+
+    m_Size = size;
+
+    if(m_EventCallback) {
+
+      glm::vec2 scale = m_TranformComponent->Scale();
+
+      PhysicsUpdateEvent* event = new PhysicsUpdateEvent(m_PhysicsID, m_TranformComponent->Position(), {scale.x * m_Size.x, scale.y * m_Size.y}, m_TranformComponent->Rotation().z);
+
+      m_EventCallback(*event);
+
+      free(event);
+
+    }
+
   }
 
-  float BoxColliderComponent::GetHeight() const {
-    return m_Height;
+  void BoxColliderComponent::Register() {
+
+    if(m_EventCallback) {
+
+      glm::vec2 scale = m_TranformComponent->Scale();
+
+      PhysicsNewEvent* event = new PhysicsNewEvent(m_TranformComponent->Position(), {scale.x * m_Size.x, scale.y * m_Size.y},m_TranformComponent->Rotation().z);
+
+      m_EventCallback(*event);
+
+      m_PhysicsID = event->GetPhysicsID();
+
+      free(event);
+
+    }
+
   }
 
-  void BoxColliderComponent::SetHeight(float height) {
-    // TODO
+  void BoxColliderComponent::UpdateTransform() {
+
+    if(m_EventCallback) {
+
+      glm::vec2 scale = m_TranformComponent->Scale();
+
+      PhysicsUpdateEvent* event = new PhysicsUpdateEvent(m_PhysicsID, m_TranformComponent->Position(), {scale.x * m_Size.x, scale.y * m_Size.y}, m_TranformComponent->Rotation().z);
+
+      m_EventCallback(*event);
+
+      free(event);
+
+    }
+
   }
 
 }

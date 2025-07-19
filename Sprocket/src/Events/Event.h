@@ -15,6 +15,8 @@ namespace Sprocket {
     APP_UPDATE, APP_START,
     // RENDER
     RENDER_NEW, RENDER_UPDATE, RENDER_DELETE,
+    // PHYSICS
+    PHYSICS_NEW, PHYSICS_UPDATE, PHYSICS_DELETE, PHYSICS_COLLISION_CHECK, PHYSICS_COLLISION_CHECK_GENERIC
   };
 
   // For future use
@@ -25,7 +27,8 @@ namespace Sprocket {
         INPUT,
           KEYBOARD,
           MOUSE,
-      RENDER
+      RENDER,
+      PHYSICS
   };
 
   class Event {
@@ -42,7 +45,6 @@ namespace Sprocket {
 
       EventType GetEventType() const {return m_EventType;}
       
-      // For future use
       bool IsCategory(EventCategory eventCategory) {
         if(eventCategory == EventCategory::UNCATEGORIZED) {
           return true;
@@ -65,6 +67,12 @@ namespace Sprocket {
           case EventType::RENDER_UPDATE:
           case EventType::RENDER_DELETE:
             return eventCategory == EventCategory::RENDER;
+          case EventType::PHYSICS_NEW:
+          case EventType::PHYSICS_UPDATE:
+          case EventType::PHYSICS_DELETE:
+          case EventType::PHYSICS_COLLISION_CHECK:
+          case EventType::PHYSICS_COLLISION_CHECK_GENERIC:
+            return eventCategory == EventCategory::PHYSICS;
         }
 
         return false;

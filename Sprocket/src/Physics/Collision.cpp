@@ -7,21 +7,21 @@ namespace Sprocket {
   /// @brief Calculates the normals of the box. Requires the verts to ordered CCW
   /// @param verts 
   /// @return 
-  std::vector<glm::vec2> CalculateNormals(std::vector<glm::vec2> verts) {
+  std::array<glm::vec2, 4> CalculateNormals(std::array<glm::vec2, 4> verts) {
 
-    std::vector<glm::vec2> normals;
+    std::array<glm::vec2, 4> normals;
 
     for(int i = 0; i < verts.size(); i++) {
       glm::vec2 edge = verts[(i+1)%verts.size()] - verts[i];
       glm::vec2 normal = {-edge.y, edge.x};
       normal = glm::normalize(normal);
-      normals.push_back(normal);
+      normals.at(i) = normal;
     }
     return normals;
   }
 
   // Returns the min and maximum value of the box along the given axis
-  std::pair<float,float> ProjectToAxis(std::vector<glm::vec2> verts, const glm::vec2& axis) {
+  std::pair<float,float> ProjectToAxis(std::array<glm::vec2, 4> verts, const glm::vec2& axis) {
     float min = std::numeric_limits<float>::max();
     float max = std::numeric_limits<float>::min();
 
@@ -45,7 +45,7 @@ namespace Sprocket {
     return false;
   }
 
-  bool Collision::Collides(std::vector<glm::vec2> boxVerts1, std::vector<glm::vec2> boxVerts2) {
+  bool Collision::Collides(std::array<glm::vec2, 4> boxVerts1, std::array<glm::vec2, 4> boxVerts2) {
     
     auto normals1 = CalculateNormals(boxVerts1);
     auto normals2 = CalculateNormals(boxVerts2);
@@ -74,7 +74,7 @@ namespace Sprocket {
     return true;
   }
 
-  bool Collision::Collides(std::vector<glm::vec2> boxVerts, glm::vec2 boxPosition, float boxRotation, glm::vec2 circleCenter, float circleRadius) {
+  bool Collision::Collides(std::array<glm::vec2, 4> boxVerts, glm::vec2 boxPosition, float boxRotation, glm::vec2 circleCenter, float circleRadius) {
 
     // Iterate through the verts
     for(int i = 0; i < 4; i++) {
@@ -111,9 +111,9 @@ namespace Sprocket {
 
       // Calculate the relative positions of the points
       glm::vec2 relativeCenter = circleCenter - boxPosition;
-      std::vector<glm::vec2> relativeVerts;
-      for(auto vert : boxVerts) {
-        relativeVerts.push_back(vert-boxPosition);
+      std::array<glm::vec2, 4> relativeVerts;
+      for(int i = 0; i < boxVerts.size(); i++) {
+        relativeVerts.at(i) = boxVerts.at(i)-boxPosition;
       }
 
       // Calculate the angles needed to rotate the points into the correct relative positions
@@ -124,12 +124,13 @@ namespace Sprocket {
       glm::vec2 rotatedCenter;
       rotatedCenter.x = relativeCenter.x * cosAngle - relativeCenter.y * sinAngle;
       rotatedCenter.y = relativeCenter.x * sinAngle + relativeCenter.y * cosAngle;
-      std::vector<glm::vec2> rotatedVerts;
-      for(auto vert : relativeVerts) {
+      std::array<glm::vec2, 4> rotatedVerts;
+      for(int i = 0; i < relativeVerts.size(); i++) {
+        glm::vec2 vert = relativeVerts.at(i);
         glm::vec2 rotatedVert;
         rotatedVert.x = vert.x * cosAngle - vert.y * sinAngle;
         rotatedVert.y = vert.x * sinAngle + vert.y * cosAngle;
-        rotatedVerts.push_back(rotatedVert);
+        rotatedVerts.at(i) = rotatedVert;
       }
 
       // Calculate the upper and lower x and y limits
