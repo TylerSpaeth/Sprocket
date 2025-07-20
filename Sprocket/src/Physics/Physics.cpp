@@ -42,6 +42,7 @@ namespace Sprocket {
         ValidateCurrentBoxSize();
         ClearPreviousCollisions();
         ProcessCollisions();
+        std::cout << m_PhysicsObjects.size() << std::endl;
         break;
       }
       case EventType::PHYSICS_NEW: {
@@ -167,6 +168,7 @@ namespace Sprocket {
   void Physics::RemovePhysicsObject(const unsigned int physicsID) {
     auto physicsObject = m_PhysicsObjects.at(physicsID);
     physicsObject.m_Valid = false;
+    m_FreeSlots.push(physicsID);
     RemoveFromRegions(physicsID);
   }
 
