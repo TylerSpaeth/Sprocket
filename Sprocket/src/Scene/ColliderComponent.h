@@ -15,8 +15,6 @@
 
 namespace Sprocket {
 
-  // TODO Provide implementations for the pure virtual functions that are the same in both
-  // child classes
   class SPROCKET_API ColliderComponent : public Component {
     friend class Entity;
     protected:

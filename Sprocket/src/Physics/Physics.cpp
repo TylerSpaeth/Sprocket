@@ -13,6 +13,7 @@
 namespace Sprocket {
 
   // Static variable definitions
+  const float Physics::s_PixelsPerUnit = 100;
   std::vector<PhysicsObject> Physics::m_PhysicsObjects;
   std::vector<std::vector<unsigned int>> Physics::m_CollidesWith;
   std::priority_queue<unsigned int, std::vector<unsigned int>, std::greater<unsigned int>> Physics::m_FreeSlots;
@@ -47,10 +48,10 @@ namespace Sprocket {
         PhysicsNewEvent& newEvent = ((PhysicsNewEvent&)event);
         switch(newEvent.m_ColliderType) {
           case ColliderType::BOX:
-            newEvent.m_PhysicsID = AddPhysicsObject(newEvent.m_ColliderCenter, newEvent.m_BoxColliderRotation, newEvent.m_BoxColliderSize);
+            newEvent.m_PhysicsID = AddPhysicsObject(newEvent.m_ColliderCenter * s_PixelsPerUnit, newEvent.m_BoxColliderRotation, newEvent.m_BoxColliderSize * s_PixelsPerUnit);
             break;
           case ColliderType::CIRCLE:
-            newEvent.m_PhysicsID = AddPhysicsObject(newEvent.m_ColliderCenter, newEvent.m_CircleRadius);
+            newEvent.m_PhysicsID = AddPhysicsObject(newEvent.m_ColliderCenter, newEvent.m_CircleRadius * s_PixelsPerUnit);
             break;
         }
         break;
@@ -59,10 +60,10 @@ namespace Sprocket {
         PhysicsUpdateEvent& updateEvent = ((PhysicsUpdateEvent&)event);
         switch(updateEvent.m_ColliderType) {
           case ColliderType::BOX:
-            UpdatePhysicsObject(updateEvent.m_PhysicsID, updateEvent.m_ColliderCenter, updateEvent.m_BoxColliderRotation, updateEvent.m_BoxColliderSize);
+            UpdatePhysicsObject(updateEvent.m_PhysicsID, updateEvent.m_ColliderCenter * s_PixelsPerUnit, updateEvent.m_BoxColliderRotation, updateEvent.m_BoxColliderSize * s_PixelsPerUnit);
             break;
           case ColliderType::CIRCLE:
-            UpdatePhysicsObject(updateEvent.m_PhysicsID, updateEvent.m_ColliderCenter, updateEvent.m_CircleRadius);
+            UpdatePhysicsObject(updateEvent.m_PhysicsID, updateEvent.m_ColliderCenter, updateEvent.m_CircleRadius * s_PixelsPerUnit);
             break;
         }
         break;

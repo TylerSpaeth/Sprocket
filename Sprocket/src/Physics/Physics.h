@@ -32,6 +32,8 @@ namespace Sprocket {
 
     private:
 
+      static const float s_PixelsPerUnit;
+
       // Singleton Components
       static Physics* s_Instance;
       Physics(){}
