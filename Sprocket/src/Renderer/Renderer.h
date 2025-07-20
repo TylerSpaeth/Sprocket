@@ -37,6 +37,7 @@ namespace Sprocket {
   /// High z positions are rendered in front of lower z positions. This is an event subscriber.
   class SPROCKET_API Renderer {
     private:
+      static const float s_PixelsPerUnit;
       // View matrix is initialized to just being at 0,0
       glm::mat4 m_ViewMatrix = glm::translate(glm::mat4(1.0f), glm::vec3(0, 0, 0));
       Shader* m_Shader;
