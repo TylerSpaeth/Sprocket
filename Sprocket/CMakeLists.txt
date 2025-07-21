@@ -46,6 +46,7 @@ target_sources(${PROJECT_NAME} PRIVATE
   src/Scene/ColliderComponent.cpp
   src/Scene/BoxColliderComponent.cpp
   src/Scene/CircleColliderComponent.cpp
+  src/Scene/TileMapComponent.cpp
 )
 
 # Add Physics source code

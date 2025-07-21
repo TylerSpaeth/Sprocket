@@ -10,6 +10,7 @@
 #include "QuadRendererComponent.h"
 #include "CameraComponent.h"
 #include "ColliderComponent.h"
+#include "TileMapComponent.h"
 
 #include <vector>
 #include <typeinfo>
@@ -250,6 +251,39 @@ namespace Sprocket {
       if(existingComponent != nullptr) {
         m_Components.erase(m_Components.begin()+i);
         existingComponent->Remove();
+        free(existingComponent);
+        return true;
+      }
+    }
+    return false;
+  }
+
+  template<>
+  inline bool Entity::AddComponent<TileMapComponent>() {
+    for(Component* component : m_Components) {
+      TileMapComponent* existingComponent = dynamic_cast<TileMapComponent*>(component);
+      if(existingComponent) {
+        return false;
+      }
+    }
+
+    TileMapComponent* tileMap = new TileMapComponent();
+
+    if(m_EventCallback != nullptr) {
+      tileMap->m_EventCallback = m_EventCallback;
+    }
+
+    m_Components.push_back(tileMap);
+    return true;
+  }
+
+  template<>
+  inline bool Entity::RemoveComponent<TileMapComponent>() {
+    for(int i = 0; i < m_Components.size(); i++) {
+      TileMapComponent* existingComponent = dynamic_cast<TileMapComponent*>(m_Components.at(i));
+      if(existingComponent != nullptr) {
+        m_Components.erase(m_Components.begin()+i);
+        existingComponent->DeleteTileMap();
         free(existingComponent);
         return true;
       }

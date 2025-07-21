@@ -41,6 +41,10 @@ namespace Sprocket {
         collider->m_EventCallback = m_EventCallback;
         collider->Register();
       }
+      else if(TileMapComponent* tileMap = dynamic_cast<TileMapComponent*>(component)) {
+        tileMap->m_EventCallback = m_EventCallback;
+        tileMap->RegisterTileMap(m_Transform.Position(), m_Transform.Rotation(), m_Transform.Scale());
+      }
     }
     Start();
   }
@@ -59,6 +63,11 @@ namespace Sprocket {
       }
       else if(ColliderComponent* collider = dynamic_cast<ColliderComponent*>(component)) {
         collider->Remove();
+        collider->m_EventCallback = nullptr;
+      }
+      else if(TileMapComponent* tileMap = dynamic_cast<TileMapComponent*>(component)) {
+        tileMap->DeleteTileMap();
+        tileMap->m_EventCallback = nullptr;
       }
     }
 
@@ -66,6 +75,9 @@ namespace Sprocket {
     End();
   }
 
+  // TODO this function needs to be fixed. It is highly inefficient to doing all of these updates 
+  // every frame if the transform is not changing at all. It would be much better to have a flag
+  // for if the transform has been updated any only perform transform updates if it is set.
   void Entity::OnUpdate(float deltaTime) {
     
     for(Component* component : m_Components) {
@@ -77,6 +89,9 @@ namespace Sprocket {
       }
       else if(ColliderComponent* collider = dynamic_cast<ColliderComponent*>(component)) {
         collider->UpdateTransform();
+      }
+      else if(TileMapComponent* tileMap = dynamic_cast<TileMapComponent*>(component)) {
+        tileMap->UpdateTransform(m_Transform.Position(), m_Transform.Rotation(), m_Transform.Scale());
       }
     }
 
