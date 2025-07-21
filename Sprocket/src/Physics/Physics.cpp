@@ -42,7 +42,6 @@ namespace Sprocket {
         ValidateCurrentBoxSize();
         ClearPreviousCollisions();
         ProcessCollisions();
-        std::cout << m_PhysicsObjects.size() << std::endl;
         break;
       }
       case EventType::PHYSICS_NEW: {
