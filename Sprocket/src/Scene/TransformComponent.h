@@ -18,6 +18,7 @@ namespace Sprocket {
       glm::vec3 m_LocalPosition = glm::vec3(0,0,0);
       glm::vec3 m_LocalRotation = glm::vec3(0,0,0);
       glm::vec3 m_LocalScale = glm::vec3(1,1,1);
+      bool m_Modified = false;
 
       // A callback function provided by the entity that this component is instantiated on
       std::function<TransformComponent()> m_GlobalTransformCallback;

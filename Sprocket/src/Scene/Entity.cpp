@@ -75,23 +75,23 @@ namespace Sprocket {
     End();
   }
 
-  // TODO this function needs to be fixed. It is highly inefficient to doing all of these updates 
-  // every frame if the transform is not changing at all. It would be much better to have a flag
-  // for if the transform has been updated any only perform transform updates if it is set.
   void Entity::OnUpdate(float deltaTime) {
     
-    for(Component* component : m_Components) {
-      if(QuadRendererComponent* qr = dynamic_cast<QuadRendererComponent*>(component)) {
-        qr->UpdateModelMatrix(m_Transform.Position(), m_Transform.Rotation(), m_Transform.Scale());
-      }
-      else if(CameraComponent* camera = dynamic_cast<CameraComponent*>(component)) {
-        camera->UpdateCameraPosition(m_Transform.Position(), m_Transform.Rotation(), m_Transform.Scale());
-      }
-      else if(ColliderComponent* collider = dynamic_cast<ColliderComponent*>(component)) {
-        collider->UpdateTransform();
-      }
-      else if(TileMapComponent* tileMap = dynamic_cast<TileMapComponent*>(component)) {
-        tileMap->UpdateTransform(m_Transform.Position(), m_Transform.Rotation(), m_Transform.Scale());
+    // Transform Updates
+    if(m_Transform.m_Modified) {
+      for(Component* component : m_Components) {
+        if(QuadRendererComponent* qr = dynamic_cast<QuadRendererComponent*>(component)) {
+          qr->UpdateModelMatrix(m_Transform.Position(), m_Transform.Rotation(), m_Transform.Scale());
+        }
+        else if(CameraComponent* camera = dynamic_cast<CameraComponent*>(component)) {
+          camera->UpdateCameraPosition(m_Transform.Position(), m_Transform.Rotation(), m_Transform.Scale());
+        }
+        else if(ColliderComponent* collider = dynamic_cast<ColliderComponent*>(component)) {
+          collider->UpdateTransform();
+        }
+        else if(TileMapComponent* tileMap = dynamic_cast<TileMapComponent*>(component)) {
+          tileMap->UpdateTransform(m_Transform.Position(), m_Transform.Rotation(), m_Transform.Scale());
+        }
       }
     }
 

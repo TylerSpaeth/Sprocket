@@ -3,14 +3,17 @@
 namespace Sprocket {
 
   glm::vec3& TransformComponent::LocalPosition() {
+    m_Modified = true;
     return m_LocalPosition;
   }
 
   glm::vec3& TransformComponent::LocalRotation() {
+    m_Modified = true;
     return m_LocalRotation;
   }
 
   glm::vec3& TransformComponent::LocalScale() {
+    m_Modified = true;
     return m_LocalScale;
   }
 
