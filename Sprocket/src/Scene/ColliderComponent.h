@@ -32,6 +32,7 @@ namespace Sprocket {
       int GetPhysicsID() const {return m_PhysicsID;}
 
       bool CollidesWith(ColliderComponent& collider);
+      bool CollidesWithAnything();
 
   };
 

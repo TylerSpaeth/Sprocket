@@ -36,4 +36,19 @@ namespace Sprocket {
 
   }
 
+  bool ColliderComponent::CollidesWithAnything() {
+
+    bool result = false;
+    
+    if(m_EventCallback) {
+      PhysicsCollisionCheckGenericEvent* event = new PhysicsCollisionCheckGenericEvent(m_PhysicsID);
+      m_EventCallback(*event);
+      result = event->Collides();
+      free(event);
+    }
+
+    return result;
+
+  }
+
 }
