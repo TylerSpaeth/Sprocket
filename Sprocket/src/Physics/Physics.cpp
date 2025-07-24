@@ -87,9 +87,9 @@ namespace Sprocket {
 
   }
 
-  unsigned int Physics::AddPhysicsObject(const glm::vec2 colliderCenter, const float boxColliderRotation, glm::vec2 boxCollidierSize) {
+  unsigned int Physics::AddPhysicsObject(const glm::vec2 colliderCenter, const float boxColliderRotation, glm::vec2 boxColliderSize) {
 
-    PhysicsObject object(colliderCenter, boxColliderRotation, boxCollidierSize);
+    PhysicsObject object(colliderCenter, boxColliderRotation, boxColliderSize);
     object.m_Valid = true;
 
     unsigned int freeSlot = m_FreeSlots.top();
@@ -225,6 +225,8 @@ namespace Sprocket {
 
     // The number of grid regions in width and height to be checked on the current pass
     int searchGridSize = 3;
+
+    std::cout << searchGridSize << "," << m_BoxYSize << std::endl;
 
     bool collisionDetected = true;
 
@@ -379,6 +381,7 @@ namespace Sprocket {
       || averageColliderHeight < lowerYLimit || averageColliderHeight > upperYLimit) {
         m_BoxXSize = averageColliderWidth;
         m_BoxYSize = averageColliderHeight;
+        RehashAllObjects();
     }
 
   }
