@@ -226,8 +226,6 @@ namespace Sprocket {
     // The number of grid regions in width and height to be checked on the current pass
     int searchGridSize = 3;
 
-    std::cout << searchGridSize << "," << m_BoxYSize << std::endl;
-
     bool collisionDetected = true;
 
     // Continue looping so long as a there was a collision found in the previous iteration
