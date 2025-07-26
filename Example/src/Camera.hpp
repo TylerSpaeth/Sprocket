@@ -11,11 +11,11 @@ namespace Sprocket {
     Entity* entityToFollow;
 
     void Start() override {
-      this->AddComponent<CameraComponent>();
+      AddComponent<CameraComponent>();
     }
  
     void Update(float deltaTime) override {
-      this->GetComponent<TransformComponent>()->LocalPosition() = entityToFollow->GetComponent<TransformComponent>()->LocalPosition();
+      GetComponent<TransformComponent>()->LocalPosition() = entityToFollow->GetComponent<TransformComponent>()->LocalPosition();
     }
 
   };

@@ -7,16 +7,11 @@
 
 namespace Sprocket {
 
-  Scene::Scene() {
-    // TODO
-  }
+  Scene::Scene() {}
 
-  Scene::~Scene() {
-    // TODO
-  }
+  Scene::~Scene() {}
 
   void Scene::SubmitEntityToScene(Entity& entity) {
-    // TODO validate entity before adding it to scene
     m_Entities.push_back(&entity);
     entity.m_EventCallback = m_EventCallback;
     if(m_EventCallback) {
@@ -70,7 +65,6 @@ namespace Sprocket {
         OnUpdate(((ApplicationUpdateEvent&)event).GetDeltaTime());
         break;
     }
-    //TODO handle events
   }
 
   void Scene::OnActivate() {
@@ -78,21 +72,18 @@ namespace Sprocket {
       entity->m_EventCallback = m_EventCallback;
       entity->OnActivate();
     }
-    // TODO
   }
 
   void Scene::OnDeactivate() {
     for(Entity* entity : m_Entities) {
       entity->OnDeactivate();
     }
-    // TODO
   }
 
   void Scene::OnUpdate(float deltaTime) {
     for(Entity* entity : m_Entities) {
       entity->OnUpdate(deltaTime);
     }
-    // TODO
   }
 
   

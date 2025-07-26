@@ -7,9 +7,7 @@ namespace Sprocket {
 
   Entity::Entity() : m_Transform([this]() {return GetParentGlobalTransform();}) {}
 
-  Entity::~Entity() {
-    // TODO
-  }
+  Entity::~Entity() {}
 
   TransformComponent Entity::GetParentGlobalTransform() {
     if(!m_Parent) return TransformComponent(nullptr);
@@ -21,9 +19,7 @@ namespace Sprocket {
     return ret;
   }
 
-  void Entity::OnEvent(Event& event) {
-    // TODO
-  }
+  void Entity::OnEvent(Event& event) {}
 
   void Entity::OnActivate() {
     for(Component* component : m_Components) {

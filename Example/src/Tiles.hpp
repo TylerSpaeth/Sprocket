@@ -12,23 +12,23 @@ namespace Sprocket {
     public:
 
       Tiles() {
-        this->AddComponent<TileMapComponent>();
-        this->GetComponent<TileMapComponent>()->SetColliderMapPath("../res/tilemaps/ColliderTileMap.txt");
-        this->GetComponent<TileMapComponent>()->SetQuadRendererMapPath("../res/tilemaps/SpriteTileMap.txt");
+        AddComponent<TileMapComponent>();
+        GetComponent<TileMapComponent>()->SetColliderMapPath("../res/tilemaps/ColliderTileMap.txt");
+        GetComponent<TileMapComponent>()->SetQuadRendererMapPath("../res/tilemaps/SpriteTileMap.txt");
         glm::vec4 color1 = {1,1,1,1};
         glm::vec4 color = {1,0,1,1};
-        this->GetComponent<TileMapComponent>()->SetQuadRendererData(0, color1);
-        this->GetComponent<TileMapComponent>()->SetQuadRendererData(1, color);
+        GetComponent<TileMapComponent>()->SetQuadRendererData(0, color1);
+        GetComponent<TileMapComponent>()->SetQuadRendererData(1, color);
       }
 
       void Start() override {
-        // this->AddComponent<TileMapComponent>();
-        // this->GetComponent<TileMapComponent>()->SetColliderMapPath("../res/tilemaps/ColliderTileMap.txt");
-        // this->GetComponent<TileMapComponent>()->SetQuadRendererMapPath("../res/tilemaps/SpriteTileMap.txt");
+        // AddComponent<TileMapComponent>();
+        // GetComponent<TileMapComponent>()->SetColliderMapPath("../res/tilemaps/ColliderTileMap.txt");
+        // GetComponent<TileMapComponent>()->SetQuadRendererMapPath("../res/tilemaps/SpriteTileMap.txt");
         // glm::vec4 color1 = {1,1,1,1};
         // glm::vec4 color = {1,0,1,1};
-        // this->GetComponent<TileMapComponent>()->SetQuadRendererData(0, color1);
-        // this->GetComponent<TileMapComponent>()->SetQuadRendererData(1, color);
+        // GetComponent<TileMapComponent>()->SetQuadRendererData(0, color1);
+        // GetComponent<TileMapComponent>()->SetQuadRendererData(1, color);
       }
  
   };

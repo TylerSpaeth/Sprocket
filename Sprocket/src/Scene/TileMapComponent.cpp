@@ -268,7 +268,9 @@ namespace Sprocket {
     m_Rotation = rotation;
     m_Scale = scale;
 
-    // TODO optimize this behavior because this is not ideal
+    // While it is not optimal to completely remove and reregister a tilemap on a transform update, 
+    // This is not something that should see use every frame. It is here more an option for 
+    // a one off update.
     DeleteTileMap();
     RegisterColliderMap();
     RegisterQuadRendererMap();

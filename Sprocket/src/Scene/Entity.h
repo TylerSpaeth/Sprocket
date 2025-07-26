@@ -31,7 +31,6 @@ namespace Sprocket {
 
       std::vector<Entity*> m_Children;
 
-      // TODO use smart pointers
       std::vector<Component*> m_Components;
 
       TransformComponent m_Transform;
@@ -85,7 +84,6 @@ namespace Sprocket {
         return true;
       }
 
-      // TODO use smart pointers to prevent the user from being able to free the pointer
       template<typename T>
       T* GetComponent() {
         // Iterate over all of the components and try to dynamic cast them to be the type of 
