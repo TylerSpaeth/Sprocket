@@ -10,15 +10,15 @@
 namespace Sprocket {
 
   class RenderNewEvent : public Event {
+    friend class Renderer;
     private:
-      const float m_Size;
-
+      int m_QuadID = -1;
     public:
-      unsigned int m_QuadID = -1;
-      RenderNewEvent(float size) : m_Size(size){
+      RenderNewEvent() {
         this->SetType(EventType::RENDER_NEW);
       }
-      float GetSize() const {return m_Size;}
+
+      int GetQuadID() const {return m_QuadID;}
   };
 
   enum class RenderUpdateType {
@@ -27,15 +27,17 @@ namespace Sprocket {
     QUAD
   };
 
+  // TODO make a seperate event for model matrix updates
   /// @brief This class is used to transfer rendering data through the event system. The various
   /// public variables describe different attributes that could be needed for different 
   /// RenderUpdateTypes.
   class RenderUpdateEvent : public Event {
+    friend class Renderer;
     private:
       RenderUpdateType m_Type;
+      int m_QuadID = -1;
 
     public:
-      unsigned int m_QuadIndex = -1;
       std::string m_TexturePath; // A path of "" represents no texture and uses the quadcolor 
       // Used to store either view or model matrix depending on the RenderUpdateType
       glm::mat4 m_Matrix;
@@ -44,19 +46,25 @@ namespace Sprocket {
       glm::vec4 m_TexXCoords;
       glm::vec4 m_TexYCoords;
 
-      RenderUpdateEvent(RenderUpdateType type) : m_Type(type) {
+      RenderUpdateEvent(RenderUpdateType type, const unsigned int quadID) : m_Type(type), m_QuadID(quadID) {
         this->SetType(EventType::RENDER_UPDATE);
       }
 
       RenderUpdateType GetType() const {return m_Type;}
+
+      int GetQuadID() const {return m_QuadID;}
   };
 
   class RenderDeleteEvent : public Event {
+    friend class Renderer;
+    private:
+      int m_QuadID = -1;
     public:
-      unsigned int m_QuadIndex;
-      RenderDeleteEvent(const unsigned int quadIndex) : m_QuadIndex(quadIndex) {
+      RenderDeleteEvent(const unsigned int quadIndex) : m_QuadID(quadIndex) {
         this->SetType(EventType::RENDER_DELETE);
       } 
+
+      int GetQuadID() const {return m_QuadID;}
   };
 
 }

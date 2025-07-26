@@ -9,6 +9,8 @@
 
 namespace Sprocket {
 
+  const float Renderer::s_PixelsPerUnit = 100;
+
   Vertex ClearedVertex = {{0,0,0},{0,0,0,0},{0,0},0};
   std::array<Vertex,4> ClearedQuad = {ClearedVertex, ClearedVertex, ClearedVertex, ClearedVertex};
 
@@ -151,7 +153,7 @@ namespace Sprocket {
         OnClose();
         break;
       case EventType::RENDER_NEW:
-        ((RenderNewEvent&) event).m_QuadID = AddQuad(((RenderNewEvent&) event).GetSize());
+        ((RenderNewEvent&) event).m_QuadID = AddQuad(s_PixelsPerUnit);
         break;
       case EventType::RENDER_UPDATE: {
         switch(((RenderUpdateEvent&)event).GetType()) {
@@ -159,23 +161,23 @@ namespace Sprocket {
             SetViewMatrix(((RenderUpdateEvent&)event).m_Matrix);
             break;
           case RenderUpdateType::MODEL_MATRIX:
-            SetQuadModelMatrix(((RenderUpdateEvent&)event).m_QuadIndex, ((RenderUpdateEvent&)event).m_Matrix);
+            SetQuadModelMatrix(((RenderUpdateEvent&)event).m_QuadID, ((RenderUpdateEvent&)event).m_Matrix);
             break;
           case RenderUpdateType::QUAD:
             unsigned int slot = 0;
             if(((RenderUpdateEvent&)event).m_TexturePath != "") {
               slot = AddTexture(((RenderUpdateEvent&)event).m_TexturePath);
             }
-            SetQuadTextureID(((RenderUpdateEvent&)event).m_QuadIndex, slot);
+            SetQuadTextureID(((RenderUpdateEvent&)event).m_QuadID, slot);
             UpdateTextureUniform(s_Instance->m_BoundTextures.size());
-            SetQuadColor(((RenderUpdateEvent&)event).m_QuadIndex, ((RenderUpdateEvent&)event).m_QuadColor);
-            SetQuadTextureCoords(((RenderUpdateEvent&)event).m_QuadIndex, ((RenderUpdateEvent&)event).m_TexXCoords, ((RenderUpdateEvent&)event).m_TexYCoords);
+            SetQuadColor(((RenderUpdateEvent&)event).m_QuadID, ((RenderUpdateEvent&)event).m_QuadColor);
+            SetQuadTextureCoords(((RenderUpdateEvent&)event).m_QuadID, ((RenderUpdateEvent&)event).m_TexXCoords, ((RenderUpdateEvent&)event).m_TexYCoords);
             break;
         }
         break;
       }
       case EventType::RENDER_DELETE:
-        RemoveQuad(((RenderDeleteEvent&)event).m_QuadIndex);
+        RemoveQuad(((RenderDeleteEvent&)event).m_QuadID);
         break;
 
     }
@@ -266,7 +268,14 @@ namespace Sprocket {
   // and transform already applied
   bool Renderer::SetQuadModelMatrix(const unsigned int quadIndex, const glm::mat4 modelMatrix) {
     try {
-      s_Instance->m_ModelMatrices[quadIndex] = modelMatrix;
+
+      glm::mat4 scaledModelMatrix = modelMatrix;
+
+      glm::vec3 position = modelMatrix[3];
+      position *= s_PixelsPerUnit;
+      scaledModelMatrix[3] = glm::vec4(position, 1.0f);
+
+      s_Instance->m_ModelMatrices[quadIndex] = scaledModelMatrix;
       s_Instance->UpdateCalculatedQuads(quadIndex);
     }
     catch(const std::exception& e) {
@@ -321,7 +330,15 @@ namespace Sprocket {
   ///////////////////////////// SHADER UNIFORM FUNCTIONS /////////////////////////////
 
   void Renderer::SetViewMatrix(glm::mat4 viewMatrix) {
-    s_Instance->m_ViewMatrix = viewMatrix;
+
+    glm::mat4 inverseViewMatrix = glm::inverse(viewMatrix);
+    glm::vec3 position = glm::vec3(inverseViewMatrix[3]);
+    position *= s_PixelsPerUnit;
+    glm::vec3 forward = glm::vec3(-inverseViewMatrix[2]);
+    glm::vec3 target = position + forward;
+    glm::vec3 up = glm::vec3(inverseViewMatrix[1]);
+
+    s_Instance->m_ViewMatrix = glm::lookAt(position, target, up);
   }
 
   // This updates the texture uniform to have IDs for all the textures

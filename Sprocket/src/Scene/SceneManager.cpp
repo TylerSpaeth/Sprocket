@@ -29,7 +29,6 @@ namespace Sprocket {
       // so that any of its subsystems can be activated.
       s_Instance->m_EventCallback = eventCallback;
       GetActiveScene()->RegisterEventCallback(eventCallback);
-      GetActiveScene()->OnLoad();
     }
   }
 
@@ -62,15 +61,14 @@ namespace Sprocket {
       throw std::invalid_argument("No scene exists with this index.");
     }
 
-    // Unload the active scene so it can perform any needed cleanup
-    GetActiveScene()->OnUnload();
-    // Remove the event callback of the current scene
+    // Remove the old scene
+    GetActiveScene()->OnDeactivate();
     GetActiveScene()->RegisterEventCallback(nullptr);
     s_Instance->m_ActiveSceneIndex = index;
-    // Set the event callback of the new scene
+
+    // Setup the new scene
     GetActiveScene()->RegisterEventCallback(s_Instance->m_EventCallback);
-    // Load the scene
-    GetActiveScene()->OnLoad();
+    GetActiveScene()->OnActivate();
     
   }
 
@@ -81,4 +79,4 @@ namespace Sprocket {
     return (Scene*) s_Instance->m_Scenes.at(s_Instance->m_ActiveSceneIndex);
   }
 
-} 
+}

@@ -35,15 +35,24 @@ target_sources(${PROJECT_NAME} PRIVATE
   src/Core/Input.cpp
 )
 
-# Add ECS source code
+# Add Scene source code
 target_sources(${PROJECT_NAME} PRIVATE 
-  src/ECS/SceneManager.cpp
-  src/ECS/Scene.cpp
-  src/ECS/QuadRenderer.cpp
-  src/ECS/Collision.cpp
-  src/ECS/Physics.cpp
-  src/ECS/TileMap.cpp
-  src/ECS/Transform.cpp
+  src/Scene/SceneManager.cpp
+  src/Scene/Scene.cpp
+  src/Scene/Entity.cpp
+  src/Scene/TransformComponent.cpp
+  src/Scene/QuadRendererComponent.cpp
+  src/Scene/CameraComponent.cpp
+  src/Scene/ColliderComponent.cpp
+  src/Scene/BoxColliderComponent.cpp
+  src/Scene/CircleColliderComponent.cpp
+  src/Scene/TileMapComponent.cpp
+)
+
+# Add Physics source code
+target_sources(${PROJECT_NAME} PRIVATE
+  src/Physics/Physics.cpp
+  src/Physics/Collision.cpp
 )
 
 target_include_directories(${PROJECT_NAME} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include)

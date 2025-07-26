@@ -12,12 +12,11 @@ namespace Sprocket {
     // WINDOW
     WINDOW_CLOSE,
     // APPLICATION
-    APP_UPDATE,
+    APP_UPDATE, APP_START,
     // RENDER
     RENDER_NEW, RENDER_UPDATE, RENDER_DELETE,
-    // ECS - These sort of exist in their own ecosystem, so the subtypes will be defined seperately 
-    // with the implementation of ECSEvents
-    ECS
+    // PHYSICS
+    PHYSICS_NEW, PHYSICS_UPDATE, PHYSICS_DELETE, PHYSICS_COLLISION_CHECK, PHYSICS_COLLISION_CHECK_GENERIC
   };
 
   // For future use
@@ -29,7 +28,7 @@ namespace Sprocket {
           KEYBOARD,
           MOUSE,
       RENDER,
-      ECS
+      PHYSICS
   };
 
   class Event {
@@ -46,7 +45,6 @@ namespace Sprocket {
 
       EventType GetEventType() const {return m_EventType;}
       
-      // For future use
       bool IsCategory(EventCategory eventCategory) {
         if(eventCategory == EventCategory::UNCATEGORIZED) {
           return true;
@@ -63,13 +61,18 @@ namespace Sprocket {
           case EventType::WINDOW_CLOSE:
             return eventCategory == EventCategory::APPLICATION || eventCategory == EventCategory::WINDOW;
           case EventType::APP_UPDATE:
+          case EventType::APP_START:
             return eventCategory == EventCategory::APPLICATION;
           case EventType::RENDER_NEW:
           case EventType::RENDER_UPDATE:
           case EventType::RENDER_DELETE:
             return eventCategory == EventCategory::RENDER;
-          case EventType::ECS:
-            return eventCategory == EventCategory::ECS;
+          case EventType::PHYSICS_NEW:
+          case EventType::PHYSICS_UPDATE:
+          case EventType::PHYSICS_DELETE:
+          case EventType::PHYSICS_COLLISION_CHECK:
+          case EventType::PHYSICS_COLLISION_CHECK_GENERIC:
+            return eventCategory == EventCategory::PHYSICS;
         }
 
         return false;

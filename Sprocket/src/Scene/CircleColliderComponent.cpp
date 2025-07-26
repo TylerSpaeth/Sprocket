@@ -1,0 +1,55 @@
+#include "ColliderComponent.h"
+
+namespace Sprocket {
+
+  float CircleColliderComponent::GetRadius() const {
+    return m_Radius;
+  }
+
+  void CircleColliderComponent::SetRadius(float radius) {
+    if(radius < 0) {
+      return;
+    }
+
+    m_Radius = radius;
+
+    if(m_EventCallback) {
+
+      PhysicsUpdateEvent* event = new PhysicsUpdateEvent(m_PhysicsID, m_TranformComponent->Position(), m_Radius * m_TranformComponent->Scale().x);
+
+      m_EventCallback(*event);
+
+      free(event);
+
+    }
+  }
+
+  void CircleColliderComponent::Register() {
+    
+    if(m_EventCallback) {
+
+      PhysicsNewEvent* event = new PhysicsNewEvent(m_TranformComponent->Position(), m_Radius * m_TranformComponent->Scale().x);
+
+      m_EventCallback(*event);
+
+      m_PhysicsID = event->GetPhysicsID();
+
+      free(event);
+
+    }
+
+  }
+
+  void CircleColliderComponent::UpdateTransform() {
+     
+    if(m_EventCallback) {
+
+      PhysicsUpdateEvent* event = new PhysicsUpdateEvent(m_PhysicsID, m_TranformComponent->Position(), m_Radius * m_TranformComponent->Scale().x);
+
+      m_EventCallback(*event);
+
+      free(event);
+    }
+  }
+
+}
