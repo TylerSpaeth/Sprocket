@@ -14,6 +14,8 @@
 
 namespace Sprocket {
 
+  // FIXME for some reason rotating the tilemap has a major negative impact on performance.
+  // Not sure what is causing this
   class SPROCKET_API TileMapComponent : public Component {
 
     friend class Entity;
