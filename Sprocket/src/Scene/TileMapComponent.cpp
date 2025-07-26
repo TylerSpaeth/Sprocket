@@ -76,13 +76,13 @@ namespace Sprocket {
           free(renderUpdateEventQuad);
 
           RenderUpdateEvent* renderUpdateEventModel = new RenderUpdateEvent(RenderUpdateType::MODEL_MATRIX, quadID);
-          glm::mat4 translate = glm::translate(glm::mat4(1), tilePosition);
-          glm::mat4 xrot = glm::rotate(glm::mat4(1), glm::radians(m_Rotation.x), glm::vec3(1,0,0));
-          glm::mat4 yrot = glm::rotate(glm::mat4(1), glm::radians(m_Rotation.y), glm::vec3(0,1,0));
-          glm::mat4 zrot = glm::rotate(glm::mat4(1), glm::radians(m_Rotation.z), glm::vec3(0,0,1));
-          glm::mat4 rotation = xrot * yrot * zrot;
-          glm::mat4 scale = glm::scale(glm::mat4(1), m_Scale);
-          renderUpdateEventModel->m_Matrix = translate * rotation * scale;
+          // Translating twice is because the matrix needs to be rotated relative to the center of
+          // the tile map
+          renderUpdateEventModel->m_Matrix = glm::translate(glm::mat4(1), m_Position)
+                                           * glm::rotate(glm::mat4(1), glm::radians(-m_Rotation.z), glm::vec3(0,0,1))
+                                           * glm::translate(glm::mat4(1), tilePosition)
+                                           * glm::scale(glm::mat4(1), m_Scale);
+
           m_EventCallback(*renderUpdateEventModel);
           free(renderUpdateEventModel);
 
@@ -216,7 +216,18 @@ namespace Sprocket {
           tilePosition.x += ((xEnd-xOrigin)+(xStart-xOrigin))/2.0f * m_Scale.x;
           tilePosition.y -= ((yEnd-yOrigin)+(yStart-yOrigin))/2.0f  * m_Scale.y;
 
-          PhysicsNewEvent* event = new PhysicsNewEvent(tilePosition, {(xEnd+1-xStart) * m_Scale.x, (yEnd+1-yStart) * m_Scale.y}, m_Rotation.z);
+          // Calculate the position and rotation around the center of the tilemap
+          // Translating twice is because the matrix needs to be rotated relative to the center of
+          // the tile map
+          glm::mat4 matrix = glm::translate(glm::mat4(1), m_Position)
+                                           * glm::rotate(glm::mat4(1), glm::radians(-m_Rotation.z), glm::vec3(0,0,1))
+                                           * glm::translate(glm::mat4(1), tilePosition)
+                                           * glm::scale(glm::mat4(1), m_Scale);  
+          glm::vec3 position(matrix[3]);
+          float angleRadians = atan2(matrix[1][0], matrix[0][0]);  // model[col][row]
+          float zRotation = glm::degrees(angleRadians);
+
+          PhysicsNewEvent* event = new PhysicsNewEvent(position, {(xEnd+1-xStart) * m_Scale.x, (yEnd+1-yStart) * m_Scale.y}, zRotation);
           m_EventCallback(*event);
           m_PhysicsIDs.push_back(event->GetPhysicsID());
           free(event);
