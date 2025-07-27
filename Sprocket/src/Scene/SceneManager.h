@@ -37,34 +37,30 @@ namespace Sprocket {
       /// @brief Adds a new scene that can be retrieved at the given index.
       /// @param index the index that the scene should be stored at
       /// @param scene a pointer to a scene that should be stored 
-      /// @throws invalid_argument if the given index is already in use
-      static void AddScene(const int index, const Scene* scene);
+      /// @returns true if adding is successful, false otherwise
+      static bool AddScene(const int index, const Scene* scene);
 
       /// @brief Removes the scene at the given index.
       /// @param index the index of the scene that should be removed
-      /// @throws invalid_argument if there are no scenes at the given index or if the index is that
-      /// of the active scene.
-      static void RemoveScene(const int index);
+      /// @return true if removal succeeds, false otherwise
+      static bool RemoveScene(const int index);
 
       /// @brief Gets the scene at the given index.
       /// @param index the index of the scene that should be retrieved
-      /// @return a pointer to the scene at the given index
-      /// @throws invalid_argument if there are no scenes at the given index
+      /// @return a pointer to the scene at the given index, nullptr if it does not exist.
       static Scene* GetSceneAtIndex(const int index);
 
       /// @brief Sets the active scene to that of the given index.
       /// @param index the index of the scene that should be made active.
-      /// @throws invalid_argument if there are no scenes at the given index
-      static void SetActiveScene(const int index);
+      /// @return true if setting the active scene is successful, false otherwise
+      static bool SetActiveScene(const int index);
 
       /// @brief Gets the active scene.
-      /// @return a pointer to the active scene.
-      /// @throws invalid_argument if there are no scene at the active index.
+      /// @return a pointer to the active scene, nullptr if it does not exist
       static Scene* GetActiveScene();
 
       /// @brief Gets the index of the active scene.
       /// @return the index of the active scene.
-      /// @throws invalid_argument if there are no scene at the active index.
       static int GetActiveSceneIndex() {return s_Instance->m_ActiveSceneIndex;}
 
       /// @brief Handles incoming events. Should be registered as a callback to receive events.

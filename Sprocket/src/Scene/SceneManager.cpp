@@ -1,6 +1,5 @@
 #include "SceneManager.h"
 
-#include <stdexcept>
 #include <iostream>
 
 namespace Sprocket {
@@ -32,33 +31,35 @@ namespace Sprocket {
     }
   }
 
-  void SceneManager::AddScene(const int index, const Scene* scene) {
+  bool SceneManager::AddScene(const int index, const Scene* scene) {
     if(s_Instance->m_Scenes.find(index) != s_Instance->m_Scenes.cend()) {
-      throw std::invalid_argument("Given index is already in use.");
+      return false;
     }
     s_Instance->m_Scenes.insert({index, scene});
+    return true;
   }
 
-  void SceneManager::RemoveScene(const int index) {
+  bool SceneManager::RemoveScene(const int index) {
     if(s_Instance->m_Scenes.find(index) == s_Instance->m_Scenes.cend()) {
-      throw std::invalid_argument("No scene exists with this index.");
+      return false;
     }
     if(s_Instance->m_ActiveSceneIndex == index) {
-      throw std::invalid_argument("The active scene can not be removed.");
+      return false;
     }
     s_Instance->m_Scenes.erase(index);
+    return true;
   }
 
   Scene* SceneManager::GetSceneAtIndex(const int index) {
     if(s_Instance->m_Scenes.find(index) == s_Instance->m_Scenes.cend()) {
-      throw std::invalid_argument("No scene exists with this index.");
+      return nullptr;
     }
     return (Scene*) s_Instance->m_Scenes.at(index);
   }
 
-  void SceneManager::SetActiveScene(const int index) {
+  bool SceneManager::SetActiveScene(const int index) {
     if(s_Instance->m_Scenes.find(index) == s_Instance->m_Scenes.cend()) {
-      throw std::invalid_argument("No scene exists with this index.");
+      return false;
     }
 
     // Remove the old scene
@@ -69,12 +70,14 @@ namespace Sprocket {
     // Setup the new scene
     GetActiveScene()->RegisterEventCallback(s_Instance->m_EventCallback);
     GetActiveScene()->OnActivate();
+
+    return true;
     
   }
 
   Scene* SceneManager::GetActiveScene() {
     if(s_Instance->m_Scenes.find(s_Instance->m_ActiveSceneIndex) == s_Instance->m_Scenes.cend()) {
-      throw std::invalid_argument("No scene exists with this index.");
+      return nullptr;
     }
     return (Scene*) s_Instance->m_Scenes.at(s_Instance->m_ActiveSceneIndex);
   }
