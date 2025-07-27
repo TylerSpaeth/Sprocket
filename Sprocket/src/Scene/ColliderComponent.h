@@ -48,7 +48,7 @@ namespace Sprocket {
 
     public:
       glm::vec2 GetSize() const;
-      void SetSize(const glm::vec2 size);
+      bool SetSize(const glm::vec2 size);
   };
 
   class SPROCKET_API CircleColliderComponent : public ColliderComponent {
@@ -63,7 +63,7 @@ namespace Sprocket {
 
     public:
       float GetRadius() const;
-      void SetRadius(float radius);
+      bool SetRadius(float radius);
   };
 }
 

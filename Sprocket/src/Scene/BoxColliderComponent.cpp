@@ -8,10 +8,10 @@ namespace Sprocket {
     return m_Size;
   }
 
-  void BoxColliderComponent::SetSize(const glm::vec2 size) {
+  bool BoxColliderComponent::SetSize(const glm::vec2 size) {
     
     if(size.x < 0 || size.y < 0) {
-      return;
+      return false;
     }
 
     m_Size = size;
@@ -27,6 +27,8 @@ namespace Sprocket {
       free(event);
 
     }
+
+    return true;
 
   }
 

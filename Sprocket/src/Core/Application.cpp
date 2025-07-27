@@ -1,11 +1,12 @@
 #include "Application.h"
 #include "Events/ApplicationEvent.h"
+#include "Events/EventValidation.h"
 
 #include <iostream>
 
 namespace Sprocket {
 
-  Application::Application() : m_AppRunning(true) {
+  Application::Application() {
     std::cout << "Sprocket: Startup\n";
   }
 
@@ -14,10 +15,17 @@ namespace Sprocket {
   void Application::Update(float deltaTime) {}
 
   void Application::Run() {
+
+    if(m_AppRunning) {
+      return;
+    }
+
     this->Start();
 
     ApplicationStartEvent startEvent;
     OnEvent(startEvent);
+
+    m_AppRunning = true;
 
     while(m_AppRunning) {
 
@@ -32,6 +40,8 @@ namespace Sprocket {
   }
 
   void Application::OnEvent(Event& event) {
+
+    EventValidation::ValidateEvent(event);
 
     // Traverse the callbacks in reverse order. Right now this is done so we can register the window
     // and renderer first. That way we can assure they receive events, mainly update, last

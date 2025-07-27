@@ -55,6 +55,11 @@ target_sources(${PROJECT_NAME} PRIVATE
   src/Physics/Collision.cpp
 )
 
+# Add Events source code
+target_sources(${PROJECT_NAME} PRIVATE
+  src/Events/EventValidation.cpp
+)
+
 target_include_directories(${PROJECT_NAME} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include)
 
 # Links libraries in the lib folder to the executable

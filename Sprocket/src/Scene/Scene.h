@@ -42,10 +42,10 @@ namespace Sprocket {
       Scene();
       ~Scene();
 
-      void SubmitEntityToScene(Entity& entity);
+      bool SubmitEntityToScene(Entity& entity);
       bool RemoveEntityFromScene(Entity& entity);
 
-      void AssignEntityParent(Entity& child, Entity* parent);
+      bool AssignEntityParent(Entity& child, Entity* parent);
 
       /// @brief Handles incoming events. Does not need to be registered as a callback. Should 
       /// instead be called directly be the Scene Manager when it recieves an event.

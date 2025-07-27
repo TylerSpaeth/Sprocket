@@ -6,9 +6,9 @@ namespace Sprocket {
     return m_Radius;
   }
 
-  void CircleColliderComponent::SetRadius(float radius) {
+  bool CircleColliderComponent::SetRadius(float radius) {
     if(radius < 0) {
-      return;
+      return false;
     }
 
     m_Radius = radius;
@@ -22,6 +22,8 @@ namespace Sprocket {
       free(event);
 
     }
+
+    return true;
   }
 
   void CircleColliderComponent::Register() {
