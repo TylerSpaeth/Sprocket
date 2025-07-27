@@ -10,7 +10,7 @@ namespace Sprocket {
   public:
     Entity* entityToFollow;
 
-    void Start() override {
+    Camera() {
       AddComponent<CameraComponent>();
     }
  

@@ -9,7 +9,7 @@ namespace Sprocket {
 
     public:
 
-      void Start() override {
+      Player() {
         AddComponent<QuadRendererComponent>();
         AddComponent<BoxColliderComponent>();
       }
