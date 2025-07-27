@@ -16,14 +16,12 @@ namespace Sprocket {
   /// handler for Sprocket, so most events should pass through here.
   class SPROCKET_API Application {
     private:
-      bool m_AppRunning;
+      bool m_AppRunning = false;
       int64_t m_LastTimeChecked = std::chrono::duration_cast<std::chrono::microseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
       int64_t GetTimeSinceLastChecked();
       std::vector<std::pair<std::function<void(Event&)>, EventCategory>> m_EventCallbacks;
-    public:
-      Application();
-      virtual ~Application();
       
+    protected:
       /// @brief This function is the first thing run when the Run() function is called.
       /// For the time being, this is just a way for a user application to define behaviors
       /// at the start of a the run loop. In the future this will probably be removed.
@@ -34,7 +32,11 @@ namespace Sprocket {
       /// every frame. In the future this will probably be removed.
       /// @param deltaTime The amount of time that has elapsed since the last call to Update in seconds.
       virtual void Update(float deltaTime); // TODO remove when scripting is added
-
+    
+    public:
+      Application();
+      virtual ~Application();
+      
       /// @brief Runs the program. Calls the Start() and Update() functions appropriately and 
       /// disperses ApplicationUpdateEvents to all subscribers in every iteration of the loop.
       void Run();
