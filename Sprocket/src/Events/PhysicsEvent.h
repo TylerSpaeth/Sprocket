@@ -5,6 +5,8 @@
 
 #include "ThirdParty/glm/glm.hpp"
 
+#include <vector>
+
 namespace Sprocket {
 
   enum class ColliderType {
@@ -14,6 +16,7 @@ namespace Sprocket {
 
   class PhysicsNewEvent : public Event {
     friend class Physics;
+    friend class EventValidation;
     private:
       int m_PhysicsID = -1;
       glm::vec2 m_ColliderCenter;
@@ -36,6 +39,7 @@ namespace Sprocket {
 
   class PhysicsUpdateEvent : public Event {
     friend class Physics;
+    friend class EventValidation;
     private:
       int m_PhysicsID = -1;
       glm::vec2 m_ColliderCenter;
@@ -58,6 +62,7 @@ namespace Sprocket {
 
   class PhysicsDeleteEvent : public Event {
     friend class Physics;
+    friend class EventValidation;
     private:
       int m_PhysicsID = -1;
     public:
@@ -69,9 +74,10 @@ namespace Sprocket {
 
   class PhysicsCollisionCheckEvent : public Event {
     friend class Physics;
+    friend class EventValidation;
     private:
-      int m_PhysicsID1;
-      int m_PhysicsID2;
+      int m_PhysicsID1 = -1;
+      int m_PhysicsID2 = -1;
       bool m_Collides = false;
     public:
       PhysicsCollisionCheckEvent(const unsigned int physicsID1, const unsigned int physicsID2) : m_PhysicsID1(physicsID1), m_PhysicsID2(physicsID2) {
@@ -82,8 +88,9 @@ namespace Sprocket {
 
   class PhysicsCollisionCheckGenericEvent : public Event {
     friend class Physics;
+    friend class EventValidation;
     private:
-      int m_PhysicsID;
+      int m_PhysicsID = -1;
       bool m_Collides = false;
       std::vector<unsigned int> m_CollidesWith;
     public:

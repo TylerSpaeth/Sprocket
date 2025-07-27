@@ -33,6 +33,7 @@ namespace Sprocket {
   /// RenderUpdateTypes.
   class RenderUpdateEvent : public Event {
     friend class Renderer;
+    friend class EventValidation;
     private:
       RenderUpdateType m_Type;
       int m_QuadID = -1;

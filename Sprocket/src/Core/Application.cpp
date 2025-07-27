@@ -1,5 +1,6 @@
 #include "Application.h"
 #include "Events/ApplicationEvent.h"
+#include "Events/EventValidation.h"
 
 #include <iostream>
 
@@ -39,6 +40,8 @@ namespace Sprocket {
   }
 
   void Application::OnEvent(Event& event) {
+
+    EventValidation::ValidateEvent(event);
 
     // Traverse the callbacks in reverse order. Right now this is done so we can register the window
     // and renderer first. That way we can assure they receive events, mainly update, last
