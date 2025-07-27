@@ -42,25 +42,22 @@ namespace Sprocket {
 
         char c = line.at(col);
 
-        // If the character at c is a number between 0 and 9, then something will be rendered, 
-        // otherwise, nothing is rendered
-        if(c >= '0' && c <= '9')  {
+        // Any ascii characters are allowed except for ~
+        if(c != EMPTY_PLACEHOLDER_CHAR && c - FIRST_PRINTABLE_ASCII < MAX_UNIQUE_TILES)  {
 
           glm::vec3 tilePosition = m_Position;
           tilePosition.x += (col-xOrigin) * m_Scale.x;
           tilePosition.y -= (row-yOrigin) * m_Scale.y;
 
-          // Translate the char to a string and gets its integer value to get the corrsponding
-          // texture path
-          std::string cAsInt;
-          cAsInt.push_back(c);
+          // Get the index for this char in the array
+          int cAsInt = c - FIRST_PRINTABLE_ASCII;
 
-          QuadRendererStruct quadRendererStruct = m_QuadRenderers.at(std::stoi(cAsInt));
+          QuadRendererStruct quadRendererStruct = m_QuadRenderers.at(cAsInt);
           
           RenderNewEvent* renderNewEvent = new RenderNewEvent();
           m_EventCallback(*renderNewEvent);
           unsigned int quadID = renderNewEvent->GetQuadID();
-          m_QuadRendererIDs.at(std::stoi(cAsInt)).push_back(quadID);
+          m_QuadRendererIDs.at(cAsInt).push_back(quadID);
           free(renderNewEvent);
 
           RenderUpdateEvent* renderUpdateEventQuad = new RenderUpdateEvent(RenderUpdateType::QUAD, quadID);
@@ -333,29 +330,30 @@ namespace Sprocket {
     RegisterColliderMap();
   }
 
-  void TileMapComponent::SetQuadRendererData(const unsigned int index, const glm::vec4 quadColor) {
-    if(index > 9) {
-      return;
+  bool TileMapComponent::SetQuadRendererData(const char index, const glm::vec4 quadColor) {
+    if(index - FIRST_PRINTABLE_ASCII > MAX_UNIQUE_TILES) {
+      return false;
     }
-    m_QuadRenderers.at(index).m_QuadColor = quadColor;
+    m_QuadRenderers.at(index - FIRST_PRINTABLE_ASCII).m_QuadColor = quadColor;
     if(m_EventCallback != nullptr) {
-      for(auto quadRendererID : m_QuadRendererIDs.at(index)) {
+      for(auto quadRendererID : m_QuadRendererIDs.at(index - FIRST_PRINTABLE_ASCII)) {
         RenderUpdateEvent* event = new RenderUpdateEvent(RenderUpdateType::QUAD, quadRendererID);
         event->m_QuadColor = quadColor;
         m_EventCallback(*event);
         free(event);
       }
     }
+    return true;
   }
 
-  void TileMapComponent::SetQuadRendererData(const unsigned int index, const std::string texturePath) {
-    if(index > 9) {
-      return;
+  bool TileMapComponent::SetQuadRendererData(const char index, const std::string texturePath) {
+    if(index - FIRST_PRINTABLE_ASCII > MAX_UNIQUE_TILES) {
+      return false;
     }
-    QuadRendererStruct& qrs = m_QuadRenderers.at(index);
+    QuadRendererStruct& qrs = m_QuadRenderers.at(index - FIRST_PRINTABLE_ASCII);
     qrs.m_TexturePath = texturePath;
     if(m_EventCallback != nullptr) {
-      for(auto quadRendererID : m_QuadRendererIDs.at(index)) {
+      for(auto quadRendererID : m_QuadRendererIDs.at(index - FIRST_PRINTABLE_ASCII)) {
         RenderUpdateEvent* event = new RenderUpdateEvent(RenderUpdateType::QUAD, quadRendererID);
         event->m_TexturePath = qrs.m_TexturePath;
         event->m_TexXCoords = qrs.m_TextureXUVCoords;
@@ -364,19 +362,20 @@ namespace Sprocket {
         free(event);
       }
     }
+    return true;
   }
 
-  void TileMapComponent::SetQuadRendererData(const unsigned int index, const std::string texturePath, const glm::vec4 textureXUVCoords, const glm::vec4 textureYUVCoords) {
-    if(index > 9) {
-      return;
+  bool TileMapComponent::SetQuadRendererData(const char index, const std::string texturePath, const glm::vec4 textureXUVCoords, const glm::vec4 textureYUVCoords) {
+    if(index - FIRST_PRINTABLE_ASCII > MAX_UNIQUE_TILES) {
+      return false;
     }
-    QuadRendererStruct& qrs = m_QuadRenderers.at(index);
+    QuadRendererStruct& qrs = m_QuadRenderers.at(index - FIRST_PRINTABLE_ASCII);
     qrs.m_TexturePath = texturePath;
     qrs.m_TextureXUVCoords = textureXUVCoords;
     qrs.m_TextureYUVCoords = textureYUVCoords;
 
     if(m_EventCallback != nullptr) {
-      for(auto quadRendererID : m_QuadRendererIDs.at(index)) {
+      for(auto quadRendererID : m_QuadRendererIDs.at(index - FIRST_PRINTABLE_ASCII)) {
         RenderUpdateEvent* event = new RenderUpdateEvent(RenderUpdateType::QUAD, quadRendererID);
         event->m_TexturePath = texturePath;
         event->m_TexXCoords = qrs.m_TextureXUVCoords;
@@ -385,6 +384,8 @@ namespace Sprocket {
         free(event);
       }
     }
+
+    return true;
   }
 
 }

@@ -55,6 +55,8 @@ namespace Sprocket {
       glm::vec4 GetQuadColor() const {return m_QuadColor;}
       void UpdateQuadColor(glm::vec4 newColor);
       void UpdateTexturePath(std::string texturePath);
+      void UpdateTexturePath(std::string texturePath, glm::vec4 textureXUVCoords, glm::vec4 textureYUVCoords);
+      void UpdateTextureCoords(glm::vec4 textureXUVCoords, glm::vec4 textureYUVCoords);
 
   };
 

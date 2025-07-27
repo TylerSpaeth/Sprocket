@@ -38,8 +38,16 @@ namespace Sprocket {
       std::string m_ColliderMapPath;
 
       std::vector<unsigned int> m_PhysicsIDs;
-      std::array<std::vector<unsigned int>, 10> m_QuadRendererIDs;
-      std::array<QuadRendererStruct, 10> m_QuadRenderers;
+
+      // QuadRenderer maps have a maximum number of unique tiles that are defined by the printable 
+      // ascii characters. The ~ character is used to denote no sprite and can not be mapped.
+      // The arrays are based on the first printable ascii character are sized to be able to map
+      // all ascii characters except for ~.
+      static constexpr char EMPTY_PLACEHOLDER_CHAR = '~';
+      static constexpr char FIRST_PRINTABLE_ASCII = '!';
+      static constexpr unsigned int MAX_UNIQUE_TILES = 94;
+      std::array<std::vector<unsigned int>, MAX_UNIQUE_TILES> m_QuadRendererIDs;
+      std::array<QuadRendererStruct, MAX_UNIQUE_TILES> m_QuadRenderers;
 
       std::function<void(Event&)> m_EventCallback;
 
@@ -59,9 +67,9 @@ namespace Sprocket {
       void SetColliderMapPath(const std::string colliderMapPath);
 
       // The index for these functions in the spot in the QuadRenderers array they should update
-      void SetQuadRendererData(const unsigned int index, const glm::vec4 quadColor);
-      void SetQuadRendererData(const unsigned int index, const std::string texturePath);
-      void SetQuadRendererData(const unsigned int index, const std::string texturePath, const glm::vec4 textureXUVCoords, const glm::vec4 textureYUVCoords);
+      bool SetQuadRendererData(const char index, const glm::vec4 quadColor);
+      bool SetQuadRendererData(const char index, const std::string texturePath);
+      bool SetQuadRendererData(const char index, const std::string texturePath, const glm::vec4 textureXUVCoords, const glm::vec4 textureYUVCoords);
 
   };
  
