@@ -2,6 +2,8 @@
 
 #include "Events/RenderEvent.h"
 
+#include "Utils/RendererUtils.hpp"
+
 #include "ThirdParty/glm/gtc/matrix_transform.hpp"
 
 #include <stdexcept>
@@ -23,14 +25,10 @@ namespace Sprocket {
   void QuadRendererComponent::UpdateModelMatrix(glm::vec3 position, glm::vec3 rotation, glm::vec3 scale) {
 
     RenderUpdateEvent* e = new RenderUpdateEvent(RenderUpdateType::MODEL_MATRIX, m_QuadID);
-    
-    glm::mat4 tr = glm::translate(glm::mat4(1), position);
-    glm::mat4 xrot = glm::rotate(glm::mat4(1), glm::radians(-rotation.x), glm::vec3(1,0,0));
-    glm::mat4 yrot = glm::rotate(glm::mat4(1), glm::radians(-rotation.y), glm::vec3(0,1,0));
-    glm::mat4 zrot = glm::rotate(glm::mat4(1), glm::radians(-rotation.z), glm::vec3(0,0,1));
-    glm::mat4 rt = xrot*yrot*zrot;
-    glm::mat4 sc = glm::scale(glm::mat4(1), scale);
-    e->m_Matrix = tr * rt * sc;
+
+    // TODO investigate why the position and rotation need to be negative here. This behavior should
+    // be the same with all model matricies.
+    e->m_Matrix = RendererUtils::CalculateMatrixFromVecs(-position, -rotation, scale);
 
     m_EventCallback(*e);
 

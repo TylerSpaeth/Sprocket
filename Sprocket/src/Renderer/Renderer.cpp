@@ -249,7 +249,6 @@ namespace Sprocket {
   // deleted quads before performing any operations.
 
   bool Renderer::RemoveQuad(const unsigned int quadIndex) {
-    // FIXME there is some ineffiency here
     try {
       s_Instance->m_Quads.at(quadIndex) = ClearedQuad;
       s_Instance->m_CalculatedQuads.at(quadIndex) = ClearedQuad;
