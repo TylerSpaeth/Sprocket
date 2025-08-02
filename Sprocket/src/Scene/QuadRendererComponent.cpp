@@ -49,39 +49,36 @@ namespace Sprocket {
     free(e);
   }
 
-  void QuadRendererComponent::UpdateTexturePath(std::string texturePath) {
-    m_TexturePath = texturePath;
+  void QuadRendererComponent::SendTextureEvent() {
     RenderUpdateEvent* e = new RenderUpdateEvent(RenderUpdateType::QUAD, m_QuadID);
     e->m_TexturePath = m_TexturePath;
     e->m_TexXCoords = m_TextureXUVCoords;
     e->m_TexYCoords = m_TextureYUVCoords;
     m_EventCallback(*e);
     free(e);
+  }
+
+  void QuadRendererComponent::UpdateTexturePath(std::string texturePath) {
+    m_TexturePath = texturePath;
+    if(!m_TexturePath.empty()) {
+      SendTextureEvent();
+    }
   }
 
   void QuadRendererComponent::UpdateTexturePath(std::string texturePath, glm::vec4 textureXUVCoords, glm::vec4 textureYUVCoords) {
     m_TexturePath = texturePath;
     m_TextureXUVCoords = textureXUVCoords;
     m_TextureYUVCoords = textureYUVCoords;
-    RenderUpdateEvent* e = new RenderUpdateEvent(RenderUpdateType::QUAD, m_QuadID);
-    e->m_TexturePath = m_TexturePath;
-    e->m_TexXCoords = m_TextureXUVCoords;
-    e->m_TexYCoords = m_TextureYUVCoords;
-    m_EventCallback(*e);
-    free(e);
+    if(!m_TexturePath.empty()) {
+      SendTextureEvent();
+    }
   }
 
   void QuadRendererComponent::UpdateTextureCoords(glm::vec4 textureXUVCoords, glm::vec4 textureYUVCoords) {
     m_TextureXUVCoords = textureXUVCoords;
     m_TextureYUVCoords = textureYUVCoords;
     if(!m_TexturePath.empty()) {
-      RenderUpdateEvent* e = new RenderUpdateEvent(RenderUpdateType::QUAD, m_QuadID);
-      e->m_TexturePath = m_TexturePath;
-      e->m_TexXCoords = m_TextureXUVCoords;
-      e->m_TexYCoords = m_TextureYUVCoords;
-      m_EventCallback(*e);
-      free(e);
+      SendTextureEvent();
     }
-    
   }
 }

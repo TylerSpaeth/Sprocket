@@ -48,6 +48,8 @@ namespace Sprocket {
       /// @brief Pulls this quad renderer out of the rendering system
       void RemoveRender();
 
+      void SendTextureEvent();
+
     public:
 
       // NOTE currently calling either of these updates will cause the renderer to switch between 
