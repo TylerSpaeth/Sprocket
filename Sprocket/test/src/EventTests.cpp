@@ -53,12 +53,12 @@ TEST(EventTests, VerifyEventTypes) {
     EXPECT_EQ(type, Sprocket::EventType::WINDOW_CLOSE);
   }
   {
-    Sprocket::RenderNewEvent event(100);
+    Sprocket::RenderNewEvent event;
     Sprocket::EventType type = event.GetEventType();
     EXPECT_EQ(type, Sprocket::EventType::RENDER_NEW);
   }
   {
-    Sprocket::RenderUpdateEvent event(Sprocket::RenderUpdateType::MODEL_MATRIX);
+    Sprocket::RenderUpdateEvent event(Sprocket::RenderUpdateType::MODEL_MATRIX, 0);
     Sprocket::EventType type = event.GetEventType();
     EXPECT_EQ(type, Sprocket::EventType::RENDER_UPDATE);
   }
