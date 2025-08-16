@@ -64,4 +64,4 @@ target_sources(${PROJECT_NAME} PRIVATE
 target_include_directories(${PROJECT_NAME} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include)
 
 # Links libraries in the lib folder to the executable
-target_link_libraries(${PROJECT_NAME} PRIVATE libglfw3.a)
+target_link_libraries(${PROJECT_NAME} PRIVATE glfw3)
