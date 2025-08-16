@@ -111,10 +111,10 @@ namespace Sprocket {
       // Use the appropriate fragment shader for the number of texture slots the system has
       // TODO add more options
       if(systemMaxTextures < 32) {
-        s_Instance->m_Shader = new Shader("Default.vert", "Default.frag");
+        s_Instance->m_Shader = new Shader("shaders/Default.vert", "shaders/Default.frag");
       }
       else {
-        s_Instance->m_Shader = new Shader("Default.vert", "Default32.frag");
+        s_Instance->m_Shader = new Shader("shaders/Default.vert", "shaders/Default32.frag");
       }
 
       // Define the layout of the vertex buffer

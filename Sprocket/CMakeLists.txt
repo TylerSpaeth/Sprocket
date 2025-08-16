@@ -1,26 +1,24 @@
 cmake_minimum_required(VERSION 3.28.2)
 set(CMAKE_CXX_STANDARD 20)
 
-# Specifies the name of the project
-project(sprocket)
+project(SprocketApp)
 
-# Links our lib directory to be used
+add_compile_definitions(sprocket PRIVATE SPROCKET_BUILD_DLL)
 link_directories(lib)
 
-add_compile_definitions(${PROJECT_NAME} PRIVATE SPROCKET_BUILD_DLL)
+add_library(sprocket SHARED)
 
-# Specifies that we want to create an executable using certain source code
-add_library(${PROJECT_NAME} SHARED)
-target_include_directories(${PROJECT_NAME} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/src )
+target_include_directories(sprocket PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/src)
+target_include_directories(sprocket PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include)
 
 # Add ThirdParty source code
-target_sources(${PROJECT_NAME} PRIVATE 
+target_sources(sprocket PRIVATE 
   src/ThirdParty/glad/glad.c
   src/ThirdParty/stb_image/stb_image.cpp
 )
 
 # Add Renderer source code
-target_sources(${PROJECT_NAME} PRIVATE 
+target_sources(sprocket PRIVATE 
   src/Renderer/VertexBuffer.cpp 
   src/Renderer/IndexBuffer.cpp 
   src/Renderer/VertexArray.cpp 
@@ -30,14 +28,14 @@ target_sources(${PROJECT_NAME} PRIVATE
 )
 
 # Add Core source code
-target_sources(${PROJECT_NAME} PRIVATE 
+target_sources(sprocket PRIVATE 
   src/Core/Window.cpp
   src/Core/Application.cpp
   src/Core/Input.cpp
 )
 
 # Add Scene source code
-target_sources(${PROJECT_NAME} PRIVATE 
+target_sources(sprocket PRIVATE 
   src/Scene/SceneManager.cpp
   src/Scene/Scene.cpp
   src/Scene/Entity.cpp
@@ -51,17 +49,21 @@ target_sources(${PROJECT_NAME} PRIVATE
 )
 
 # Add Physics source code
-target_sources(${PROJECT_NAME} PRIVATE
+target_sources(sprocket PRIVATE
   src/Physics/Physics.cpp
   src/Physics/Collision.cpp
 )
 
 # Add Events source code
-target_sources(${PROJECT_NAME} PRIVATE
+target_sources(sprocket PRIVATE
   src/Events/EventValidation.cpp
 )
 
-target_include_directories(${PROJECT_NAME} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include)
+# Copy everything in the resources folder to the output directory
+add_custom_command(TARGET sprocket POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy_directory
+        ${CMAKE_CURRENT_SOURCE_DIR}/res
+        $<TARGET_FILE_DIR:sprocket>/
+)
 
-# Links libraries in the lib folder to the executable
-target_link_libraries(${PROJECT_NAME} PRIVATE glfw3)
+target_link_libraries(sprocket PRIVATE glfw3)

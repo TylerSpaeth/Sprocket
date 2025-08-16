@@ -1,42 +1,21 @@
 cmake_minimum_required(VERSION 3.28.2)
-set(CMAKE_CXX_STANDARD 20)
 
-# Specifies the name of the project
-project(app)
+project(SprocketApp)
 
-# Compiles the Sprocket dll
-add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/../Sprocket ${CMAKE_CURRENT_SOURCE_DIR}/../Sprocket/build )
+add_executable(app
+    src/TestApplication.cpp
+)
 
-#add_executable(${PROJECT_NAME} src/main.cpp)
-add_executable(${PROJECT_NAME} src/TestApplication.cpp)
+target_include_directories(app PRIVATE
+    ${CMAKE_SOURCE_DIR}/Sprocket/include
+    ${CMAKE_SOURCE_DIR}/Sprocket/src
+)
 
-# Include the public headers from Sprocket
-target_include_directories(${PROJECT_NAME} PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/../Sprocket/include)
+# Include everything in the resources folder
+add_custom_command(TARGET app POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy_directory
+        ${CMAKE_SOURCE_DIR}/Example/res
+        $<TARGET_FILE_DIR:app>
+)
 
-# Links the sprocket library to the target
-target_link_libraries(${PROJECT_NAME} PRIVATE sprocket)
-
-# Copys the Sprocket dll into the build folder
-add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
-    COMMAND ${CMAKE_COMMAND} -E copy_if_different
-        "${PROJECT_SOURCE_DIR}/../Sprocket/build/libsprocket.dll"
-        $<TARGET_FILE_DIR:${PROJECT_NAME}>)
-
-# Copys the Default.vert shader into the build folder
-add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
-    COMMAND ${CMAKE_COMMAND} -E copy_if_different
-        "${PROJECT_SOURCE_DIR}/../Sprocket/res/shaders/Default.vert"
-        $<TARGET_FILE_DIR:${PROJECT_NAME}>)
-
-# Copys the Default.frag shader into the build folder
-add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
-    COMMAND ${CMAKE_COMMAND} -E copy_if_different
-        "${PROJECT_SOURCE_DIR}/../Sprocket/res/shaders/Default.frag"
-        $<TARGET_FILE_DIR:${PROJECT_NAME}>)
-
-# Copys the Default.frag shader into the build folder
-add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
-    COMMAND ${CMAKE_COMMAND} -E copy_if_different
-        "${PROJECT_SOURCE_DIR}/../Sprocket/res/shaders/Default32.frag"
-        $<TARGET_FILE_DIR:${PROJECT_NAME}>)
-
+target_link_libraries(app PRIVATE sprocket)
