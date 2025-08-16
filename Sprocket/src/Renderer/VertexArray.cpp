@@ -5,15 +5,15 @@
 namespace Sprocket {
 
   VertexArray::VertexArray() {
-    glGenVertexArrays(1, &rendererID);
+    glGenVertexArrays(1, &m_RendererID);
   }
 
   VertexArray::~VertexArray() {
-    glDeleteVertexArrays(1, &rendererID);
+    glDeleteVertexArrays(1, &m_RendererID);
   }
 
   void VertexArray::Bind() const {
-    glBindVertexArray(rendererID);
+    glBindVertexArray(m_RendererID);
   }
 
   void VertexArray::Unbind() const {

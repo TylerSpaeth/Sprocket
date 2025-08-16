@@ -35,11 +35,11 @@ namespace Sprocket {
   }
 
   GLint Shader::GetUniformLocation(const std::string& name) const {
-    if(uniformLocationCache.find(name) != uniformLocationCache.end()) {
-      return uniformLocationCache[name];
+    if(m_UniformLocationCache.find(name) != m_UniformLocationCache.end()) {
+      return m_UniformLocationCache[name];
     }
-    int location = glGetUniformLocation(programID, name.c_str());
-    uniformLocationCache[name] = location;
+    int location = glGetUniformLocation(m_ProgramID, name.c_str());
+    m_UniformLocationCache[name] = location;
     return location;
   }
 
@@ -63,15 +63,15 @@ namespace Sprocket {
     glDeleteShader(vShader);
     glDeleteShader(fShader);
 
-    programID = program;
+    m_ProgramID = program;
   }
 
   Shader::~Shader() {
-    glDeleteProgram(programID);
+    glDeleteProgram(m_ProgramID);
   }
 
   void Shader::Bind() const {
-    glUseProgram(programID);
+    glUseProgram(m_ProgramID);
   }
 
   void Shader::Unbind() const {

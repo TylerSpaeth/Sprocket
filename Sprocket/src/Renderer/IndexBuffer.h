@@ -7,8 +7,8 @@ namespace Sprocket {
   /// @brief This is an abstraction for an OpenGL IndexBuffer.
   class IndexBuffer {
     private:
-      unsigned int rendererID;
-      unsigned int count;
+      unsigned int m_RendererID;
+      unsigned int m_Count;
     public:
 
       /// @brief Creates a new IndexBuffer with the given indecies and the number of them.
@@ -24,7 +24,7 @@ namespace Sprocket {
       void Unbind() const;
       /// @brief Gives the number of indicies in this IndexBuffer.
       /// @return The number of indicies.
-      inline unsigned int GetCount() const {return count;}
+      inline unsigned int GetCount() const {return m_Count;}
   };
 
 } 

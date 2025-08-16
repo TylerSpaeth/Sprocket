@@ -355,7 +355,7 @@ namespace Sprocket {
   unsigned int Renderer::AddTexture(const std::string& path) {
 
     for(Texture* t : s_Instance->m_BoundTextures) {
-      if(path.compare(t->filePath) == 0) {
+      if(path.compare(t->m_FilePath) == 0) {
         return t->m_Slot;
       }
     }

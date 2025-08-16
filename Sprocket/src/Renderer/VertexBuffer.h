@@ -6,7 +6,7 @@ namespace Sprocket {
   /// @brief Encapsulates OpenGL vertex buffer functionality.
   class VertexBuffer {
     private:
-      unsigned int rendererID;
+      unsigned int m_RendererID;
     public:
 
       /// @brief Creates an OpenGL vertex buffer of a given size with the given data.

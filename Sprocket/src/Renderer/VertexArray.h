@@ -8,7 +8,7 @@ namespace Sprocket {
   /// @brief Encapsulates OpenGL vertex array functionality.
   class VertexArray {
     private:
-      unsigned int rendererID;
+      unsigned int m_RendererID;
     public:
 
       /// @brief Creates a new vertex array.

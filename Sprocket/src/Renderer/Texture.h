@@ -10,10 +10,10 @@ namespace Sprocket {
   class Texture {
     friend class Renderer;
     private:
-      unsigned int textureID;
-      std::string filePath;
-      unsigned char* localBuffer;
-      int width, height, bitsPerPixel;
+      unsigned int m_TextureID;
+      std::string m_FilePath;
+      unsigned char* m_LocalBuffer;
+      int m_Width, m_Height, m_BitsPerPixel;
       mutable unsigned int m_Slot = -1;
     public:
 
@@ -29,8 +29,8 @@ namespace Sprocket {
       void Bind(unsigned int slot = 0) const;
       void Unbind() const;
 
-      inline int GetWidth() const {return width;}
-      inline int GetHeight() const {return height;}
+      inline int GetWidth() const {return m_Width;}
+      inline int GetHeight() const {return m_Height;}
   };
 
 }

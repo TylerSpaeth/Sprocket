@@ -4,18 +4,18 @@
 namespace Sprocket {
 
   VertexBuffer::VertexBuffer(const void* data, unsigned int size) {
-    glGenBuffers(1, &rendererID);
+    glGenBuffers(1, &m_RendererID);
     Bind();
     glBufferData(GL_ARRAY_BUFFER, size, data, GL_DYNAMIC_DRAW);
     Unbind();
   }
 
   VertexBuffer::~VertexBuffer() {
-    glDeleteBuffers(1, &rendererID);
+    glDeleteBuffers(1, &m_RendererID);
   }
 
   void VertexBuffer::Bind() const {
-    glBindBuffer(GL_ARRAY_BUFFER, rendererID);
+    glBindBuffer(GL_ARRAY_BUFFER, m_RendererID);
   }
 
   void VertexBuffer::Unbind() const {
