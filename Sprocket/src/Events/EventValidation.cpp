@@ -1,7 +1,5 @@
 #include "EventValidation.h"
 
-#include <stdexcept>
-
 namespace Sprocket {
 
   void EventValidation::ValidateEvent(const Event& event) {

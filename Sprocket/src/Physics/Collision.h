@@ -1,9 +1,9 @@
 #ifndef COLLISION_H
 #define COLLISION_H
 
-#include "ThirdParty/glm/glm.hpp"
+#include "Core/Sprocket.pch"
 
-#include <array>
+#include "ThirdParty/glm/glm.hpp"
 
 namespace Sprocket {
 

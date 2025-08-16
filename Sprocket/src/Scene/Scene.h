@@ -7,8 +7,7 @@
 
 #include "Entity.h"
 
-#include <vector>
-#include <functional>
+#include "Core/Sprocket.pch"
 
 namespace Sprocket {
 

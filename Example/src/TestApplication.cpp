@@ -35,7 +35,7 @@ class TestApplication : public Sprocket::Application {
       using namespace Sprocket;
       
       // Print frame time and fps
-      std::println("{} ms {} fps", deltaTime * 1000.0f, (int)(1000000 / (deltaTime * 1000000)));
+      std::println("{:.3f} ms {} fps", deltaTime * 1000, (int)(1000000 / (deltaTime * 1000000)));
 
       // Close on escape
       if(Input::IsKeyPressed(KEY_ESCAPE)) {

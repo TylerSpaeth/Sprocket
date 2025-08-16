@@ -1,11 +1,10 @@
 #ifndef SHADER_H
 #define SHADER_H
 
-#include <string>
-#include <unordered_map>
 #include "ThirdParty/glm/glm.hpp"
 
 #include "Core/Macros.h"
+#include "Core/Sprocket.pch"
 
 namespace Sprocket {
 

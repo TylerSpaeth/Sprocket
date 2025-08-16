@@ -6,9 +6,6 @@
 
 #include "ThirdParty/glm/gtc/matrix_transform.hpp"
 
-#include <algorithm>
-#include <array>
-
 namespace Sprocket {
 
   // Static variable definitions

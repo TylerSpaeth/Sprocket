@@ -2,8 +2,6 @@
 #include "Events/ApplicationEvent.h"
 #include "Events/EventValidation.h"
 
-#include <print>
-
 namespace Sprocket {
 
   Application::Application() {

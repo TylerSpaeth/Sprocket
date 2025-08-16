@@ -7,10 +7,7 @@
 
 #include "ThirdParty/glm/glm.hpp"
 
-#include <vector>
-#include <optional>
-#include <queue>
-#include <map>
+#include "Core/Sprocket.pch"
 
 namespace Sprocket {
 

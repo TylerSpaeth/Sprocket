@@ -5,8 +5,7 @@
 #include "Core/Macros.h"
 #include "Events/Event.h"
 
-#include <unordered_map>
-#include <functional>
+#include "Core/Sprocket.pch"
 
 namespace Sprocket {
 

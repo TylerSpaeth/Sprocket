@@ -13,6 +13,8 @@ add_library(sprocket SHARED)
 target_include_directories(sprocket PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/src)
 target_include_directories(sprocket PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include)
 
+target_precompile_headers(sprocket PUBLIC $<$<COMPILE_LANGUAGE:CXX>:${CMAKE_CURRENT_SOURCE_DIR}/src/Core/Sprocket.pch>)
+
 # Add ThirdParty source code
 target_sources(sprocket PRIVATE 
   src/ThirdParty/glad/glad.c

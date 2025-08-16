@@ -5,8 +5,6 @@
 
 #include "ThirdParty/glm/gtc/matrix_transform.hpp"
 
-#include <fstream>
-
 namespace Sprocket {
 
   void TileMapComponent::RegisterTileMap(glm::vec3 position, glm::vec3 rotation, glm::vec3 scale) {

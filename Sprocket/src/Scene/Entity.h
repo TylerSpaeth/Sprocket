@@ -12,9 +12,7 @@
 #include "ColliderComponent.h"
 #include "TileMapComponent.h"
 
-#include <vector>
-#include <typeinfo>
-#include <functional>
+#include "Core/Sprocket.pch"
 
 namespace Sprocket {
 

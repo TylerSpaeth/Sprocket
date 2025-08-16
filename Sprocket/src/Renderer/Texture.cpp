@@ -2,8 +2,6 @@
 #include "ThirdParty/glad/glad.h"
 #include "ThirdParty/stb_image/stb_image.h"
 
-#include <print>
-
 namespace Sprocket {
 
   // Binds the texture specified in the path to the given slot

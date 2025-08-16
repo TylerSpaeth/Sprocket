@@ -2,8 +2,6 @@
 
 #include "Events/ApplicationEvent.h"
 
-#include <algorithm>
-
 namespace Sprocket {
 
   Scene::Scene() {}

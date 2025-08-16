@@ -5,7 +5,7 @@
 
 #include "ThirdParty/glm/glm.hpp"
 
-#include <string>
+#include "Core/Sprocket.pch"
 
 namespace Sprocket {
 

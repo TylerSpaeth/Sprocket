@@ -1,13 +1,10 @@
 #ifndef APPLICATION_H
 #define APPLICATION_H
 
+#include "Core/Sprocket.pch"
+
 #include "Macros.h"
 #include "Events/Event.h"
-
-#include <chrono>
-#include <functional>
-#include <vector>
-#include <utility>
 
 namespace Sprocket {
 

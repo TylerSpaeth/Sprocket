@@ -11,7 +11,7 @@
 
 #include "ThirdParty/glm/glm.hpp"
 
-#include <functional>
+#include "Core/Sprocket.pch"
 
 namespace Sprocket {
 

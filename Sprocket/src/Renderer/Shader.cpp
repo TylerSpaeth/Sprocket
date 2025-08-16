@@ -1,10 +1,6 @@
 #include "Shader.h"
 #include "ThirdParty/glad/glad.h"
 
-#include <fstream>
-#include <sstream>
-#include <print>
-
 namespace Sprocket {
 
   static unsigned int CompileShader(GLenum shaderType, const char* source) {

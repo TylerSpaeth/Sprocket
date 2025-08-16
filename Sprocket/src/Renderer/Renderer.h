@@ -10,10 +10,7 @@
 #include "Events/Event.h"
 
 #include "Core/Macros.h"
-
-#include <array>
-#include <vector>
-#include <queue>
+#include "Core/Sprocket.pch"
 
 namespace Sprocket {
 

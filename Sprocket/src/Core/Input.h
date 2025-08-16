@@ -1,13 +1,14 @@
 #ifndef INPUT_H
 #define INPUT_H
 
+#include "Core/Sprocket.pch"
+
 #include "Macros.h"
 #include "Keycodes.h"
 #include "MouseButtons.h"
 #include "Events/Event.h"
 
-#include <unordered_map>
-#include <vector>
+
 
 namespace Sprocket {
   

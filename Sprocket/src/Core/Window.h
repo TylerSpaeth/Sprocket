@@ -4,8 +4,7 @@
 #include "Events/Event.h"
 #include "Macros.h"
 
-#include <string>
-#include <functional>
+#include "Core/Sprocket.pch"
 
 namespace Sprocket {
 
