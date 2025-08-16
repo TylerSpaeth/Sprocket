@@ -345,11 +345,11 @@ namespace Sprocket {
   // in sequencial order
   void Renderer::UpdateTextureUniform(unsigned int uniqueTextures) {
     s_Instance->m_Shader->Bind();
-    int textureIDs[uniqueTextures];
+	std::vector<int> textureIDs(uniqueTextures);
     for(int i = 1; i <= uniqueTextures; i++) {
       textureIDs[i-1] = i;
     }
-    s_Instance->m_Shader->SetUniform1iv("u_Texture", uniqueTextures, textureIDs);
+    s_Instance->m_Shader->SetUniform1iv("u_Texture", uniqueTextures, textureIDs.data());
     s_Instance->m_Shader->Unbind();
   }
 

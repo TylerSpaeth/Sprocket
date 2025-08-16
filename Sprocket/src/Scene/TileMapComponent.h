@@ -11,6 +11,7 @@
 #include <vector>
 #include <functional>
 #include <map>
+#include <array>
 
 namespace Sprocket {
 
