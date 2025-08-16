@@ -38,19 +38,19 @@ namespace Sprocket {
 
   void EventValidation::ValidateAppUpdateEvent(const ApplicationUpdateEvent& event) {
     if(event.GetDeltaTime() < 0) {
-      std::invalid_argument("deltaTime can not be less than 0.");
+      throw std::invalid_argument("deltaTime can not be less than 0.");
     }
   }
 
   void EventValidation::ValidateRenderNewEvent(const RenderNewEvent& event) {
     if(event.GetQuadID() != -1) {
-      std::invalid_argument("This event has already be used.");
+      throw std::invalid_argument("This event has already be used.");
     }
   }
 
   void EventValidation::ValidateRenderUpdateEvent(const RenderUpdateEvent& event) {
-    if(event.GetQuadID() < 0) {
-      std::invalid_argument("Invalid quadID.");
+    if(event.GetType() != RenderUpdateType::VIEW_MATRIX && event.GetQuadID() < 0) {
+      throw std::invalid_argument("Invalid quadID.");
     }
     // No other validation will be done here since the rest of the fields have default values
     // that are valid
@@ -58,52 +58,52 @@ namespace Sprocket {
 
   void EventValidation::ValidateRenderDeleteEvent(const RenderDeleteEvent& event) {
     if(event.GetQuadID() < 0) {
-      std::invalid_argument("Invalid quadID.");
+      throw std::invalid_argument("Invalid quadID.");
     }
   }
 
   void EventValidation::ValidatePhysicsNewEvent(const PhysicsNewEvent& event) {
     if(event.m_PhysicsID != -1) {
-      std::invalid_argument("This event has already been used.");
+      throw std::invalid_argument("This event has already been used.");
     }
     if(event.m_CircleRadius < 0) {
-      std::invalid_argument("circleRadius is negative.");
+      throw std::invalid_argument("circleRadius is negative.");
     }
     if(event.m_BoxColliderSize.x < 0 || event.m_BoxColliderSize.y < 0) {
-      std::invalid_argument("boxColliderSize has a negative dimension.");
+      throw std::invalid_argument("boxColliderSize has a negative dimension.");
     }
   }
 
   void EventValidation::ValidatePhysicsUpdateEvent(const PhysicsUpdateEvent& event) {
     if(event.m_PhysicsID < 0) {
-      std::invalid_argument("Invalid physicsID.");
+      throw std::invalid_argument("Invalid physicsID.");
     }
     if(event.m_CircleRadius < 0) {
-      std::invalid_argument("circleRadius is negative.");
+      throw std::invalid_argument("circleRadius is negative.");
     }
     if(event.m_BoxColliderSize.x < 0 || event.m_BoxColliderSize.y < 0) {
-      std::invalid_argument("boxColliderSize has a negative dimension.");
+      throw std::invalid_argument("boxColliderSize has a negative dimension.");
     }
   }
 
   void EventValidation::ValidatePhysicsDeleteEvent(const PhysicsDeleteEvent& event) {
     if(event.m_PhysicsID < 0) {
-      std::invalid_argument("Invalid physicsID.");
+      throw std::invalid_argument("Invalid physicsID.");
     }
   }
 
   void EventValidation::ValidatePhysicsCollisionCheckEvent(const PhysicsCollisionCheckEvent& event) {
     if(event.m_PhysicsID1 < 0 || event.m_PhysicsID2 < 0) {
-      std::invalid_argument("Invalid physicsID.");
+      throw std::invalid_argument("Invalid physicsID.");
     }
   }
 
   void EventValidation::ValidatePhysicsCollisionCheckGenericEvent(const PhysicsCollisionCheckGenericEvent& event) {
     if(event.m_PhysicsID < 0) {
-      std::invalid_argument("Invalid physicsID.");
+      throw std::invalid_argument("Invalid physicsID.");
     }
     if(!event.m_CollidesWith.empty()) {
-      std::invalid_argument("This event has already been used.");
+      throw std::invalid_argument("This event has already been used.");
     }
   }
 

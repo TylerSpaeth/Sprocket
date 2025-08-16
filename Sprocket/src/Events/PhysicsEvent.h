@@ -20,8 +20,8 @@ namespace Sprocket {
     private:
       int m_PhysicsID = -1;
       glm::vec2 m_ColliderCenter;
-      float m_CircleRadius;
-      float m_BoxColliderRotation;
+      float m_CircleRadius = 0;
+      float m_BoxColliderRotation = 0;
       glm::vec2 m_BoxColliderSize;
       ColliderType m_ColliderType;
     public:
@@ -43,8 +43,8 @@ namespace Sprocket {
     private:
       int m_PhysicsID = -1;
       glm::vec2 m_ColliderCenter;
-      float m_CircleRadius;
-      float m_BoxColliderRotation;
+      float m_CircleRadius = 0;
+      float m_BoxColliderRotation = 0;
       glm::vec2 m_BoxColliderSize;
       ColliderType m_ColliderType;
     public:

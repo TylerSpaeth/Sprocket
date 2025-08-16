@@ -57,7 +57,7 @@ namespace Sprocket {
           m_EventCallback(*renderNewEvent);
           unsigned int quadID = renderNewEvent->GetQuadID();
           m_QuadRendererIDs.at(cAsInt).push_back(quadID);
-          free(renderNewEvent);
+          delete renderNewEvent;
 
           RenderUpdateEvent* renderUpdateEventQuad = new RenderUpdateEvent(RenderUpdateType::QUAD, quadID);
           if(!quadRendererStruct.m_TexturePath.empty()) {
@@ -69,7 +69,7 @@ namespace Sprocket {
             renderUpdateEventQuad->m_QuadColor = quadRendererStruct.m_QuadColor;
           }
           m_EventCallback(*renderUpdateEventQuad);
-          free(renderUpdateEventQuad);
+          delete renderUpdateEventQuad;
 
           RenderUpdateEvent* renderUpdateEventModel = new RenderUpdateEvent(RenderUpdateType::MODEL_MATRIX, quadID);
           // Translating twice is because the matrix needs to be rotated relative to the center of
@@ -80,7 +80,7 @@ namespace Sprocket {
                                            * glm::scale(glm::mat4(1), m_Scale);
 
           m_EventCallback(*renderUpdateEventModel);
-          free(renderUpdateEventModel);
+          delete renderUpdateEventModel;
 
         }
 
@@ -226,7 +226,7 @@ namespace Sprocket {
           PhysicsNewEvent* event = new PhysicsNewEvent(position, {(xEnd+1-xStart) * m_Scale.x, (yEnd+1-yStart) * m_Scale.y}, zRotation);
           m_EventCallback(*event);
           m_PhysicsIDs.push_back(event->GetPhysicsID());
-          free(event);
+          delete event;
         }
 
         // Set the boolMap values associated with this new collider to false
@@ -287,7 +287,7 @@ namespace Sprocket {
 
         m_EventCallback(*event);
 
-        free(event);
+        delete event;
       }
 
       vector.clear();
@@ -303,7 +303,7 @@ namespace Sprocket {
 
       m_EventCallback(*event);
 
-      free(event);
+      delete event;
 
     }
     m_PhysicsIDs.clear();
@@ -339,7 +339,7 @@ namespace Sprocket {
         RenderUpdateEvent* event = new RenderUpdateEvent(RenderUpdateType::QUAD, quadRendererID);
         event->m_QuadColor = quadColor;
         m_EventCallback(*event);
-        free(event);
+        delete event;
       }
     }
     return true;
@@ -358,7 +358,7 @@ namespace Sprocket {
         event->m_TexXCoords = qrs.m_TextureXUVCoords;
         event->m_TexYCoords = qrs.m_TextureYUVCoords;
         m_EventCallback(*event);
-        free(event);
+        delete event;
       }
     }
     return true;
@@ -380,7 +380,7 @@ namespace Sprocket {
         event->m_TexXCoords = qrs.m_TextureXUVCoords;
         event->m_TexYCoords = qrs.m_TextureYUVCoords;
         m_EventCallback(*event);
-        free(event);
+        delete event;
       }
     }
 

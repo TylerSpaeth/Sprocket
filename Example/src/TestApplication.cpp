@@ -23,7 +23,7 @@ class TestApplication : public Sprocket::Application {
       scene->SubmitEntityToScene(*player);
 
       camera = new Camera();
-      ((Camera*) camera)->entityToFollow = player;
+      ((Camera*) camera)->m_EntityToFollow = player;
       scene->SubmitEntityToScene(*camera);
 
       tileMap = new Tiles();

@@ -18,7 +18,7 @@ namespace Sprocket {
     RenderNewEvent* e = new RenderNewEvent();
     m_EventCallback(*e);
     m_QuadID = e->GetQuadID();
-    free(e);
+    delete e;
   }
 
   void QuadRendererComponent::UpdateModelMatrix(glm::vec3 position, glm::vec3 rotation, glm::vec3 scale) {
@@ -31,13 +31,13 @@ namespace Sprocket {
 
     m_EventCallback(*e);
 
-    free(e);
+    delete e;
   }
 
   void QuadRendererComponent::RemoveRender() {
     RenderDeleteEvent* e = new RenderDeleteEvent(m_QuadID);
     m_EventCallback(*e);
-    free(e);
+    delete e;
   }
 
   void QuadRendererComponent::UpdateQuadColor(glm::vec4 newColor) {
@@ -45,7 +45,7 @@ namespace Sprocket {
     RenderUpdateEvent* e = new RenderUpdateEvent(RenderUpdateType::QUAD, m_QuadID);
     e->m_QuadColor = m_QuadColor;
     m_EventCallback(*e);
-    free(e);
+    delete e;
   }
 
   void QuadRendererComponent::SendTextureEvent() {
@@ -54,7 +54,7 @@ namespace Sprocket {
     e->m_TexXCoords = m_TextureXUVCoords;
     e->m_TexYCoords = m_TextureYUVCoords;
     m_EventCallback(*e);
-    free(e);
+    delete e;
   }
 
   void QuadRendererComponent::UpdateTexturePath(std::string texturePath) {

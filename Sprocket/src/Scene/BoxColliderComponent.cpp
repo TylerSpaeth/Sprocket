@@ -22,7 +22,7 @@ namespace Sprocket {
 
       m_EventCallback(*event);
 
-      free(event);
+      delete event;
 
     }
 
@@ -42,7 +42,7 @@ namespace Sprocket {
 
       m_PhysicsID = event->GetPhysicsID();
 
-      free(event);
+      delete event;
 
     }
 
@@ -58,7 +58,7 @@ namespace Sprocket {
 
       m_EventCallback(*event);
 
-      free(event);
+      delete event;
 
     }
 

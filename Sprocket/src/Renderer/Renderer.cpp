@@ -88,7 +88,7 @@ namespace Sprocket {
     if(!s_Instance) {
 
       if(xDimension < 0 || yDimension < 0) {
-        std::invalid_argument("Renderer dimensions can not be negative.");
+        throw std::invalid_argument("Renderer dimensions can not be negative.");
       }
 
       s_Instance = new Renderer(maxQuads);
@@ -209,11 +209,11 @@ namespace Sprocket {
   unsigned int Renderer::AddQuad(float size) {
 
     if(size <= 0) {
-      std::invalid_argument("A quad must have a positive, nonzero size.");
+      throw std::invalid_argument("A quad must have a positive, nonzero size.");
     }
 
     if(s_Instance->m_Quads.size() - s_Instance->m_DeletedQuadIndexes.size() >= s_Instance->m_MaxQuads) {
-      std::runtime_error("The maximum number of quads has already been reached. To use more quads, change the increase the amount at intialization.");
+      throw std::runtime_error("The maximum number of quads has already been reached. To use more quads, change the increase the amount at intialization.");
     }
 
     auto quad = CreateQuad(size, 0);
