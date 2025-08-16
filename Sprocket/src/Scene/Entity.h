@@ -15,7 +15,6 @@
 #include <vector>
 #include <typeinfo>
 #include <functional>
-#include <iostream>
 
 namespace Sprocket {
 

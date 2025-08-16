@@ -1,8 +1,6 @@
 #include "Entity.h"
 #include "QuadRendererComponent.h"
 
-#include <iostream>
-
 namespace Sprocket {
 
   Entity::Entity() : m_Transform([this]() {return GetParentGlobalTransform();}) {}

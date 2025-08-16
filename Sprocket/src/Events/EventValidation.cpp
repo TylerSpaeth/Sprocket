@@ -1,6 +1,5 @@
 #include "EventValidation.h"
 
-#include <iostream>
 #include <stdexcept>
 
 namespace Sprocket {

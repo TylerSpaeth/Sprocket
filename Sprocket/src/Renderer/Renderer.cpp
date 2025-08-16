@@ -4,7 +4,6 @@
 
 #include "ThirdParty/glad/glad.h"
 
-#include <iostream>
 #include <stdexcept>
 
 namespace Sprocket {

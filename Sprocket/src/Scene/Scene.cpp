@@ -3,7 +3,6 @@
 #include "Events/ApplicationEvent.h"
 
 #include <algorithm>
-#include <iostream>
 
 namespace Sprocket {
 

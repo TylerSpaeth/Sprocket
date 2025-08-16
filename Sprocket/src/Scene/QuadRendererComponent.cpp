@@ -7,7 +7,6 @@
 #include "ThirdParty/glm/gtc/matrix_transform.hpp"
 
 #include <stdexcept>
-#include <iostream>
 
 namespace Sprocket {
 

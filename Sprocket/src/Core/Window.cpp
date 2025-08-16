@@ -6,7 +6,6 @@
 #include "ThirdParty/glad/glad.h"
 #include "ThirdParty/GLFW/glfw3.h"
 
-#include <iostream>
 #include <vector>
 
 

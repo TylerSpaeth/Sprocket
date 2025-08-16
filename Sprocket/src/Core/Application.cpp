@@ -2,12 +2,12 @@
 #include "Events/ApplicationEvent.h"
 #include "Events/EventValidation.h"
 
-#include <iostream>
+#include <print>
 
 namespace Sprocket {
 
   Application::Application() {
-    std::cout << "Sprocket: Startup\n";
+    std::println("Sprocket: Startup");
   }
 
   Application::~Application() {}
@@ -56,7 +56,7 @@ namespace Sprocket {
     }
 
     if(event.GetEventType() == EventType::WINDOW_CLOSE) {
-      std::cout << "Sprocket: Shutdown\n";
+      std::println("Sprocket: Shutdown");
       m_AppRunning = false;
     }
   }
