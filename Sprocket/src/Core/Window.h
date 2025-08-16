@@ -26,6 +26,9 @@ namespace Sprocket {
       void OnUpdateInstance();
       void RegisterEventCallbackInstance(const std::function<void(Event&)> eventCallback);
       void EnableVSyncInstance(bool enable);
+	  void EnableCursorInstance();
+	  void DisableCursorInstance();
+	  void HideCursorInstance();
 
       /// @brief This function is called by the OnEvent function when a WINDOW_CLOSE event
       /// is recieved. Performs any tasks that need to occur before Input is destructed.
@@ -55,6 +58,12 @@ namespace Sprocket {
       /// @brief Enables or disables vsync on the window. Enabled by default.
       /// @param enable if true, then vsync will be enable. If false, it will be disabled.
       static void EnableVSync(bool enable) {s_Instance->EnableVSyncInstance(enable);}
+
+      static void EnableCursor() {s_Instance->EnableCursorInstance();}
+
+	  static void DisableCursor() {s_Instance->DisableCursorInstance();}
+
+      static void HideCursor() {s_Instance->HideCursorInstance();}
   };
 
 }

@@ -159,6 +159,18 @@ namespace Sprocket {
     }
   }
 
+  void Window::EnableCursorInstance() {
+    glfwSetInputMode((GLFWwindow*)m_Window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+  }
+
+  void Window::DisableCursorInstance() {
+    glfwSetInputMode((GLFWwindow*)m_Window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+  } 
+
+  void Window::HideCursorInstance() {
+    glfwSetInputMode((GLFWwindow*)m_Window, GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
+  }
+
   ////////////////////////////////////////////////////////////////////////////////////
   ////////////////////////////////////////////////////////////////////////////////////
   ////////////////////////////////////////////////////////////////////////////////////
