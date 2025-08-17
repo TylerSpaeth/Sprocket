@@ -6,28 +6,28 @@
 
 namespace Sprocket {
 
-  class KeyEvent : public Event {
+    class KeyEvent : public Event {
     private:
-      Keycode m_Keycode;
+        Keycode m_Keycode;
     protected:
-      KeyEvent(const Keycode keycode) : m_Keycode(keycode) {}
+        KeyEvent(const Keycode keycode) : m_Keycode(keycode) {}
     public:
-      Keycode GetKeycode() const {return m_Keycode;}
-  };
+        Keycode GetKeycode() const { return m_Keycode; }
+    };
 
-  class KeyPressedEvent : public KeyEvent {
+    class KeyPressedEvent : public KeyEvent {
     public:
-      KeyPressedEvent(const Keycode keycode) : KeyEvent(keycode){
-        this->SetType(EventType::KEY_PRESSED);
-      }
-  };
+        KeyPressedEvent(const Keycode keycode) : KeyEvent(keycode) {
+            this->SetType(EventType::KEY_PRESSED);
+        }
+    };
 
-  class KeyReleasedEvent : public KeyEvent {
+    class KeyReleasedEvent : public KeyEvent {
     public:
-      KeyReleasedEvent(const Keycode keycode) : KeyEvent(keycode){
-        this->SetType(EventType::KEY_RELEASED);
-      }
-  };
+        KeyReleasedEvent(const Keycode keycode) : KeyEvent(keycode) {
+            this->SetType(EventType::KEY_RELEASED);
+        }
+    };
 
 };
 

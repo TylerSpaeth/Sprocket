@@ -2,56 +2,56 @@
 
 namespace Sprocket {
 
-  float CircleColliderComponent::GetRadius() const {
-    return m_Radius;
-  }
-
-  bool CircleColliderComponent::SetRadius(float radius) {
-    if(radius < 0) {
-      return false;
+    float CircleColliderComponent::GetRadius() const {
+        return m_Radius;
     }
 
-    m_Radius = radius;
+    bool CircleColliderComponent::SetRadius(float radius) {
+        if (radius < 0) {
+            return false;
+        }
 
-    if(m_EventCallback) {
+        m_Radius = radius;
 
-      PhysicsUpdateEvent* event = new PhysicsUpdateEvent(m_PhysicsID, m_TranformComponent->Position(), m_Radius * m_TranformComponent->Scale().x);
+        if (m_EventCallback) {
 
-      m_EventCallback(*event);
+            PhysicsUpdateEvent* event = new PhysicsUpdateEvent(m_PhysicsID, m_TranformComponent->Position(), m_Radius * m_TranformComponent->Scale().x);
 
-      free(event);
+            m_EventCallback(*event);
+
+            free(event);
+
+        }
+
+        return true;
+    }
+
+    void CircleColliderComponent::Register() {
+
+        if (m_EventCallback) {
+
+            PhysicsNewEvent* event = new PhysicsNewEvent(m_TranformComponent->Position(), m_Radius * m_TranformComponent->Scale().x);
+
+            m_EventCallback(*event);
+
+            m_PhysicsID = event->GetPhysicsID();
+
+            free(event);
+
+        }
 
     }
 
-    return true;
-  }
+    void CircleColliderComponent::UpdateTransform() {
 
-  void CircleColliderComponent::Register() {
-    
-    if(m_EventCallback) {
+        if (m_EventCallback) {
 
-      PhysicsNewEvent* event = new PhysicsNewEvent(m_TranformComponent->Position(), m_Radius * m_TranformComponent->Scale().x);
+            PhysicsUpdateEvent* event = new PhysicsUpdateEvent(m_PhysicsID, m_TranformComponent->Position(), m_Radius * m_TranformComponent->Scale().x);
 
-      m_EventCallback(*event);
+            m_EventCallback(*event);
 
-      m_PhysicsID = event->GetPhysicsID();
-
-      free(event);
-
+            free(event);
+        }
     }
-
-  }
-
-  void CircleColliderComponent::UpdateTransform() {
-     
-    if(m_EventCallback) {
-
-      PhysicsUpdateEvent* event = new PhysicsUpdateEvent(m_PhysicsID, m_TranformComponent->Position(), m_Radius * m_TranformComponent->Scale().x);
-
-      m_EventCallback(*event);
-
-      free(event);
-    }
-  }
 
 }

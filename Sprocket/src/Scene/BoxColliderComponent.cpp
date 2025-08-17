@@ -2,66 +2,66 @@
 
 namespace Sprocket {
 
-  glm::vec2 BoxColliderComponent::GetSize() const {
-    return m_Size;
-  }
-
-  bool BoxColliderComponent::SetSize(const glm::vec2 size) {
-    
-    if(size.x < 0 || size.y < 0) {
-      return false;
+    glm::vec2 BoxColliderComponent::GetSize() const {
+        return m_Size;
     }
 
-    m_Size = size;
+    bool BoxColliderComponent::SetSize(const glm::vec2 size) {
 
-    if(m_EventCallback) {
+        if (size.x < 0 || size.y < 0) {
+            return false;
+        }
 
-      glm::vec2 scale = m_TranformComponent->Scale();
+        m_Size = size;
 
-      PhysicsUpdateEvent* event = new PhysicsUpdateEvent(m_PhysicsID, m_TranformComponent->Position(), {scale.x * m_Size.x, scale.y * m_Size.y}, m_TranformComponent->Rotation().z);
+        if (m_EventCallback) {
 
-      m_EventCallback(*event);
+            glm::vec2 scale = m_TranformComponent->Scale();
 
-      delete event;
+            PhysicsUpdateEvent* event = new PhysicsUpdateEvent(m_PhysicsID, m_TranformComponent->Position(), { scale.x * m_Size.x, scale.y * m_Size.y }, m_TranformComponent->Rotation().z);
 
-    }
+            m_EventCallback(*event);
 
-    return true;
+            delete event;
 
-  }
+        }
 
-  void BoxColliderComponent::Register() {
-
-    if(m_EventCallback) {
-
-      glm::vec2 scale = m_TranformComponent->Scale();
-
-      PhysicsNewEvent* event = new PhysicsNewEvent(m_TranformComponent->Position(), {scale.x * m_Size.x, scale.y * m_Size.y},m_TranformComponent->Rotation().z);
-
-      m_EventCallback(*event);
-
-      m_PhysicsID = event->GetPhysicsID();
-
-      delete event;
+        return true;
 
     }
 
-  }
+    void BoxColliderComponent::Register() {
 
-  void BoxColliderComponent::UpdateTransform() {
+        if (m_EventCallback) {
 
-    if(m_EventCallback) {
+            glm::vec2 scale = m_TranformComponent->Scale();
 
-      glm::vec2 scale = m_TranformComponent->Scale();
+            PhysicsNewEvent* event = new PhysicsNewEvent(m_TranformComponent->Position(), { scale.x * m_Size.x, scale.y * m_Size.y }, m_TranformComponent->Rotation().z);
 
-      PhysicsUpdateEvent* event = new PhysicsUpdateEvent(m_PhysicsID, m_TranformComponent->Position(), {scale.x * m_Size.x, scale.y * m_Size.y}, m_TranformComponent->Rotation().z);
+            m_EventCallback(*event);
 
-      m_EventCallback(*event);
+            m_PhysicsID = event->GetPhysicsID();
 
-      delete event;
+            delete event;
+
+        }
 
     }
 
-  }
+    void BoxColliderComponent::UpdateTransform() {
+
+        if (m_EventCallback) {
+
+            glm::vec2 scale = m_TranformComponent->Scale();
+
+            PhysicsUpdateEvent* event = new PhysicsUpdateEvent(m_PhysicsID, m_TranformComponent->Position(), { scale.x * m_Size.x, scale.y * m_Size.y }, m_TranformComponent->Rotation().z);
+
+            m_EventCallback(*event);
+
+            delete event;
+
+        }
+
+    }
 
 }

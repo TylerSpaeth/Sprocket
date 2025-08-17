@@ -36,6 +36,7 @@ target_sources(sprocket PRIVATE
   src/Core/Window.cpp
   src/Core/Application.cpp
   src/Core/Input.cpp
+  src/Core/Global.cpp
 )
 
 # Add Scene source code
@@ -61,6 +62,11 @@ target_sources(sprocket PRIVATE
 # Add Events source code
 target_sources(sprocket PRIVATE
   src/Events/EventValidation.cpp
+)
+
+# Add Logger source code
+target_sources(sprocket PRIVATE
+  src/Logger/Logger.cpp
 )
 
 # Copy everything in the resources folder to the output directory
