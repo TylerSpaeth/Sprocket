@@ -3,12 +3,14 @@
 
 #include "Core/Sprocket.pch"
 
+#include "Core/Macros.h"
+
 namespace Sprocket {
     /// @brief The Logger class is used to log messages to the console or a file.
     /// It provides various logging levels such as Info, Warning, Error, and Debug.
     /// Unlike other pieces of Sprocket, this will not run through the event system,
     /// as it is intended to be a low-level utility for debugging and information. 
-    class Logger {
+    class SPROCKET_API Logger {
 
     private:
 

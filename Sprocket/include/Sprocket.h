@@ -13,6 +13,8 @@
 
 #include "Physics/Physics.h"
 
+#include "Logger/Logger.h"
+
 // Sprocket EntryPoint
 #include "Core/EntryPoint.hpp"
 

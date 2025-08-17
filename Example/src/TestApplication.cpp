@@ -4,13 +4,13 @@
 #include "Tiles.hpp"
 #include <functional>
 #include <random>
-#include <print>
 
 class TestApplication : public Sprocket::Application {
 
     Sprocket::Entity* player;
     Sprocket::Entity* camera;
     Sprocket::Entity* tileMap;
+    Sprocket::Logger logger;
 
 public:
     TestApplication() : Sprocket::Application() {}
@@ -35,7 +35,7 @@ public:
         using namespace Sprocket;
 
         // Print frame time and fps
-        std::println("{:.3f} ms {} fps", deltaTime * 1000, (int)(1000000 / (deltaTime * 1000000)));
+        logger.Debug(std::format("Frame time: {:.3f} ms, FPS: {}", deltaTime * 1000, (int)(1000000 / (deltaTime * 1000000))));
 
         // Close on escape
         if (Input::IsKeyPressed(KEY_ESCAPE)) {
