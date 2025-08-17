@@ -5,12 +5,12 @@
 
 namespace Sprocket {
 
-  class WindowCloseEvent : public Event {
+    class WindowCloseEvent : public Event {
     public:
-      WindowCloseEvent() {
-        this->SetType(EventType::WINDOW_CLOSE);
-      }
-  };
+        WindowCloseEvent() {
+            this->SetType(EventType::WINDOW_CLOSE);
+        }
+    };
 
 }
 

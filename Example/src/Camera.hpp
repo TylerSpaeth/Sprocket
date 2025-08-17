@@ -5,20 +5,20 @@
 
 namespace Sprocket {
 
-  class Camera : public Entity {
+    class Camera : public Entity {
 
-  public:
-      Entity* m_EntityToFollow = nullptr;
+    public:
+        Entity* m_EntityToFollow = nullptr;
 
-    Camera() {
-      AddComponent<CameraComponent>();
-    }
- 
-    void Update(float deltaTime) override {
-      GetComponent<TransformComponent>()->LocalPosition() = m_EntityToFollow->GetComponent<TransformComponent>()->LocalPosition();
-    }
+        Camera() {
+            AddComponent<CameraComponent>();
+        }
 
-  };
+        void Update(float deltaTime) override {
+            GetComponent<TransformComponent>()->LocalPosition() = m_EntityToFollow->GetComponent<TransformComponent>()->LocalPosition();
+        }
+
+    };
 
 }
 

@@ -8,14 +8,14 @@
 
 namespace Sprocket {
 
-  void CameraComponent::UpdateCameraPosition(glm::vec3 position, glm::vec3 rotation, glm::vec3 scale) {
+    void CameraComponent::UpdateCameraPosition(glm::vec3 position, glm::vec3 rotation, glm::vec3 scale) {
 
-    RenderUpdateEvent* e = new RenderUpdateEvent(RenderUpdateType::VIEW_MATRIX, -1);
+        RenderUpdateEvent* e = new RenderUpdateEvent(RenderUpdateType::VIEW_MATRIX, -1);
 
-    e->m_Matrix = RendererUtils::CalculateMatrixFromVecs(position, rotation, scale);
-    m_EventCallback(*e);
-    free(e);
+        e->m_Matrix = RendererUtils::CalculateMatrixFromVecs(position, rotation, scale);
+        m_EventCallback(*e);
+        free(e);
 
-  }
+    }
 
 }

@@ -13,21 +13,21 @@
 
 namespace Sprocket {
 
-  /// @brief The main camera of the scene. Only add one to a scene at a time.
-  class SPROCKET_API CameraComponent : public Component {
+    /// @brief The main camera of the scene. Only add one to a scene at a time.
+    class SPROCKET_API CameraComponent : public Component {
 
-    friend class Entity;
+        friend class Entity;
 
     private:
 
-      CameraComponent(){}
-      ~CameraComponent(){}
+        CameraComponent() {}
+        ~CameraComponent() {}
 
-      std::function<void(Event&)> m_EventCallback;
+        std::function<void(Event&)> m_EventCallback;
 
-      void UpdateCameraPosition(glm::vec3 position, glm::vec3 rotation, glm::vec3 scale);
+        void UpdateCameraPosition(glm::vec3 position, glm::vec3 rotation, glm::vec3 scale);
 
-  };
+    };
 
 }
 
