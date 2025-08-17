@@ -1,6 +1,7 @@
 #include "Texture.h"
 #include "ThirdParty/glad/glad.h"
 #include "ThirdParty/stb_image/stb_image.h"
+#include "Core/Global.h"
 
 namespace Sprocket {
 
@@ -29,7 +30,7 @@ namespace Sprocket {
             stbi_image_free(m_LocalBuffer);
         }
         else if (m_LocalBuffer == nullptr) {
-            std::println("Failed to load texture");
+            Global::fileLogger.Error(std::format("Sprocket: Texture loading failed for path: {}", path));
         }
 
         glBindTexture(GL_TEXTURE_2D, 0);

@@ -1,5 +1,6 @@
 #include "Shader.h"
 #include "ThirdParty/glad/glad.h"
+#include "Core/Global.h"
 
 namespace Sprocket {
 
@@ -17,7 +18,7 @@ namespace Sprocket {
             glGetShaderiv(shader, GL_INFO_LOG_LENGTH, &length);
             char* message = (char*)alloca(length * sizeof(char));
             glGetShaderInfoLog(shader, length, &length, message);
-            std::println("Failed to compile shader\n{}", message);
+            Global::fileLogger.Error("Sprocket: Shader compilation failed");
         }
 
         return shader;
