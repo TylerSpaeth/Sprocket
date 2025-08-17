@@ -3,9 +3,9 @@
 namespace Sprocket {
 
     Logger::Logger(const std::string& filepath) {
-        m_LogFile = fopen(filepath.c_str(), "a");
+        m_LogFile = fopen(filepath.c_str(), "w");
         if (!m_LogFile) {
-            std::println("Failed to open log file: {}", filepath);
+            std::println("Failed to open log file for writing: {}", filepath);
             m_LogFile = stdout;
         }
     }
