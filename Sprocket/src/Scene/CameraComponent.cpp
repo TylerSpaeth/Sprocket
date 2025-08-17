@@ -14,7 +14,7 @@ namespace Sprocket {
 
         e->m_Matrix = RendererUtils::CalculateMatrixFromVecs(position, rotation, scale);
         m_EventCallback(*e);
-        free(e);
+        delete e;
 
     }
 

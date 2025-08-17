@@ -14,7 +14,7 @@ namespace Sprocket {
 
             result = event->Collides();
 
-            free(event);
+            delete event;
 
         }
 
@@ -30,7 +30,7 @@ namespace Sprocket {
 
             m_EventCallback(*event);
 
-            free(event);
+            delete event;
 
         }
 
@@ -44,7 +44,7 @@ namespace Sprocket {
             PhysicsCollisionCheckGenericEvent* event = new PhysicsCollisionCheckGenericEvent(m_PhysicsID);
             m_EventCallback(*event);
             result = event->Collides();
-            free(event);
+            delete event;
         }
 
         return result;

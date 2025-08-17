@@ -104,7 +104,7 @@ namespace Sprocket {
                 T* existingComponent = dynamic_cast<T*>(m_Components.at(i));
                 if (existingComponent != nullptr) {
                     m_Components.erase(m_Components.begin() + i);
-                    free(existingComponent);
+                    delete existingComponent;
                     return true;
                 }
             }
@@ -142,7 +142,7 @@ namespace Sprocket {
             if (existingComponent != nullptr) {
                 m_Components.erase(m_Components.begin() + i);
                 existingComponent->RemoveRender();
-                free(existingComponent);
+                delete existingComponent;
                 return true;
             }
         }
@@ -175,7 +175,7 @@ namespace Sprocket {
             if (existingComponent != nullptr) {
                 m_Components.erase(m_Components.begin() + i);
                 existingComponent->UpdateCameraPosition(glm::vec3(0), glm::vec3(0), glm::vec3(1));
-                free(existingComponent);
+                delete existingComponent;
                 return true;
             }
         }
@@ -211,7 +211,7 @@ namespace Sprocket {
             if (existingComponent != nullptr) {
                 m_Components.erase(m_Components.begin() + i);
                 existingComponent->Remove();
-                free(existingComponent);
+                delete existingComponent;
                 return true;
             }
         }
@@ -246,7 +246,7 @@ namespace Sprocket {
             if (existingComponent != nullptr) {
                 m_Components.erase(m_Components.begin() + i);
                 existingComponent->Remove();
-                free(existingComponent);
+                delete existingComponent;
                 return true;
             }
         }
@@ -279,7 +279,7 @@ namespace Sprocket {
             if (existingComponent != nullptr) {
                 m_Components.erase(m_Components.begin() + i);
                 existingComponent->DeleteTileMap();
-                free(existingComponent);
+                delete existingComponent;
                 return true;
             }
         }

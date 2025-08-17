@@ -195,7 +195,7 @@ namespace Sprocket {
         delete s_Instance->m_Shader;
         // Deallocate all of the textures pointers
         for (Texture* t : s_Instance->m_BoundTextures) {
-            free(t);
+            delete t;
         }
         // Clear Vectors
         s_Instance->m_Quads.clear();
