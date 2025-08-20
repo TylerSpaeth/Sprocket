@@ -1,5 +1,7 @@
 #include "Renderer.h"
 
+#include "Core/Global.h"
+
 #include "Events/RenderEvent.h"
 
 #include "ThirdParty/glad/glad.h"
@@ -18,7 +20,12 @@ namespace Sprocket {
     ////////////////////////////////////////////////////////////////////////////////////
 
     static IndexBuffer* GenerateIndexBuffer(unsigned int count) {
-        unsigned int* indicies = (unsigned int*)malloc(count * sizeof(unsigned int));
+        if(count < 6 || count % 6 != 0) {
+            Global::fileLogger.Error("The number of verticies in an index buffer must be a positive multiple of 6.");
+            return nullptr;
+        }
+        unsigned int* indicies = new unsigned int[count];
+        //unsigned int* indicies = (unsigned int*)malloc(count * sizeof(unsigned int));
         unsigned int offset = 0;
         for (int i = 0; i < count; i += 6) {
             indicies[i + 0] = 0 + offset;
@@ -31,7 +38,7 @@ namespace Sprocket {
         }
 
         IndexBuffer* ib = new IndexBuffer(indicies, count);
-        free(indicies);
+        delete[] indicies;
 
         return ib;
     }
