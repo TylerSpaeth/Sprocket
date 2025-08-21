@@ -16,7 +16,7 @@ namespace Sprocket {
         if (result == GL_FALSE) {
             int length;
             glGetShaderiv(shader, GL_INFO_LOG_LENGTH, &length);
-            char* message = (char*)alloca(length * sizeof(char));
+            char* message = (char*)_malloca(length * sizeof(char));
             glGetShaderInfoLog(shader, length, &length, message);
             Global::fileLogger.Error("Sprocket: Shader compilation failed");
         }

@@ -30,6 +30,7 @@ namespace Sprocket {
         void Info(const std::string& message);
         void Warning(const std::string& message);
         void Error(const std::string& message);
+        // Debug messages are only logged in debug builds to ensure that release logs do not get cluttered.
         void Debug(const std::string& message);
     };
 }

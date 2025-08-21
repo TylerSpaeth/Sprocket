@@ -31,7 +31,9 @@ namespace Sprocket {
         WriteLog(ERROR, message);
     }   
     void Logger::Debug(const std::string& message) {
-        WriteLog(DEBUG, message);
+        #ifdef _DEBUG
+            WriteLog(DEBUG, message);
+        #endif
     }
 
 }
