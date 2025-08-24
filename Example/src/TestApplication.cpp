@@ -21,6 +21,9 @@ public:
 
     void Start() {
         using namespace Sprocket;
+
+        Window::EnableVSync(false);
+
         Scene* scene = SceneManager::GetActiveScene();
 
         player = new Player();
@@ -77,26 +80,7 @@ Sprocket::Application* Sprocket::CreateApplication() {
 
     TestApplication* app = new TestApplication();
 
-    SceneManager::Init(std::bind(&Application::OnEvent, app, std::placeholders::_1));
-    app->RegisterEventCallback(SceneManager::OnEvent, EventCategory::UNCATEGORIZED);
-
-    Window::Init(1066, 600, "Test Window");
-    Window::EnableVSync(false);
-    Window::RegisterEventCallback(std::bind(&Application::OnEvent, app, std::placeholders::_1));
-    app->RegisterEventCallback(Window::OnEvent, EventCategory::UNCATEGORIZED);
-
-    Input::Init();
-    app->RegisterEventCallback(Input::OnEvent, EventCategory::APPLICATION);
-
-    // ImGui must be initialized after the window and much have its callback registered before the renderer
-    ImGuiImpl::Init();
-    app->RegisterEventCallback(ImGuiImpl::OnEvent, EventCategory::UNCATEGORIZED);
-
-    Renderer::Init(500000, 1066, 600);
-    app->RegisterEventCallback(Renderer::OnEvent, EventCategory::UNCATEGORIZED);
-
-    Physics::Init();
-    app->RegisterEventCallback(Physics::OnEvent, EventCategory::UNCATEGORIZED);
+    app->SetWindowTitle("Sprocket Test Application");
 
     return app;
 }

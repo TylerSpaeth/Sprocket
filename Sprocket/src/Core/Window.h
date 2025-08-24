@@ -10,6 +10,7 @@ namespace Sprocket {
 
     /// @brief This is a singleton the encapsulates the GLFW functionality. This is an event producer.
     class SPROCKET_API Window {
+        friend class Application;
     private:
         void* m_Window; // GLFWwindow
         std::function<void(Event&)> m_EventCallback;
@@ -37,7 +38,6 @@ namespace Sprocket {
         /// received. Performs any tasks that need to occur every repeatedly.
         static void OnUpdate() { s_Instance->OnUpdateInstance(); }
 
-    public:
         /// @brief Initializes the Window singleton and sets appropriate values. This function
         /// must be called before any other Window functions.
         /// @param xDimension The width of the window in pixels.
@@ -55,6 +55,8 @@ namespace Sprocket {
         /// @param eventCallback a function that will take in an Event when an event occurs.
         static void RegisterEventCallback(const std::function<void(Event&)> eventCallback) { s_Instance->RegisterEventCallbackInstance(eventCallback); }
 
+    public:
+        
         /// @brief Enables or disables vsync on the window. Enabled by default.
         /// @param enable if true, then vsync will be enable. If false, it will be disabled.
         static void EnableVSync(bool enable) { s_Instance->EnableVSyncInstance(enable); }

@@ -8,6 +8,7 @@ extern Sprocket::Application* Sprocket::CreateApplication();
 int main(int argc, char** argv) {
 
     auto app = Sprocket::CreateApplication();
+    app->Init();
     app->Run();
     delete app;
 

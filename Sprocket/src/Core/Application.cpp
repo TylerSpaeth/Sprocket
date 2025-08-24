@@ -3,15 +3,49 @@
 #include "Events/EventValidation.h"
 #include "Core/Global.h"
 
+#include "Core/Window.h"
+#include "Core/Input.h"
+#include "Renderer/Renderer.h"
+#include "Scene/SceneManager.h"
+#include "ImGui/ImGuiImpl.h"
+#include "Physics/Physics.h"
+
 namespace Sprocket {
 
-    Application::Application() {
-        Global::fileLogger.Info("Sprocket: Startup");
-    }
-
+    Application::Application() {}
     Application::~Application() {}
     void Application::Start() {}
     void Application::Update(float deltaTime) {}
+
+    void Application::Init() {
+
+        if (m_Initialized) {
+            return;
+        }
+
+        Global::fileLogger.Info("Sprocket: Startup");
+
+        SceneManager::Init(std::bind(&Application::OnEvent, this, std::placeholders::_1));
+        this->RegisterEventCallback(SceneManager::OnEvent, EventCategory::UNCATEGORIZED);
+
+        Window::Init(m_WindowDimensions.first, m_WindowDimensions.second, m_WindowTitle);
+        Window::RegisterEventCallback(std::bind(&Application::OnEvent, this, std::placeholders::_1));
+        this->RegisterEventCallback(Window::OnEvent, EventCategory::UNCATEGORIZED);
+
+        Input::Init();
+        this->RegisterEventCallback(Input::OnEvent, EventCategory::APPLICATION);
+
+        // ImGui must be initialized after the window and much have its callback registered before the renderer
+        ImGuiImpl::Init();
+        this->RegisterEventCallback(ImGuiImpl::OnEvent, EventCategory::UNCATEGORIZED);
+
+        // TODO figure out a better way to handle the renderer init parameters. 500000 should not be hardcoded
+        Renderer::Init(500000, m_WindowDimensions.first, m_WindowDimensions.second);
+        this->RegisterEventCallback(Renderer::OnEvent, EventCategory::UNCATEGORIZED);
+
+        Physics::Init();
+        this->RegisterEventCallback(Physics::OnEvent, EventCategory::UNCATEGORIZED);
+    }
 
     void Application::Run() {
 

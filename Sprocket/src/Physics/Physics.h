@@ -25,7 +25,7 @@ namespace Sprocket {
         PhysicsObject(glm::vec2 colliderCenter, float circleRadius) : m_ColliderCenter(colliderCenter), m_CircleRadius(circleRadius) {}
     };
 
-    class SPROCKET_API Physics {
+    class Physics {
 
     private:
 

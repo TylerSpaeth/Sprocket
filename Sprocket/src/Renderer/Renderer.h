@@ -32,7 +32,7 @@ namespace Sprocket {
     /// @brief This is a singleton that handles all of the rendering functionality for a Sprocket
     /// application using OpenGL. The sorting order of quads is determined by z position.
     /// High z positions are rendered in front of lower z positions. This is an event subscriber.
-    class SPROCKET_API Renderer {
+    class Renderer {
     private:
         static const float s_PixelsPerUnit;
         // View matrix is initialized to just being at 0,0

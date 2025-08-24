@@ -13,10 +13,14 @@ namespace Sprocket {
     /// handler for Sprocket, so most events should pass through here.
     class SPROCKET_API Application {
     private:
+        bool m_Initialized = false;
         bool m_AppRunning = false;
         int64_t m_LastTimeChecked = std::chrono::duration_cast<std::chrono::microseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
         int64_t GetTimeSinceLastChecked();
         std::vector<std::pair<std::function<void(Event&)>, EventCategory>> m_EventCallbacks;
+
+        std::string m_WindowTitle = "Sprocket Application";
+        std::pair<unsigned int, unsigned int> m_WindowDimensions = { 1066, 600 };
 
     protected:
         /// @brief This function is the first thing run when the Run() function is called.
@@ -33,6 +37,9 @@ namespace Sprocket {
     public:
         Application();
         virtual ~Application();
+
+        /// @brief Initializes the application. This function must be called before Run() is called.
+        void Init();
 
         /// @brief Runs the program. Calls the Start() and Update() functions appropriately and 
         /// disperses ApplicationUpdateEvents to all subscribers in every iteration of the loop.
@@ -51,6 +58,19 @@ namespace Sprocket {
         /// @param category The category of events that should be sent to the callback. UNCATEGORIZED 
         /// will send all events.
         void RegisterEventCallback(std::function<void(Event&)> eventCallback, EventCategory category);
+
+        /// @brief Sets the title of the application window.
+        /// @param title The title to set the window to.
+        void SetWindowTitle(const std::string& title) {
+            m_WindowTitle = title;
+        }
+
+        /// @brief Sets the dimensions of the application window.
+        /// @param width The width of the window in pixels.
+        /// @param height The height of the window in pixels.
+        void SetWindowDimensions(unsigned int width, unsigned int height) {
+            m_WindowDimensions = { width, height };
+        }
     };
 
     // Define in the code that is using Sprocket
