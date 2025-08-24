@@ -15,6 +15,7 @@ namespace Sprocket {
     private:
         bool m_Initialized = false;
         bool m_AppRunning = false;
+        bool m_ShutdownSeen = false;
         int64_t m_LastTimeChecked = std::chrono::duration_cast<std::chrono::microseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
         int64_t GetTimeSinceLastChecked();
         std::vector<std::pair<std::function<void(Event&)>, EventCategory>> m_EventCallbacks;

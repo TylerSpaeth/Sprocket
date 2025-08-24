@@ -66,6 +66,11 @@ namespace Sprocket {
             float deltaTime = GetTimeSinceLastChecked() / 1000000.0f;
             this->Update(deltaTime);
 
+            // If the app was shut down in the update, break out of the loop
+            if (!m_AppRunning) {
+                break;
+            }
+
             // Send an app update into the event system
             ApplicationUpdateEvent event(deltaTime);
             OnEvent(event);
@@ -75,6 +80,11 @@ namespace Sprocket {
     void Application::OnEvent(Event& event) {
 
         EventValidation::ValidateEvent(event);
+
+        if (m_ShutdownSeen) {
+            Global::fileLogger.Warning("Sprocket: Event received after shutdown event. Event will be ignored.");
+            return;
+        }
 
         // Traverse the callbacks in reverse order. Right now this is done so we can register the window
         // and renderer first. That way we can assure they receive events, mainly update, last
@@ -88,9 +98,10 @@ namespace Sprocket {
             }
         }
 
-        if (event.GetEventType() == EventType::WINDOW_CLOSE) {
+        if (event.GetEventType() == EventType::APP_SHUTDOWN) {
             Global::fileLogger.Info("Sprocket: Shutdown");
             m_AppRunning = false;
+            m_ShutdownSeen = true;
         }
     }
 

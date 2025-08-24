@@ -66,7 +66,7 @@ namespace Sprocket {
         Renderer operator=(const Renderer&) = delete;
 
         static void OnUpdate();
-        static void OnClose();
+        static void OnShutdown();
 
         /// @brief Adds a new quads of the given size at coordinates 0,0 and a color of white by 
         /// default.
