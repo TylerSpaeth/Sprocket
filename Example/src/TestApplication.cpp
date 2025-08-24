@@ -33,9 +33,10 @@ public:
         tileMap = new Tiles();
         scene->SubmitEntityToScene(*tileMap);
 
-        ImGuiImpl::SubmitRenderFunction([]() {
+        // Show ImGui demo window
+        /*ImGuiImpl::SubmitRenderFunction([]() {
             ImGui::ShowDemoWindow();
-        });
+        });*/
         ImGuiImpl::SubmitRenderFunction(std::bind(&TestApplication::FrameTimer, this));
 
     }
