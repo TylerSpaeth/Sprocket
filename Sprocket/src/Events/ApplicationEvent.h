@@ -27,6 +27,13 @@ namespace Sprocket {
         }
     };
 
+    class ApplicationShutdownEvent : public ApplicationEvent {
+    public:
+        ApplicationShutdownEvent() {
+            this->SetType(EventType::APP_SHUTDOWN);
+        }
+    };
+
 }
 
 #endif

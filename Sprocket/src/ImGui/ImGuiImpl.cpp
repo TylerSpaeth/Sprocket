@@ -31,8 +31,8 @@ namespace Sprocket {
         case EventType::APP_UPDATE:
             OnUpdate(((ApplicationUpdateEvent&)event).GetDeltaTime());
             break;
-        case EventType::WINDOW_CLOSE:
-            OnClose();
+        case EventType::APP_SHUTDOWN:
+            OnShutdown();
             break;
         default:
             break;
@@ -61,7 +61,7 @@ namespace Sprocket {
         }
     }
 
-    void ImGuiImpl::OnClose() {
+    void ImGuiImpl::OnShutdown() {
         ImGui_ImplOpenGL3_Shutdown();
         ImGui_ImplGlfw_Shutdown();
         ImGui::DestroyContext();

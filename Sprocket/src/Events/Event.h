@@ -9,10 +9,8 @@ namespace Sprocket {
         KEY_PRESSED, KEY_RELEASED,
         // MOUSE
         MOUSE_BTN_PRESSED, MOUSE_BTN_RELEASED, MOUSE_MOVED, MOUSE_SCROLLED,
-        // WINDOW
-        WINDOW_CLOSE,
         // APPLICATION
-        APP_UPDATE, APP_START,
+        APP_UPDATE, APP_START, APP_SHUTDOWN,
         // RENDER
         RENDER_NEW, RENDER_UPDATE, RENDER_DELETE,
         // PHYSICS
@@ -23,7 +21,6 @@ namespace Sprocket {
     enum class EventCategory {
         UNCATEGORIZED, // Every event type can be classified as uncategorized
         APPLICATION,
-        WINDOW,
         INPUT,
         KEYBOARD,
         MOUSE,
@@ -58,10 +55,9 @@ namespace Sprocket {
             case EventType::MOUSE_MOVED:
             case EventType::MOUSE_SCROLLED:
                 return eventCategory == EventCategory::INPUT || eventCategory == EventCategory::MOUSE || eventCategory == EventCategory::APPLICATION;
-            case EventType::WINDOW_CLOSE:
-                return eventCategory == EventCategory::APPLICATION || eventCategory == EventCategory::WINDOW;
             case EventType::APP_UPDATE:
             case EventType::APP_START:
+            case EventType::APP_SHUTDOWN:
                 return eventCategory == EventCategory::APPLICATION;
             case EventType::RENDER_NEW:
             case EventType::RENDER_UPDATE:

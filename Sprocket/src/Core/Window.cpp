@@ -1,7 +1,7 @@
 #include "Window.h"
 #include "Events/KeyboardEvent.h"
 #include "Events/MouseEvent.h"
-#include "Events/WindowEvents.h"
+#include "Events/ApplicationEvent.h"
 
 #include "ThirdParty/glad/glad.h"
 #include "ThirdParty/GLFW/glfw3.h"
@@ -84,7 +84,7 @@ namespace Sprocket {
 
     static void WindowCloseCallback(GLFWwindow* window) {
         const std::function<void(Event&)> eventCallback = *(const std::function<void(Event&)>*) glfwGetWindowUserPointer(window);
-        WindowCloseEvent e;
+        ApplicationShutdownEvent e;
         eventCallback(e);
     }
 
@@ -131,13 +131,13 @@ namespace Sprocket {
         case EventType::APP_UPDATE:
             OnUpdateInstance();
             break;
-        case EventType::WINDOW_CLOSE:
-            OnCloseInstance();
+        case EventType::APP_SHUTDOWN:
+            OnShutdownInstance();
             break;
         }
     }
 
-    void Window::OnCloseInstance() {
+    void Window::OnShutdownInstance() {
         glfwTerminate();
     }
 

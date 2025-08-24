@@ -31,9 +31,9 @@ namespace Sprocket {
         Input operator=(const Input) = delete;
 
         // Actual implementations for the static instance functions
-        /// @brief This function is called by the OnEvent function when a WINDOW_CLOSE event
+        /// @brief This function is called by the OnEvent function when a APP_SHUTDOWN event
         /// is recieved. Performs any tasks that need to occur before Input is destructed.
-        static void OnClose();
+        static void OnShutdown();
         /// @brief This function is called by the OnEvent function when a APP_UPDATE event is
         /// received. Performs any tasks that need to occur every repeatedly.
         static void OnUpdate();

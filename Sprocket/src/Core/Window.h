@@ -23,7 +23,7 @@ namespace Sprocket {
 
         // Actual implementations for the static instance functions
         void OnEventInstance(Event& event);
-        void OnCloseInstance();
+        void OnShutdownInstance();
         void OnUpdateInstance();
         void RegisterEventCallbackInstance(const std::function<void(Event&)> eventCallback);
         void EnableVSyncInstance(bool enable);
@@ -31,9 +31,9 @@ namespace Sprocket {
         void DisableCursorInstance();
         void HideCursorInstance();
 
-        /// @brief This function is called by the OnEvent function when a WINDOW_CLOSE event
+        /// @brief This function is called by the OnEvent function when a APP_SHUTDOWN event
         /// is recieved. Performs any tasks that need to occur before Input is destructed.
-        static void OnClose() { s_Instance->OnCloseInstance(); }
+        static void OnShutdown() { s_Instance->OnShutdownInstance(); }
         /// @brief This function is called by the OnEvent function when a APP_UPDATE event is
         /// received. Performs any tasks that need to occur every repeatedly.
         static void OnUpdate() { s_Instance->OnUpdateInstance(); }

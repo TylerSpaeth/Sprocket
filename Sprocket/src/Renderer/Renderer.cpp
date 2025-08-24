@@ -155,8 +155,8 @@ namespace Sprocket {
         case EventType::APP_UPDATE:
             OnUpdate();
             break;
-        case EventType::WINDOW_CLOSE:
-            OnClose();
+        case EventType::APP_SHUTDOWN:
+            OnShutdown();
             break;
         case EventType::RENDER_NEW:
             ((RenderNewEvent&)event).m_QuadID = AddQuad(s_PixelsPerUnit);
@@ -194,7 +194,7 @@ namespace Sprocket {
         s_Instance->Draw();
     }
 
-    void Renderer::OnClose() {
+    void Renderer::OnShutdown() {
         // TODO make sure everything is getting cleaned up
         delete s_Instance->m_VertexBuffer;
         delete s_Instance->m_VertexArray;

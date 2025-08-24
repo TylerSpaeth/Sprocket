@@ -34,8 +34,8 @@ namespace Sprocket {
             OnUpdate();
             return;
         }
-        case EventType::WINDOW_CLOSE: {
-            OnClose();
+        case EventType::APP_SHUTDOWN: {
+            OnShutdown();
             return;
         }
         case EventType::KEY_PRESSED: {
@@ -85,7 +85,7 @@ namespace Sprocket {
     ///////////////////////////// PRIVATE STATIC FUNCTIONS /////////////////////////////
     ////////////////////////////////////////////////////////////////////////////////////
 
-    void Input::OnClose() {
+    void Input::OnShutdown() {
         s_Instance->m_CurrentButtonStatus.clear();
         s_Instance->m_CurrentKeyStatus.clear();
     }

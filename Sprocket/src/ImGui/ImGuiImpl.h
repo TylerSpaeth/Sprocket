@@ -24,7 +24,7 @@ namespace Sprocket {
         std::priority_queue<unsigned int, std::vector<unsigned int>, std::greater<unsigned int>> m_FreeRenderFunctionSlots;
 
         static void OnUpdate(float deltaTime);
-        static void OnClose();
+        static void OnShutdown();
 
     public:
         /// @brief Initializes the ImGui implementation. Should be called once during application startup. 

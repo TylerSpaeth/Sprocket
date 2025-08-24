@@ -63,8 +63,8 @@ public:
 
         // Close on escape
         if (Input::IsKeyPressed(KEY_ESCAPE)) {
-            WindowCloseEvent* wc = new WindowCloseEvent();
-            OnEvent(*wc);
+            ApplicationShutdownEvent e;
+            OnEvent(e);
         }
 
     }
