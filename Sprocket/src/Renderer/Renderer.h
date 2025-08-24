@@ -38,7 +38,6 @@ namespace Sprocket {
         // View matrix is initialized to just being at 0,0
         glm::mat4 m_ViewMatrix = glm::translate(glm::mat4(1.0f), glm::vec3(0, 0, 0));
         Shader* m_Shader;
-        unsigned int m_MaxQuads;
         VertexBuffer* m_VertexBuffer;
         IndexBuffer* m_IndexBuffer;
         VertexArray* m_VertexArray;
@@ -61,7 +60,7 @@ namespace Sprocket {
 
         // Singleton Components
         static Renderer* s_Instance;
-        Renderer(unsigned int maxQuads) : m_MaxQuads(maxQuads) {}
+        Renderer() {}
         Renderer(const Renderer&) = delete;
         Renderer operator=(const Renderer&) = delete;
 
@@ -126,13 +125,12 @@ namespace Sprocket {
     public:
         /// @brief Initializes the singleton and sets the appropriate parameters. This must be called
         /// before any other Renderer function.
-        /// @param maxQuads the maximum number of quads that the Renderer should accept.
         /// @param xDimension The width of the projection matrix. It is recommended that this value 
         /// the same as the width of the window's native resolution in pixels.
         /// @param yDimension The height of the projection matrix. It is recommended that this value 
         /// the same as the height of the window's native resolution in pixels.
         /// @throws std::invalid_argument if either xDimension or yDimension is negative
-        static void Init(const unsigned int maxQuads, const unsigned int xDimension, const unsigned int yDimension);
+        static void Init(const unsigned int xDimension, const unsigned int yDimension);
 
         /// @brief Handles incoming events. Should be registered as a callback to recieve events.
         /// @param event The event the should be handled.

@@ -64,7 +64,7 @@ namespace Sprocket {
 
         /// @brief Handles incoming events. Should be registered as a callback to receive events.
         /// @param event The event the should be handled.
-        static void OnEvent(Event& event);
+        static void OnEvent(Event& event);  
 
     };
 

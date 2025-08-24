@@ -16,6 +16,7 @@ namespace Sprocket {
     Application::~Application() {}
     void Application::Start() {}
     void Application::Update(float deltaTime) {}
+    void Application::Shutdown(){}
 
     void Application::Init() {
 
@@ -40,7 +41,7 @@ namespace Sprocket {
         this->RegisterEventCallback(ImGuiImpl::OnEvent, EventCategory::UNCATEGORIZED);
 
         // TODO figure out a better way to handle the renderer init parameters. 500000 should not be hardcoded
-        Renderer::Init(500000, m_WindowDimensions.first, m_WindowDimensions.second);
+        Renderer::Init(m_WindowDimensions.first, m_WindowDimensions.second);
         this->RegisterEventCallback(Renderer::OnEvent, EventCategory::UNCATEGORIZED);
 
         Physics::Init();
@@ -75,6 +76,7 @@ namespace Sprocket {
             ApplicationUpdateEvent event(deltaTime);
             OnEvent(event);
         }
+        this->Shutdown();
     }
 
     void Application::OnEvent(Event& event) {
