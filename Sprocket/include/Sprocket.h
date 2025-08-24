@@ -15,6 +15,10 @@
 
 #include "Logger/Logger.h"
 
+#include "ImGui/ImGuiImpl.h"
+
+#include "ThirdParty/imgui-docking/imgui.h"
+
 // Sprocket EntryPoint
 #include "Core/EntryPoint.hpp"
 

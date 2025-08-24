@@ -10,15 +10,30 @@ link_directories(lib)
 
 add_library(sprocket SHARED)
 
-target_include_directories(sprocket PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/src)
+# Expose the raw ImGui API
+target_compile_definitions(sprocket PRIVATE "IMGUI_API=__declspec(dllexport)")
+target_compile_definitions(sprocket INTERFACE "IMGUI_API=__declspec(dllimport)")
+
 target_include_directories(sprocket PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include)
+
+target_include_directories(sprocket PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
+target_include_directories(sprocket PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src/ThirdParty)
+target_include_directories(sprocket PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src/ThirdParty/imgui-docking)
+target_include_directories(sprocket PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src/ThirdParty/imgui-docking/backends)
 
 target_precompile_headers(sprocket PUBLIC $<$<COMPILE_LANGUAGE:CXX>:${CMAKE_CURRENT_SOURCE_DIR}/src/Core/Sprocket.pch>)
 
 # Add ThirdParty source code
-target_sources(sprocket PRIVATE 
+target_sources(sprocket PRIVATE
   src/ThirdParty/glad/glad.c
   src/ThirdParty/stb_image/stb_image.cpp
+  src/ThirdParty/imgui-docking/imgui.cpp
+  src/ThirdParty/imgui-docking/imgui_demo.cpp
+  src/ThirdParty/imgui-docking/imgui_draw.cpp
+  src/ThirdParty/imgui-docking/imgui_tables.cpp
+  src/ThirdParty/imgui-docking/imgui_widgets.cpp
+  src/ThirdParty/imgui-docking/backends/imgui_impl_glfw.cpp
+  src/ThirdParty/imgui-docking/backends/imgui_impl_opengl3.cpp
 )
 
 # Add Renderer source code
@@ -67,6 +82,11 @@ target_sources(sprocket PRIVATE
 # Add Logger source code
 target_sources(sprocket PRIVATE
   src/Logger/Logger.cpp
+)
+
+#Add ImGui source code
+target_sources(sprocket PRIVATE
+  src/ImGui/ImGuiImpl.cpp
 )
 
 # Copy everything in the resources folder to the output directory
