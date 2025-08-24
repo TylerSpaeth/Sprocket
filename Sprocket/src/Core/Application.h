@@ -35,6 +35,9 @@ namespace Sprocket {
         /// @param deltaTime The amount of time that has elapsed since the last call to Update in seconds.
         virtual void Update(float deltaTime); // TODO remove when scripting is added
 
+        /// @brief This function is called once after the main loop has ended.
+        virtual void Shutdown(); // TODO remove when scripting is added
+
     public:
         Application();
         virtual ~Application();

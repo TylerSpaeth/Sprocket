@@ -91,14 +91,14 @@ namespace Sprocket {
     ////////////////////////////////////////////////////////////////////////////////////
 
     Renderer* Renderer::s_Instance = nullptr;
-    void Renderer::Init(const unsigned int maxQuads, const unsigned int xDimension, const unsigned int yDimension) {
+    void Renderer::Init(const unsigned int xDimension, const unsigned int yDimension) {
         if (!s_Instance) {
 
             if (xDimension < 0 || yDimension < 0) {
                 throw std::invalid_argument("Renderer dimensions can not be negative.");
             }
 
-            s_Instance = new Renderer(maxQuads);
+            s_Instance = new Renderer();
 
             // Setup blending
             glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -107,8 +107,8 @@ namespace Sprocket {
             // Allow sorting by z position
             glEnable(GL_DEPTH_TEST);
 
-            s_Instance->m_VertexBuffer = new VertexBuffer(nullptr, sizeof(Vertex) * s_Instance->m_MaxQuads * 4);;
-            s_Instance->m_IndexBuffer = GenerateIndexBuffer(s_Instance->m_MaxQuads * 6);
+            s_Instance->m_VertexBuffer = new VertexBuffer(nullptr, sizeof(Vertex) * 40);;
+            s_Instance->m_IndexBuffer = GenerateIndexBuffer(60);
             s_Instance->m_VertexArray = new VertexArray();
 
             // Check to see how many texture slots the system has
@@ -142,8 +142,6 @@ namespace Sprocket {
             s_Instance->m_Shader->Bind();
             s_Instance->m_Shader->SetUniformMatrix4f("u_ProjectionMatrix", glm::ortho(-(float)xDimension / 2, (float)xDimension / 2, -(float)yDimension / 2, (float)yDimension / 2));
             s_Instance->m_Shader->Unbind();
-
-            s_Instance->m_CalculatedQuads.reserve(s_Instance->m_MaxQuads * 4);
         }
     }
 
@@ -219,8 +217,45 @@ namespace Sprocket {
             throw std::invalid_argument("A quad must have a positive, nonzero size.");
         }
 
-        if (s_Instance->m_Quads.size() - s_Instance->m_DeletedQuadIndexes.size() >= s_Instance->m_MaxQuads) {
-            throw std::runtime_error("The maximum number of quads has already been reached. To use more quads, change the increase the amount at intialization.");
+        // When we no longer have space in the buffers, double their size. If an issue arises where 
+        // the buffers get really large and the number of quads then drops, this could be modified
+        // to reduce the size when appropriate, but for now it is probably safer to leave it like this.
+        // Realistically it is likely that the number of quads hits a high amount at one point it may 
+        // happen again.
+        if(s_Instance->m_IndexBuffer->GetCount() / 6 <= s_Instance->m_Quads.size()) {
+            // Double the size of the vertex and index buffers
+            unsigned int newVertexCount = s_Instance->m_IndexBuffer->GetCount() / 6 * 4 * 2;
+            unsigned int newIndexCount = s_Instance->m_IndexBuffer->GetCount() / 6 * 6 * 2;
+
+            VertexBuffer* newVB = new VertexBuffer(nullptr, sizeof(Vertex) * newVertexCount);
+            newVB->Bind();
+            // copy existing vertex data into new buffer
+            glBufferSubData(GL_ARRAY_BUFFER, 0,
+                sizeof(Vertex) * s_Instance->m_CalculatedQuads.size() * 4,
+                s_Instance->m_CalculatedQuads.data());
+            newVB->Unbind();
+
+            IndexBuffer* newIB = GenerateIndexBuffer(newIndexCount);
+
+            // Rebind the VAO
+            s_Instance->m_VertexArray->Bind();
+            newVB->Bind();
+            glEnableVertexAttribArray(0);
+            glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 10 * sizeof(float), (void*)0);
+            glEnableVertexAttribArray(1);
+            glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, 10 * sizeof(float), (void*)(3 * sizeof(float)));
+            glEnableVertexAttribArray(2);
+            glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 10 * sizeof(float), (void*)(7 * sizeof(float)));
+            glEnableVertexAttribArray(3);
+            glVertexAttribPointer(3, 1, GL_FLOAT, GL_FALSE, 10 * sizeof(float), (void*)(9 * sizeof(float)));
+            newVB->Unbind();
+            s_Instance->m_VertexArray->Unbind();
+
+            // Swap in new buffers
+            delete s_Instance->m_VertexBuffer;
+            delete s_Instance->m_IndexBuffer;
+            s_Instance->m_VertexBuffer = newVB;
+            s_Instance->m_IndexBuffer = newIB;
         }
 
         auto quad = CreateQuad(size, 0);

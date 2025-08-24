@@ -69,6 +69,8 @@ public:
 
     }
 
+    void Shutdown() {}
+
     void FrameTimer() {
         ImGui::Begin("Performance");
         ImGui::Text(std::format("Frame time: {:.3f} ms, FPS: {}", displayedDeltaTime * 1000, (int)(1000000 / (displayedDeltaTime * 1000000))).c_str());

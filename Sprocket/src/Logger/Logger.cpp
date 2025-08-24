@@ -19,6 +19,7 @@ namespace Sprocket {
     void Logger::WriteLog(const std::string& logTypeString, const std::string& message) {
         auto timestamp = std::chrono::system_clock::now();
         std::println(m_LogFile, "{:%Y-%m-%d %H:%M:%S} {} : {}", timestamp, logTypeString, message);
+        fflush(m_LogFile);
     }
 
     void Logger::Info(const std::string& message) {
