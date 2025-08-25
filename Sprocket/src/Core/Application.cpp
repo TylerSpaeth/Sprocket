@@ -92,6 +92,11 @@ namespace Sprocket {
         // and renderer first. That way we can assure they receive events, mainly update, last
         for (int i = m_EventCallbacks.size() - 1; i >= 0; i--) {
 
+            // If somewhere in the loop a shutdown event was happened, do not continue this loop
+            if (m_ShutdownSeen) {
+                break;
+            }
+
             if (event.IsCategory(m_EventCallbacks[i].second)) {
 
                 // Post the event to the subscriber
