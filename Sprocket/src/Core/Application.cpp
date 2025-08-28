@@ -9,6 +9,7 @@
 #include "Scene/SceneManager.h"
 #include "ImGui/ImGuiImpl.h"
 #include "Physics/Physics.h"
+#include "Audio/AudioMananger.h"
 
 namespace Sprocket {
 
@@ -46,6 +47,9 @@ namespace Sprocket {
 
         Physics::Init();
         this->RegisterEventCallback(Physics::OnEvent, EventCategory::UNCATEGORIZED);
+
+        AudioManager::Init();
+        this->RegisterEventCallback(AudioManager::OnEvent, EventCategory::AUDIO);
     }
 
     void Application::Run() {

@@ -7,6 +7,10 @@ namespace Sprocket {
 
     class Player : public Entity {
 
+    private:
+        float moveSpeed = 2.0f;
+        float rotateSpeed = 60.0f;
+
     public:
 
         Player() {
@@ -25,22 +29,22 @@ namespace Sprocket {
             }
 
             if (Input::IsKeyPressed(KEY_W)) {
-                GetComponent<TransformComponent>()->LocalPosition().y += 2 * deltaTime;
+                GetComponent<TransformComponent>()->LocalPosition().y += moveSpeed * deltaTime;
             }
             if (Input::IsKeyPressed(KEY_S)) {
-                GetComponent<TransformComponent>()->LocalPosition().y -= 2 * deltaTime;
+                GetComponent<TransformComponent>()->LocalPosition().y -= moveSpeed * deltaTime;
             }
             if (Input::IsKeyPressed(KEY_D)) {
-                GetComponent<TransformComponent>()->LocalPosition().x += 2 * deltaTime;
+                GetComponent<TransformComponent>()->LocalPosition().x += moveSpeed * deltaTime;
             }
             if (Input::IsKeyPressed(KEY_A)) {
-                GetComponent<TransformComponent>()->LocalPosition().x -= 2 * deltaTime;
+                GetComponent<TransformComponent>()->LocalPosition().x -= moveSpeed * deltaTime;
             }
             if (Input::IsKeyPressed(KEY_Q)) {
-                GetComponent<TransformComponent>()->LocalRotation().z -= 60 * deltaTime;
+                GetComponent<TransformComponent>()->LocalRotation().z -= rotateSpeed * deltaTime;
             }
             if (Input::IsKeyPressed(KEY_E)) {
-                GetComponent<TransformComponent>()->LocalRotation().z += 60 * deltaTime;
+                GetComponent<TransformComponent>()->LocalRotation().z += rotateSpeed * deltaTime;
             }
 
             if (Input::IsKeyPressed(KEY_0)) {

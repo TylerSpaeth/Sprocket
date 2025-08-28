@@ -84,9 +84,15 @@ target_sources(sprocket PRIVATE
   src/Logger/Logger.cpp
 )
 
-#Add ImGui source code
+# Add ImGui source code
 target_sources(sprocket PRIVATE
   src/ImGui/ImGuiImpl.cpp
+)
+
+# Add Audio source code
+target_sources(sprocket PRIVATE
+  src/Audio/AudioManager.cpp
+  src/Audio/Sound.cpp
 )
 
 # Copy everything in the resources folder to the output directory
