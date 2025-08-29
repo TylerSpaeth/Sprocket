@@ -12,6 +12,8 @@ namespace Sprocket {
         if (s_Instance == nullptr) {
             s_Instance = new AudioManager();
 
+            s_Instance->m_FreeSoundIndexes.push(0);
+
             // Initialize the native audio engine
             s_Instance->m_NativeAudioEngine = malloc(sizeof(ma_engine));
             auto startupStatus = ma_engine_init(NULL, (ma_engine*)s_Instance->m_NativeAudioEngine);
@@ -43,6 +45,9 @@ namespace Sprocket {
                 else if (actionEvent.GetActionType() == AudioActionType::STOP) {
                     Stop(actionEvent.GetSoundID());
                 }
+                else if(actionEvent.GetActionType() == AudioActionType::RESET) {
+                    Reset(actionEvent.GetSoundID());
+                }
                 break;
             }
             case EventType::AUDIO_SETTER: {
@@ -53,12 +58,6 @@ namespace Sprocket {
                         break;
                     case AudioSetterType::LOOPING:
                         SetSoundLooping(setterEvent.GetSoundID(), setterEvent.GetBoolValue());
-                        break;
-                    case AudioSetterType::START_TIME:
-                        SetSoundStartTime(setterEvent.GetSoundID(), setterEvent.GetFloatValue());
-                        break;
-                    case AudioSetterType::STOP_TIME:
-                        SetSoundStopTime(setterEvent.GetSoundID(), setterEvent.GetFloatValue());
                         break;
                 }
                 break;
@@ -72,11 +71,8 @@ namespace Sprocket {
                     case AudioGetterType::LOOPING:
                         getterEvent.m_BoolValue = IsSoundLooping(getterEvent.GetSoundID());
                         break;
-                    case AudioGetterType::START_TIME:
-                        getterEvent.m_FloatValue = GetSoundStartTime(getterEvent.GetSoundID());
-                        break;
-                    case AudioGetterType::STOP_TIME:
-                        getterEvent.m_FloatValue = GetSoundStopTime(getterEvent.GetSoundID());
+                    case AudioGetterType::IS_PLAYING:
+                        getterEvent.m_BoolValue = IsSoundPlaying(getterEvent.GetSoundID());
                         break;
                 }
             }
@@ -119,6 +115,10 @@ namespace Sprocket {
         s_Instance->m_Sounds[soundID]->Stop();
     }
 
+    void AudioManager::Reset(int soundID) {
+        s_Instance->m_Sounds[soundID]->Reset();
+    }
+
     bool AudioManager::IsSoundPlaying(int soundID) {
         return s_Instance->m_Sounds[soundID]->IsPlaying();
     }
@@ -129,22 +129,6 @@ namespace Sprocket {
 
     float AudioManager::GetSoundVolume(int soundID) {
         return s_Instance->m_Sounds[soundID]->GetVolume();
-    }
-
-    void AudioManager::SetSoundStartTime(int soundID, float time) {
-        s_Instance->m_Sounds[soundID]->SetStartTime(time);
-    }
-
-    float AudioManager::GetSoundStartTime(int soundID) {
-        return s_Instance->m_Sounds[soundID]->GetStartTime();
-    }
-
-    void AudioManager::SetSoundStopTime(int soundID, float time) {
-        s_Instance->m_Sounds[soundID]->SetStopTime(time);
-    }
-
-    float AudioManager::GetSoundStopTime(int soundID) {
-        return s_Instance->m_Sounds[soundID]->GetStopTime();
     }
 
     void AudioManager::SetSoundLooping(int soundID, bool loop) {

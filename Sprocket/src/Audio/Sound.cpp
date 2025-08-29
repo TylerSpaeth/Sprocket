@@ -3,7 +3,6 @@
 #include "Core/Global.h"
 
 #define MINIAUDIO_IMPLEMENTATION
-
 #include "ThirdParty/miniaudio/miniaudio.h"
 
 namespace Sprocket {
@@ -41,6 +40,10 @@ namespace Sprocket {
         ma_sound_stop((ma_sound*)m_NativeSound);
     }
 
+    void Sound::Reset() {
+        ma_sound_seek_to_pcm_frame((ma_sound*)m_NativeSound, 0);
+    }
+
     void Sound::SetVolume(float volume) {
         // Clamp volume between 0.0 and 1.0
         if (volume < 0.0f) volume = 0.0f;
@@ -50,23 +53,6 @@ namespace Sprocket {
 
     float Sound::GetVolume() const {
         return ma_sound_get_volume((ma_sound*)m_NativeSound);
-    }
-
-
-    void Sound::SetStartTime(float time) {
-        ma_sound_set_start_time_in_milliseconds((ma_sound*)m_NativeSound, (ma_uint64)(time * 1000.0f));
-    }
-
-    float Sound::GetStartTime() const {
-        return m_StartTime;
-    }
-
-    void Sound::SetStopTime(float time) {
-        ma_sound_set_stop_time_in_milliseconds((ma_sound*)m_NativeSound, (ma_uint64)(time * 1000.0f));
-    }
-
-    float Sound::GetStopTime() const {
-        return m_StopTime;
     }
 
     void Sound::SetLooping(bool loop) {

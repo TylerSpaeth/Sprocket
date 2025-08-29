@@ -39,6 +39,12 @@ namespace Sprocket {
                 tileMap->m_EventCallback = m_EventCallback;
                 tileMap->RegisterTileMap(m_Transform.Position(), m_Transform.Rotation(), m_Transform.Scale());
             }
+            else if (SoundComponent* sound = dynamic_cast<SoundComponent*>(component)) {
+                sound->m_EventCallback = m_EventCallback;
+                if (!sound->GetFilepath().empty() && sound->m_SoundID == -1) {
+                    sound->SetFilepath(sound->GetFilepath());
+                }
+            }
         }
         Start();
     }
@@ -62,6 +68,10 @@ namespace Sprocket {
             else if (TileMapComponent* tileMap = dynamic_cast<TileMapComponent*>(component)) {
                 tileMap->DeleteTileMap();
                 tileMap->m_EventCallback = nullptr;
+            }
+            else if (SoundComponent* sound = dynamic_cast<SoundComponent*>(component)) {
+                sound->Stop();
+                sound->m_EventCallback = nullptr;
             }
         }
 

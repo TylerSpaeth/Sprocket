@@ -33,8 +33,6 @@ namespace Sprocket {
     enum class AudioSetterType {
         VOLUME,
         LOOPING,
-        START_TIME,
-        STOP_TIME    
     };
 
     class AudioSetterEvent : public AudioEvent {
@@ -57,8 +55,6 @@ namespace Sprocket {
     enum class AudioGetterType {
         VOLUME,
         LOOPING,
-        START_TIME,
-        STOP_TIME,
         IS_PLAYING
     };
 
@@ -79,7 +75,8 @@ namespace Sprocket {
 
     enum class AudioActionType {
         PLAY,
-        STOP
+        STOP,
+        RESET
     };
 
     class AudioActionEvent : public AudioEvent {

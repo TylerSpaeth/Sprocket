@@ -18,15 +18,10 @@ namespace Sprocket {
         void Play();
         bool IsPlaying() const;
         void Stop();
+        void Reset();
 
         void SetVolume(float volume); // volume should be between 0.0 and 1.0
         float GetVolume() const;
-
-        void SetStartTime(float time); // time in seconds
-        float GetStartTime() const; // time in seconds
-
-        void SetStopTime(float time); // time in seconds
-        float GetStopTime() const; // time in seconds
 
         void SetLooping(bool loop);
         bool IsLooping() const;

@@ -66,6 +66,7 @@ target_sources(sprocket PRIVATE
   src/Scene/BoxColliderComponent.cpp
   src/Scene/CircleColliderComponent.cpp
   src/Scene/TileMapComponent.cpp
+  src/Scene/SoundComponent.cpp
 )
 
 # Add Physics source code

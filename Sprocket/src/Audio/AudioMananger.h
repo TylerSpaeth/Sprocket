@@ -26,13 +26,10 @@ namespace Sprocket {
         static void UnloadSound(int soundID);
         static void Play(int soundID);
         static void Stop(int soundID);
+        static void Reset(int soundID);
         static bool IsSoundPlaying(int soundID);
         static void SetSoundVolume(int soundID, float volume);
         static float GetSoundVolume(int soundID);
-        static void SetSoundStartTime(int soundID, float time);
-        static float GetSoundStartTime(int soundID);
-        static void SetSoundStopTime(int soundID, float time);
-        static float GetSoundStopTime(int soundID);
         static void SetSoundLooping(int soundID, bool loop);
         static bool IsSoundLooping(int soundID);
 

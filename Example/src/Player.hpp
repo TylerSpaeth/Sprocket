@@ -16,16 +16,29 @@ namespace Sprocket {
         Player() {
             AddComponent<QuadRendererComponent>();
             AddComponent<BoxColliderComponent>();
+            AddComponent<SoundComponent>();
         }
 
         void Update(float deltaTime) override {
+            
+            if (GetComponent<SoundComponent>()->GetFilepath().empty()) {
+                GetComponent<SoundComponent>()->SetFilepath("sounds/chime.wav");
+            }
+
             auto collides = GetComponent<BoxColliderComponent>()->CollidesWithAnything();
             auto qr = GetComponent<QuadRendererComponent>();
             if (qr->GetQuadColor() != glm::vec4(1, 0, 0, 1) && collides) {
                 qr->UpdateQuadColor({ 1,0,0,1 });
+
+
+                if (!GetComponent<SoundComponent>()->IsPlaying()) {
+                    GetComponent<SoundComponent>()->Play();
+                }
             }
             else if (!collides && qr->GetQuadColor() == glm::vec4(1, 0, 0, 1)) {
-                qr->UpdateQuadColor({ 1,1,1,1 });
+                qr->UpdateQuadColor({ 1,1,1,1 });      
+                GetComponent<SoundComponent>()->Stop();
+                GetComponent<SoundComponent>()->Reset();
             }
 
             if (Input::IsKeyPressed(KEY_W)) {

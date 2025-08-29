@@ -11,6 +11,7 @@
 #include "CameraComponent.h"
 #include "ColliderComponent.h"
 #include "TileMapComponent.h"
+#include "SoundComponent.h"
 
 #include "Core/Sprocket.pch"
 
@@ -166,6 +167,40 @@ namespace Sprocket {
 
         m_Components.push_back(camera);
         return true;
+    }
+
+    template<>
+    inline bool Entity::AddComponent<SoundComponent>() {
+        for (Component* component : m_Components) {
+            SoundComponent* existingComponent = dynamic_cast<SoundComponent*>(component);
+            if (existingComponent != nullptr) {
+                return false;
+            }
+        }
+        SoundComponent* sound = new SoundComponent();
+        if (m_EventCallback != nullptr) {
+            sound->m_EventCallback = m_EventCallback;
+        }
+        m_Components.push_back(sound);
+        return true;
+    }
+
+    template<>
+    inline bool Entity::RemoveComponent<SoundComponent>() {
+        for (int i = 0; i < m_Components.size(); i++) {
+            SoundComponent* existingComponent = dynamic_cast<SoundComponent*>(m_Components.at(i));
+            if (existingComponent != nullptr) {
+                if(existingComponent->m_EventCallback != nullptr) {
+                    m_Components.erase(m_Components.begin() + i);
+                    if (existingComponent->IsPlaying()) {
+                        existingComponent->Stop();
+                    }
+                    delete existingComponent;
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     template<>
