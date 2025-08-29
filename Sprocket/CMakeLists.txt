@@ -66,6 +66,7 @@ target_sources(sprocket PRIVATE
   src/Scene/BoxColliderComponent.cpp
   src/Scene/CircleColliderComponent.cpp
   src/Scene/TileMapComponent.cpp
+  src/Scene/SoundComponent.cpp
 )
 
 # Add Physics source code
@@ -84,9 +85,15 @@ target_sources(sprocket PRIVATE
   src/Logger/Logger.cpp
 )
 
-#Add ImGui source code
+# Add ImGui source code
 target_sources(sprocket PRIVATE
   src/ImGui/ImGuiImpl.cpp
+)
+
+# Add Audio source code
+target_sources(sprocket PRIVATE
+  src/Audio/AudioManager.cpp
+  src/Audio/Sound.cpp
 )
 
 # Copy everything in the resources folder to the output directory

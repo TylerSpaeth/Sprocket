@@ -5,14 +5,16 @@
 #include "ApplicationEvent.h"
 #include "RenderEvent.h"
 #include "PhysicsEvent.h"
+#include "AudioEvent.h"
 
 #include "Core/Sprocket.pch"
 
 namespace Sprocket {
 
     // EventValidation is used to verify that a given event is valid. If validation fails in one of 
-    // these functions, then exceptions will be thrown, since this validation is intended to be a
-    // last line of defense against improper/failed validation in event producers.
+    // these functions, then an error will be logged and the application will be terminated. It is 
+    // up to other systems to ensure that they are passing in valid events. If they fail to do so, 
+    // this is the last line of defense and obviosuly shoudl not be relied on for normal operation.
     class EventValidation {
 
     public:
@@ -30,6 +32,11 @@ namespace Sprocket {
         static void ValidatePhysicsDeleteEvent(const PhysicsDeleteEvent& event);
         static void ValidatePhysicsCollisionCheckEvent(const PhysicsCollisionCheckEvent& event);
         static void ValidatePhysicsCollisionCheckGenericEvent(const PhysicsCollisionCheckGenericEvent& event);
+        static void ValidateAudioNewEvent(const AudioNewEvent& event);
+        static void ValidateAudioDeleteEvent(const AudioDeleteEvent& event);
+        static void ValidateAudioSetterEvent(const AudioSetterEvent& event);
+        static void ValidateAudioGetterEvent(const AudioGetterEvent& event);
+        static void ValidateAudioActionEvent(const AudioActionEvent& event);
 
     };
 

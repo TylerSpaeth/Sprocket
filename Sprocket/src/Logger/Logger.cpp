@@ -20,6 +20,13 @@ namespace Sprocket {
         auto timestamp = std::chrono::system_clock::now();
         std::println(m_LogFile, "{:%Y-%m-%d %H:%M:%S} {} : {}", timestamp, logTypeString, message);
         fflush(m_LogFile);
+
+        // If we are in a debug build, we will log everything to stdout
+        #ifdef _DEBUG
+            if (m_LogFile != stdout) {
+                std::println(stdout, "Logged to file: {:%Y-%m-%d %H:%M:%S} {} : {}", timestamp, logTypeString, message);
+            }
+        #endif
     }
 
     void Logger::Info(const std::string& message) {
