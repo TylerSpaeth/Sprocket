@@ -7,6 +7,7 @@
 #include "ThirdParty/miniaudio/miniaudio.h"
 
 namespace Sprocket {
+
     AudioManager* AudioManager::s_Instance = nullptr;
     void AudioManager::Init() {
         if (s_Instance == nullptr) {
@@ -25,6 +26,7 @@ namespace Sprocket {
             }
         }
     }
+
     void AudioManager::OnEvent(Event& event) {
         switch(event.GetEventType()) {
             case EventType::AUDIO_NEW: {

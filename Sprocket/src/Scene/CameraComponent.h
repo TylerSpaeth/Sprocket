@@ -3,8 +3,6 @@
 
 #include "Component.h"
 
-#include "Events/Event.h"
-
 #include "ThirdParty/glm/glm.hpp"
 
 #include "Core/Sprocket.pch"
@@ -14,7 +12,7 @@
 namespace Sprocket {
 
     /// @brief The main camera of the scene. Only add one to a scene at a time.
-    class SPROCKET_API CameraComponent : public Component {
+    class SPROCKET_API CameraComponent : public EventDrivenComponent {
 
         friend class Entity;
 
@@ -22,8 +20,6 @@ namespace Sprocket {
 
         CameraComponent() {}
         ~CameraComponent() {}
-
-        std::function<void(Event&)> m_EventCallback;
 
         void UpdateCameraPosition(glm::vec3 position, glm::vec3 rotation, glm::vec3 scale);
 

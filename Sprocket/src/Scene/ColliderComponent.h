@@ -4,9 +4,6 @@
 #include "Component.h"
 #include "TransformComponent.h"
 
-#include "Events/Event.h"
-#include "Events/PhysicsEvent.h"
-
 #include "Core/Macros.h"
 
 #include "ThirdParty/glm/glm.hpp"
@@ -15,11 +12,10 @@
 
 namespace Sprocket {
 
-    class SPROCKET_API ColliderComponent : public Component {
+    class SPROCKET_API ColliderComponent : public EventDrivenComponent {
         friend class Entity;
     protected:
         int m_PhysicsID = -1;
-        std::function<void(Event&)> m_EventCallback;
         TransformComponent* m_TranformComponent = nullptr;
         ColliderComponent(TransformComponent& transformComponent) : m_TranformComponent(&transformComponent) {}
 

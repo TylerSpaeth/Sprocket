@@ -1,5 +1,7 @@
 #include "ColliderComponent.h"
 
+#include "Events/PhysicsEvent.h"
+
 namespace Sprocket {
 
     glm::vec2 BoxColliderComponent::GetSize() const {

@@ -3,8 +3,6 @@
 
 #include "Component.h"
 
-#include "Events/Event.h"
-
 #include "ThirdParty/glm/glm.hpp"
 
 #include "Core/Sprocket.pch"
@@ -13,7 +11,7 @@ namespace Sprocket {
 
     // FIXME for some reason rotating the tilemap has a major negative impact on performance.
     // Not sure what is causing this
-    class SPROCKET_API TileMapComponent : public Component {
+    class SPROCKET_API TileMapComponent : public EventDrivenComponent {
 
         friend class Entity;
 
@@ -45,8 +43,6 @@ namespace Sprocket {
         static constexpr unsigned int MAX_UNIQUE_TILES = 94;
         std::array<std::vector<unsigned int>, MAX_UNIQUE_TILES> m_QuadRendererIDs;
         std::array<QuadRendererStruct, MAX_UNIQUE_TILES> m_QuadRenderers;
-
-        std::function<void(Event&)> m_EventCallback;
 
         TileMapComponent() {}
 

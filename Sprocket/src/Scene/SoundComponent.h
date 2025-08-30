@@ -4,17 +4,15 @@
 #include "Component.h"
 #include "Core/Sprocket.pch"
 #include "Core/Macros.h"
-#include "Events/Event.h"
 
 namespace Sprocket {
-    class SPROCKET_API SoundComponent : public Component { 
+    class SPROCKET_API SoundComponent : public EventDrivenComponent { 
         friend class Entity;
     private:
         /// @brief Creates a sound component, but does not register it with the audio system.
         SoundComponent() {}
         ~SoundComponent() {}
 
-        std::function<void(Event&)> m_EventCallback;
         int m_SoundID = -1;
         std::string m_Filepath;
     public:

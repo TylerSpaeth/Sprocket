@@ -3,8 +3,6 @@
 
 #include "Component.h"
 
-#include "Events/Event.h"
-
 #include "ThirdParty/glm/glm.hpp"
 
 #include "Core/Sprocket.pch"
@@ -13,7 +11,7 @@ namespace Sprocket {
 
     /// @brief QuadRendererComponent are all fixed size squares. To modify the shape an size, utilize
     /// the TransformComponent of the Entity this is attached to.
-    class SPROCKET_API QuadRendererComponent : public Component {
+    class SPROCKET_API QuadRendererComponent : public EventDrivenComponent {
 
         friend class Entity;
 
@@ -23,7 +21,6 @@ namespace Sprocket {
         // the component in the rendering system.
         int m_QuadID = -1;
         glm::vec4 m_QuadColor = { 1,1,1,1 };
-        std::function<void(Event&)> m_EventCallback;
         std::string m_TexturePath;
         // These coordinates start in the top right corner and go clockwise around the quad
         glm::vec4 m_TextureXUVCoords = { 1,1,0,0 };
