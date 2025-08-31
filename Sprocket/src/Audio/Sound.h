@@ -33,7 +33,7 @@ namespace Sprocket {
         /// @Brief Gets the current volume of the sound.
         float GetVolume() const;
 
-        /// @Brief Sets the pitch of the sound.
+        /// @Brief Sets the sound to loop or not.
         void SetLooping(bool loop);
         /// @Brief Checks if the sound is set to loop.
         bool IsLooping() const;

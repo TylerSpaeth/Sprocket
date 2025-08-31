@@ -20,9 +20,13 @@ namespace Sprocket {
         }
 
         void Update(float deltaTime) override {
+
+            auto soundComponent = GetComponent<SoundComponent>();
             
-            if (GetComponent<SoundComponent>()->GetFilepath().empty()) {
-                GetComponent<SoundComponent>()->SetFilepath("sounds/chime.wav");
+            if (soundComponent->GetFilepath().empty()) {
+               soundComponent->SetFilepath("sounds/chime.wav");
+                soundComponent->SetVolume(0.5);
+                soundComponent->SetLooping(true);
             }
 
             auto collides = GetComponent<BoxColliderComponent>()->CollidesWithAnything();
@@ -30,15 +34,14 @@ namespace Sprocket {
             if (qr->GetQuadColor() != glm::vec4(1, 0, 0, 1) && collides) {
                 qr->UpdateQuadColor({ 1,0,0,1 });
 
-
-                if (!GetComponent<SoundComponent>()->IsPlaying()) {
-                    GetComponent<SoundComponent>()->Play();
+                if (!soundComponent->IsPlaying()) {
+                    soundComponent->Play();
                 }
             }
             else if (!collides && qr->GetQuadColor() == glm::vec4(1, 0, 0, 1)) {
-                qr->UpdateQuadColor({ 1,1,1,1 });      
-                GetComponent<SoundComponent>()->Stop();
-                GetComponent<SoundComponent>()->Reset();
+                qr->UpdateQuadColor({ 1,1,1,1 });  
+                soundComponent->Stop();
+                soundComponent->Reset();
             }
 
             if (Input::IsKeyPressed(KEY_W)) {
