@@ -17,6 +17,7 @@
 
 namespace Sprocket {
 
+    /// @brief A sort of container for for Components with some extra functionality
     class SPROCKET_API Entity {
 
         friend class Scene;
@@ -209,7 +210,7 @@ namespace Sprocket {
             CameraComponent* existingComponent = dynamic_cast<CameraComponent*>(m_Components.at(i));
             if (existingComponent != nullptr) {
                 m_Components.erase(m_Components.begin() + i);
-                existingComponent->UpdateCameraPosition(glm::vec3(0), glm::vec3(0), glm::vec3(1));
+                existingComponent->UpdateCameraTransform(glm::vec3(0), glm::vec3(0), glm::vec3(1));
                 delete existingComponent;
                 return true;
             }
