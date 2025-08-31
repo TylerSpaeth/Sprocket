@@ -36,24 +36,47 @@ namespace Sprocket {
         /// @param rotation 
         /// @param scale 
         void RenderNew(glm::vec3 position, glm::vec3 rotation, glm::vec3 scale);
+
         /// @brief Updates the model matrix of this quad renderer based on the given transform
         /// @param position 
         /// @param rotation 
         /// @param scale 
         void UpdateModelMatrix(glm::vec3 position, glm::vec3 rotation, glm::vec3 scale);
-        /// @brief Pulls this quad renderer out of the rendering system
+
+        /// @brief Pulls this quad renderer out of the rendering system.
         void RemoveRender();
 
+        /// @brief Helper function to send texture related events.
         void SendTextureEvent();
 
     public:
 
         // NOTE currently calling either of these updates will cause the renderer to switch between 
         // color and texture. It should be determined whether this is correct behavior.
+
         glm::vec4 GetQuadColor() const { return m_QuadColor; }
+
+        /// @brief Updates the Quad color to the given RGBA color. If the quad is currently 
+        /// displaying a texture, that will be replaced with this color.
+        /// @param newColor - The RGBA color to use.
         void UpdateQuadColor(glm::vec4 newColor);
+        
+        /// @brief Update the Quad texture to the one contained at this texture path. If the quad
+        /// is currently displaying a color, that will be replaced with this texture.
+        /// @param texturePath - Path to file containing the desired texture.
         void UpdateTexturePath(std::string texturePath);
+    
+        /// @brief Update the Quad texture to the one contained at this texture path. Also updates
+        /// UV coords if the quad is currently displaying a color, that will be replaced with this texture. 
+        /// @param texturePath - Path to file containing the desired texture.
+        /// @param textureXUVCoords - The X UV coordinates 
+        /// @param textureYUVCoords - The Y UV coordinates
         void UpdateTexturePath(std::string texturePath, glm::vec4 textureXUVCoords, glm::vec4 textureYUVCoords);
+
+        /// @brief Updates UV coords if the quad is currently displaying a color, that will be 
+        /// replaced with a texture.
+        /// @param texturePath - Path to file containing the desired texture.
+        /// @param textureXUVCoords - The X UV coordinates 
         void UpdateTextureCoords(glm::vec4 textureXUVCoords, glm::vec4 textureYUVCoords);
 
     };

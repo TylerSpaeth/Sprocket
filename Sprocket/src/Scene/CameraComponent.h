@@ -20,8 +20,12 @@ namespace Sprocket {
 
         CameraComponent() {}
         ~CameraComponent() {}
-
-        void UpdateCameraPosition(glm::vec3 position, glm::vec3 rotation, glm::vec3 scale);
+    
+        /// @brief Updates the camera transform to the given position, rotation, and scale
+        /// @param position 
+        /// @param rotation
+        /// @param scale
+        void UpdateCameraTransform(glm::vec3 position, glm::vec3 rotation, glm::vec3 scale);
 
     };
 

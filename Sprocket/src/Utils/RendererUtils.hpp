@@ -8,6 +8,10 @@ namespace Sprocket {
 
     namespace RendererUtils {
 
+        /// @brief Calculates a transformation matrix from position, rotation, and scale vectors.
+        /// @param position - The position vector.
+        /// @param rotation - The rotation vector (in degrees).
+        /// @param scale - The scale vector.
         inline glm::mat4 CalculateMatrixFromVecs(glm::vec3 position, glm::vec3 rotation, glm::vec3 scale) {
             glm::mat4 translate = glm::translate(glm::mat4(1), -position);
             glm::mat4 xrot = glm::rotate(glm::mat4(1), glm::radians(rotation.x), glm::vec3(1, 0, 0));

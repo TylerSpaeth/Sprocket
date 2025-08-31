@@ -11,7 +11,8 @@
 #include "Core/Sprocket.pch"
 
 namespace Sprocket {
-
+    
+    /// @brief The base class for all collider components. Not an actual collider itself.
     class SPROCKET_API ColliderComponent : public EventDrivenComponent {
         friend class Entity;
     protected:
@@ -19,25 +20,37 @@ namespace Sprocket {
         TransformComponent* m_TranformComponent = nullptr;
         ColliderComponent(TransformComponent& transformComponent) : m_TranformComponent(&transformComponent) {}
 
-
+        
+        /// @brief Registers the collider with the physics system
         virtual void Register() = 0;
+
+        /// @brief Updates the transform of the collider in the physics system
         virtual void UpdateTransform() = 0;
+
+        /// @brief Remove the collider from the physics system        
         void Remove();
+
     public:
 
         int GetPhysicsID() const { return m_PhysicsID; }
-
+        
+        /// @brief Checks if there is a collision between this and the given collider.
+        /// @param collider - The other collider to check for collisions against.
+        /// @returns True if they collide, false otherwise
         bool CollidesWith(ColliderComponent& collider);
+
+        /// @brief Checks if this collider collides with any other colliders.
+        /// @returns True if there are any collisions, false otherwise
         bool CollidesWithAnything();
 
     };
 
+    /// @brief A 2D box collider component.
     class SPROCKET_API BoxColliderComponent : public ColliderComponent {
         friend class Entity;
     private:
         glm::vec2 m_Size = { 1,1 };
         BoxColliderComponent(TransformComponent& transformComponent) : ColliderComponent(transformComponent) {}
-
 
         void Register() override;
         void UpdateTransform() override;
@@ -47,6 +60,7 @@ namespace Sprocket {
         bool SetSize(const glm::vec2 size);
     };
 
+    /// @brief A 2d circle collider component.
     class SPROCKET_API CircleColliderComponent : public ColliderComponent {
         friend class Entity;
     private:

@@ -21,16 +21,36 @@ namespace Sprocket {
 
         FILE* m_LogFile;
 
+        /// @brief Writes a message with the with a log type and timestamp to the logfile.
+        /// @param logTypeString - Represents the type of log this is.
+        /// @param message - The actual message of the log
         void WriteLog(const std::string& logTypeString, const std::string& message);
 
     public:
+
         Logger() : m_LogFile(stdout) {} // Default to stdout
+
+        /// @brief A logger that logs to the given filepath. Note that in debug builds this will 
+        /// also duplicate all logs to stdout.
         Logger(const std::string& filepath);
+
         ~Logger();
+
+        /// @brief Writes a log at the debug level.
+        /// @param message - The message to log
         void Info(const std::string& message);
+
+        /// @brief Writes a log at the warning level.
+        /// @param message - The message to log
         void Warning(const std::string& message);
+
+        /// @brief Writes a log at the error level.
+        /// @param message - The message to log
         void Error(const std::string& message);
-        // Debug messages are only logged in debug builds to ensure that release logs do not get cluttered.
+
+        /// @brief Writes a log at the debug level. Note: Debug messages are only logged in debug 
+        /// builds to ensure that release logs do not get cluttered.
+        /// @param message - The message to log
         void Debug(const std::string& message);
     };
 }
