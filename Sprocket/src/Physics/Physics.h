@@ -10,7 +10,9 @@
 #include "Core/Sprocket.pch"
 
 namespace Sprocket {
-
+        
+    /// @brief A helper class that stores the necessary data for a single physics object.
+    /// Depending on the object some of the values may not be used.
     class PhysicsObject {
         friend class Physics;
     private:
@@ -24,7 +26,8 @@ namespace Sprocket {
         PhysicsObject(glm::vec2 colliderCenter, float boxColliderRotation, glm::vec2 boxColliderSize) : m_ColliderCenter(colliderCenter), m_BoxColliderRotation(boxColliderRotation), m_BoxColliderSize(boxColliderSize) {}
         PhysicsObject(glm::vec2 colliderCenter, float circleRadius) : m_ColliderCenter(colliderCenter), m_CircleRadius(circleRadius) {}
     };
-
+    
+    /// @brief A singleton for the physics system.
     class Physics {
 
     private:
@@ -47,10 +50,12 @@ namespace Sprocket {
         // means that everything down to and including .75 * current box size is acceptable without 
         // rehashing. A maximum increase of 1.25 means that everything up to and including 1.25 * 
         // current box size is acceptable without rehashing, 
+
         static float m_MaximumDecrease;
         static float m_MaximumIncrease;
         static float m_BoxXSize;
         static float m_BoxYSize;
+
         // BROAD PHASE
         /// @brief A helper function that adds the object to the region sets adds the region for 
         /// reverse lookup.
@@ -86,19 +91,43 @@ namespace Sprocket {
         /// @param physicsID2 The id of the second object.
         static void UpdateCollidesWith(const unsigned int physicsID1, const unsigned int physicsID2);
         /// @brief Checks if the two PhysicsObjects collide.
-  /// @param physicsID1 the id of the first PhysicsObject
-  /// @param physicsID2 the id of the second PhysicsObject
-  /// @return true if they collide, false otherwise
+        /// @param physicsID1 the id of the first PhysicsObject
+        /// @param physicsID2 the id of the second PhysicsObject
+        /// @return true if they collide, false otherwise
         static bool CheckCollides(const unsigned int physicsID1, const unsigned int physicsID2);
         /// @brief Checks to see if this PhysicsObject collides with anything.
         /// @param physicsID the id of a PhysicsObject
         /// @return a populated vector if this PhysicsObject collides with anything, false otherwise
         static std::vector<unsigned int> CheckCollidesGeneric(const unsigned int physicsID);
-
+        
+        /// @brief Adds a new box collider PhysicsObject into the system.
+        /// @param colliderCenter - The center of the collider.
+        /// @param boxColliderRotation - The z-rotation of the box collider in degrees.
+        /// @param boxColliderSize - The size of the box collider.
+        /// @returns The index of the new object, that can be used for future modification or removal.
         static unsigned int AddPhysicsObject(const glm::vec2 colliderCenter, const float boxColliderRotation, const glm::vec2 boxColliderSize);
+
+        /// @brief Adds a new circle collider PhysicsObject into the system.
+        /// @param colliderCenter - The center of the collider.
+        /// @param circleRadius - The radius of the collider.
+        /// @returns The index of the new object, that can be used for future modification or removal.
         static unsigned int AddPhysicsObject(const glm::vec2 colliderCenter, const float circleRadius);
+
+        /// @brief Updates to box collider at the given physicsID.
+        /// @param physicsID - The id to lookup the collider.
+        /// @param colliderCenter - The center of the collider.
+        /// @param boxColliderRotation - The z-rotation of the box collider in degrees.
+        /// @param boxColliderSize - The size of the box collider.
         static void UpdatePhysicsObject(const unsigned int physicsID, const glm::vec2 colliderCenter, const float boxColliderRotation, const glm::vec2 boxColliderSize);
+
+        /// @brief Updates to circle collider at the given physicsID.
+        /// @param physicsID - The id to lookup the collider.
+        /// @param colliderCenter - The center of the collider.
+        /// @param circleRadius - The radius of the collider.
         static void UpdatePhysicsObject(const unsigned int physicsID, const glm::vec2 colliderCenter, const float circleRadius);
+
+        /// @brief Removes the PhysicsObject from the system.
+        /// @param physicsID - The id of the object to remove.
         static void RemovePhysicsObject(const unsigned int physicsID);
 
     public:

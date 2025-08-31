@@ -29,7 +29,7 @@ namespace Sprocket {
             }
             else if (CameraComponent* camera = dynamic_cast<CameraComponent*>(component)) {
                 camera->m_EventCallback = m_EventCallback;
-                camera->UpdateCameraPosition(m_Transform.Position(), m_Transform.Rotation(), m_Transform.Scale());
+                camera->UpdateCameraTransform(m_Transform.Position(), m_Transform.Rotation(), m_Transform.Scale());
             }
             else if (ColliderComponent* collider = dynamic_cast<ColliderComponent*>(component)) {
                 collider->m_EventCallback = m_EventCallback;
@@ -58,7 +58,7 @@ namespace Sprocket {
                 qr->m_EventCallback = nullptr;
             }
             else if (CameraComponent* camera = dynamic_cast<CameraComponent*>(component)) {
-                camera->UpdateCameraPosition(glm::vec3(0), glm::vec3(0), glm::vec3(1));
+                camera->UpdateCameraTransform(glm::vec3(0), glm::vec3(0), glm::vec3(1));
                 camera->m_EventCallback = nullptr;
             }
             else if (ColliderComponent* collider = dynamic_cast<ColliderComponent*>(component)) {
@@ -88,7 +88,7 @@ namespace Sprocket {
                     qr->UpdateModelMatrix(m_Transform.Position(), m_Transform.Rotation(), m_Transform.Scale());
                 }
                 else if (CameraComponent* camera = dynamic_cast<CameraComponent*>(component)) {
-                    camera->UpdateCameraPosition(m_Transform.Position(), m_Transform.Rotation(), m_Transform.Scale());
+                    camera->UpdateCameraTransform(m_Transform.Position(), m_Transform.Rotation(), m_Transform.Scale());
                 }
                 else if (ColliderComponent* collider = dynamic_cast<ColliderComponent*>(component)) {
                     collider->UpdateTransform();

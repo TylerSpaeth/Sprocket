@@ -14,7 +14,7 @@ namespace Sprocket {
     // EventValidation is used to verify that a given event is valid. If validation fails in one of 
     // these functions, then an error will be logged and the application will be terminated. It is 
     // up to other systems to ensure that they are passing in valid events. If they fail to do so, 
-    // this is the last line of defense and obviosuly shoudl not be relied on for normal operation.
+    // this is the last line of defense and obviosuly should not be relied on for normal operation.
     class EventValidation {
 
     public:

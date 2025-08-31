@@ -6,6 +6,8 @@
 #include "Core/Macros.h"
 
 namespace Sprocket {
+
+    /// @brief Component for playing sounds.
     class SPROCKET_API SoundComponent : public EventDrivenComponent { 
         friend class Entity;
     private:
