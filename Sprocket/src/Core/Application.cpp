@@ -27,29 +27,42 @@ namespace Sprocket {
 
         Global::fileLogger.Info("Sprocket: Startup");
 
-        SceneManager::Init(std::bind(&Application::OnEvent, this, std::placeholders::_1));
-        this->RegisterEventCallback(SceneManager::OnEvent, EventCategory::UNCATEGORIZED);
-
         Window::Init(m_WindowDimensions.first, m_WindowDimensions.second, m_WindowTitle);
         Window::RegisterEventCallback(std::bind(&Application::OnEvent, this, std::placeholders::_1));
         this->RegisterEventCallback(Window::OnEvent, EventCategory::UNCATEGORIZED);
 
+        Global::fileLogger.Info("Window Initialized.");
+
         Input::Init();
         this->RegisterEventCallback(Input::OnEvent, EventCategory::APPLICATION);
+
+        Global::fileLogger.Info("Input Initialized.");
 
         // ImGui must be initialized after the window and much have its callback registered before the renderer
         ImGuiImpl::Init();
         this->RegisterEventCallback(ImGuiImpl::OnEvent, EventCategory::UNCATEGORIZED);
 
-        // TODO figure out a better way to handle the renderer init parameters. 500000 should not be hardcoded
+        Global::fileLogger.Info("ImGuiImpl Intialized.");
+
         Renderer::Init(m_WindowDimensions.first, m_WindowDimensions.second);
         this->RegisterEventCallback(Renderer::OnEvent, EventCategory::UNCATEGORIZED);
+
+        Global::fileLogger.Info("Renderer Initialized.");
 
         Physics::Init();
         this->RegisterEventCallback(Physics::OnEvent, EventCategory::UNCATEGORIZED);
 
+        Global::fileLogger.Info("Physics Initialized.");
+
         AudioManager::Init();
         this->RegisterEventCallback(AudioManager::OnEvent, EventCategory::AUDIO);
+
+        Global::fileLogger.Info("AudioManager Intialized.");
+
+        SceneManager::Init(std::bind(&Application::OnEvent, this, std::placeholders::_1));
+        this->RegisterEventCallback(SceneManager::OnEvent, EventCategory::UNCATEGORIZED);
+
+        Global::fileLogger.Info("SceneManager Initialized.");
     }
 
     void Application::Run() {
