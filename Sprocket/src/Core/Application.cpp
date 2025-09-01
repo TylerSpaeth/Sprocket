@@ -8,7 +8,7 @@
 #include "Renderer/Renderer.h"
 #include "Scene/SceneManager.h"
 #include "ImGui/ImGuiImpl.h"
-#include "Physics/Physics.h"
+#include "Physics/PhysicsManager.h"
 #include "Audio/AudioMananger.h"
 
 namespace Sprocket {
@@ -20,6 +20,9 @@ namespace Sprocket {
     void Application::Shutdown(){}
 
     void Application::Init() {
+
+        // It is acceptable to allocate systems and lose their reference since they will clean 
+        // themselves up when the recieve a shutdown event
 
         if (m_Initialized) {
             return;
@@ -44,15 +47,13 @@ namespace Sprocket {
 
         Global::fileLogger.Info("ImGuiImpl Intialized.");
         
-        // It is acceptable to allocate this an lose reference to it because the shutdown event is what
-        // should free it.
         auto renderer = new Renderer();
         this->RegisterEventCallback(std::bind(&Renderer::OnEvent, renderer, std::placeholders::_1), EventCategory::UNCATEGORIZED);
 
         Global::fileLogger.Info("Renderer Initialized.");
 
-        Physics::Init();
-        this->RegisterEventCallback(Physics::OnEvent, EventCategory::UNCATEGORIZED);
+        auto physics = new PhysicsManager();
+        this->RegisterEventCallback(std::bind(&PhysicsManager::OnEvent, physics, std::placeholders::_1), EventCategory::UNCATEGORIZED);
 
         Global::fileLogger.Info("Physics Initialized.");
 

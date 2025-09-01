@@ -15,7 +15,7 @@ namespace Sprocket {
     };
 
     class PhysicsNewEvent : public Event {
-        friend class Physics;
+        friend class PhysicsManager;
         friend class EventValidation;
     private:
         int m_PhysicsID = -1;
@@ -38,7 +38,7 @@ namespace Sprocket {
     };
 
     class PhysicsUpdateEvent : public Event {
-        friend class Physics;
+        friend class PhysicsManager;
         friend class EventValidation;
     private:
         int m_PhysicsID = -1;
@@ -61,7 +61,7 @@ namespace Sprocket {
     };
 
     class PhysicsDeleteEvent : public Event {
-        friend class Physics;
+        friend class PhysicsManager;
         friend class EventValidation;
     private:
         int m_PhysicsID = -1;
@@ -73,7 +73,7 @@ namespace Sprocket {
     };
 
     class PhysicsCollisionCheckEvent : public Event {
-        friend class Physics;
+        friend class PhysicsManager;
         friend class EventValidation;
     private:
         int m_PhysicsID1 = -1;
@@ -87,7 +87,7 @@ namespace Sprocket {
     };
 
     class PhysicsCollisionCheckGenericEvent : public Event {
-        friend class Physics;
+        friend class PhysicsManager;
         friend class EventValidation;
     private:
         int m_PhysicsID = -1;
