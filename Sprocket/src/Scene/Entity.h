@@ -5,13 +5,13 @@
 
 #include "Events/Event.h"
 
-#include "Component.h"
-#include "TransformComponent.h"
-#include "QuadRendererComponent.h"
-#include "CameraComponent.h"
-#include "ColliderComponent.h"
-#include "TileMapComponent.h"
-#include "SoundComponent.h"
+#include "Components/Component.h"
+#include "Components/TransformComponent.h"
+#include "Components/QuadRendererComponent.h"
+#include "Components/CameraComponent.h"
+#include "Components/ColliderComponent.h"
+#include "Components/TileMapComponent.h"
+#include "Components/SoundComponent.h"
 
 #include "Core/Sprocket.pch"
 

@@ -1,5 +1,4 @@
 #include "Entity.h"
-#include "QuadRendererComponent.h"
 
 namespace Sprocket {
 

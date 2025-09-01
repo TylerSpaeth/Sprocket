@@ -59,14 +59,14 @@ target_sources(sprocket PRIVATE
   src/Scene/SceneManager.cpp
   src/Scene/Scene.cpp
   src/Scene/Entity.cpp
-  src/Scene/TransformComponent.cpp
-  src/Scene/QuadRendererComponent.cpp
-  src/Scene/CameraComponent.cpp
-  src/Scene/ColliderComponent.cpp
-  src/Scene/BoxColliderComponent.cpp
-  src/Scene/CircleColliderComponent.cpp
-  src/Scene/TileMapComponent.cpp
-  src/Scene/SoundComponent.cpp
+  src/Scene/Components/TransformComponent.cpp
+  src/Scene/Components/QuadRendererComponent.cpp
+  src/Scene/Components/CameraComponent.cpp
+  src/Scene/Components/ColliderComponent.cpp
+  src/Scene/Components/BoxColliderComponent.cpp
+  src/Scene/Components/CircleColliderComponent.cpp
+  src/Scene/Components/TileMapComponent.cpp
+  src/Scene/Components/SoundComponent.cpp
 )
 
 # Add Physics source code

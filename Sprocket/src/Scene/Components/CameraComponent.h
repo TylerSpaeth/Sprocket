@@ -7,8 +7,6 @@
 
 #include "Core/Sprocket.pch"
 
-#include <functional>
-
 namespace Sprocket {
 
     /// @brief The main camera of the scene. Only add one to a scene at a time.
