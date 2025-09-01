@@ -71,7 +71,7 @@ target_sources(sprocket PRIVATE
 
 # Add Physics source code
 target_sources(sprocket PRIVATE
-  src/Physics/Physics.cpp
+  src/Physics/PhysicsManager.cpp
   src/Physics/Collision.cpp
 )
 

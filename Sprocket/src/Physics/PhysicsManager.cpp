@@ -1,4 +1,4 @@
-#include "Physics.h"
+#include "PhysicsManager.h"
 
 #include "Collision.h"
 
@@ -9,35 +9,13 @@
 namespace Sprocket {
 
     // Static variable definitions
-    const float Physics::s_PixelsPerUnit = 100;
-    std::vector<PhysicsObject> Physics::m_PhysicsObjects;
-    std::vector<std::vector<unsigned int>> Physics::m_CollidesWith;
-    std::priority_queue<unsigned int, std::vector<unsigned int>, std::greater<unsigned int>> Physics::m_FreeSlots;
-    std::map<std::pair<int, int>, std::vector<unsigned int>> Physics::m_Regions;
-    float Physics::m_MaximumDecrease;
-    float Physics::m_MaximumIncrease;
-    float Physics::m_BoxXSize;
-    float Physics::m_BoxYSize;
+    const float PhysicsManager::s_PixelsPerUnit = 100;
 
-    Physics* Physics::s_Instance = nullptr;
-    void Physics::Init() {
-        if (!s_Instance) {
-            s_Instance = new Physics();
-            m_FreeSlots.push(0);
-            m_MaximumDecrease = .75;
-            m_MaximumIncrease = 1.25;
-            m_BoxXSize = std::numeric_limits<float>::max();
-            m_BoxYSize = std::numeric_limits<float>::max();
-        }
-    }
-
-    void Physics::OnEvent(Event& event) {
+    void PhysicsManager::OnEvent(Event& event) {
         EventType type = event.GetEventType();
         switch (type) {
         case EventType::APP_UPDATE: {
-            ValidateCurrentBoxSize();
-            ClearPreviousCollisions();
-            ProcessCollisions();
+            OnUpdate();
             break;
         }
         case EventType::PHYSICS_NEW: {
@@ -79,11 +57,19 @@ namespace Sprocket {
             collisionCheckGenericEvent.m_Collides = collisionCheckGenericEvent.m_CollidesWith.size() != 0;
             break;
         }
+        case EventType::APP_START: {
+            OnStart();
+            break;
+        }
+        case EventType::APP_SHUTDOWN: {
+            OnShutdown();
+            break;
+        }
         }
 
     }
 
-    unsigned int Physics::AddPhysicsObject(const glm::vec2 colliderCenter, const float boxColliderRotation, glm::vec2 boxColliderSize) {
+    unsigned int PhysicsManager::AddPhysicsObject(const glm::vec2 colliderCenter, const float boxColliderRotation, glm::vec2 boxColliderSize) {
 
         PhysicsObject object(colliderCenter, boxColliderRotation, boxColliderSize);
         object.m_Valid = true;
@@ -114,7 +100,7 @@ namespace Sprocket {
         return freeSlot;
     }
 
-    unsigned int Physics::AddPhysicsObject(const glm::vec2 colliderCenter, const float circleRadius) {
+    unsigned int PhysicsManager::AddPhysicsObject(const glm::vec2 colliderCenter, const float circleRadius) {
 
         PhysicsObject object(colliderCenter, circleRadius);
         object.m_Valid = true;
@@ -145,7 +131,7 @@ namespace Sprocket {
         return freeSlot;
     }
 
-    void Physics::UpdatePhysicsObject(const unsigned int physicsID, const glm::vec2 colliderCenter, const float boxColliderRotation, const glm::vec2 boxColliderSize) {
+    void PhysicsManager::UpdatePhysicsObject(const unsigned int physicsID, const glm::vec2 colliderCenter, const float boxColliderRotation, const glm::vec2 boxColliderSize) {
         m_PhysicsObjects.at(physicsID).m_ColliderCenter = colliderCenter;
         m_PhysicsObjects.at(physicsID).m_BoxColliderRotation = boxColliderRotation;
         m_PhysicsObjects.at(physicsID).m_BoxColliderSize = boxColliderSize;
@@ -153,21 +139,21 @@ namespace Sprocket {
         PlaceInRegions(physicsID);
     }
 
-    void Physics::UpdatePhysicsObject(const unsigned int physicsID, const glm::vec2 colliderCenter, const float circleRadius) {
+    void PhysicsManager::UpdatePhysicsObject(const unsigned int physicsID, const glm::vec2 colliderCenter, const float circleRadius) {
         m_PhysicsObjects.at(physicsID).m_ColliderCenter = colliderCenter;
         m_PhysicsObjects.at(physicsID).m_CircleRadius = circleRadius;
         RemoveFromRegions(physicsID);
         PlaceInRegions(physicsID);
     }
 
-    void Physics::RemovePhysicsObject(const unsigned int physicsID) {
+    void PhysicsManager::RemovePhysicsObject(const unsigned int physicsID) {
         auto physicsObject = m_PhysicsObjects.at(physicsID);
         physicsObject.m_Valid = false;
         m_FreeSlots.push(physicsID);
         RemoveFromRegions(physicsID);
     }
 
-    bool Physics::CheckCollides(const unsigned int physicsID1, const unsigned int physicsID2) {
+    bool PhysicsManager::CheckCollides(const unsigned int physicsID1, const unsigned int physicsID2) {
         auto collidesWith = m_CollidesWith.at(physicsID1);
         if (std::find(collidesWith.begin(), collidesWith.end(), physicsID2) != collidesWith.end()) {
             return true;
@@ -175,7 +161,7 @@ namespace Sprocket {
         return false;
     }
 
-    std::vector<unsigned int> Physics::CheckCollidesGeneric(const unsigned int physicsID) {
+    std::vector<unsigned int> PhysicsManager::CheckCollidesGeneric(const unsigned int physicsID) {
         return m_CollidesWith.at(physicsID);
     }
 
@@ -193,7 +179,7 @@ namespace Sprocket {
         return { v1,v2,v3,v4 };
     }
 
-    void Physics::SetRegion(std::pair<int, int> coordinates, const unsigned int physicsID) {
+    void PhysicsManager::SetRegion(std::pair<int, int> coordinates, const unsigned int physicsID) {
 
         if (!m_Regions.count(coordinates)) {
             m_Regions.insert({ coordinates, std::vector<unsigned int>() });
@@ -202,7 +188,7 @@ namespace Sprocket {
         m_PhysicsObjects.at(physicsID).m_Regions.push_back(coordinates);
     }
 
-    void Physics::PlaceInRegions(const unsigned int physicsID) {
+    void PhysicsManager::PlaceInRegions(const unsigned int physicsID) {
 
         auto physicsObject = m_PhysicsObjects.at(physicsID);
         bool boxCollider = physicsObject.m_BoxColliderSize.has_value();
@@ -327,7 +313,7 @@ namespace Sprocket {
 
     }
 
-    void Physics::RemoveFromRegions(const unsigned int physicsID) {
+    void PhysicsManager::RemoveFromRegions(const unsigned int physicsID) {
         auto& physicsObject = m_PhysicsObjects.at(physicsID);
         auto regionsCopy = physicsObject.m_Regions; // Make a copy
 
@@ -340,7 +326,7 @@ namespace Sprocket {
         physicsObject.m_Regions.clear(); // Clear all regions from the object
     }
 
-    void Physics::ValidateCurrentBoxSize() {
+    void PhysicsManager::ValidateCurrentBoxSize() {
 
         float averageColliderWidth = 0;
         float averageColliderHeight = 0;
@@ -380,7 +366,7 @@ namespace Sprocket {
 
     }
 
-    void Physics::RehashAllObjects() {
+    void PhysicsManager::RehashAllObjects() {
         for (int i = 0; i < m_PhysicsObjects.size(); i++) {
             if (m_PhysicsObjects.at(i).m_Valid) {
                 RemoveFromRegions(i);
@@ -389,13 +375,13 @@ namespace Sprocket {
         }
     }
 
-    void Physics::ClearPreviousCollisions() {
+    void PhysicsManager::ClearPreviousCollisions() {
         for (int i = 0; i < m_CollidesWith.size(); i++) {
             m_CollidesWith.at(i).clear();
         }
     }
 
-    void Physics::ProcessCollisions() {
+    void PhysicsManager::ProcessCollisions() {
 
         for (const auto& region : m_Regions) {
 
@@ -469,9 +455,27 @@ namespace Sprocket {
 
     }
 
-    void Physics::UpdateCollidesWith(const unsigned int physicsID1, const unsigned int physicsID2) {
+    void PhysicsManager::UpdateCollidesWith(const unsigned int physicsID1, const unsigned int physicsID2) {
         m_CollidesWith.at(physicsID1).push_back(physicsID2);
         m_CollidesWith.at(physicsID2).push_back(physicsID1);
+    }
+
+    void PhysicsManager::OnStart() {
+        m_FreeSlots.push(0);
+        m_MaximumDecrease = .75;
+        m_MaximumIncrease = 1.25;
+        m_BoxXSize = std::numeric_limits<float>::max();
+        m_BoxYSize = std::numeric_limits<float>::max();
+    }
+
+    void PhysicsManager::OnUpdate() {
+        ValidateCurrentBoxSize();
+        ClearPreviousCollisions();
+        ProcessCollisions();
+    }
+
+    void PhysicsManager::OnShutdown() {
+        delete this;
     }
 
 }

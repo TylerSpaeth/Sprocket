@@ -20,11 +20,19 @@ namespace Sprocket {
         float GetDeltaTime() const { return m_DeltaTime; }
     };
 
+    /// @brief The first event the occurs in the event system. Contains all of the application
+    /// metadata needed for startup.
     class ApplicationStartEvent : public ApplicationEvent {
+    private:
+        float m_WindowXDimension;
+        float m_WindowYDimension;
     public:
-        ApplicationStartEvent() {
+        ApplicationStartEvent(float windowXDimension, float windowYDimension) : 
+            m_WindowXDimension(windowXDimension), m_WindowYDimension(windowYDimension) {
             this->SetType(EventType::APP_START);
         }
+        float GetWindowXDimension() const {return m_WindowXDimension;}
+        float GetWindowYDimension() const {return m_WindowYDimension;}
     };
 
     class ApplicationShutdownEvent : public ApplicationEvent {

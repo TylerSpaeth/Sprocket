@@ -2,6 +2,7 @@
 
 #include "Core/Global.h"
 
+#include "Events/ApplicationEvent.h"
 #include "Events/RenderEvent.h"
 
 #include "ThirdParty/glad/glad.h"
@@ -86,65 +87,6 @@ namespace Sprocket {
     ////////////////////////////////////////////////////////////////////////////////////
     ////////////////////////////////////////////////////////////////////////////////////
 
-    ////////////////////////////////////////////////////////////////////////////////////
-    ///////////////////////////////// STATIC FUNCTIONS /////////////////////////////////
-    ////////////////////////////////////////////////////////////////////////////////////
-
-    Renderer* Renderer::s_Instance = nullptr;
-    void Renderer::Init(const unsigned int xDimension, const unsigned int yDimension) {
-        if (!s_Instance) {
-
-            if (xDimension < 0 || yDimension < 0) {
-                throw std::invalid_argument("Renderer dimensions can not be negative.");
-            }
-
-            s_Instance = new Renderer();
-
-            // Setup blending
-            glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-            glEnable(GL_BLEND);
-
-            // Allow sorting by z position
-            glEnable(GL_DEPTH_TEST);
-
-            s_Instance->m_VertexBuffer = new VertexBuffer(nullptr, sizeof(Vertex) * 40);;
-            s_Instance->m_IndexBuffer = GenerateIndexBuffer(60);
-            s_Instance->m_VertexArray = new VertexArray();
-
-            // Check to see how many texture slots the system has
-            int systemMaxTextures;
-            glGetIntegerv(GL_MAX_TEXTURE_IMAGE_UNITS, &systemMaxTextures);
-            // Use the appropriate fragment shader for the number of texture slots the system has
-            // TODO add more options
-            if (systemMaxTextures < 32) {
-                s_Instance->m_Shader = new Shader("shaders/Default.vert", "shaders/Default.frag");
-            }
-            else {
-                s_Instance->m_Shader = new Shader("shaders/Default.vert", "shaders/Default32.frag");
-            }
-
-            // Define the layout of the vertex buffer
-            s_Instance->m_VertexArray->Bind();
-            s_Instance->m_VertexBuffer->Bind();
-            glEnableVertexAttribArray(0);
-            glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 10 * sizeof(float), (void*)0);
-            glEnableVertexAttribArray(1);
-            glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, 10 * sizeof(float), (void*)(3 * sizeof(float)));
-            glEnableVertexAttribArray(2);
-            glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 10 * sizeof(float), (void*)(7 * sizeof(float)));
-            glEnableVertexAttribArray(3);
-            glVertexAttribPointer(3, 1, GL_FLOAT, GL_FALSE, 10 * sizeof(float), (void*)(9 * sizeof(float)));
-            s_Instance->m_VertexBuffer->Unbind();
-            s_Instance->m_VertexArray->Unbind();
-
-            // By default, the projection matrix will have the center of the screen at (0,0) and
-           // the the edges will be determined by the x and y values given 
-            s_Instance->m_Shader->Bind();
-            s_Instance->m_Shader->SetUniformMatrix4f("u_ProjectionMatrix", glm::ortho(-(float)xDimension / 2, (float)xDimension / 2, -(float)yDimension / 2, (float)yDimension / 2));
-            s_Instance->m_Shader->Unbind();
-        }
-    }
-
     ///////////////////////////////// EVENT FUNCTIONS /////////////////////////////////
 
     void Renderer::OnEvent(Event& event) {
@@ -173,7 +115,7 @@ namespace Sprocket {
                     slot = AddTexture(((RenderUpdateEvent&)event).m_TexturePath);
                 }
                 SetQuadTextureID(((RenderUpdateEvent&)event).m_QuadID, slot);
-                UpdateTextureUniform(s_Instance->m_BoundTextures.size());
+                UpdateTextureUniform(m_BoundTextures.size());
                 SetQuadColor(((RenderUpdateEvent&)event).m_QuadID, ((RenderUpdateEvent&)event).m_QuadColor);
                 SetQuadTextureCoords(((RenderUpdateEvent&)event).m_QuadID, ((RenderUpdateEvent&)event).m_TexXCoords, ((RenderUpdateEvent&)event).m_TexYCoords);
                 break;
@@ -183,30 +125,82 @@ namespace Sprocket {
         case EventType::RENDER_DELETE:
             RemoveQuad(((RenderDeleteEvent&)event).m_QuadID);
             break;
-
+        case EventType::APP_START:
+            OnStart(((ApplicationStartEvent&)event).GetWindowXDimension(), ((ApplicationStartEvent&)event).GetWindowYDimension());
+            break;
         }
+    }
+
+    void Renderer::OnStart(float xDimension, float yDimension) {
+        if (xDimension < 0 || yDimension < 0) {
+            throw std::invalid_argument("Renderer dimensions can not be negative.");
+        }
+
+        // Setup blending
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+        glEnable(GL_BLEND);
+
+        // Allow sorting by z position
+        glEnable(GL_DEPTH_TEST);
+
+        m_VertexBuffer = new VertexBuffer(nullptr, sizeof(Vertex) * 40);;
+        m_IndexBuffer = GenerateIndexBuffer(60);
+        m_VertexArray = new VertexArray();
+
+        // Check to see how many texture slots the system has
+        int systemMaxTextures;
+        glGetIntegerv(GL_MAX_TEXTURE_IMAGE_UNITS, &systemMaxTextures);
+        // Use the appropriate fragment shader for the number of texture slots the system has
+        // TODO add more options
+        if (systemMaxTextures < 32) {
+            m_Shader = new Shader("shaders/Default.vert", "shaders/Default.frag");
+        }
+        else {
+            m_Shader = new Shader("shaders/Default.vert", "shaders/Default32.frag");
+        }
+
+        // Define the layout of the vertex buffer
+        m_VertexArray->Bind();
+        m_VertexBuffer->Bind();
+        glEnableVertexAttribArray(0);
+        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 10 * sizeof(float), (void*)0);
+        glEnableVertexAttribArray(1);
+        glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, 10 * sizeof(float), (void*)(3 * sizeof(float)));
+        glEnableVertexAttribArray(2);
+        glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 10 * sizeof(float), (void*)(7 * sizeof(float)));
+        glEnableVertexAttribArray(3);
+        glVertexAttribPointer(3, 1, GL_FLOAT, GL_FALSE, 10 * sizeof(float), (void*)(9 * sizeof(float)));
+        m_VertexBuffer->Unbind();
+        m_VertexArray->Unbind();
+
+        // By default, the projection matrix will have the center of the screen at (0,0) and
+        // the the edges will be determined by the x and y values given 
+        m_Shader->Bind();
+        m_Shader->SetUniformMatrix4f("u_ProjectionMatrix", glm::ortho(-(float)xDimension / 2, (float)xDimension / 2, -(float)yDimension / 2, (float)yDimension / 2));
+        m_Shader->Unbind();
     }
 
     void Renderer::OnUpdate() {
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-        s_Instance->Draw();
+        Draw();
     }
 
     void Renderer::OnShutdown() {
         // TODO make sure everything is getting cleaned up
-        delete s_Instance->m_VertexBuffer;
-        delete s_Instance->m_VertexArray;
-        delete s_Instance->m_IndexBuffer;
-        delete s_Instance->m_Shader;
+        delete m_VertexBuffer;
+        delete m_VertexArray;
+        delete m_IndexBuffer;
+        delete m_Shader;
         // Deallocate all of the textures pointers
-        for (Texture* t : s_Instance->m_BoundTextures) {
+        for (Texture* t : m_BoundTextures) {
             delete t;
         }
         // Clear Vectors
-        s_Instance->m_Quads.clear();
-        s_Instance->m_CalculatedQuads.clear();
-        s_Instance->m_ModelMatrices.clear();
-        s_Instance->m_BoundTextures.clear();
+        m_Quads.clear();
+        m_CalculatedQuads.clear();
+        m_ModelMatrices.clear();
+        m_BoundTextures.clear();
+        delete this;
     }
 
     ////////////////////////////////// QUAD FUNCTIONS //////////////////////////////////
@@ -222,23 +216,23 @@ namespace Sprocket {
         // to reduce the size when appropriate, but for now it is probably safer to leave it like this.
         // Realistically it is likely that the number of quads hits a high amount at one point it may 
         // happen again.
-        if(s_Instance->m_IndexBuffer->GetCount() / 6 <= s_Instance->m_Quads.size()) {
+        if(m_IndexBuffer->GetCount() / 6 <= m_Quads.size()) {
             // Double the size of the vertex and index buffers
-            unsigned int newVertexCount = s_Instance->m_IndexBuffer->GetCount() / 6 * 4 * 2;
-            unsigned int newIndexCount = s_Instance->m_IndexBuffer->GetCount() / 6 * 6 * 2;
+            unsigned int newVertexCount = m_IndexBuffer->GetCount() / 6 * 4 * 2;
+            unsigned int newIndexCount = m_IndexBuffer->GetCount() / 6 * 6 * 2;
 
             VertexBuffer* newVB = new VertexBuffer(nullptr, sizeof(Vertex) * newVertexCount);
             newVB->Bind();
             // copy existing vertex data into new buffer
             glBufferSubData(GL_ARRAY_BUFFER, 0,
-                sizeof(Vertex) * s_Instance->m_CalculatedQuads.size() * 4,
-                s_Instance->m_CalculatedQuads.data());
+                sizeof(Vertex) * m_CalculatedQuads.size() * 4,
+                m_CalculatedQuads.data());
             newVB->Unbind();
 
             IndexBuffer* newIB = GenerateIndexBuffer(newIndexCount);
 
             // Rebind the VAO
-            s_Instance->m_VertexArray->Bind();
+            m_VertexArray->Bind();
             newVB->Bind();
             glEnableVertexAttribArray(0);
             glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 10 * sizeof(float), (void*)0);
@@ -249,34 +243,34 @@ namespace Sprocket {
             glEnableVertexAttribArray(3);
             glVertexAttribPointer(3, 1, GL_FLOAT, GL_FALSE, 10 * sizeof(float), (void*)(9 * sizeof(float)));
             newVB->Unbind();
-            s_Instance->m_VertexArray->Unbind();
+            m_VertexArray->Unbind();
 
             // Swap in new buffers
-            delete s_Instance->m_VertexBuffer;
-            delete s_Instance->m_IndexBuffer;
-            s_Instance->m_VertexBuffer = newVB;
-            s_Instance->m_IndexBuffer = newIB;
+            delete m_VertexBuffer;
+            delete m_IndexBuffer;
+            m_VertexBuffer = newVB;
+            m_IndexBuffer = newIB;
         }
 
         auto quad = CreateQuad(size, 0);
 
         // If there are no gaps in the vector then just push to the back
-        if (s_Instance->m_DeletedQuadIndexes.size() == 0) {
-            s_Instance->m_Quads.push_back(quad);
-            s_Instance->m_CalculatedQuads.push_back(quad);
+        if (m_DeletedQuadIndexes.size() == 0) {
+            m_Quads.push_back(quad);
+            m_CalculatedQuads.push_back(quad);
             // Add a new model matrix to the back of the quads vector set to the identity matrix
-            s_Instance->m_ModelMatrices.push_back(glm::mat4(1.0f));
+            m_ModelMatrices.push_back(glm::mat4(1.0f));
 
-            s_Instance->UpdateCalculatedQuads(s_Instance->m_Quads.size() - 1);
+            UpdateCalculatedQuads(m_Quads.size() - 1);
             // Return the index where the quad and model matrix are set
-            return s_Instance->m_Quads.size() - 1;
+            return m_Quads.size() - 1;
         }
 
         // Find the next deleted Quad in the vector
-        auto nextOpen = s_Instance->m_DeletedQuadIndexes.top();
-        s_Instance->m_Quads.at(nextOpen) = quad;
-        s_Instance->UpdateCalculatedQuads(nextOpen);
-        s_Instance->m_DeletedQuadIndexes.pop();
+        auto nextOpen = m_DeletedQuadIndexes.top();
+        m_Quads.at(nextOpen) = quad;
+        UpdateCalculatedQuads(nextOpen);
+        m_DeletedQuadIndexes.pop();
         return nextOpen;
 
         return -1; // Some kind of error occured if this is reached
@@ -291,10 +285,10 @@ namespace Sprocket {
 
     bool Renderer::RemoveQuad(const unsigned int quadIndex) {
         try {
-            s_Instance->m_Quads.at(quadIndex) = ClearedQuad;
-            s_Instance->m_CalculatedQuads.at(quadIndex) = ClearedQuad;
-            s_Instance->m_ModelMatrices.at(quadIndex) = glm::translate(glm::mat4(1), glm::vec3(0, 0, 0));
-            s_Instance->m_DeletedQuadIndexes.push(quadIndex);
+            m_Quads.at(quadIndex) = ClearedQuad;
+            m_CalculatedQuads.at(quadIndex) = ClearedQuad;
+            m_ModelMatrices.at(quadIndex) = glm::translate(glm::mat4(1), glm::vec3(0, 0, 0));
+            m_DeletedQuadIndexes.push(quadIndex);
             UpdateCalculatedQuads(quadIndex);
         }
         catch (const std::exception& e) {
@@ -315,8 +309,8 @@ namespace Sprocket {
             position *= s_PixelsPerUnit;
             scaledModelMatrix[3] = glm::vec4(position, 1.0f);
 
-            s_Instance->m_ModelMatrices[quadIndex] = scaledModelMatrix;
-            s_Instance->UpdateCalculatedQuads(quadIndex);
+            m_ModelMatrices[quadIndex] = scaledModelMatrix;
+            UpdateCalculatedQuads(quadIndex);
         }
         catch (const std::exception& e) {
             return false;
@@ -327,12 +321,12 @@ namespace Sprocket {
     // Sets the color of the quad at the given index to the given color
     bool Renderer::SetQuadColor(const unsigned int quadIndex, const glm::vec4 color) {
         try {
-            auto quad = s_Instance->m_Quads.at(quadIndex);
+            auto quad = m_Quads.at(quadIndex);
             for (int i = 0; i < 4; i++) {
                 quad.at(i).Color = color;
             }
-            s_Instance->m_Quads.at(quadIndex) = quad;
-            s_Instance->UpdateCalculatedQuads(quadIndex);
+            m_Quads.at(quadIndex) = quad;
+            UpdateCalculatedQuads(quadIndex);
         }
         catch (const std::exception& e) {
             return false;
@@ -344,9 +338,9 @@ namespace Sprocket {
     bool Renderer::SetQuadTextureCoords(const unsigned int quadIndex, const glm::vec4 xCoords, const glm::vec4 yCoords) {
         try {
             for (int i = 0; i < 4; i++) {
-                s_Instance->m_Quads.at(quadIndex).at(i).TextureCoords = glm::vec2(xCoords[i], yCoords[i]);
+                m_Quads.at(quadIndex).at(i).TextureCoords = glm::vec2(xCoords[i], yCoords[i]);
             }
-            s_Instance->UpdateCalculatedQuads(quadIndex);
+            UpdateCalculatedQuads(quadIndex);
         }
         catch (const std::exception& e) {
             return false;
@@ -357,9 +351,9 @@ namespace Sprocket {
     bool Renderer::SetQuadTextureID(const unsigned int quadIndex, const float textureID) {
         try {
             for (int i = 0; i < 4; i++) {
-                s_Instance->m_Quads.at(quadIndex).at(i).TextureID = textureID;
+                m_Quads.at(quadIndex).at(i).TextureID = textureID;
             }
-            s_Instance->UpdateCalculatedQuads(quadIndex);
+            UpdateCalculatedQuads(quadIndex);
         }
         catch (const std::exception& e) {
             return false;
@@ -378,58 +372,50 @@ namespace Sprocket {
         glm::vec3 target = position + forward;
         glm::vec3 up = glm::vec3(inverseViewMatrix[1]);
 
-        s_Instance->m_ViewMatrix = glm::lookAt(position, target, up);
+        m_ViewMatrix = glm::lookAt(position, target, up);
     }
 
     // This updates the texture uniform to have IDs for all the textures
     // that need to be rendered, asssuming that they start at slot 1 and are
     // in sequencial order
     void Renderer::UpdateTextureUniform(unsigned int uniqueTextures) {
-        s_Instance->m_Shader->Bind();
+        m_Shader->Bind();
         std::vector<int> textureIDs(uniqueTextures);
         for (int i = 1; i <= uniqueTextures; i++) {
             textureIDs[i - 1] = i;
         }
-        s_Instance->m_Shader->SetUniform1iv("u_Texture", uniqueTextures, textureIDs.data());
-        s_Instance->m_Shader->Unbind();
+        m_Shader->SetUniform1iv("u_Texture", uniqueTextures, textureIDs.data());
+        m_Shader->Unbind();
     }
 
     unsigned int Renderer::AddTexture(const std::string& path) {
 
-        for (Texture* t : s_Instance->m_BoundTextures) {
+        for (Texture* t : m_BoundTextures) {
             if (path.compare(t->m_FilePath) == 0) {
                 return t->m_Slot;
             }
         }
 
         Texture* texture = new Texture(path);
-        s_Instance->m_BoundTextures.push_back(texture);
-        texture->Bind(s_Instance->m_BoundTextures.size());
-        return s_Instance->m_BoundTextures.size();
+        m_BoundTextures.push_back(texture);
+        texture->Bind(m_BoundTextures.size());
+        return m_BoundTextures.size();
     }
 
     void Renderer::UpdateCalculatedQuads(const unsigned int index) {
-        auto quad = s_Instance->m_Quads.at(index);
-        auto modelMatrix = s_Instance->m_ModelMatrices.at(index);
+        auto quad = m_Quads.at(index);
+        auto modelMatrix = m_ModelMatrices.at(index);
         for (int j = 0; j < 4; j++) {
             quad[j].Position = modelMatrix * glm::vec4(quad.at(j).Position, 1.0f);
         }
 
-        s_Instance->m_CalculatedQuads[index] = quad;
+        m_CalculatedQuads[index] = quad;
 
         // Update the GPU's data to reflect this
-        s_Instance->m_VertexBuffer->Bind();
-        glBufferSubData(GL_ARRAY_BUFFER, index * 4 * sizeof(Vertex), sizeof(Vertex) * 4, &s_Instance->m_CalculatedQuads[index]);
-        s_Instance->m_VertexBuffer->Unbind();
+        m_VertexBuffer->Bind();
+        glBufferSubData(GL_ARRAY_BUFFER, index * 4 * sizeof(Vertex), sizeof(Vertex) * 4, &m_CalculatedQuads[index]);
+        m_VertexBuffer->Unbind();
     }
-
-    ////////////////////////////////////////////////////////////////////////////////////
-    ////////////////////////////////////////////////////////////////////////////////////
-    ////////////////////////////////////////////////////////////////////////////////////
-
-    ////////////////////////////////////////////////////////////////////////////////////
-    //////////////////////////////// INSTANCE FUNCTIONS ////////////////////////////////
-    ////////////////////////////////////////////////////////////////////////////////////
 
     // Draws all of the quads that have been added to the renderer
     void Renderer::Draw() {
@@ -448,9 +434,5 @@ namespace Sprocket {
         m_VertexArray->Unbind();
         m_Shader->Unbind();
     }
-
-    ////////////////////////////////////////////////////////////////////////////////////
-    ////////////////////////////////////////////////////////////////////////////////////
-    ////////////////////////////////////////////////////////////////////////////////////
 
 }
