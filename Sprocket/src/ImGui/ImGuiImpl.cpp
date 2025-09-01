@@ -9,7 +9,6 @@
 
 namespace Sprocket {
 
-    ImGuiImpl* ImGuiImpl::s_Instance = nullptr;
     void ImGuiImpl::Init() {
         if(!s_Instance) {
             s_Instance = new ImGuiImpl();

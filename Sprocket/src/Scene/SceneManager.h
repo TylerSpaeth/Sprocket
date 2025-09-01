@@ -7,11 +7,13 @@
 
 #include "Core/Sprocket.pch"
 
+#include "Utils/Singleton.h"
+
 namespace Sprocket {
 
     /// @brief This is a singleton that handles the storage and management of unique scenes 
     /// that may make up a given Sprocket application. This is an event subscriber.
-    class SPROCKET_API SceneManager {
+    class SPROCKET_API SceneManager : public Singleton<SceneManager> {
 
     private:
         // An empty default scene will always be given at index 0.
@@ -19,12 +21,6 @@ namespace Sprocket {
         mutable std::unordered_map<int, const Scene*> m_Scenes;
 
         std::function<void(Event&)> m_EventCallback;
-
-        // Singleton Components
-        static SceneManager* s_Instance;
-        SceneManager() {}
-        SceneManager(const SceneManager&) = delete;
-        SceneManager operator=(const SceneManager*) = delete;
 
     public:
         /// @brief Initializes the SceneManager singleton. This function

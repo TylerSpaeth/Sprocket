@@ -4,7 +4,6 @@
 
 namespace Sprocket {
 
-    Input* Input::s_Instance = nullptr;
     void Input::Init() {
         if (!s_Instance) {
             s_Instance = new Input();

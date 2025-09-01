@@ -8,12 +8,14 @@
 #include "MouseButtons.h"
 #include "Events/Event.h"
 
+#include "Utils/Singleton.h"
+
 namespace Sprocket {
 
 
     /// @brief Input is a singleton that stores input event information that it recieves throught its
     /// OnEvent function. This is an event subscriber.
-    class SPROCKET_API Input {
+    class SPROCKET_API Input : public Singleton<Input> {
     private:
 
         float m_MouseXPosition;
@@ -23,12 +25,6 @@ namespace Sprocket {
 
         mutable std::unordered_map<Keycode, bool> m_CurrentKeyStatus;
         mutable std::unordered_map<MouseButton, bool> m_CurrentButtonStatus;
-
-        // Singleton components
-        static Input* s_Instance;
-        Input() : m_MouseXPosition(0), m_MouseYPosition(0), m_MouseXScrollOffset(0), m_MouseYScrollOffset(0) {}
-        Input(const Input&) = delete;
-        Input operator=(const Input) = delete;
 
         // Actual implementations for the static instance functions
         /// @brief This function is called by the OnEvent function when a APP_SHUTDOWN event

@@ -104,7 +104,6 @@ namespace Sprocket {
     ///////////////////////////////// STATIC FUNCTIONS /////////////////////////////////
     ////////////////////////////////////////////////////////////////////////////////////
 
-    Window* Window::s_Instance = nullptr;
     void Window::Init(const unsigned int xDimension, const unsigned int yDimension, const std::string& windowTitle) {
         if (!s_Instance) {
             s_Instance = new Window();

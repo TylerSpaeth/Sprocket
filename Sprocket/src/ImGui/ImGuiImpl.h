@@ -8,18 +8,14 @@
 #include "Events/KeyboardEvent.h"
 #include "Events/MouseEvent.h"
 
+#include "Utils/Singleton.h"
+
 namespace Sprocket {
     
     /// @brief The Sprocket implementation of ImGui.
-    class SPROCKET_API ImGuiImpl {
+    class SPROCKET_API ImGuiImpl : public Singleton<ImGuiImpl> {
 
     private:
-
-        // Singleton Components
-        static ImGuiImpl* s_Instance;
-        ImGuiImpl() {}
-        ImGuiImpl(const ImGuiImpl&) = delete;
-        ImGuiImpl operator=(const ImGuiImpl&) = delete;
 
         std::vector<std::function<void()>> m_RenderFunctions;
         std::priority_queue<unsigned int, std::vector<unsigned int>, std::greater<unsigned int>> m_FreeRenderFunctionSlots;

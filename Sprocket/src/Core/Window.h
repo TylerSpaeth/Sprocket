@@ -6,20 +6,16 @@
 
 #include "Core/Sprocket.pch"
 
+#include "Utils/Singleton.h"
+
 namespace Sprocket {
 
     /// @brief This is a singleton the encapsulates the GLFW functionality. This is an event producer.
-    class SPROCKET_API Window {
+    class SPROCKET_API Window : public Singleton<Window> {
         friend class Application;
     private:
         void* m_Window; // GLFWwindow
         std::function<void(Event&)> m_EventCallback;
-
-        // Singleton components
-        static Window* s_Instance;
-        Window() {}
-        Window(const Window&) = delete;
-        Window operator=(const Window&) = delete;
 
         // Actual implementations for the static instance functions
         void OnEventInstance(Event& event);
