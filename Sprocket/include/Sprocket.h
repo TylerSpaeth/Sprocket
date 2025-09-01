@@ -8,6 +8,7 @@
 #include "Events/ApplicationEvent.h"
 
 #include "Scene/SceneManager.h"
+#include "Scene/Entity.tpp"
 
 #include "Logger/Logger.h"
 
