@@ -10,6 +10,8 @@ namespace Sprocket {
         extern Logger fileLogger;
         extern Logger consoleLogger;
 
+        extern float pixelsPerUnit;
+
     }
 
 }

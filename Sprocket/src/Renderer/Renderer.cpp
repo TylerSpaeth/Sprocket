@@ -11,8 +11,6 @@
 
 namespace Sprocket {
 
-    const float Renderer::s_PixelsPerUnit = 100;
-
     Vertex ClearedVertex = { {0,0,0},{0,0,0,0},{0,0},0 };
     std::array<Vertex, 4> ClearedQuad = { ClearedVertex, ClearedVertex, ClearedVertex, ClearedVertex };
 
@@ -99,7 +97,7 @@ namespace Sprocket {
             OnShutdown();
             break;
         case EventType::RENDER_NEW:
-            ((RenderNewEvent&)event).m_QuadID = AddQuad(s_PixelsPerUnit);
+            ((RenderNewEvent&)event).m_QuadID = AddQuad(Global::pixelsPerUnit);
             break;
         case EventType::RENDER_UPDATE: {
             switch (((RenderUpdateEvent&)event).GetType()) {
@@ -306,7 +304,7 @@ namespace Sprocket {
             glm::mat4 scaledModelMatrix = modelMatrix;
 
             glm::vec3 position = modelMatrix[3];
-            position *= s_PixelsPerUnit;
+            position *= Global::pixelsPerUnit;
             scaledModelMatrix[3] = glm::vec4(position, 1.0f);
 
             m_ModelMatrices[quadIndex] = scaledModelMatrix;
@@ -367,7 +365,7 @@ namespace Sprocket {
 
         glm::mat4 inverseViewMatrix = glm::inverse(viewMatrix);
         glm::vec3 position = glm::vec3(inverseViewMatrix[3]);
-        position *= s_PixelsPerUnit;
+        position *= Global::pixelsPerUnit;
         glm::vec3 forward = glm::vec3(-inverseViewMatrix[2]);
         glm::vec3 target = position + forward;
         glm::vec3 up = glm::vec3(inverseViewMatrix[1]);

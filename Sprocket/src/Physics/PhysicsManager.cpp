@@ -2,14 +2,13 @@
 
 #include "Collision.h"
 
+#include "Core/Global.h"
+
 #include "Events/PhysicsEvent.h"
 
 #include "ThirdParty/glm/gtc/matrix_transform.hpp"
 
 namespace Sprocket {
-
-    // Static variable definitions
-    const float PhysicsManager::s_PixelsPerUnit = 100;
 
     void PhysicsManager::OnEvent(Event& event) {
         EventType type = event.GetEventType();
@@ -22,10 +21,10 @@ namespace Sprocket {
             PhysicsNewEvent& newEvent = ((PhysicsNewEvent&)event);
             switch (newEvent.m_ColliderType) {
             case ColliderType::BOX:
-                newEvent.m_PhysicsID = AddPhysicsObject(newEvent.m_ColliderCenter * s_PixelsPerUnit, newEvent.m_BoxColliderRotation, newEvent.m_BoxColliderSize * s_PixelsPerUnit);
+                newEvent.m_PhysicsID = AddPhysicsObject(newEvent.m_ColliderCenter * Global::pixelsPerUnit, newEvent.m_BoxColliderRotation, newEvent.m_BoxColliderSize * Global::pixelsPerUnit);
                 break;
             case ColliderType::CIRCLE:
-                newEvent.m_PhysicsID = AddPhysicsObject(newEvent.m_ColliderCenter, newEvent.m_CircleRadius * s_PixelsPerUnit);
+                newEvent.m_PhysicsID = AddPhysicsObject(newEvent.m_ColliderCenter, newEvent.m_CircleRadius * Global::pixelsPerUnit);
                 break;
             }
             break;
@@ -34,10 +33,10 @@ namespace Sprocket {
             PhysicsUpdateEvent& updateEvent = ((PhysicsUpdateEvent&)event);
             switch (updateEvent.m_ColliderType) {
             case ColliderType::BOX:
-                UpdatePhysicsObject(updateEvent.m_PhysicsID, updateEvent.m_ColliderCenter * s_PixelsPerUnit, updateEvent.m_BoxColliderRotation, updateEvent.m_BoxColliderSize * s_PixelsPerUnit);
+                UpdatePhysicsObject(updateEvent.m_PhysicsID, updateEvent.m_ColliderCenter * Global::pixelsPerUnit, updateEvent.m_BoxColliderRotation, updateEvent.m_BoxColliderSize * Global::pixelsPerUnit);
                 break;
             case ColliderType::CIRCLE:
-                UpdatePhysicsObject(updateEvent.m_PhysicsID, updateEvent.m_ColliderCenter, updateEvent.m_CircleRadius * s_PixelsPerUnit);
+                UpdatePhysicsObject(updateEvent.m_PhysicsID, updateEvent.m_ColliderCenter, updateEvent.m_CircleRadius * Global::pixelsPerUnit);
                 break;
             }
             break;

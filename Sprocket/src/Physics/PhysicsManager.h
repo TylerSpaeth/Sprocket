@@ -32,8 +32,6 @@ namespace Sprocket {
 
     private:
 
-        static const float s_PixelsPerUnit;
-
         std::vector<PhysicsObject> m_PhysicsObjects;
         std::vector<std::vector<unsigned int>> m_CollidesWith;
         std::priority_queue<unsigned int, std::vector<unsigned int>, std::greater<unsigned int>> m_FreeSlots;
