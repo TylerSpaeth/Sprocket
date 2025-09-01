@@ -43,9 +43,11 @@ namespace Sprocket {
         this->RegisterEventCallback(ImGuiImpl::OnEvent, EventCategory::UNCATEGORIZED);
 
         Global::fileLogger.Info("ImGuiImpl Intialized.");
-
-        Renderer::Init(m_WindowDimensions.first, m_WindowDimensions.second);
-        this->RegisterEventCallback(Renderer::OnEvent, EventCategory::UNCATEGORIZED);
+        
+        // It is acceptable to allocate this an lose reference to it because the shutdown event is what
+        // should free it.
+        auto renderer = new Renderer();
+        this->RegisterEventCallback(std::bind(&Renderer::OnEvent, renderer, std::placeholders::_1), EventCategory::UNCATEGORIZED);
 
         Global::fileLogger.Info("Renderer Initialized.");
 
@@ -71,10 +73,11 @@ namespace Sprocket {
             return;
         }
 
+        ApplicationStartEvent* startEvent = new ApplicationStartEvent(m_WindowDimensions.first, m_WindowDimensions.second);
+        OnEvent(*startEvent);
+        delete startEvent;
+        
         this->Start();
-
-        ApplicationStartEvent startEvent;
-        OnEvent(startEvent);
 
         m_AppRunning = true;
 
