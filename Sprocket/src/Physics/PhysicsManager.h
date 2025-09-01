@@ -124,8 +124,11 @@ namespace Sprocket {
         /// @param physicsID - The id of the object to remove.
         void RemovePhysicsObject(const unsigned int physicsID);
 
+        /// @brief Logic to occur on application startup.
         void OnStart();
+        /// @brief Logic to occur on application update.
         void OnUpdate();
+        /// @brief Logic to occur on application shutdown.
         void OnShutdown();
 
     public:

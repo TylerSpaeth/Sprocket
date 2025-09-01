@@ -57,8 +57,8 @@ namespace Sprocket {
 
         Global::fileLogger.Info("Physics Initialized.");
 
-        AudioManager::Init();
-        this->RegisterEventCallback(AudioManager::OnEvent, EventCategory::AUDIO);
+        auto audioManager = new AudioManager();
+        this->RegisterEventCallback(std::bind(&AudioManager::OnEvent, audioManager, std::placeholders::_1), EventCategory::UNCATEGORIZED);
 
         Global::fileLogger.Info("AudioManager Intialized.");
 

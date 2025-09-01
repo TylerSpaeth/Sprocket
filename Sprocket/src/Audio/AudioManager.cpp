@@ -8,25 +8,6 @@
 
 namespace Sprocket {
 
-    AudioManager* AudioManager::s_Instance = nullptr;
-    void AudioManager::Init() {
-        if (s_Instance == nullptr) {
-            s_Instance = new AudioManager();
-
-            s_Instance->m_FreeSoundIndexes.push(0);
-
-            // Initialize the native audio engine
-            s_Instance->m_NativeAudioEngine = malloc(sizeof(ma_engine));
-            auto startupStatus = ma_engine_init(NULL, (ma_engine*)s_Instance->m_NativeAudioEngine);
-
-            if(startupStatus != MA_SUCCESS) {
-                Global::fileLogger.Error(std::format("Failed to initialize native audio engine. Error code: {}", (void*)startupStatus));
-                free(s_Instance->m_NativeAudioEngine);
-                delete s_Instance;
-            }
-        }
-    }
-
     void AudioManager::OnEvent(Event& event) {
         switch(event.GetEventType()) {
             case EventType::AUDIO_NEW: {
@@ -77,22 +58,29 @@ namespace Sprocket {
                         getterEvent.m_BoolValue = IsSoundPlaying(getterEvent.GetSoundID());
                         break;
                 }
+                break;
             }
+            case EventType::APP_START:
+                OnStart();
+                break;
+            case EventType::APP_SHUTDOWN:
+                OnShutdown();
+                break;
         }
     }
 
     int AudioManager::LoadSound(const std::string& filepath) {
-        Sound* newSound = new Sound(s_Instance->m_NativeAudioEngine, filepath);
+        Sound* newSound = new Sound(m_NativeAudioEngine, filepath);
 
-        unsigned int index = s_Instance->m_FreeSoundIndexes.top();
-        s_Instance->m_FreeSoundIndexes.pop();
+        unsigned int index = m_FreeSoundIndexes.top();
+        m_FreeSoundIndexes.pop();
 
-        if(index == s_Instance->m_Sounds.size()) {
-            s_Instance->m_Sounds.push_back(newSound);
-            s_Instance->m_FreeSoundIndexes.push(index + 1);
+        if(index == m_Sounds.size()) {
+            m_Sounds.push_back(newSound);
+            m_FreeSoundIndexes.push(index + 1);
         }
         else {
-            s_Instance->m_Sounds[index] = newSound;
+            m_Sounds[index] = newSound;
         }
         
 
@@ -100,61 +88,72 @@ namespace Sprocket {
     }
 
     void AudioManager::UnloadSound(int soundID) {
-        if(soundID < 0 || soundID >= s_Instance->m_Sounds.size() || s_Instance->m_Sounds[soundID] == nullptr) {
+        if(soundID < 0 || soundID >= m_Sounds.size() || m_Sounds[soundID] == nullptr) {
             Global::fileLogger.Warning(std::format("Attempted to unload invalid sound ID: {}", soundID));
             return;
         }
-        delete s_Instance->m_Sounds[soundID];
-        s_Instance->m_Sounds[soundID] = nullptr;
-        s_Instance->m_FreeSoundIndexes.push(soundID);
+        delete m_Sounds[soundID];
+        m_Sounds[soundID] = nullptr;
+        m_FreeSoundIndexes.push(soundID);
     }
 
     void AudioManager::Play(int soundID) {
-        s_Instance->m_Sounds[soundID]->Play();
+        m_Sounds[soundID]->Play();
     }
 
     void AudioManager::Stop(int soundID) {
-        s_Instance->m_Sounds[soundID]->Stop();
+        m_Sounds[soundID]->Stop();
     }
 
     void AudioManager::Reset(int soundID) {
-        s_Instance->m_Sounds[soundID]->Reset();
+        m_Sounds[soundID]->Reset();
     }
 
     bool AudioManager::IsSoundPlaying(int soundID) {
-        return s_Instance->m_Sounds[soundID]->IsPlaying();
+        return m_Sounds[soundID]->IsPlaying();
     }
 
     void AudioManager::SetSoundVolume(int soundID, float volume) {
-        s_Instance->m_Sounds[soundID]->SetVolume(volume);
+        m_Sounds[soundID]->SetVolume(volume);
     }
 
     float AudioManager::GetSoundVolume(int soundID) {
-        return s_Instance->m_Sounds[soundID]->GetVolume();
+        return m_Sounds[soundID]->GetVolume();
     }
 
     void AudioManager::SetSoundLooping(int soundID, bool loop) {
-        s_Instance->m_Sounds[soundID]->SetLooping(loop);
+        m_Sounds[soundID]->SetLooping(loop);
     }
 
     bool AudioManager::IsSoundLooping(int soundID) {
-        return s_Instance->m_Sounds[soundID]->IsLooping();
+        return m_Sounds[soundID]->IsLooping();
+    }
+
+    void AudioManager::OnStart() {
+        m_FreeSoundIndexes.push(0);
+
+        // Initialize the native audio engine
+        m_NativeAudioEngine = malloc(sizeof(ma_engine));
+        auto startupStatus = ma_engine_init(NULL, (ma_engine*)m_NativeAudioEngine);
+
+        if (startupStatus != MA_SUCCESS) {
+            Global::fileLogger.Error(std::format("Failed to initialize native audio engine. Error code: {}", (void*)startupStatus));
+            free(m_NativeAudioEngine);
+            delete this;
+        }
     }
 
     void AudioManager::OnShutdown() {
-        if (s_Instance) {
 
-            for (auto sound : s_Instance->m_Sounds) {
-                delete sound;
-            }
-            s_Instance->m_Sounds.clear();
-
-            // Clean up the native audio engine
-            ma_engine_uninit((ma_engine*)s_Instance->m_NativeAudioEngine);
-            free(s_Instance->m_NativeAudioEngine);
-
-            delete s_Instance;
-            s_Instance = nullptr;
+        for (auto sound : m_Sounds) {
+            delete sound;
         }
+        m_Sounds.clear();
+
+        // Clean up the native audio engine
+        ma_engine_uninit((ma_engine*)m_NativeAudioEngine);
+        free(m_NativeAudioEngine);
+
+        delete this;
     }
 }
