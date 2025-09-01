@@ -77,10 +77,11 @@ namespace Sprocket {
         ApplicationStartEvent* startEvent = new ApplicationStartEvent(m_WindowDimensions.first, m_WindowDimensions.second);
         OnEvent(*startEvent);
         delete startEvent;
+
+        // We consider the app to be running once all of the systems have started. 
+        m_AppRunning = true;
         
         this->Start();
-
-        m_AppRunning = true;
 
         while (m_AppRunning) {
 
@@ -102,12 +103,17 @@ namespace Sprocket {
 
     void Application::OnEvent(Event& event) {
 
-        EventValidation::ValidateEvent(event);
-
-        if (m_ShutdownSeen) {
-            Global::fileLogger.Warning("Sprocket: Event received after shutdown event. Event will be ignored.");
+        if (!m_AppRunning && event.GetEventType() != EventType::APP_START) {
+            Global::fileLogger.Warning("Event recieved before application startup. Event will be ignored.");
             return;
         }
+
+        if (m_ShutdownSeen) {
+            Global::fileLogger.Warning("Event received after shutdown event. Event will be ignored.");
+            return;
+        }
+
+        EventValidation::ValidateEvent(event);
 
         // Traverse the callbacks in reverse order. Right now this is done so we can register the window
         // and renderer first. That way we can assure they receive events, mainly update, last
