@@ -9,6 +9,7 @@
 
 namespace Sprocket {
 
+    /// @brief Class for managing the audio of an application
     class AudioManager {
     private:
 
