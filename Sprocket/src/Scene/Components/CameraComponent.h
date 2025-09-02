@@ -5,8 +5,6 @@
 
 #include "ThirdParty/glm/glm.hpp"
 
-#include "Core/Sprocket.pch"
-
 namespace Sprocket {
 
     /// @brief The main camera of the scene. Only add one to a scene at a time.

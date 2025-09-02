@@ -1,7 +1,5 @@
 #include "Collision.h"
 
-#include "ThirdParty/glm/gtc/matrix_transform.hpp"
-
 namespace Sprocket {
 
     /// @brief Calculates the normals of the box. Requires the verts to ordered CCW

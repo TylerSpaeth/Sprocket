@@ -7,8 +7,6 @@
 #include "PhysicsEvent.h"
 #include "AudioEvent.h"
 
-#include "Core/Sprocket.pch"
-
 namespace Sprocket {
 
     // EventValidation is used to verify that a given event is valid. If validation fails in one of 

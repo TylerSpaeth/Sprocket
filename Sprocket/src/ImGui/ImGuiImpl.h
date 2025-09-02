@@ -5,8 +5,6 @@
 #include "Core/Sprocket.pch"
 
 #include "Events/Event.h"
-#include "Events/KeyboardEvent.h"
-#include "Events/MouseEvent.h"
 
 #include "Utils/Singleton.h"
 

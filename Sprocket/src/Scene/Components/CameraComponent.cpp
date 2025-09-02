@@ -4,8 +4,6 @@
 
 #include "Utils/RendererUtils.hpp"
 
-#include "ThirdParty/glm/gtc/matrix_transform.hpp"
-
 namespace Sprocket {
 
     void CameraComponent::UpdateCameraTransform(glm::vec3 position, glm::vec3 rotation, glm::vec3 scale) {

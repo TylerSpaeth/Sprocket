@@ -8,8 +8,6 @@
 #include "ThirdParty/glm/glm.hpp"
 #include "ThirdParty/glm/gtc/matrix_transform.hpp"
 #include "Events/Event.h"
-
-#include "Core/Macros.h"
 #include "Core/Sprocket.pch"
 
 namespace Sprocket {

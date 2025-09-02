@@ -1,8 +1,6 @@
 #ifndef PHYSICSMANAGER_H
 #define PHYSICSMANAGER_H
 
-#include "Core/Macros.h"
-
 #include "Events/Event.h"
 
 #include "ThirdParty/glm/glm.hpp"

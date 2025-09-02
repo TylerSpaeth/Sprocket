@@ -2,8 +2,6 @@
 #define SHADER_H
 
 #include "ThirdParty/glm/glm.hpp"
-
-#include "Core/Macros.h"
 #include "Core/Sprocket.pch"
 
 namespace Sprocket {

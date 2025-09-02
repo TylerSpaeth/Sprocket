@@ -7,11 +7,6 @@
 
 #include "Components/Component.h"
 #include "Components/TransformComponent.h"
-#include "Components/QuadRendererComponent.h"
-#include "Components/CameraComponent.h"
-#include "Components/ColliderComponent.h"
-#include "Components/TileMapComponent.h"
-#include "Components/SoundComponent.h"
 
 #include "Core/Sprocket.pch"
 

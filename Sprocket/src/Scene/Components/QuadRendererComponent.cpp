@@ -4,8 +4,6 @@
 
 #include "Utils/RendererUtils.hpp"
 
-#include "ThirdParty/glm/gtc/matrix_transform.hpp"
-
 namespace Sprocket {
 
     QuadRendererComponent::QuadRendererComponent() {m_EventCallback = nullptr;}

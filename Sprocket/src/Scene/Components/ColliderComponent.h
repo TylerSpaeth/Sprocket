@@ -8,8 +8,6 @@
 
 #include "ThirdParty/glm/glm.hpp"
 
-#include "Core/Sprocket.pch"
-
 namespace Sprocket {
     
     /// @brief The base class for all collider components. Not an actual collider itself.
