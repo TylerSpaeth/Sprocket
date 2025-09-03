@@ -2,13 +2,15 @@
 #define RENDERER_H
 
 #include "VertexArray.h"
+#include "VertexBuffer.h"
 #include "IndexBuffer.h"
 #include "Shader.h"
 #include "Texture.h"
-#include "ThirdParty/glm/glm.hpp"
-#include "ThirdParty/glm/gtc/matrix_transform.hpp"
 #include "Events/Event.h"
 #include "Core/Sprocket.pch"
+
+#include "ThirdParty/glm/glm.hpp"
+#include "ThirdParty/glm/gtc/matrix_transform.hpp"
 
 namespace Sprocket {
 

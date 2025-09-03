@@ -1,13 +1,13 @@
 #include "Renderer.h"
+#include "VertexBuffer.h"
 
 #include "Core/Global.h"
+#include "Core/Sprocket.pch"
 
 #include "Events/ApplicationEvent.h"
 #include "Events/RenderEvent.h"
 
 #include "ThirdParty/glad/glad.h"
-
-#include "Core/Sprocket.pch"
 
 namespace Sprocket {
 
@@ -131,7 +131,8 @@ namespace Sprocket {
 
     void Renderer::OnStart(float xDimension, float yDimension) {
         if (xDimension < 0 || yDimension < 0) {
-            throw std::invalid_argument("Renderer dimensions can not be negative.");
+            Global::fileLogger.Error("Renderer dimensions can not be negative.");
+            exit(EXIT_FAILURE);
         }
 
         // Setup blending
@@ -206,7 +207,8 @@ namespace Sprocket {
     unsigned int Renderer::AddQuad(float size) {
 
         if (size <= 0) {
-            throw std::invalid_argument("A quad must have a positive, nonzero size.");
+            Global::fileLogger.Error("A quad must have a positive, nonzero size.");
+            exit(EXIT_FAILURE);
         }
 
         // When we no longer have space in the buffers, double their size. If an issue arises where 

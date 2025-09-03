@@ -2,6 +2,11 @@
 #define ENTITY_TPP
 
 #include "Entity.h"
+#include "Components/QuadRendererComponent.h"
+#include "Components/CameraComponent.h"
+#include "Components/ColliderComponent.h"
+#include "Components/TileMapComponent.h"
+#include "Components/SoundComponent.h"
 
 namespace Sprocket {
 
