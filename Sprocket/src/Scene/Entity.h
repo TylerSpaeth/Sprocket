@@ -85,12 +85,13 @@ namespace Sprocket {
                 Global::fileLogger.Warning("Invalid component type, ignoring add.");
                 return false;
             }
-            if (it->second == 0) {
+            if (*(it->second) == 0) {
+                Global::fileLogger.Warning(std::format("Max number of {} on this entity reached. Ignoring add.", typeid(T).name()));
                 return false;
             }
 
             // Decrement the number of components that can now be added of this type
-            it->second--;
+            (*it->second)--;
             T* newComponent = new T();
             m_Components.push_back(newComponent);
 

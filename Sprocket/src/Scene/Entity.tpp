@@ -16,11 +16,11 @@ namespace Sprocket {
 
     template<>
     inline bool Entity::AddComponent<QuadRendererComponent>() {
-        for (Component* component : m_Components) {
-            QuadRendererComponent* existingComponent = dynamic_cast<QuadRendererComponent*>(component);
-            if (existingComponent != nullptr) {
-                return false;
-            }
+
+        auto it = m_AllowedComponents.find(typeid(QuadRendererComponent));
+        if (*it->second == 0) {
+            Global::fileLogger.Warning("Max number of QuadRendererComponents on this object reached. Ignoring add.");
+            return false;
         }
 
         QuadRendererComponent* qr = new QuadRendererComponent();
@@ -31,18 +31,19 @@ namespace Sprocket {
         }
 
         m_Components.push_back(qr);
+
+        (*it->second)--;
+
         return true;
     }
 
     template<>
     inline bool Entity::AddComponent<BoxColliderComponent>() {
 
-        for (Component* component : m_Components) {
-            CircleColliderComponent* existingCircleCollider = dynamic_cast<CircleColliderComponent*>(component);
-            BoxColliderComponent* existingBoxCollider = dynamic_cast<BoxColliderComponent*>(component);
-            if (existingCircleCollider != nullptr || existingBoxCollider != nullptr) {
-                return false;
-            }
+        auto it = m_AllowedComponents.find(typeid(BoxColliderComponent));
+        if (*it->second == 0) {
+            Global::fileLogger.Warning("Max number of BoxColliderComponents on this object reached. Ignoring add.");
+            return false;
         }
 
         BoxColliderComponent* boxCollider = new BoxColliderComponent(m_Transform);
@@ -53,17 +54,19 @@ namespace Sprocket {
         }
 
         m_Components.push_back(boxCollider);
+
+        (*it->second)--;
+
         return true;
     }
 
     template<>
     inline bool Entity::AddComponent<CircleColliderComponent>() {
-        for (Component* component : m_Components) {
-            CircleColliderComponent* existingCircleCollider = dynamic_cast<CircleColliderComponent*>(component);
-            BoxColliderComponent* existingBoxCollider = dynamic_cast<BoxColliderComponent*>(component);
-            if (existingCircleCollider || existingBoxCollider) {
-                return false;
-            }
+
+        auto it = m_AllowedComponents.find(typeid(CircleColliderComponent));
+        if (*it->second == 0) {
+            Global::fileLogger.Warning("Max number of CircleColliderComponents on this object reached. Ignoring add.");
+            return false;
         }
 
         CircleColliderComponent* circleCollider = new CircleColliderComponent(m_Transform);
@@ -74,6 +77,9 @@ namespace Sprocket {
         }
 
         m_Components.push_back(circleCollider);
+
+        *(it->second)--;
+
         return true;
     }
 
