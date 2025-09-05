@@ -80,7 +80,9 @@ namespace Sprocket {
                 GetComponent<QuadRendererComponent>()->UpdateQuadColor({ 1,0,1,1 });
             }
             if (Input::IsKeyPressed(KEY_7)) {
-                GetComponent<QuadRendererComponent>()->UpdateTexturePath("textures/BiggerBetterTree.png");
+                Sprite sprite;
+                sprite.texturePath = "textures/BiggerBetterTree.png";
+                GetComponent<QuadRendererComponent>()->SetSprite(sprite);
             }
         }
 

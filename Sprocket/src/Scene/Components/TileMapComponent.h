@@ -2,6 +2,7 @@
 #define TILEMAPCOMPONENT_H
 
 #include "Component.h"
+#include "Subcomponents/Sprite.h"
 
 #include "ThirdParty/glm/glm.hpp"
 
@@ -21,11 +22,8 @@ namespace Sprocket {
 
         // Data structure to hold the data for each QuadRenderer in the tilemap
         struct QuadRendererStruct {
-            glm::vec4 m_QuadColor = { 1,1,1,1 };
-            std::string m_TexturePath;
-            // These coordinates start in the top right corner and go clockwise around the quad
-            glm::vec4 m_TextureXUVCoords = { 1,1,0,0 };
-            glm::vec4 m_TextureYUVCoords = { 1,0,0,1 };
+            glm::vec4 quadColor = { 1,1,1,1 };
+            Sprite sprite;
         };
     
         // Global transform values for the entire tilemap
@@ -99,17 +97,10 @@ namespace Sprocket {
         /// @param quadColor - The color to set the QuadRenderer to.
         bool SetQuadRendererData(const char index, const glm::vec4 quadColor);
 
-        /// @brief Sets the texture of the QuadRenderer at the given index.
-        /// @param index - The index of the QuadRenderer to set the texture of.
-        /// @param texturePath - The path to the texture to set the QuadRenderer to.
-        bool SetQuadRendererData(const char index, const std::string texturePath);
-
-        /// @brief Sets the texture and UV coordinates of the QuadRenderer at the given index.
+        /// @brief Sets the sprite of the QuadRenderer at the given index.
         /// @param index - The index of the QuadRenderer to set the texture and UV coordinates of.
-        /// @param texturePath - The path to the texture to set the QuadRenderer to.
-        /// @param textureXUVCoords - The UV coordinates for the X axis of the texture.
-        /// @param textureYUVCoords - The UV coordinates for the Y axis of the texture.
-        bool SetQuadRendererData(const char index, const std::string texturePath, const glm::vec4 textureXUVCoords, const glm::vec4 textureYUVCoords);
+        /// @param sprite - The sprite to assign to the QuaderRenderer at index.
+        bool SetQuadRendererData(const char index, const Sprite& sprite);
 
     };
 

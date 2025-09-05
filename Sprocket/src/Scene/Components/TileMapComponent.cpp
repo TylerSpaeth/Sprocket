@@ -64,13 +64,13 @@ namespace Sprocket {
                     delete renderNewEvent;
 
                     RenderUpdateEvent* renderUpdateEventQuad = new RenderUpdateEvent(RenderUpdateType::QUAD, quadID);
-                    if (!quadRendererStruct.m_TexturePath.empty()) {
-                        renderUpdateEventQuad->m_TexturePath = quadRendererStruct.m_TexturePath;
-                        renderUpdateEventQuad->m_TexXCoords = quadRendererStruct.m_TextureXUVCoords;
-                        renderUpdateEventQuad->m_TexYCoords = quadRendererStruct.m_TextureYUVCoords;
+                    if (!quadRendererStruct.sprite.texturePath.empty()) {
+                        renderUpdateEventQuad->m_TexturePath = quadRendererStruct.sprite.texturePath;
+                        renderUpdateEventQuad->m_TexXCoords = quadRendererStruct.sprite.textureXUVCoords;
+                        renderUpdateEventQuad->m_TexYCoords = quadRendererStruct.sprite.textureYUVCoords;
                     }
                     else {
-                        renderUpdateEventQuad->m_QuadColor = quadRendererStruct.m_QuadColor;
+                        renderUpdateEventQuad->m_QuadColor = quadRendererStruct.quadColor;
                     }
                     m_EventCallback(*renderUpdateEventQuad);
                     delete renderUpdateEventQuad;
@@ -337,7 +337,7 @@ namespace Sprocket {
         if (index - FIRST_PRINTABLE_ASCII > MAX_UNIQUE_TILES) {
             return false;
         }
-        m_QuadRenderers.at(index - FIRST_PRINTABLE_ASCII).m_QuadColor = quadColor;
+        m_QuadRenderers.at(index - FIRST_PRINTABLE_ASCII).quadColor = quadColor;
         if (m_EventCallback != nullptr) {
             for (auto quadRendererID : m_QuadRendererIDs.at(index - FIRST_PRINTABLE_ASCII)) {
                 RenderUpdateEvent* event = new RenderUpdateEvent(RenderUpdateType::QUAD, quadRendererID);
@@ -349,45 +349,22 @@ namespace Sprocket {
         return true;
     }
 
-    bool TileMapComponent::SetQuadRendererData(const char index, const std::string texturePath) {
+    bool TileMapComponent::SetQuadRendererData(const char index, const Sprite& sprite) {
         if (index - FIRST_PRINTABLE_ASCII > MAX_UNIQUE_TILES) {
             return false;
         }
         QuadRendererStruct& qrs = m_QuadRenderers.at(index - FIRST_PRINTABLE_ASCII);
-        qrs.m_TexturePath = texturePath;
+        qrs.sprite = sprite;
         if (m_EventCallback != nullptr) {
             for (auto quadRendererID : m_QuadRendererIDs.at(index - FIRST_PRINTABLE_ASCII)) {
                 RenderUpdateEvent* event = new RenderUpdateEvent(RenderUpdateType::QUAD, quadRendererID);
-                event->m_TexturePath = qrs.m_TexturePath;
-                event->m_TexXCoords = qrs.m_TextureXUVCoords;
-                event->m_TexYCoords = qrs.m_TextureYUVCoords;
+                event->m_TexturePath = qrs.sprite.texturePath;
+                event->m_TexXCoords = qrs.sprite.textureXUVCoords;
+                event->m_TexYCoords = qrs.sprite.textureYUVCoords;
                 m_EventCallback(*event);
                 delete event;
             }
         }
-        return true;
-    }
-
-    bool TileMapComponent::SetQuadRendererData(const char index, const std::string texturePath, const glm::vec4 textureXUVCoords, const glm::vec4 textureYUVCoords) {
-        if (index - FIRST_PRINTABLE_ASCII > MAX_UNIQUE_TILES) {
-            return false;
-        }
-        QuadRendererStruct& qrs = m_QuadRenderers.at(index - FIRST_PRINTABLE_ASCII);
-        qrs.m_TexturePath = texturePath;
-        qrs.m_TextureXUVCoords = textureXUVCoords;
-        qrs.m_TextureYUVCoords = textureYUVCoords;
-
-        if (m_EventCallback != nullptr) {
-            for (auto quadRendererID : m_QuadRendererIDs.at(index - FIRST_PRINTABLE_ASCII)) {
-                RenderUpdateEvent* event = new RenderUpdateEvent(RenderUpdateType::QUAD, quadRendererID);
-                event->m_TexturePath = texturePath;
-                event->m_TexXCoords = qrs.m_TextureXUVCoords;
-                event->m_TexYCoords = qrs.m_TextureYUVCoords;
-                m_EventCallback(*event);
-                delete event;
-            }
-        }
-
         return true;
     }
 

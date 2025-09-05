@@ -2,6 +2,7 @@
 #define QUADRENDERERCOMPONENT_H
 
 #include "Component.h"
+#include "Subcomponents/Sprite.h"
 
 #include "ThirdParty/glm/glm.hpp"
 
@@ -20,11 +21,9 @@ namespace Sprocket {
         // This correspondes to the id in the rendering system. It is needed to do anything with 
         // the component in the rendering system.
         int m_QuadID = -1;
+
         glm::vec4 m_QuadColor = { 1,1,1,1 };
-        std::string m_TexturePath;
-        // These coordinates start in the top right corner and go clockwise around the quad
-        glm::vec4 m_TextureXUVCoords = { 1,1,0,0 };
-        glm::vec4 m_TextureYUVCoords = { 1,0,0,1 };
+        Sprite m_Sprite;
 
         QuadRendererComponent();
         // The event callback should be pulled off of the scene that the entity is a part of
@@ -60,24 +59,10 @@ namespace Sprocket {
         /// displaying a texture, that will be replaced with this color.
         /// @param newColor - The RGBA color to use.
         void UpdateQuadColor(glm::vec4 newColor);
-        
-        /// @brief Update the Quad texture to the one contained at this texture path. If the quad
-        /// is currently displaying a color, that will be replaced with this texture.
-        /// @param texturePath - Path to file containing the desired texture.
-        void UpdateTexturePath(std::string texturePath);
-    
-        /// @brief Update the Quad texture to the one contained at this texture path. Also updates
-        /// UV coords if the quad is currently displaying a color, that will be replaced with this texture. 
-        /// @param texturePath - Path to file containing the desired texture.
-        /// @param textureXUVCoords - The X UV coordinates 
-        /// @param textureYUVCoords - The Y UV coordinates
-        void UpdateTexturePath(std::string texturePath, glm::vec4 textureXUVCoords, glm::vec4 textureYUVCoords);
 
-        /// @brief Updates UV coords if the quad is currently displaying a color, that will be 
-        /// replaced with a texture.
-        /// @param texturePath - Path to file containing the desired texture.
-        /// @param textureXUVCoords - The X UV coordinates 
-        void UpdateTextureCoords(glm::vec4 textureXUVCoords, glm::vec4 textureYUVCoords);
+        Sprite GetSprite() const {return m_Sprite;}
+
+        void SetSprite(const Sprite& sprite);
 
     };
 
