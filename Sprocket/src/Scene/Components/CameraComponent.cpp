@@ -6,6 +6,12 @@
 
 namespace Sprocket {
 
+    CameraComponent::~CameraComponent() {
+        if (m_EventCallback) {
+            UpdateCameraTransform(glm::vec3(0), glm::vec3(0), glm::vec3(1));
+        }
+    }
+
     void CameraComponent::UpdateCameraTransform(glm::vec3 position, glm::vec3 rotation, glm::vec3 scale) {
 
         RenderUpdateEvent* e = new RenderUpdateEvent(RenderUpdateType::VIEW_MATRIX, -1);

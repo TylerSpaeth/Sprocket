@@ -53,6 +53,7 @@ namespace Sprocket {
         std::array<QuadRendererStruct, MAX_UNIQUE_TILES> m_QuadRenderers;
 
         TileMapComponent() {}
+        ~TileMapComponent();
 
         /// @brief Registers the TileMap with the given transform values.
         /// @param position - The position of the tile map.

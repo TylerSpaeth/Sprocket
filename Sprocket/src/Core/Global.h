@@ -1,5 +1,5 @@
-#ifndef GLOBALS_H
-#define GLOBALS_H
+#ifndef GLOBAL_H
+#define GLOBAL_H
 
 #include "Logger/Logger.h"
 
@@ -7,10 +7,10 @@ namespace Sprocket {
 
     namespace Global {
         
-        extern Logger fileLogger;
-        extern Logger consoleLogger;
+        inline static Logger fileLogger("Sprocket.log");
+        inline static Logger consoleLogger;
 
-        extern float pixelsPerUnit;
+        inline static float pixelsPerUnit = 100.0f;
 
     }
 

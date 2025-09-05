@@ -4,6 +4,20 @@
 
 namespace Sprocket {
 
+    SoundComponent::~SoundComponent() {
+        if (m_SoundID != -1 && m_EventCallback) {
+            if (IsPlaying()) {
+                Stop();
+            }
+
+            AudioDeleteEvent* event = new AudioDeleteEvent(m_SoundID);
+            m_EventCallback(*event);
+            delete event;
+
+        } 
+    }
+
+
     void SoundComponent::SetFilepath(const std::string& filepath) {
         m_Filepath = filepath;
         AudioNewEvent* event = new AudioNewEvent(m_Filepath);

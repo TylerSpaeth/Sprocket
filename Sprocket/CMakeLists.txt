@@ -51,7 +51,6 @@ target_sources(sprocket PRIVATE
   src/Core/Window.cpp
   src/Core/Application.cpp
   src/Core/Input.cpp
-  src/Core/Global.cpp
 )
 
 # Add Scene source code

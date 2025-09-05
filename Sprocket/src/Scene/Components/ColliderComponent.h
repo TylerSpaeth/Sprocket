@@ -17,8 +17,8 @@ namespace Sprocket {
         int m_PhysicsID = -1;
         TransformComponent* m_TranformComponent = nullptr;
         ColliderComponent(TransformComponent& transformComponent) : m_TranformComponent(&transformComponent) {}
+        virtual ~ColliderComponent();
 
-        
         /// @brief Registers the collider with the physics system
         virtual void Register() = 0;
 

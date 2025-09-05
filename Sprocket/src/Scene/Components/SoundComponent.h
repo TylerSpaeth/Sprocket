@@ -13,7 +13,7 @@ namespace Sprocket {
     private:
         /// @brief Creates a sound component, but does not register it with the audio system.
         SoundComponent() {}
-        ~SoundComponent() {}
+        ~SoundComponent();
 
         int m_SoundID = -1;
         std::string m_Filepath;

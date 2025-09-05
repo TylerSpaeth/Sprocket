@@ -22,6 +22,8 @@ namespace Sprocket {
     protected:
         // A callback that sends events into the event system.
         std::function<void(Event&)> m_EventCallback;
+    public:
+        virtual void RegisterEventCallback(std::function<void(Event&)> eventCallback) {m_EventCallback = eventCallback;}
     };
 
 }

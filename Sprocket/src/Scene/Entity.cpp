@@ -8,9 +8,13 @@
 
 namespace Sprocket {
 
-    Entity::Entity() : m_Transform([this]() {return GetParentGlobalTransform(); }) {}
+    Entity::Entity() : m_Transform([this]() {return GetParentGlobalTransform(); }) {
+        InitializeAllowedComponents();
+    }
 
-    Entity::~Entity() {}
+    Entity::~Entity() {
+        FreeAllowedComponents();
+    }
 
     TransformComponent Entity::GetParentGlobalTransform() {
         if (!m_Parent) return TransformComponent(nullptr);
@@ -105,6 +109,28 @@ namespace Sprocket {
         }
 
         Update(deltaTime);
+    }
+
+    void Entity::InitializeAllowedComponents() {
+        // Transform is set to 0 since that can never be added to an entity
+        m_AllowedComponents.insert({typeid(TransformComponent), new unsigned int(0)});
+        m_AllowedComponents.insert({typeid(CameraComponent), new unsigned int(1)});
+        auto maximumColliders = new unsigned int(1);
+        m_AllowedComponents.insert({typeid(ColliderComponent), maximumColliders});
+        m_AllowedComponents.insert({typeid(BoxColliderComponent), maximumColliders});
+        m_AllowedComponents.insert({typeid(CircleColliderComponent), maximumColliders});
+        m_AllowedComponents.insert({typeid(QuadRendererComponent), new unsigned int(1)});
+        m_AllowedComponents.insert({typeid(SoundComponent), new unsigned int(1)});
+        m_AllowedComponents.insert({typeid(TileMapComponent), new unsigned int(1)});
+    }
+
+    void Entity::FreeAllowedComponents() {
+        for(const auto& pair : m_AllowedComponents) {
+            if(pair.second != nullptr) {
+                free(pair.second);
+            }
+        }
+        m_AllowedComponents.clear();
     }
 
 }

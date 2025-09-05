@@ -4,6 +4,12 @@
 
 namespace Sprocket {
 
+    ColliderComponent::~ColliderComponent() {
+        if (m_EventCallback && m_PhysicsID != -1) {
+            Remove();
+        }
+    }
+
     bool ColliderComponent::CollidesWith(ColliderComponent& colliderComponent) {
 
         bool result = false;
