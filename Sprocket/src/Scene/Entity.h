@@ -147,7 +147,7 @@ namespace Sprocket {
                 T* existingComponent = dynamic_cast<T*>(m_Components.at(i));
                 if (existingComponent != nullptr) {
                     // Since we are removing this component we can allow another to be created
-                    it->second++;
+                    (*it->second)++;
                     m_Components.erase(m_Components.begin() + i);
                     delete existingComponent;
                     return true;

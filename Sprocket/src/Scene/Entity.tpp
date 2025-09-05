@@ -78,23 +78,9 @@ namespace Sprocket {
 
         m_Components.push_back(circleCollider);
 
-        *(it->second)--;
+        (*it->second)--;
 
         return true;
-    }
-
-    template<>
-    inline bool Entity::RemoveComponent<TileMapComponent>() {
-        for (int i = 0; i < m_Components.size(); i++) {
-            TileMapComponent* existingComponent = dynamic_cast<TileMapComponent*>(m_Components.at(i));
-            if (existingComponent != nullptr) {
-                m_Components.erase(m_Components.begin() + i);
-                existingComponent->DeleteTileMap();
-                delete existingComponent;
-                return true;
-            }
-        }
-        return false;
     }
 
     template<>
