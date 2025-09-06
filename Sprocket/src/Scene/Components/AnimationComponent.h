@@ -1,0 +1,49 @@
+#ifndef ANIMATIONCOMPONENT_H
+#define ANIMATIONCOMPONENT_H
+
+#include "Component.h"
+#include "QuadRendererComponent.h"
+#include "Subcomponents/Animation.h"
+
+#include "Core/Sprocket.pch"
+
+#include "ThirdParty/glm/glm.hpp"
+
+namespace Sprocket {
+
+    class SPROCKET_API AnimationComponent : public EventDrivenComponent {
+
+        friend class Entity;
+
+    private:
+
+        // Animation components store a quad renderer component that they use for actually 
+        // displaying sprites.
+        QuadRendererComponent* m_QuadRenderer = nullptr;
+        Animation m_Animation;
+
+        float m_AnimationTotalTime = 0;
+        float m_ElapsedTime = 0;
+
+        AnimationComponent();
+        AnimationComponent(const std::function<void(Event&)> eventCallback);
+        ~AnimationComponent();
+
+        /// @brief Registers the component in the event system
+        void Register();
+
+        /// @brief Updates the animation. 
+        /// Should be called every frame so the animation clock stays in sync.
+        /// @param deltaTime - The elapsed time between frames
+        void UpdateAnimation(float deltaTime);
+
+    public:
+
+        /// @brief Sets the Animation that should be playing.
+        bool SetAnimation(const Animation& animation);
+
+    };
+
+}
+
+#endif
