@@ -15,6 +15,7 @@ namespace Sprocket {
     class SPROCKET_API QuadRendererComponent : public EventDrivenComponent {
 
         friend class Entity;
+        friend class AnimationComponent;
 
     private:
 

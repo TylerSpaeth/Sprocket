@@ -5,6 +5,7 @@
 #include "Components/ColliderComponent.h"
 #include "Components/TileMapComponent.h"
 #include "Components/SoundComponent.h"
+#include "Components/AnimationComponent.h"
 
 namespace Sprocket {
 
@@ -54,6 +55,11 @@ namespace Sprocket {
                     sound->SetFilepath(sound->GetFilepath());
                 }
             }
+            else if (AnimationComponent* animation = dynamic_cast<AnimationComponent*>(component)) {
+                animation->m_EventCallback = m_EventCallback;
+                animation->Register();
+                animation->m_QuadRenderer->RenderNew(m_Transform.Position(), m_Transform.Rotation(), m_Transform.Scale());
+            }
         }
         Start();
     }
@@ -82,6 +88,11 @@ namespace Sprocket {
                 sound->Stop();
                 sound->m_EventCallback = nullptr;
             }
+            if (AnimationComponent* animation = dynamic_cast<AnimationComponent*>(component)) {
+                animation->m_QuadRenderer->RemoveRender();
+                animation->m_EventCallback = nullptr;
+                animation->m_QuadRenderer->m_EventCallback = nullptr;
+            }
         }
 
         m_EventCallback = nullptr;
@@ -105,6 +116,10 @@ namespace Sprocket {
                 else if (TileMapComponent* tileMap = dynamic_cast<TileMapComponent*>(component)) {
                     tileMap->UpdateTransform(m_Transform.Position(), m_Transform.Rotation(), m_Transform.Scale());
                 }
+                else if (AnimationComponent* animation = dynamic_cast<AnimationComponent*>(component)) {
+                    animation->m_QuadRenderer->UpdateModelMatrix(m_Transform.Position(), m_Transform.Rotation(), m_Transform.Scale());
+                    animation->UpdateAnimation(deltaTime);
+                }
             }
         }
 
@@ -119,7 +134,9 @@ namespace Sprocket {
         m_AllowedComponents.insert({typeid(ColliderComponent), maximumColliders});
         m_AllowedComponents.insert({typeid(BoxColliderComponent), maximumColliders});
         m_AllowedComponents.insert({typeid(CircleColliderComponent), maximumColliders});
-        m_AllowedComponents.insert({typeid(QuadRendererComponent), new unsigned int(1)});
+        auto maximumRenderers = new unsigned int(1);
+        m_AllowedComponents.insert({typeid(QuadRendererComponent), maximumRenderers});
+        m_AllowedComponents.insert({typeid(AnimationComponent), maximumRenderers});
         m_AllowedComponents.insert({typeid(SoundComponent), new unsigned int(1)});
         m_AllowedComponents.insert({typeid(TileMapComponent), new unsigned int(1)});
     }
@@ -127,7 +144,7 @@ namespace Sprocket {
     void Entity::FreeAllowedComponents() {
         for(const auto& pair : m_AllowedComponents) {
             if(pair.second != nullptr) {
-                free(pair.second);
+                delete pair.second;
             }
         }
         m_AllowedComponents.clear();

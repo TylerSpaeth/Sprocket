@@ -19,5 +19,6 @@
 #include <vector>
 #include <typeindex>
 #include <type_traits>
+#include <cmath>
 
 #endif

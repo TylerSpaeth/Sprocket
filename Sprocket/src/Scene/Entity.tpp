@@ -7,6 +7,7 @@
 #include "Components/ColliderComponent.h"
 #include "Components/TileMapComponent.h"
 #include "Components/SoundComponent.h"
+#include "Components/AnimationComponent.h"
 
 namespace Sprocket {
 
@@ -31,6 +32,30 @@ namespace Sprocket {
         }
 
         m_Components.push_back(qr);
+
+        (*it->second)--;
+
+        return true;
+    }
+
+    template<>
+    inline bool Entity::AddComponent<AnimationComponent>() {
+
+        auto it = m_AllowedComponents.find(typeid(AnimationComponent));
+        if (*it->second == 0) {
+            Global::fileLogger.Warning("Max number of AnimationComponents on this object reached. Ignoring add.");
+            return false;
+        }
+
+        AnimationComponent* component = new AnimationComponent();
+
+        if (m_EventCallback != nullptr) {
+            component->m_EventCallback = m_EventCallback;
+            component->Register();
+            component->m_QuadRenderer->RenderNew(m_Transform.Position(), m_Transform.Rotation(), m_Transform.Scale());
+        }
+
+        m_Components.push_back(component);
 
         (*it->second)--;
 
