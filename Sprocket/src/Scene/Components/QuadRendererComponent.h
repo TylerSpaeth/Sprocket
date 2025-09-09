@@ -27,15 +27,10 @@ namespace Sprocket {
         Sprite m_Sprite;
 
         QuadRendererComponent();
-        // The event callback should be pulled off of the scene that the entity is a part of
-        QuadRendererComponent(const std::function<void(Event&)> eventCallback);
         ~QuadRendererComponent();
 
-        /// @brief Submits this quad renderer into the rendering system with the given transform
-        /// @param position 
-        /// @param rotation 
-        /// @param scale 
-        void RenderNew(glm::vec3 position, glm::vec3 rotation, glm::vec3 scale);
+        /// @brief Submits this quad renderer into the rendering system
+        void RenderNew();
 
         /// @brief Updates the model matrix of this quad renderer based on the given transform
         /// @param position 
@@ -48,6 +43,8 @@ namespace Sprocket {
 
         /// @brief Helper function to send texture related events.
         void SendTextureEvent();
+
+        void RegisterEventCallback(const std::function<void(Event&)> eventCallback) override;
 
     public:
 

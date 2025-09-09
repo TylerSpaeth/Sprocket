@@ -15,7 +15,7 @@ namespace Sprocket {
     // Entity class. It allows the header to stay uncluttered while removing the need to include 
     // the cpp file.
 
-    template<>
+    /*template<>
     inline bool Entity::AddComponent<QuadRendererComponent>() {
 
         auto it = m_AllowedComponents.find(typeid(QuadRendererComponent));
@@ -60,7 +60,7 @@ namespace Sprocket {
         (*it->second)--;
 
         return true;
-    }
+    }*/
 
     template<>
     inline bool Entity::AddComponent<BoxColliderComponent>() {

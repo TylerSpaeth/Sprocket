@@ -5,11 +5,16 @@
 namespace Sprocket {
 
     AnimationComponent::AnimationComponent() {m_EventCallback = nullptr;}
-    AnimationComponent::AnimationComponent(const std::function<void(Event&)> eventCallback) {m_EventCallback = eventCallback;}
     AnimationComponent::~AnimationComponent() {
         if (m_QuadRenderer) {
             delete m_QuadRenderer;
         }
+    }
+
+    void AnimationComponent::RegisterEventCallback(const std::function<void(Event&)> eventCallback) {
+        m_EventCallback = eventCallback;
+        Register();
+        m_QuadRenderer->RenderNew();
     }
 
     void AnimationComponent::Register() {

@@ -8,19 +8,28 @@
 
 namespace Sprocket {
 
-    QuadRendererComponent::QuadRendererComponent() {m_EventCallback = nullptr;}
-    QuadRendererComponent::QuadRendererComponent(const std::function<void(Event&)> eventCallback) {m_EventCallback = eventCallback;}
+    QuadRendererComponent::QuadRendererComponent() {
+        m_EventCallback = nullptr;
+    }
     QuadRendererComponent::~QuadRendererComponent() {
         if (m_EventCallback && m_QuadID != -1) {
             RemoveRender();
         }
     }
 
-    void QuadRendererComponent::RenderNew(glm::vec3 position, glm::vec3 rotation, glm::vec3 scale) {
+    void QuadRendererComponent::RegisterEventCallback(const std::function<void(Event&)> eventCallback) {
+        m_EventCallback = eventCallback;
+        RenderNew();
+    }
+
+    void QuadRendererComponent::RenderNew() {
         RenderNewEvent* e = new RenderNewEvent();
         m_EventCallback(*e);
         m_QuadID = e->GetQuadID();
         delete e;
+        
+        // Zero out everything to begin with so that it doesn't show up until values are assigned
+        UpdateModelMatrix({0,0,0}, { 0,0,0 }, { 0,0,0 });
     }
 
     void QuadRendererComponent::UpdateModelMatrix(glm::vec3 position, glm::vec3 rotation, glm::vec3 scale) {

@@ -33,32 +33,30 @@ namespace Sprocket {
         for (Component* component : m_Components) {
             // If this component is of they QuadRendererComponent, remove its event callback
             if (QuadRendererComponent* qr = dynamic_cast<QuadRendererComponent*>(component)) {
-                qr->m_EventCallback = m_EventCallback;
-                qr->RenderNew(m_Transform.Position(), m_Transform.Rotation(), m_Transform.Scale());
+                qr->RegisterEventCallback(m_EventCallback);
+                qr->UpdateModelMatrix(m_Transform.Position(), m_Transform.Rotation(), m_Transform.Scale());
                 qr->UpdateQuadColor(qr->GetQuadColor());
             }
             else if (CameraComponent* camera = dynamic_cast<CameraComponent*>(component)) {
-                camera->m_EventCallback = m_EventCallback;
+                camera->RegisterEventCallback(m_EventCallback);
                 camera->UpdateCameraTransform(m_Transform.Position(), m_Transform.Rotation(), m_Transform.Scale());
             }
             else if (ColliderComponent* collider = dynamic_cast<ColliderComponent*>(component)) {
-                collider->m_EventCallback = m_EventCallback;
+                collider->RegisterEventCallback(m_EventCallback);
                 collider->Register();
             }
             else if (TileMapComponent* tileMap = dynamic_cast<TileMapComponent*>(component)) {
-                tileMap->m_EventCallback = m_EventCallback;
+                tileMap->RegisterEventCallback(m_EventCallback);
                 tileMap->RegisterTileMap(m_Transform.Position(), m_Transform.Rotation(), m_Transform.Scale());
             }
             else if (SoundComponent* sound = dynamic_cast<SoundComponent*>(component)) {
-                sound->m_EventCallback = m_EventCallback;
+                sound->RegisterEventCallback(m_EventCallback);
                 if (!sound->GetFilepath().empty() && sound->m_SoundID == -1) {
                     sound->SetFilepath(sound->GetFilepath());
                 }
             }
             else if (AnimationComponent* animation = dynamic_cast<AnimationComponent*>(component)) {
-                animation->m_EventCallback = m_EventCallback;
-                animation->Register();
-                animation->m_QuadRenderer->RenderNew(m_Transform.Position(), m_Transform.Rotation(), m_Transform.Scale());
+                animation->RegisterEventCallback(m_EventCallback);
             }
         }
         Start();
