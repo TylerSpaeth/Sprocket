@@ -5,6 +5,10 @@
 
 namespace Sprocket {
 
+    Texture::Texture(unsigned char* buffer) : m_FilePath(""), m_Width(0), m_Height(0), m_BitsPerPixel(0), m_LocalBuffer(buffer) {
+        CreateTexture();
+    }
+
     // Binds the texture specified in the path to the given slot
     Texture::Texture(const std::string& path)
         : m_FilePath(path), m_LocalBuffer(nullptr), m_Width(0), m_Height(0), m_BitsPerPixel(0) {
@@ -13,6 +17,20 @@ namespace Sprocket {
         stbi_set_flip_vertically_on_load(1);
         m_LocalBuffer = stbi_load(path.c_str(), &m_Width, &m_Height, &m_BitsPerPixel, 4);
 
+        if (m_LocalBuffer == nullptr) {
+            Global::fileLogger.Error(std::format("Sprocket: Texture loading failed for path: {}", path));
+        }
+
+        CreateTexture();
+
+        // If there is a loaded image, free it
+        if (m_LocalBuffer) {
+            stbi_image_free(m_LocalBuffer);
+        }
+
+    }
+
+    void Texture::CreateTexture() {
         glGenTextures(1, &m_TextureID);
         // FIXME for some reason this needs to be called in order to be able to render multiple textures at the same time. This should be done a different way because there is no guarentee that the textureID and slot will always be the same
         glActiveTexture(GL_TEXTURE0 + m_TextureID);
@@ -24,14 +42,6 @@ namespace Sprocket {
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 
         glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, m_Width, m_Height, 0, GL_RGBA, GL_UNSIGNED_BYTE, m_LocalBuffer);
-
-        // If there is a loaded image, free it
-        if (m_LocalBuffer) {
-            stbi_image_free(m_LocalBuffer);
-        }
-        else if (m_LocalBuffer == nullptr) {
-            Global::fileLogger.Error(std::format("Sprocket: Texture loading failed for path: {}", path));
-        }
 
         glBindTexture(GL_TEXTURE_2D, 0);
     }

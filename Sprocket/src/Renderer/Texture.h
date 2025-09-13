@@ -15,7 +15,14 @@ namespace Sprocket {
         unsigned char* m_LocalBuffer;
         int m_Width, m_Height, m_BitsPerPixel;
         mutable unsigned int m_Slot = -1;
+
+        /// @brief Called by the constructors after data initialization
+        void CreateTexture();
     public:
+
+        /// @brief Constructs a new texture based on the given image data buffer
+        /// @param buffer a buffer containing image data
+        Texture(unsigned char* buffer);
 
         /// @brief Constructs a new texture based on the given path.
         /// @param path the filepath to the texture.
