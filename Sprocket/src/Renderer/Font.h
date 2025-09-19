@@ -39,6 +39,8 @@ namespace Sprocket {
 
         unsigned int GetTextureID() const {return m_TextureID;}
 
+        std::vector<unsigned char> GetTextureBufferForText(const std::string& text, unsigned int& width, unsigned int& height);
+
     };
 
 }

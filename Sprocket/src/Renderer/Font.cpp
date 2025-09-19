@@ -54,14 +54,12 @@ namespace Sprocket {
 
             FT_Bitmap& bmp = face->glyph->bitmap;
 
-            // Vertical offset to preserve baseline
-            int yOffset = maxTop - bmp.rows + (bmp.rows - face->glyph->bitmap_top);
-            // Simplifies to:
-            yOffset = maxTop - face->glyph->bitmap_top;
+            int yOffset = maxTop - face->glyph->bitmap_top;
 
             for (int y = 0; y < bmp.rows; y++) {
                 for (int x = 0; x < bmp.width; x++) {
                     int atlasX = xOffset + x;
+                    //int atlasY = yOffset + (bmp.rows - 1 - y);
                     int atlasY = yOffset + y;
                     int index = (atlasY * m_Atlas.width + atlasX) * 4;
 
@@ -95,6 +93,62 @@ namespace Sprocket {
 
         FT_Done_Face(face);
         FT_Done_FreeType(ft);
+    }
+
+    std::vector<unsigned char> Font::GetTextureBufferForText(const std::string& text,
+        unsigned int& width, unsigned int& height) {
+
+        // Compute size
+        width = 0;
+        int maxAboveBaseline = 0;
+        int maxBelowBaseline = 0;
+
+        for (char c : text) {
+            const Character& ch = m_Characters.at(c);
+
+            width += (ch.advance >> 6); // FreeType advance is in 1/64th pixels
+            maxAboveBaseline = std::max(maxAboveBaseline, (int)ch.bearing.y);
+            maxBelowBaseline = std::max(maxBelowBaseline, (int)(ch.height - ch.bearing.y));
+        }
+
+        height = maxAboveBaseline + maxBelowBaseline;
+
+        // Allocate buffer that will return containing rgba data for the text
+        std::vector<unsigned char> pixels(width * height * 4, 0);
+
+        // Populate buffer
+        int penX = 0;
+        for (char c : text) {
+            const Character& ch = m_Characters.at(c);
+
+            int xpos = penX + ch.bearing.x;
+            int ypos = maxAboveBaseline - ch.bearing.y;
+
+            for (unsigned int row = 0; row < ch.height; ++row) {
+                for (unsigned int col = 0; col < ch.width; ++col) {
+                    int dstX = xpos + col;
+                    int dstY = ypos + row;
+                    if (dstX < 0 || dstX >= width || dstY < 0 || dstY >= height)
+                        continue;
+
+                    int srcX = (int)(ch.uv0.x * m_Atlas.width) + col;
+                    int srcY = (int)(ch.uv0.y * m_Atlas.height) + row;
+
+                    int srcIndex = (srcY * m_Atlas.width + srcX) * 4;
+                    unsigned char alpha = m_Atlas.pixels[srcIndex + 3];
+
+                    int dstIndex = (dstY * width + dstX) * 4;
+                    pixels[dstIndex + 0] = 255;
+                    pixels[dstIndex + 1] = 255;
+                    pixels[dstIndex + 2] = 255;
+                    pixels[dstIndex + 3] = std::max(pixels[dstIndex + 3], alpha);
+                }
+            }
+
+            penX += (ch.advance >> 6);
+        }
+
+        return pixels;
     }
 
 }
