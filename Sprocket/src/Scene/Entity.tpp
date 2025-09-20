@@ -8,59 +8,13 @@
 #include "Components/TileMapComponent.h"
 #include "Components/SoundComponent.h"
 #include "Components/AnimationComponent.h"
+#include "Components/TextRendererComponent.h"
 
 namespace Sprocket {
 
     // This file is for explicit specialization of the Add/Get/Remove component functions of the 
     // Entity class. It allows the header to stay uncluttered while removing the need to include 
     // the cpp file.
-
-    /*template<>
-    inline bool Entity::AddComponent<QuadRendererComponent>() {
-
-        auto it = m_AllowedComponents.find(typeid(QuadRendererComponent));
-        if (*it->second == 0) {
-            Global::fileLogger.Warning("Max number of QuadRendererComponents on this object reached. Ignoring add.");
-            return false;
-        }
-
-        QuadRendererComponent* qr = new QuadRendererComponent();
-
-        if (m_EventCallback != nullptr) {
-            qr->m_EventCallback = m_EventCallback;
-            qr->RenderNew(m_Transform.Position(), m_Transform.Rotation(), m_Transform.Scale());
-        }
-
-        m_Components.push_back(qr);
-
-        (*it->second)--;
-
-        return true;
-    }
-
-    template<>
-    inline bool Entity::AddComponent<AnimationComponent>() {
-
-        auto it = m_AllowedComponents.find(typeid(AnimationComponent));
-        if (*it->second == 0) {
-            Global::fileLogger.Warning("Max number of AnimationComponents on this object reached. Ignoring add.");
-            return false;
-        }
-
-        AnimationComponent* component = new AnimationComponent();
-
-        if (m_EventCallback != nullptr) {
-            component->m_EventCallback = m_EventCallback;
-            component->Register();
-            component->m_QuadRenderer->RenderNew(m_Transform.Position(), m_Transform.Rotation(), m_Transform.Scale());
-        }
-
-        m_Components.push_back(component);
-
-        (*it->second)--;
-
-        return true;
-    }*/
 
     template<>
     inline bool Entity::AddComponent<BoxColliderComponent>() {

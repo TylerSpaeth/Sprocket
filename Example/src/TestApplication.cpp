@@ -3,6 +3,7 @@
 #include "Player.hpp"
 #include "Tiles.hpp"
 #include "TestAnimation.hpp"
+#include "Title.hpp"
 #include <functional>
 
 class TestApplication : public Sprocket::Application {
@@ -11,6 +12,8 @@ class TestApplication : public Sprocket::Application {
     Sprocket::Entity* camera;
     Sprocket::Entity* tileMap;
     Sprocket::Entity* testAnimation;
+    Sprocket::Entity* title;
+
     Sprocket::Logger logger;
 
 public:
@@ -39,6 +42,10 @@ public:
 
         testAnimation = new TestAnimation();
         scene->SubmitEntityToScene(*testAnimation);
+
+        title = new Title();
+        scene->SubmitEntityToScene(*title);
+        scene->AssignEntityParent(*title, camera);
 
         // Show ImGui demo window
         /*ImGuiImpl::SubmitRenderFunction([]() {

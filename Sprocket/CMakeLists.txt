@@ -69,6 +69,7 @@ target_sources(sprocket PRIVATE
   src/Scene/Components/TileMapComponent.cpp
   src/Scene/Components/SoundComponent.cpp
   src/Scene/Components/AnimationComponent.cpp
+  src/Scene/Components/TextRendererComponent.cpp
 )
 
 # Add Physics source code
