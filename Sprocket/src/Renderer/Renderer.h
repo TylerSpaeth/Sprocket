@@ -8,6 +8,7 @@
 #include "Texture.h"
 #include "Events/Event.h"
 #include "Core/Sprocket.pch"
+#include "Font.h"
 
 #include "ThirdParty/glm/glm.hpp"
 #include "ThirdParty/glm/gtc/matrix_transform.hpp"
@@ -47,6 +48,7 @@ namespace Sprocket {
         mutable std::vector<std::array<Vertex, 4>> m_CalculatedQuads;
         mutable std::vector<glm::mat4> m_ModelMatrices;
         mutable std::vector<Texture*> m_BoundTextures;
+        mutable std::map<std::string, Font*> m_Fonts;
 
         std::priority_queue<unsigned int, std::vector<unsigned int>, std::greater<unsigned int>> m_DeletedQuadIndexes;
 
@@ -69,15 +71,23 @@ namespace Sprocket {
         /// @brief Logic that needs to occur on application shutdown.
         void OnShutdown();
 
-        /// @brief Adds a new quads of the given size at coordinates 0,0 and a color of white by 
+        /// @brief Adds a new quad of the given size at coordinates 0,0 and a color of white by 
         /// default.
         /// @param size The size of the quad in whatever unit was used to specify the x and y 
         /// dimensions of the Renderer on initialization. It is reccomended that this is in pixels.
         /// @return An ID corresponding to this quad that allows it to be accessed and modified in 
         /// the future.
-        /// @throws std::invalid_argument if size is not greater than 0
-        /// @throws std::runtime_error if the maxQuads number has already been reached.
         unsigned int AddQuad(float size);
+
+        /// @brief Adds a new quad of the given size at coordinates 0,0 with the given texture
+        /// @param width The width of the quad in whatever unit was used to specify the x and y 
+        /// dimensions of the Renderer on initialization. It is reccomended that this is in pixels.
+        /// @param height The height of the quad in whatever unit was used to specify the x and y 
+        /// dimensions of the Renderer on initialization. It is reccomended that this is in pixels.
+        /// @param textureID the ID of the texture to display
+        /// @return An ID corresponding to this quad that allows it to be accessed and modified in 
+        /// the future.
+        unsigned int AddQuad(float width, float height, unsigned int textureID);
 
         /// @brief Removes the quad at the given index. The quad will no longer be rendered.
         /// @param quadIndex The quad to be removed.
@@ -123,6 +133,16 @@ namespace Sprocket {
         /// @param path the file path to the texture
         /// @return the texture slot that the texture has been bound to
         unsigned int AddTexture(const std::string& path);
+
+        /// @brief Writes the given string of text in the given font.
+        /// @param font An object containing the data for font creation.
+        /// @param text The string to render.
+        /// @return The ID for the quad the text is rendered on
+        unsigned int DrawText(Font& font, const std::string& text);
+
+        /// @brief Verifies that the index and vertex buffers have enough room to add a quad,
+        /// otherwise makes room.
+        void ValidateBuffers();
 
     public:
 

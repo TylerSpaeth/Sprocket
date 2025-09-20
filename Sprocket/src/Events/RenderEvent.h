@@ -72,8 +72,8 @@ namespace Sprocket {
         friend class Renderer;
     private:
         int m_QuadID = -1;
-        const std::string& m_FontPath;
-        const std::string& m_Text;
+        std::string m_FontPath;
+        std::string m_Text;
     public:
         RenderNewTextEvent(const std::string& fontPath, const std::string& text) : m_FontPath(fontPath), m_Text(text) {
             this->SetType(EventType::RENDER_NEW_TEXT);
