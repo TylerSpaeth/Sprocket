@@ -1,18 +1,12 @@
 #include "Sprocket.h"
-#include "Camera.hpp"
-#include "Player.hpp"
-#include "Tiles.hpp"
-#include "TestAnimation.hpp"
-#include "Title.hpp"
+#include "GameScene/GameScene.hpp"
+#include "MenuScene/MenuScene.hpp"
 #include <functional>
 
 class TestApplication : public Sprocket::Application {
 
-    Sprocket::Entity* player;
-    Sprocket::Entity* camera;
-    Sprocket::Entity* tileMap;
-    Sprocket::Entity* testAnimation;
-    Sprocket::Entity* title;
+    Sprocket::Scene* gameScene;
+    Sprocket::Scene* menuScene;
 
     Sprocket::Logger logger;
 
@@ -28,24 +22,12 @@ public:
 
         Window::EnableVSync(false);
 
-        Scene* scene = SceneManager::GetActiveScene();
+        menuScene = new MenuScene();
+        SceneManager::AddScene(1, menuScene);
+        gameScene = new GameScene();
+        SceneManager::AddScene(2, gameScene);
 
-        player = new Player();
-        scene->SubmitEntityToScene(*player);
-
-        camera = new Camera();
-        ((Camera*)camera)->m_EntityToFollow = player;
-        scene->SubmitEntityToScene(*camera);
-
-        tileMap = new Tiles();
-        scene->SubmitEntityToScene(*tileMap);
-
-        testAnimation = new TestAnimation();
-        scene->SubmitEntityToScene(*testAnimation);
-
-        title = new Title();
-        scene->SubmitEntityToScene(*title);
-        scene->AssignEntityParent(*title, camera);
+        SceneManager::SetActiveScene(1);
 
         // Show ImGui demo window
         /*ImGuiImpl::SubmitRenderFunction([]() {

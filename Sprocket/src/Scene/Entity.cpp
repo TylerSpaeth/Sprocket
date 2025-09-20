@@ -125,7 +125,6 @@ namespace Sprocket {
                 }
                 else if (AnimationComponent* animation = dynamic_cast<AnimationComponent*>(component)) {
                     animation->m_QuadRenderer->UpdateModelMatrix(m_Transform.Position(), m_Transform.Rotation(), m_Transform.Scale());
-                    animation->UpdateAnimation(deltaTime);
                 }
                 else if (TextRendererComponent* tr = dynamic_cast<TextRendererComponent*>(component)) {
                     tr->UpdateModelMatrix(m_Transform.Position(), m_Transform.Rotation(), m_Transform.Scale());
@@ -136,6 +135,13 @@ namespace Sprocket {
             }
 
             m_Transform.m_Modified = false;
+        }
+
+        // Any per frame updates for components
+        for (Component* component : m_Components) {
+            if (AnimationComponent* animation = dynamic_cast<AnimationComponent*>(component)) {
+                animation->UpdateAnimation(deltaTime);
+            }
         }
 
         Update(deltaTime);
