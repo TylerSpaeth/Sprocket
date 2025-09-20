@@ -29,15 +29,12 @@ namespace Sprocket {
         std::string m_FontPath;
         std::map<char, Character> m_Characters;
         CharacterAtlas m_Atlas;
-        unsigned int m_TextureID;
 
     public:
 
         Font(const std::string& fontPath, const unsigned int fontSizeInPixels);
 
         std::map<char, Character> GetCharacters() {return m_Characters;}
-
-        unsigned int GetTextureID() const {return m_TextureID;}
 
         std::vector<unsigned char> GetTextureBufferForText(const std::string& text, unsigned int& width, unsigned int& height);
 

@@ -107,8 +107,8 @@ namespace Sprocket {
             const Character& ch = m_Characters.at(c);
 
             width += (ch.advance >> 6); // FreeType advance is in 1/64th pixels
-            maxAboveBaseline = std::max(maxAboveBaseline, (int)ch.bearing.y);
-            maxBelowBaseline = std::max(maxBelowBaseline, (int)(ch.height - ch.bearing.y));
+            maxAboveBaseline = std::max(maxAboveBaseline, (int)ch.bearing.y) + 1;
+            maxBelowBaseline = std::max(maxBelowBaseline, (int)(ch.height - ch.bearing.y)) + 1;
         }
 
         height = maxAboveBaseline + maxBelowBaseline;
