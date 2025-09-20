@@ -131,9 +131,15 @@ namespace Sprocket {
                     tr->UpdateModelMatrix(m_Transform.Position(), m_Transform.Rotation(), m_Transform.Scale());
                 }
             }
+            for (auto child : m_Children) {
+                child->m_Transform.m_Modified = true;
+            }
+
+            m_Transform.m_Modified = false;
         }
 
         Update(deltaTime);
+
     }
 
     void Entity::InitializeAllowedComponents() {
