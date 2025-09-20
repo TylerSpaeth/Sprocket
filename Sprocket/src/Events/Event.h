@@ -12,7 +12,7 @@ namespace Sprocket {
         // APPLICATION
         APP_UPDATE, APP_START, APP_SHUTDOWN,
         // RENDER
-        RENDER_NEW, RENDER_UPDATE, RENDER_DELETE,
+        RENDER_NEW, RENDER_UPDATE, RENDER_DELETE, RENDER_NEW_TEXT,
         // PHYSICS
         PHYSICS_NEW, PHYSICS_UPDATE, PHYSICS_DELETE, PHYSICS_COLLISION_CHECK, PHYSICS_COLLISION_CHECK_GENERIC,
         // AUDIO
@@ -65,6 +65,7 @@ namespace Sprocket {
             case EventType::RENDER_NEW:
             case EventType::RENDER_UPDATE:
             case EventType::RENDER_DELETE:
+            case EventType::RENDER_NEW_TEXT:
                 return eventCategory == EventCategory::RENDER;
             case EventType::PHYSICS_NEW:
             case EventType::PHYSICS_UPDATE:

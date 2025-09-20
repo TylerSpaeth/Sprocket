@@ -20,6 +20,7 @@ target_include_directories(sprocket PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
 target_include_directories(sprocket PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src/ThirdParty)
 target_include_directories(sprocket PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src/ThirdParty/imgui-docking)
 target_include_directories(sprocket PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src/ThirdParty/imgui-docking/backends)
+target_include_directories(sprocket PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src/ThirdParty/freetype)
 
 target_precompile_headers(sprocket PUBLIC $<$<COMPILE_LANGUAGE:CXX>:${CMAKE_CURRENT_SOURCE_DIR}/src/Core/Sprocket.pch>)
 
@@ -44,6 +45,7 @@ target_sources(sprocket PRIVATE
   src/Renderer/Renderer.cpp 
   src/Renderer/Texture.cpp 
   src/Renderer/Shader.cpp
+  src/Renderer/Font.cpp
 )
 
 # Add Core source code
@@ -67,6 +69,7 @@ target_sources(sprocket PRIVATE
   src/Scene/Components/TileMapComponent.cpp
   src/Scene/Components/SoundComponent.cpp
   src/Scene/Components/AnimationComponent.cpp
+  src/Scene/Components/TextRendererComponent.cpp
 )
 
 # Add Physics source code
@@ -104,3 +107,4 @@ add_custom_command(TARGET sprocket POST_BUILD
 )
 
 target_link_libraries(sprocket PRIVATE glfw3)
+target_link_libraries(sprocket PRIVATE freetype)

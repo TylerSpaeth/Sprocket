@@ -6,6 +6,7 @@
 #include "Components/TileMapComponent.h"
 #include "Components/SoundComponent.h"
 #include "Components/AnimationComponent.h"
+#include "Components/TextRendererComponent.h"
 
 namespace Sprocket {
 
@@ -58,6 +59,10 @@ namespace Sprocket {
             else if (AnimationComponent* animation = dynamic_cast<AnimationComponent*>(component)) {
                 animation->RegisterEventCallback(m_EventCallback);
             }
+            if (TextRendererComponent* tr = dynamic_cast<TextRendererComponent*>(component)) {
+                tr->RegisterEventCallback(m_EventCallback);
+                tr->UpdateModelMatrix(m_Transform.Position(), m_Transform.Rotation(), m_Transform.Scale());
+            }
         }
         Start();
     }
@@ -91,6 +96,10 @@ namespace Sprocket {
                 animation->m_EventCallback = nullptr;
                 animation->m_QuadRenderer->m_EventCallback = nullptr;
             }
+            if (TextRendererComponent* tr = dynamic_cast<TextRendererComponent*>(component)) {
+                tr->RemoveRender();
+                tr->m_EventCallback = nullptr;
+            }
         }
 
         m_EventCallback = nullptr;
@@ -118,6 +127,9 @@ namespace Sprocket {
                     animation->m_QuadRenderer->UpdateModelMatrix(m_Transform.Position(), m_Transform.Rotation(), m_Transform.Scale());
                     animation->UpdateAnimation(deltaTime);
                 }
+                else if (TextRendererComponent* tr = dynamic_cast<TextRendererComponent*>(component)) {
+                    tr->UpdateModelMatrix(m_Transform.Position(), m_Transform.Rotation(), m_Transform.Scale());
+                }
             }
         }
 
@@ -135,6 +147,7 @@ namespace Sprocket {
         auto maximumRenderers = new unsigned int(1);
         m_AllowedComponents.insert({typeid(QuadRendererComponent), maximumRenderers});
         m_AllowedComponents.insert({typeid(AnimationComponent), maximumRenderers});
+        m_AllowedComponents.insert({typeid(TextRendererComponent), maximumRenderers});
         m_AllowedComponents.insert({typeid(SoundComponent), new unsigned int(1)});
         m_AllowedComponents.insert({typeid(TileMapComponent), new unsigned int(1)});
     }

@@ -68,6 +68,20 @@ namespace Sprocket {
         int GetQuadID() const { return m_QuadID; }
     };
 
+    class RenderNewTextEvent : public Event {
+        friend class Renderer;
+    private:
+        int m_QuadID = -1;
+        std::string m_FontPath;
+        std::string m_Text;
+    public:
+        RenderNewTextEvent(const std::string& fontPath, const std::string& text) : m_FontPath(fontPath), m_Text(text) {
+            this->SetType(EventType::RENDER_NEW_TEXT);
+        }
+
+        int GetQuadID() const { return m_QuadID; }
+    };
+
 }
 
 #endif
