@@ -2,6 +2,10 @@
 
 namespace Sprocket {
 
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////PUBLIC/////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+
     Logger::Logger(const std::string& filepath) {
         m_LogFile = fopen(filepath.c_str(), "w");
         if (!m_LogFile) {
@@ -14,19 +18,6 @@ namespace Sprocket {
         if (m_LogFile && m_LogFile != stdout) {
             fclose(m_LogFile);
         }
-    }
-
-    void Logger::WriteLog(const std::string& logTypeString, const std::string& message) {
-        auto timestamp = std::chrono::system_clock::now();
-        std::println(m_LogFile, "{:%Y-%m-%d %H:%M:%S} {} : {}", timestamp, logTypeString, message);
-        fflush(m_LogFile);
-
-        // If we are in a debug build, we will log everything to stdout
-        #ifdef _DEBUG
-            if (m_LogFile != stdout) {
-                std::println(stdout, "Logged to file: {:%Y-%m-%d %H:%M:%S} {} : {}", timestamp, logTypeString, message);
-            }
-        #endif
     }
 
     void Logger::Info(const std::string& message) {
@@ -44,4 +35,20 @@ namespace Sprocket {
         #endif
     }
 
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////PRIVATE////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+
+    void Logger::WriteLog(const std::string& logTypeString, const std::string& message) {
+        auto timestamp = std::chrono::system_clock::now();
+        std::println(m_LogFile, "{:%Y-%m-%d %H:%M:%S} {} : {}", timestamp, logTypeString, message);
+        fflush(m_LogFile);
+
+        // If we are in a debug build, we will log everything to stdout
+        #ifdef _DEBUG
+            if (m_LogFile != stdout) {
+                std::println(stdout, "Logged to file: {:%Y-%m-%d %H:%M:%S} {} : {}", timestamp, logTypeString, message);
+            }
+        #endif
+    }
 }

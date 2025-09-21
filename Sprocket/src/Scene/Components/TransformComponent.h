@@ -27,7 +27,7 @@ namespace Sprocket {
 
     public:
 
-        TransformComponent(std::function<TransformComponent()> callback) : m_GlobalTransformCallback(callback) {}
+        TransformComponent(std::function<TransformComponent()> callback);
 
         /// @brief The local position of this TransformComponent.
         glm::vec3& LocalPosition();

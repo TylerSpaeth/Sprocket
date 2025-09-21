@@ -26,14 +26,6 @@ namespace Sprocket {
         mutable std::unordered_map<Keycode, bool> m_CurrentKeyStatus;
         mutable std::unordered_map<MouseButton, bool> m_CurrentButtonStatus;
 
-        // Actual implementations for the static instance functions
-        /// @brief This function is called by the OnEvent function when a APP_SHUTDOWN event
-        /// is recieved. Performs any tasks that need to occur before Input is destructed.
-        static void OnShutdown();
-        /// @brief This function is called by the OnEvent function when a APP_UPDATE event is
-        /// received. Performs any tasks that need to occur every repeatedly.
-        static void OnUpdate();
-
     public:
         /// @brief Initializes the singleton. This function must be called before any other Input 
         /// functions to insure that it works properly.
@@ -53,10 +45,21 @@ namespace Sprocket {
         /// @return true if the button is pressed, otherwise false.
         static bool IsMouseButtonPressed(MouseButton button);
 
-        static float GetMouseXPosition() { return s_Instance->m_MouseXPosition; }
-        static float GetMouseYPosition() { return s_Instance->m_MouseYPosition; }
-        static float GetMouseXScrollOffset() { return s_Instance->m_MouseXScrollOffset; }
-        static float GetMouseYScrollOffset() { return s_Instance->m_MouseYScrollOffset; }
+        static float GetMouseXPosition();
+        static float GetMouseYPosition();
+        static float GetMouseXScrollOffset();
+        static float GetMouseYScrollOffset();
+
+    private:
+
+        /// @brief This function is called by the OnEvent function when a APP_UPDATE event is
+        /// received. Performs any tasks that need to occur every repeatedly.
+        static void OnUpdate();
+
+        // Actual implementations for the static instance functions
+        /// @brief This function is called by the OnEvent function when a APP_SHUTDOWN event
+        /// is recieved. Performs any tasks that need to occur before Input is destructed.
+        static void OnShutdown();
 
     };
 

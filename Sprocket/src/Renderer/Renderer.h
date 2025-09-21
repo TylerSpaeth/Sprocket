@@ -52,13 +52,13 @@ namespace Sprocket {
 
         std::priority_queue<unsigned int, std::vector<unsigned int>, std::greater<unsigned int>> m_DeletedQuadIndexes;
 
-        /// @brief Draws the calculated quads to the screen
-        void Draw();
+    public:
 
-        /// @brief Updates the quad at the given index to reflect any any changes to the 
-        /// uncalculated quads or modelMatrices. Passes this new data to the GPU
-        /// @param index the quad that needs to be updated
-        void UpdateCalculatedQuads(const unsigned int index);
+        /// @brief Handles incoming events. Should be registered as a callback to recieve events.
+        /// @param event The event the should be handled.
+        void OnEvent(Event& event);
+
+    private:
 
         /// @brief Behavior that should occur on application startup. 
         /// @param xDimension - The x dimension of the renderer window in pixels.
@@ -93,6 +93,15 @@ namespace Sprocket {
         /// @param quadIndex The quad to be removed.
         /// @return true if the quad is successfully remove, false otherwise
         bool RemoveQuad(const unsigned int quadIndex);
+
+        /// @brief Draws the calculated quads to the screen
+        void Draw();
+
+        /// @brief Writes the given string of text in the given font.
+        /// @param font An object containing the data for font creation.
+        /// @param text The string to render.
+        /// @return The ID for the quad the text is rendered on
+        unsigned int DrawText(Font& font, const std::string& text);
 
         /// @brief Sets the model matrix of the quad at a given matrix.
         /// @param quadIndex The index of the quad.
@@ -134,21 +143,14 @@ namespace Sprocket {
         /// @return the texture slot that the texture has been bound to
         unsigned int AddTexture(const std::string& path);
 
-        /// @brief Writes the given string of text in the given font.
-        /// @param font An object containing the data for font creation.
-        /// @param text The string to render.
-        /// @return The ID for the quad the text is rendered on
-        unsigned int DrawText(Font& font, const std::string& text);
+        /// @brief Updates the quad at the given index to reflect any any changes to the 
+        /// uncalculated quads or modelMatrices. Passes this new data to the GPU
+        /// @param index the quad that needs to be updated
+        void UpdateCalculatedQuads(const unsigned int index);
 
         /// @brief Verifies that the index and vertex buffers have enough room to add a quad,
         /// otherwise makes room.
         void ValidateBuffers();
-
-    public:
-
-        /// @brief Handles incoming events. Should be registered as a callback to recieve events.
-        /// @param event The event the should be handled.
-        void OnEvent(Event& event);
 
     };
 

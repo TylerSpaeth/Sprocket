@@ -46,6 +46,14 @@ namespace Sprocket {
         float m_BoxXSize;
         float m_BoxYSize;
 
+    public:
+
+        /// @brief Handles incoming events. Should be registered as a callback to recieve events.
+        /// @param event The event the should be handled.
+        void OnEvent(Event& event);
+
+    private: 
+
         // BROAD PHASE
         /// @brief A helper function that adds the object to the region sets adds the region for 
         /// reverse lookup.
@@ -89,7 +97,7 @@ namespace Sprocket {
         /// @param physicsID the id of a PhysicsObject
         /// @return a populated vector if this PhysicsObject collides with anything, false otherwise
         std::vector<unsigned int> CheckCollidesGeneric(const unsigned int physicsID);
-        
+
         /// @brief Adds a new box collider PhysicsObject into the system.
         /// @param colliderCenter - The center of the collider.
         /// @param boxColliderRotation - The z-rotation of the box collider in degrees.
@@ -126,12 +134,6 @@ namespace Sprocket {
         void OnUpdate();
         /// @brief Logic to occur on application shutdown.
         void OnShutdown();
-
-    public:
-
-        /// @brief Handles incoming events. Should be registered as a callback to recieve events.
-        /// @param event The event the should be handled.
-        void OnEvent(Event& event);
 
     };
 

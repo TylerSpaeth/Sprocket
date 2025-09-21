@@ -25,8 +25,17 @@ namespace Sprocket {
         float m_AnimationTotalTime = 0;
         float m_ElapsedTime = 0;
 
+    public:
+
+        /// @brief Sets the Animation that should be playing.
+        bool SetAnimation(const Animation& animation);
+
+    private:
+
         AnimationComponent();
         ~AnimationComponent();
+
+        void RegisterEventCallback(const std::function<void(Event&)> eventCallback) override;
 
         /// @brief Registers the component in the event system
         void Register();
@@ -35,13 +44,6 @@ namespace Sprocket {
         /// Should be called every frame so the animation clock stays in sync.
         /// @param deltaTime - The elapsed time between frames
         void UpdateAnimation(float deltaTime);
-
-        void RegisterEventCallback(const std::function<void(Event&)> eventCallback) override;
-
-    public:
-
-        /// @brief Sets the Animation that should be playing.
-        bool SetAnimation(const Animation& animation);
 
     };
 

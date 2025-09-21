@@ -18,6 +18,14 @@ namespace Sprocket {
         std::vector<Sound*> m_Sounds;
         std::priority_queue<unsigned int, std::vector<unsigned int>, std::greater<unsigned int>> m_FreeSoundIndexes;
 
+    public:
+
+        /// @brief Handles incoming events. Should be registered as a callback to recieve events.
+        /// @param event The event the should be handled.
+        void OnEvent(Event& event);
+
+    private:
+
         /// @brief Loads a sound from a file and returns its ID.
         int LoadSound(const std::string& filepath);
         /// @brief Unloads a sound from memory.
@@ -44,11 +52,6 @@ namespace Sprocket {
         /// @brief Logic that occurs on application shutdown
         void OnShutdown();
 
-    public:
-
-        /// @brief Handles incoming events. Should be registered as a callback to recieve events.
-        /// @param event The event the should be handled.
-        void OnEvent(Event& event);
     };
 
 }

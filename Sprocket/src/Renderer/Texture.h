@@ -16,8 +16,6 @@ namespace Sprocket {
         int m_Width, m_Height, m_BytesPerPixel;
         mutable unsigned int m_Slot = -1;
 
-        /// @brief Called by the constructors after data initialization
-        void CreateTexture();
     public:
 
         /// @brief Constructs a new texture based on the given image data buffer
@@ -34,10 +32,17 @@ namespace Sprocket {
         /// @brief Binds this texture to the given texture slot.
         /// @param slot the texture slot to bind this texture to.
         void Bind(unsigned int slot = 0) const;
+
+        /// @brief Unbinds this texture.
         void Unbind() const;
 
-        inline int GetWidth() const { return m_Width; }
-        inline int GetHeight() const { return m_Height; }
+        int GetWidth() const;
+        int GetHeight() const;
+
+    private:
+
+        /// @brief Called by the constructors after data initialization
+        void CreateTexture();
     };
 
 }

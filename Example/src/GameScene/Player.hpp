@@ -32,14 +32,14 @@ namespace Sprocket {
             auto collides = GetComponent<BoxColliderComponent>()->CollidesWithAnything();
             auto qr = GetComponent<QuadRendererComponent>();
             if (qr->GetQuadColor() != glm::vec4(1, 0, 0, 1) && collides) {
-                qr->UpdateQuadColor({ 1,0,0,1 });
+                qr->SetQuadColor({ 1,0,0,1 });
 
                 if (!soundComponent->IsPlaying()) {
                     soundComponent->Play();
                 }
             }
             else if (!collides && qr->GetQuadColor() == glm::vec4(1, 0, 0, 1)) {
-                qr->UpdateQuadColor({ 1,1,1,1 });  
+                qr->SetQuadColor({ 1,1,1,1 });  
                 soundComponent->Stop();
                 soundComponent->Reset();
             }
@@ -77,7 +77,7 @@ namespace Sprocket {
                 GetComponent<TransformComponent>()->LocalScale() -= .01;
             }
             if (Input::IsKeyPressed(KEY_8)) {
-                GetComponent<QuadRendererComponent>()->UpdateQuadColor({ 1,0,1,1 });
+                GetComponent<QuadRendererComponent>()->SetQuadColor({ 1,0,1,1 });
             }
             if (Input::IsKeyPressed(KEY_7)) {
                 Sprite sprite;

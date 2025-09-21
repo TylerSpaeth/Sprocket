@@ -14,24 +14,14 @@ namespace Sprocket {
     class SPROCKET_API ColliderComponent : public EventDrivenComponent {
         friend class Entity;
     protected:
+
         int m_PhysicsID = -1;
         TransformComponent* m_TranformComponent = nullptr;
-        ColliderComponent(TransformComponent& transformComponent) : m_TranformComponent(&transformComponent) {}
-        virtual ~ColliderComponent();
-
-        /// @brief Registers the collider with the physics system
-        virtual void Register() = 0;
-
-        /// @brief Updates the transform of the collider in the physics system
-        virtual void UpdateTransform() = 0;
-
-        /// @brief Remove the collider from the physics system        
-        void Remove();
 
     public:
 
-        int GetPhysicsID() const { return m_PhysicsID; }
-        
+        int GetPhysicsID() const;
+
         /// @brief Checks if there is a collision between this and the given collider.
         /// @param collider - The other collider to check for collisions against.
         /// @returns True if they collide, false otherwise
@@ -41,6 +31,19 @@ namespace Sprocket {
         /// @returns True if there are any collisions, false otherwise
         bool CollidesWithAnything();
 
+    protected:
+        ColliderComponent(TransformComponent& transformComponent);
+        virtual ~ColliderComponent();
+
+        /// @brief Remove the collider from the physics system        
+        void Remove();
+
+        /// @brief Registers the collider with the physics system
+        virtual void Register() = 0;
+
+        /// @brief Updates the transform of the collider in the physics system
+        virtual void UpdateTransform() = 0;
+
     };
 
     /// @brief A 2D box collider component.
@@ -48,14 +51,15 @@ namespace Sprocket {
         friend class Entity;
     private:
         glm::vec2 m_Size = { 1,1 };
-        BoxColliderComponent(TransformComponent& transformComponent) : ColliderComponent(transformComponent) {}
-
-        void Register() override;
-        void UpdateTransform() override;
 
     public:
         glm::vec2 GetSize() const;
         bool SetSize(const glm::vec2 size);
+
+    private:
+        BoxColliderComponent(TransformComponent& transformComponent);
+        void Register() override;
+        void UpdateTransform() override;
     };
 
     /// @brief A 2d circle collider component.
@@ -63,15 +67,16 @@ namespace Sprocket {
         friend class Entity;
     private:
         float m_Radius = 1;
-        CircleColliderComponent(TransformComponent& transformComponent) : ColliderComponent(transformComponent) {}
-
-
-        void Register() override;
-        void UpdateTransform() override;
 
     public:
         float GetRadius() const;
         bool SetRadius(float radius);
+
+    private:
+        CircleColliderComponent(TransformComponent& transformComponent);
+        void Register() override;
+        void UpdateTransform() override;
+
     };
 }
 

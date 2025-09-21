@@ -10,6 +10,16 @@
 
 namespace Sprocket {
 
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    //////////////////////////////////////NONCLASS DEFINITIONS/////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+
+    std::array<glm::vec2, 4> GetVerts(const glm::vec2 colliderCenter, const float boxColliderRotation, const glm::vec2 boxColliderSize);
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////PUBLIC/////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+
     void PhysicsManager::OnEvent(Event& event) {
         EventType type = event.GetEventType();
         switch (type) {
@@ -68,115 +78,9 @@ namespace Sprocket {
 
     }
 
-    unsigned int PhysicsManager::AddPhysicsObject(const glm::vec2 colliderCenter, const float boxColliderRotation, glm::vec2 boxColliderSize) {
-
-        PhysicsObject object(colliderCenter, boxColliderRotation, boxColliderSize);
-        object.m_Valid = true;
-
-        unsigned int freeSlot = m_FreeSlots.top();
-
-        // If there is only 1 entry in the queue then it must be at the end of the vector, so the next 
-        // free slot needs to be added
-        if (m_FreeSlots.size() == 1) {
-            m_FreeSlots.push(freeSlot + 1);
-        }
-
-        m_FreeSlots.pop();
-
-        // Put the object in the correct slot
-        if (freeSlot == m_PhysicsObjects.size()) {
-            m_PhysicsObjects.push_back(object);
-            m_CollidesWith.push_back(std::vector<unsigned int>());
-        }
-        else {
-            m_PhysicsObjects.at(freeSlot) = object;
-            m_CollidesWith.at(freeSlot).clear();
-        }
-
-        PlaceInRegions(freeSlot);
-
-        // This is the index where the object is stored
-        return freeSlot;
-    }
-
-    unsigned int PhysicsManager::AddPhysicsObject(const glm::vec2 colliderCenter, const float circleRadius) {
-
-        PhysicsObject object(colliderCenter, circleRadius);
-        object.m_Valid = true;
-
-        unsigned int freeSlot = m_FreeSlots.top();
-
-        // If there is only 1 entry in the queue then it must be at the end of the vector, so the next 
-        // free slot needs to be added
-        if (m_FreeSlots.size() == 1) {
-            m_FreeSlots.push(freeSlot + 1);
-        }
-
-        m_FreeSlots.pop();
-
-        // Put the object in the correct slot
-        if (freeSlot == m_PhysicsObjects.size()) {
-            m_PhysicsObjects.push_back(object);
-            m_CollidesWith.push_back(std::vector<unsigned int>());
-        }
-        else {
-            m_PhysicsObjects.at(freeSlot) = object;
-            m_CollidesWith.at(freeSlot).clear();
-        }
-
-        PlaceInRegions(freeSlot);
-
-        // This is the index where the object is stored
-        return freeSlot;
-    }
-
-    void PhysicsManager::UpdatePhysicsObject(const unsigned int physicsID, const glm::vec2 colliderCenter, const float boxColliderRotation, const glm::vec2 boxColliderSize) {
-        m_PhysicsObjects.at(physicsID).m_ColliderCenter = colliderCenter;
-        m_PhysicsObjects.at(physicsID).m_BoxColliderRotation = boxColliderRotation;
-        m_PhysicsObjects.at(physicsID).m_BoxColliderSize = boxColliderSize;
-        RemoveFromRegions(physicsID);
-        PlaceInRegions(physicsID);
-    }
-
-    void PhysicsManager::UpdatePhysicsObject(const unsigned int physicsID, const glm::vec2 colliderCenter, const float circleRadius) {
-        m_PhysicsObjects.at(physicsID).m_ColliderCenter = colliderCenter;
-        m_PhysicsObjects.at(physicsID).m_CircleRadius = circleRadius;
-        RemoveFromRegions(physicsID);
-        PlaceInRegions(physicsID);
-    }
-
-    void PhysicsManager::RemovePhysicsObject(const unsigned int physicsID) {
-        auto physicsObject = m_PhysicsObjects.at(physicsID);
-        physicsObject.m_Valid = false;
-        m_FreeSlots.push(physicsID);
-        RemoveFromRegions(physicsID);
-    }
-
-    bool PhysicsManager::CheckCollides(const unsigned int physicsID1, const unsigned int physicsID2) {
-        auto collidesWith = m_CollidesWith.at(physicsID1);
-        if (std::find(collidesWith.begin(), collidesWith.end(), physicsID2) != collidesWith.end()) {
-            return true;
-        }
-        return false;
-    }
-
-    std::vector<unsigned int> PhysicsManager::CheckCollidesGeneric(const unsigned int physicsID) {
-        return m_CollidesWith.at(physicsID);
-    }
-
-    std::array<glm::vec2, 4> GetVerts(const glm::vec2 colliderCenter, const float boxColliderRotation, const glm::vec2 boxColliderSize) {
-        glm::mat4 translation = glm::translate(glm::mat4(1), { colliderCenter,0 });
-        glm::mat4 rotation = glm::rotate(glm::mat4(1), glm::radians(-boxColliderRotation), glm::vec3(0, 0, 1));
-
-        glm::mat4 transform = translation * rotation;
-
-        glm::vec2 v1 = transform * glm::vec4(-boxColliderSize.x / 2, boxColliderSize.y / 2, 0, 1);
-        glm::vec2 v2 = transform * glm::vec4(-boxColliderSize.x / 2, -boxColliderSize.y / 2, 0, 1);
-        glm::vec2 v3 = transform * glm::vec4(boxColliderSize.x / 2, -boxColliderSize.y / 2, 0, 1);
-        glm::vec2 v4 = transform * glm::vec4(boxColliderSize.x / 2, boxColliderSize.y / 2, 0, 1);
-
-        return { v1,v2,v3,v4 };
-    }
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////PRIVATE////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////////////////////////////
 
     void PhysicsManager::SetRegion(std::pair<int, int> coordinates, const unsigned int physicsID) {
 
@@ -418,45 +322,131 @@ namespace Sprocket {
 
                     // Check box-circle collision
                     else if (boxCollider1 && !boxCollider2) {
-
                         // If there is a collision between the shapes
                         if (Collision::Collides(boxVerts1.value(), physicsObject1.m_ColliderCenter, physicsObject1.m_BoxColliderRotation.value(), physicsObject2.m_ColliderCenter, physicsObject2.m_CircleRadius.value())) {
                             UpdateCollidesWith(physicsObjectID1, *physicsObjectID2);
                         }
-
                     }
 
                     // Check circle-box collision
                     else if (boxCollider2 && !boxCollider1) {
-
                         // If there is a collision between the shapes
                         if (Collision::Collides(boxVerts2.value(), physicsObject2.m_ColliderCenter, physicsObject2.m_BoxColliderRotation.value(), physicsObject1.m_ColliderCenter, physicsObject1.m_CircleRadius.value())) {
                             UpdateCollidesWith(physicsObjectID1, *physicsObjectID2);
                         }
-
                     }
 
                     // Check circle-circle collision
                     else {
-
                         // If there is a collision between the circles
                         if (Collision::Collides(physicsObject1.m_ColliderCenter, physicsObject1.m_CircleRadius.value(), physicsObject2.m_ColliderCenter, physicsObject2.m_CircleRadius.value())) {
                             UpdateCollidesWith(physicsObjectID1, *physicsObjectID2);
                         }
-
                     }
-
                 }
-
             }
-
         }
-
     }
 
     void PhysicsManager::UpdateCollidesWith(const unsigned int physicsID1, const unsigned int physicsID2) {
         m_CollidesWith.at(physicsID1).push_back(physicsID2);
         m_CollidesWith.at(physicsID2).push_back(physicsID1);
+    }
+
+    bool PhysicsManager::CheckCollides(const unsigned int physicsID1, const unsigned int physicsID2) {
+        auto collidesWith = m_CollidesWith.at(physicsID1);
+        if (std::find(collidesWith.begin(), collidesWith.end(), physicsID2) != collidesWith.end()) {
+            return true;
+        }
+        return false;
+    }
+
+    std::vector<unsigned int> PhysicsManager::CheckCollidesGeneric(const unsigned int physicsID) {
+        return m_CollidesWith.at(physicsID);
+    }
+
+    unsigned int PhysicsManager::AddPhysicsObject(const glm::vec2 colliderCenter, const float boxColliderRotation, glm::vec2 boxColliderSize) {
+
+        PhysicsObject object(colliderCenter, boxColliderRotation, boxColliderSize);
+        object.m_Valid = true;
+
+        unsigned int freeSlot = m_FreeSlots.top();
+
+        // If there is only 1 entry in the queue then it must be at the end of the vector, so the next 
+        // free slot needs to be added
+        if (m_FreeSlots.size() == 1) {
+            m_FreeSlots.push(freeSlot + 1);
+        }
+
+        m_FreeSlots.pop();
+
+        // Put the object in the correct slot
+        if (freeSlot == m_PhysicsObjects.size()) {
+            m_PhysicsObjects.push_back(object);
+            m_CollidesWith.push_back(std::vector<unsigned int>());
+        }
+        else {
+            m_PhysicsObjects.at(freeSlot) = object;
+            m_CollidesWith.at(freeSlot).clear();
+        }
+
+        PlaceInRegions(freeSlot);
+
+        // This is the index where the object is stored
+        return freeSlot;
+    }
+
+    unsigned int PhysicsManager::AddPhysicsObject(const glm::vec2 colliderCenter, const float circleRadius) {
+
+        PhysicsObject object(colliderCenter, circleRadius);
+        object.m_Valid = true;
+
+        unsigned int freeSlot = m_FreeSlots.top();
+
+        // If there is only 1 entry in the queue then it must be at the end of the vector, so the next 
+        // free slot needs to be added
+        if (m_FreeSlots.size() == 1) {
+            m_FreeSlots.push(freeSlot + 1);
+        }
+
+        m_FreeSlots.pop();
+
+        // Put the object in the correct slot
+        if (freeSlot == m_PhysicsObjects.size()) {
+            m_PhysicsObjects.push_back(object);
+            m_CollidesWith.push_back(std::vector<unsigned int>());
+        }
+        else {
+            m_PhysicsObjects.at(freeSlot) = object;
+            m_CollidesWith.at(freeSlot).clear();
+        }
+
+        PlaceInRegions(freeSlot);
+
+        // This is the index where the object is stored
+        return freeSlot;
+    }
+
+    void PhysicsManager::UpdatePhysicsObject(const unsigned int physicsID, const glm::vec2 colliderCenter, const float boxColliderRotation, const glm::vec2 boxColliderSize) {
+        m_PhysicsObjects.at(physicsID).m_ColliderCenter = colliderCenter;
+        m_PhysicsObjects.at(physicsID).m_BoxColliderRotation = boxColliderRotation;
+        m_PhysicsObjects.at(physicsID).m_BoxColliderSize = boxColliderSize;
+        RemoveFromRegions(physicsID);
+        PlaceInRegions(physicsID);
+    }
+
+    void PhysicsManager::UpdatePhysicsObject(const unsigned int physicsID, const glm::vec2 colliderCenter, const float circleRadius) {
+        m_PhysicsObjects.at(physicsID).m_ColliderCenter = colliderCenter;
+        m_PhysicsObjects.at(physicsID).m_CircleRadius = circleRadius;
+        RemoveFromRegions(physicsID);
+        PlaceInRegions(physicsID);
+    }
+
+    void PhysicsManager::RemovePhysicsObject(const unsigned int physicsID) {
+        auto physicsObject = m_PhysicsObjects.at(physicsID);
+        physicsObject.m_Valid = false;
+        m_FreeSlots.push(physicsID);
+        RemoveFromRegions(physicsID);
     }
 
     void PhysicsManager::OnStart() {
@@ -475,6 +465,24 @@ namespace Sprocket {
 
     void PhysicsManager::OnShutdown() {
         delete this;
+    }
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    ///////////////////////////////////////////NONCLASS////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+
+    std::array<glm::vec2, 4> GetVerts(const glm::vec2 colliderCenter, const float boxColliderRotation, const glm::vec2 boxColliderSize) {
+        glm::mat4 translation = glm::translate(glm::mat4(1), { colliderCenter,0 });
+        glm::mat4 rotation = glm::rotate(glm::mat4(1), glm::radians(-boxColliderRotation), glm::vec3(0, 0, 1));
+
+        glm::mat4 transform = translation * rotation;
+
+        glm::vec2 v1 = transform * glm::vec4(-boxColliderSize.x / 2, boxColliderSize.y / 2, 0, 1);
+        glm::vec2 v2 = transform * glm::vec4(-boxColliderSize.x / 2, -boxColliderSize.y / 2, 0, 1);
+        glm::vec2 v3 = transform * glm::vec4(boxColliderSize.x / 2, -boxColliderSize.y / 2, 0, 1);
+        glm::vec2 v4 = transform * glm::vec4(boxColliderSize.x / 2, boxColliderSize.y / 2, 0, 1);
+
+        return { v1,v2,v3,v4 };
     }
 
 }

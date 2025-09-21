@@ -21,11 +21,6 @@ namespace Sprocket {
 
         FILE* m_LogFile;
 
-        /// @brief Writes a message with the with a log type and timestamp to the logfile.
-        /// @param logTypeString - Represents the type of log this is.
-        /// @param message - The actual message of the log
-        void WriteLog(const std::string& logTypeString, const std::string& message);
-
     public:
 
         Logger() : m_LogFile(stdout) {} // Default to stdout
@@ -52,6 +47,13 @@ namespace Sprocket {
         /// builds to ensure that release logs do not get cluttered.
         /// @param message - The message to log
         void Debug(const std::string& message);
+
+    private:
+
+        /// @brief Writes a message with the with a log type and timestamp to the logfile.
+        /// @param logTypeString - Represents the type of log this is.
+        /// @param message - The actual message of the log
+        void WriteLog(const std::string& logTypeString, const std::string& message);
     };
 }
 

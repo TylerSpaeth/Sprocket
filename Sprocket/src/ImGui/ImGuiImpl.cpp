@@ -9,6 +9,10 @@
 
 namespace Sprocket {
 
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////PUBLIC/////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+
     void ImGuiImpl::Init() {
         if(!s_Instance) {
             s_Instance = new ImGuiImpl();
@@ -38,36 +42,6 @@ namespace Sprocket {
         }
     }
 
-    void ImGuiImpl::OnUpdate(float deltaTime) {
-        ImGui_ImplOpenGL3_NewFrame();
-        ImGui_ImplGlfw_NewFrame();
-        ImGui::NewFrame();
-
-        ImGuiIO& io = ImGui::GetIO();
-        io.DeltaTime = deltaTime;
-
-        for(auto& renderFunction : s_Instance->m_RenderFunctions) {
-            renderFunction();
-        }
-
-        ImGui::Render();
-        ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
-        if (ImGui::GetIO().ConfigFlags & ImGuiConfigFlags_ViewportsEnable) {
-            GLFWwindow* backupContext = glfwGetCurrentContext();
-            ImGui::UpdatePlatformWindows();
-            ImGui::RenderPlatformWindowsDefault();
-            glfwMakeContextCurrent(backupContext);
-        }
-    }
-
-    void ImGuiImpl::OnShutdown() {
-        ImGui_ImplOpenGL3_Shutdown();
-        ImGui_ImplGlfw_Shutdown();
-        ImGui::DestroyContext();
-        delete s_Instance;
-        s_Instance = nullptr;
-    }
-
     unsigned int ImGuiImpl::SubmitRenderFunction(std::function<void()> renderFunction) {
         unsigned int id = s_Instance->m_FreeRenderFunctionSlots.top();
         s_Instance->m_FreeRenderFunctionSlots.pop();
@@ -90,6 +64,40 @@ namespace Sprocket {
             s_Instance->m_RenderFunctions[id] = []() {};
             s_Instance->m_FreeRenderFunctionSlots.push(id);
         }
+    }
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////PRIVATE////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+
+    void ImGuiImpl::OnUpdate(float deltaTime) {
+        ImGui_ImplOpenGL3_NewFrame();
+        ImGui_ImplGlfw_NewFrame();
+        ImGui::NewFrame();
+
+        ImGuiIO& io = ImGui::GetIO();
+        io.DeltaTime = deltaTime;
+
+        for (auto& renderFunction : s_Instance->m_RenderFunctions) {
+            renderFunction();
+        }
+
+        ImGui::Render();
+        ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+        if (ImGui::GetIO().ConfigFlags & ImGuiConfigFlags_ViewportsEnable) {
+            GLFWwindow* backupContext = glfwGetCurrentContext();
+            ImGui::UpdatePlatformWindows();
+            ImGui::RenderPlatformWindowsDefault();
+            glfwMakeContextCurrent(backupContext);
+        }
+    }
+
+    void ImGuiImpl::OnShutdown() {
+        ImGui_ImplOpenGL3_Shutdown();
+        ImGui_ImplGlfw_Shutdown();
+        ImGui::DestroyContext();
+        delete s_Instance;
+        s_Instance = nullptr;
     }
 
 }

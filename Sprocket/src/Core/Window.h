@@ -14,25 +14,26 @@ namespace Sprocket {
     class SPROCKET_API Window : public Singleton<Window> {
         friend class Application;
     private:
+
         void* m_Window; // GLFWwindow
         std::function<void(Event&)> m_EventCallback;
 
-        // Actual implementations for the static instance functions
-        void OnEventInstance(Event& event);
-        void OnShutdownInstance();
-        void OnUpdateInstance();
-        void RegisterEventCallbackInstance(const std::function<void(Event&)> eventCallback);
-        void EnableVSyncInstance(bool enable);
-        void EnableCursorInstance();
-        void DisableCursorInstance();
-        void HideCursorInstance();
+    public:
 
-        /// @brief This function is called by the OnEvent function when a APP_SHUTDOWN event
-        /// is recieved. Performs any tasks that need to occur before Input is destructed.
-        static void OnShutdown() { s_Instance->OnShutdownInstance(); }
-        /// @brief This function is called by the OnEvent function when a APP_UPDATE event is
-        /// received. Performs any tasks that need to occur every repeatedly.
-        static void OnUpdate() { s_Instance->OnUpdateInstance(); }
+        /// @brief Enables or disables vsync on the window. Enabled by default.
+        /// @param enable if true, then vsync will be enable. If false, it will be disabled.
+        static void EnableVSync(bool enable);
+
+        /// @brief Enables the cursor to be visibile. This is the default
+        static void EnableCursor();
+
+        /// @brief Disables the cursor.
+        static void DisableCursor();
+
+        /// @brief Hides the cursor but does not disable it.
+        static void HideCursor();
+
+    private:
 
         /// @brief Initializes the Window singleton and sets appropriate values. This function
         /// must be called before any other Window functions.
@@ -43,25 +44,21 @@ namespace Sprocket {
 
         /// @brief Handles incoming events. Should be registered as a callback to receive events.
         /// @param event The event the should be handled.
-        static void OnEvent(Event& event) { s_Instance->OnEventInstance(event); }
+        static void OnEvent(Event& event);
 
         /// @brief Registers the given function as an Event callback to be run when a window event 
         /// occurs. The event handler should subscribe to this in order for Window events to become
         /// part of the central event system.
         /// @param eventCallback a function that will take in an Event when an event occurs.
-        static void RegisterEventCallback(const std::function<void(Event&)> eventCallback) { s_Instance->RegisterEventCallbackInstance(eventCallback); }
+        static void RegisterEventCallback(const std::function<void(Event&)> eventCallback);
 
-    public:
-        
-        /// @brief Enables or disables vsync on the window. Enabled by default.
-        /// @param enable if true, then vsync will be enable. If false, it will be disabled.
-        static void EnableVSync(bool enable) { s_Instance->EnableVSyncInstance(enable); }
+        /// @brief This function is called by the OnEvent function when a APP_SHUTDOWN event
+        /// is recieved. Performs any tasks that need to occur before Input is destructed.
+        static void OnShutdown();
+        /// @brief This function is called by the OnEvent function when a APP_UPDATE event is
+        /// received. Performs any tasks that need to occur every repeatedly.
+        static void OnUpdate();
 
-        static void EnableCursor() { s_Instance->EnableCursorInstance(); }
-
-        static void DisableCursor() { s_Instance->DisableCursorInstance(); }
-
-        static void HideCursor() { s_Instance->HideCursorInstance(); }
     };
 
 }

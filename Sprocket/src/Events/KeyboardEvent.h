@@ -9,10 +9,10 @@ namespace Sprocket {
     class KeyEvent : public Event {
     private:
         Keycode m_Keycode;
-    protected:
-        KeyEvent(const Keycode keycode) : m_Keycode(keycode) {}
     public:
         Keycode GetKeycode() const { return m_Keycode; }
+    protected:
+        KeyEvent(const Keycode keycode) : m_Keycode(keycode) {}
     };
 
     class KeyPressedEvent : public KeyEvent {

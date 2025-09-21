@@ -32,10 +32,16 @@ namespace Sprocket {
 
     public:
 
+        /// @brief Creates a font object based on the given path and font size.
+        /// @param fontPath - The path to the font file.
+        /// @param fontSizeInPixels - The size the font show be created for.
         Font(const std::string& fontPath, const unsigned int fontSizeInPixels);
 
-        std::map<char, Character> GetCharacters() {return m_Characters;}
-
+        /// @brief Generates a texture buffer based on the given text.
+        /// @param text - The text to generate a buffer for.
+        /// @param width - The width of the generated buffer.
+        /// @param height - The height of the generated buffer.
+        /// @return A buffer that can be used to render the text as a single texture.
         std::vector<unsigned char> GetTextureBufferForText(const std::string& text, unsigned int& width, unsigned int& height);
 
     };

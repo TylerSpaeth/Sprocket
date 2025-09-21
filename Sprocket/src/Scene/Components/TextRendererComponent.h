@@ -21,9 +21,23 @@ namespace Sprocket {
 
         std::string m_FontPath;
         std::string m_Text;
+    
+    public:
+
+        /// @brief This sets the data on the for this TextRenderer. It may only be set once.
+        /// @param fontPath The path to the font file.
+        /// @param m_Text The text to be displayed
+        /// @return True if setting data is successful, false otherwise.
+        bool SetData(const std::string& fontPath, const std::string& m_Text);
+        std::string GetFontPath() const;
+        std::string GetText() const;
+
+    private:
 
         TextRendererComponent();
         ~TextRendererComponent();
+
+        void RegisterEventCallback(const std::function<void(Event&)> eventCallback) override;
 
         /// @brief Submits this into the rendering system
         void RenderNew();
@@ -37,17 +51,6 @@ namespace Sprocket {
         /// @brief Pulls this out of the rendering system.
         void RemoveRender();
 
-        void RegisterEventCallback(const std::function<void(Event&)> eventCallback) override;
-    
-    public:
-
-        /// @brief This sets the data on the for this TextRenderer. It may only be set once.
-        /// @param fontPath The path to the font file.
-        /// @param m_Text The text to be displayed
-        /// @return True if setting data is successful, false otherwise.
-        bool SetData(const std::string& fontPath, const std::string& m_Text);
-        std::string GetFontPath() const {return m_FontPath;}
-        std::string GetText() const {return m_Text;}
     };
 
 }
