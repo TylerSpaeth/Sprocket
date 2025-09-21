@@ -16,11 +16,19 @@ namespace Sprocket {
     class SPROCKET_API SceneManager : public Singleton<SceneManager> {
 
     private:
+
+        bool m_ChangeScene = false;
+        int m_NewActiveScene = 0;
+
         // An empty default scene will always be given at index 0.
-        mutable int m_ActiveSceneIndex = 0;
+        int m_ActiveSceneIndex = 0;
         mutable std::unordered_map<int, const Scene*> m_Scenes;
 
         std::function<void(Event&)> m_EventCallback;
+
+        /// @brief Checks if the scene should change, otherwise passes through the event.
+        /// @param event The update event to pass through in the scene is not changing
+        static void OnUpdate(Event& event);
 
     public:
         /// @brief Initializes the SceneManager singleton. This function

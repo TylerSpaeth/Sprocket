@@ -52,6 +52,8 @@ namespace Sprocket {
             cowboyIdle.animationFrames.push_back(frame3);
             cowboyIdle.animationFrames.push_back(frame4);
 
+            GetComponent<TransformComponent>()->LocalPosition().y += 5;
+
         }
 
         void Start() override {
@@ -72,8 +74,6 @@ namespace Sprocket {
             circleTree.animationFrames.push_back(frame2);
 
             GetComponent<AnimationComponent>()->SetAnimation(circleTree);
-
-            GetComponent<TransformComponent>()->LocalPosition().y += 5;
 
         }
 

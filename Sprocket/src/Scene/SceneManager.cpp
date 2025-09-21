@@ -7,8 +7,34 @@ namespace Sprocket {
     /////////////////////////////////////////////////////////////////////////////////////////////////
 
     void SceneManager::OnEvent(Event& event) {
-        // Propogate the call to the active scene
-        GetActiveScene()->OnEvent(event);
+        switch (event.GetEventType()) {
+            case EventType::APP_UPDATE:
+                OnUpdate(event);
+                break;
+            default:
+                // Propogate the call to the active scene
+                GetActiveScene()->OnEvent(event);
+                break;
+        }
+    }
+
+    void SceneManager::OnUpdate(Event& event) {
+        if (s_Instance->m_ChangeScene) {
+            // Remove the old scene
+            GetActiveScene()->OnDeactivate();
+            GetActiveScene()->RegisterEventCallback(nullptr);
+            s_Instance->m_ActiveSceneIndex = s_Instance->m_NewActiveScene;
+
+            // Setup the new scene
+            GetActiveScene()->RegisterEventCallback(s_Instance->m_EventCallback);
+            GetActiveScene()->OnActivate();
+
+            s_Instance->m_ChangeScene = false;
+        }
+        else {
+            GetActiveScene()->OnEvent(event);
+        }
+        
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////
@@ -59,14 +85,8 @@ namespace Sprocket {
             return false;
         }
 
-        // Remove the old scene
-        GetActiveScene()->OnDeactivate();
-        GetActiveScene()->RegisterEventCallback(nullptr);
-        s_Instance->m_ActiveSceneIndex = index;
-
-        // Setup the new scene
-        GetActiveScene()->RegisterEventCallback(s_Instance->m_EventCallback);
-        GetActiveScene()->OnActivate();
+        s_Instance->m_NewActiveScene = index;
+        s_Instance->m_ChangeScene = true;
 
         return true;
 
