@@ -50,7 +50,31 @@ namespace Sprocket {
         std::array<std::vector<unsigned int>, MAX_UNIQUE_TILES> m_QuadRendererIDs;
         std::array<QuadRendererStruct, MAX_UNIQUE_TILES> m_QuadRenderers;
 
-        TileMapComponent() {}
+    public:
+        
+        /// @brief Sets the QuadRenderer map path. This is a text file that defines the layout of the
+        /// sprites in the tilemap. Each character in the text file corresponds to a unique sprite.
+        /// @param quadRendererMapPath - The path to the QuadRenderer map file.
+        void SetQuadRendererMapPath(const std::string quadRendererMapPath);
+
+        /// @brief Sets the Collider map path. This is a text file that defines the layout of the
+        /// colliders in the tilemap. 0s represent a collider while everything else is empty space.
+        /// @param colliderMapPath - The path to the Collider map file. 
+        void SetColliderMapPath(const std::string colliderMapPath);
+
+        /// @brief Sets the color of the QuadRenderer at the given index.
+        /// @param index - The index of the QuadRenderer to set the color of.
+        /// @param quadColor - The color to set the QuadRenderer to.
+        bool SetQuadRendererData(const char index, const glm::vec4 quadColor);
+
+        /// @brief Sets the sprite of the QuadRenderer at the given index.
+        /// @param index - The index of the QuadRenderer to set the texture and UV coordinates of.
+        /// @param sprite - The sprite to assign to the QuaderRenderer at index.
+        bool SetQuadRendererData(const char index, const Sprite& sprite);
+
+    private:
+
+        TileMapComponent() = default;
         ~TileMapComponent();
 
         /// @brief Registers the TileMap with the given transform values.
@@ -80,27 +104,6 @@ namespace Sprocket {
         /// @brief Delete the Collider portion of the tile map from the relevant systems.
         void DeleteColliderMap();
 
-    public:
-        
-        /// @brief Sets the QuadRenderer map path. This is a text file that defines the layout of the
-        /// sprites in the tilemap. Each character in the text file corresponds to a unique sprite.
-        /// @param quadRendererMapPath - The path to the QuadRenderer map file.
-        void SetQuadRendererMapPath(const std::string quadRendererMapPath);
-
-        /// @brief Sets the Collider map path. This is a text file that defines the layout of the
-        /// colliders in the tilemap. 0s represent a collider while everything else is empty space.
-        /// @param colliderMapPath - The path to the Collider map file. 
-        void SetColliderMapPath(const std::string colliderMapPath);
-
-        /// @brief Sets the color of the QuadRenderer at the given index.
-        /// @param index - The index of the QuadRenderer to set the color of.
-        /// @param quadColor - The color to set the QuadRenderer to.
-        bool SetQuadRendererData(const char index, const glm::vec4 quadColor);
-
-        /// @brief Sets the sprite of the QuadRenderer at the given index.
-        /// @param index - The index of the QuadRenderer to set the texture and UV coordinates of.
-        /// @param sprite - The sprite to assign to the QuaderRenderer at index.
-        bool SetQuadRendererData(const char index, const Sprite& sprite);
 
     };
 

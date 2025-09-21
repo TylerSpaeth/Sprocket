@@ -4,41 +4,16 @@
 
 namespace Sprocket {
 
-    static unsigned int CompileShader(GLenum shaderType, const char* source) {
-        // Create and compile the shader
-        unsigned int shader = glCreateShader(shaderType);
-        glShaderSource(shader, 1, &source, NULL);
-        glCompileShader(shader);
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    //////////////////////////////////////NONCLASS DEFINITIONS/////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////////////////////////////
 
-        // Valide the shader compilation
-        int result;
-        glGetShaderiv(shader, GL_COMPILE_STATUS, &result);
-        if (result == GL_FALSE) {
-            int length;
-            glGetShaderiv(shader, GL_INFO_LOG_LENGTH, &length);
-            char* message = (char*)_malloca(length * sizeof(char));
-            glGetShaderInfoLog(shader, length, &length, message);
-            Global::fileLogger.Error("Sprocket: Shader compilation failed");
-        }
+    static unsigned int CompileShader(GLenum shaderType, const char* source);
+    static std::string Parse(const std::string& path);
 
-        return shader;
-    }
-
-    // Parse the data from the given filepath to a string
-    static std::string Parse(const std::string& path) {
-        std::ifstream ifStream(path);
-        return std::string((std::istreambuf_iterator<char>(ifStream)),
-            (std::istreambuf_iterator<char>()));
-    }
-
-    GLint Shader::GetUniformLocation(const std::string& name) const {
-        if (m_UniformLocationCache.find(name) != m_UniformLocationCache.end()) {
-            return m_UniformLocationCache[name];
-        }
-        int location = glGetUniformLocation(m_ProgramID, name.c_str());
-        m_UniformLocationCache[name] = location;
-        return location;
-    }
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////PUBLIC/////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////////////////////////////
 
     Shader::Shader(const std::string& vertexPath, const std::string& fragmentPath) {
 
@@ -75,10 +50,6 @@ namespace Sprocket {
         glUseProgram(0);
     }
 
-    /////////////////////////////////////////////////////////////////////////////////////////////////
-    /////////////////////////////////////// UNIFORM FUNCTIONS ///////////////////////////////////////
-    /////////////////////////////////////////////////////////////////////////////////////////////////
-
     void Shader::SetUniform4f(const char* uniformName, float v1, float v2, float v3, float v4) {
         int location = GetUniformLocation(uniformName);
         glUniform4f(location, v1, v2, v3, v4);
@@ -104,8 +75,47 @@ namespace Sprocket {
         glUniformMatrix4fv(location, count, GL_FALSE, &values[0][0]);
     }
 
-    /////////////////////////////////////////////////////////////////////////////////////////////////
-    /////////////////////////////////////////////////////////////////////////////////////////////////
-    /////////////////////////////////////////////////////////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////PRIVATE////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////////////////////////////
 
+    GLint Shader::GetUniformLocation(const std::string& name) const {
+        if (m_UniformLocationCache.find(name) != m_UniformLocationCache.end()) {
+            return m_UniformLocationCache[name];
+        }
+        int location = glGetUniformLocation(m_ProgramID, name.c_str());
+        m_UniformLocationCache[name] = location;
+        return location;
+    }
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////NONCLASS///////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+
+    static unsigned int CompileShader(GLenum shaderType, const char* source) {
+        // Create and compile the shader
+        unsigned int shader = glCreateShader(shaderType);
+        glShaderSource(shader, 1, &source, NULL);
+        glCompileShader(shader);
+
+        // Valide the shader compilation
+        int result;
+        glGetShaderiv(shader, GL_COMPILE_STATUS, &result);
+        if (result == GL_FALSE) {
+            int length;
+            glGetShaderiv(shader, GL_INFO_LOG_LENGTH, &length);
+            char* message = (char*)_malloca(length * sizeof(char));
+            glGetShaderInfoLog(shader, length, &length, message);
+            Global::fileLogger.Error("Sprocket: Shader compilation failed");
+        }
+
+        return shader;
+    }
+
+    // Parse the data from the given filepath to a string
+    static std::string Parse(const std::string& path) {
+        std::ifstream ifStream(path);
+        return std::string((std::istreambuf_iterator<char>(ifStream)),
+            (std::istreambuf_iterator<char>()));
+    }
 }

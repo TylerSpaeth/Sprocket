@@ -4,6 +4,40 @@
 
 namespace Sprocket {
 
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////PUBLIC/////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+
+    bool AnimationComponent::SetAnimation(const Animation& animation) {
+
+        float totalDuration = 0;
+
+        int index = 0;
+        for (auto frame : animation.animationFrames) {
+            if (frame.frameDuration < 0) {
+                Global::fileLogger.Warning(std::format("Failed to set animation, frame {} has a negative frame duration.", index));
+                return false;
+            }
+            if (frame.sprite.texturePath.empty()) {
+                Global::fileLogger.Warning(std::format("Failed to set animation, frame {} has an empty texturePath.", index));
+                return false;
+            }
+            index++;
+
+            totalDuration += frame.frameDuration;
+        }
+
+        m_Animation = animation;
+        m_AnimationTotalTime = totalDuration;
+
+        return true;
+
+    }
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////PRIVATE////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+
     AnimationComponent::AnimationComponent() {m_EventCallback = nullptr;}
     AnimationComponent::~AnimationComponent() {
         if (m_QuadRenderer) {
@@ -44,32 +78,6 @@ namespace Sprocket {
                 break;
             }
         }
-
-    }
-
-    bool AnimationComponent::SetAnimation(const Animation& animation) {
-
-        float totalDuration = 0;
-
-        int index = 0;
-        for (auto frame : animation.animationFrames) {
-            if (frame.frameDuration < 0) {
-                Global::fileLogger.Warning(std::format("Failed to set animation, frame {} has a negative frame duration.", index));
-                return false;
-            }
-            if (frame.sprite.texturePath.empty()) {
-                Global::fileLogger.Warning(std::format("Failed to set animation, frame {} has an empty texturePath.", index));
-                return false;
-            }
-            index++;
-
-            totalDuration += frame.frameDuration;
-        }
-
-        m_Animation = animation;
-        m_AnimationTotalTime = totalDuration;
-
-        return true;
 
     }
 

@@ -14,7 +14,7 @@ namespace Sprocket {
 
     private:
 
-        CameraComponent() {}
+        CameraComponent() = default;
         ~CameraComponent();
     
         /// @brief Updates the camera transform to the given position, rotation, and scale

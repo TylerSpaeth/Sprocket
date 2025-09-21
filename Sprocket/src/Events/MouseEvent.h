@@ -9,10 +9,10 @@ namespace Sprocket {
     class MouseButtonEvent : public Event {
     private:
         MouseButton m_MouseButton;
-    protected:
-        MouseButtonEvent(const MouseButton mouseButton) : m_MouseButton(mouseButton) {}
     public:
         MouseButton GetMouseButton() const { return m_MouseButton; }
+    protected:
+        MouseButtonEvent(const MouseButton mouseButton) : m_MouseButton(mouseButton) {}
     };
 
     class MouseButtonPressedEvent : public MouseButtonEvent {

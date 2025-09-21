@@ -5,6 +5,10 @@
 
 namespace Sprocket {
 
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////PUBLIC/////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+
     Texture::Texture(unsigned char* buffer, unsigned int width, unsigned int height, unsigned int bytesPerPixel) 
             : m_FilePath(""), m_Width(width), m_Height(height), m_BytesPerPixel(bytesPerPixel) {
         size_t size = static_cast<size_t>(width) * static_cast<size_t>(height) * static_cast<size_t>(bytesPerPixel);
@@ -34,22 +38,6 @@ namespace Sprocket {
 
     }
 
-    void Texture::CreateTexture() {
-        glGenTextures(1, &m_TextureID);
-        // FIXME for some reason this needs to be called in order to be able to render multiple textures at the same time. This should be done a different way because there is no guarentee that the textureID and slot will always be the same
-        glActiveTexture(GL_TEXTURE0 + m_TextureID);
-        glBindTexture(GL_TEXTURE_2D, m_TextureID);
-
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-        
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, m_Width, m_Height, 0, GL_RGBA, GL_UNSIGNED_BYTE, m_LocalBuffer);
-
-        glBindTexture(GL_TEXTURE_2D, 0);
-    }
-
     Texture::~Texture() {
         glDeleteTextures(1, &m_TextureID);
     }
@@ -61,6 +49,34 @@ namespace Sprocket {
     }
 
     void Texture::Unbind() const {
+        glBindTexture(GL_TEXTURE_2D, 0);
+    }
+
+    int Texture::GetWidth() const {
+        return m_Width;
+    }
+
+    int Texture::GetHeight() const {
+        return m_Height;
+    }
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////PRIVATE////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+
+    void Texture::CreateTexture() {
+        glGenTextures(1, &m_TextureID);
+        // FIXME for some reason this needs to be called in order to be able to render multiple textures at the same time. This should be done a different way because there is no guarentee that the textureID and slot will always be the same
+        glActiveTexture(GL_TEXTURE0 + m_TextureID);
+        glBindTexture(GL_TEXTURE_2D, m_TextureID);
+
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, m_Width, m_Height, 0, GL_RGBA, GL_UNSIGNED_BYTE, m_LocalBuffer);
+
         glBindTexture(GL_TEXTURE_2D, 0);
     }
 

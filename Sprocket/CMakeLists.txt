@@ -99,6 +99,11 @@ target_sources(sprocket PRIVATE
   src/Audio/Sound.cpp
 )
 
+# Add Utils source code
+target_sources(sprocket PRIVATE
+    src/Utils/RendererUtils.cpp
+)
+
 # Copy everything in the resources folder to the output directory
 add_custom_command(TARGET sprocket POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E copy_directory

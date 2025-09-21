@@ -7,6 +7,75 @@
 
 namespace Sprocket {
 
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    //////////////////////////////////////NONCLASS DEFINITIONS/////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+
+    void LoadBoolMap(std::vector<std::vector<bool>>& map, std::ifstream& colliderFile);
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////PUBLIC/////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+
+    void TileMapComponent::SetQuadRendererMapPath(const std::string quadRendererMapPath) {
+
+        m_QuadRendererMapPath = quadRendererMapPath;
+
+        if (m_EventCallback == nullptr) return;
+
+        DeleteQuadRendererMap();
+        RegisterQuadRendererMap();
+    }
+
+    void TileMapComponent::SetColliderMapPath(const std::string colliderMapPath) {
+
+        m_ColliderMapPath = colliderMapPath;
+
+        if (m_EventCallback == nullptr) return;
+
+        DeleteColliderMap();
+        RegisterColliderMap();
+    }
+
+    bool TileMapComponent::SetQuadRendererData(const char index, const glm::vec4 quadColor) {
+        if (index - FIRST_PRINTABLE_ASCII > MAX_UNIQUE_TILES) {
+            return false;
+        }
+        m_QuadRenderers.at(index - FIRST_PRINTABLE_ASCII).quadColor = quadColor;
+        if (m_EventCallback != nullptr) {
+            for (auto quadRendererID : m_QuadRendererIDs.at(index - FIRST_PRINTABLE_ASCII)) {
+                RenderUpdateEvent* event = new RenderUpdateEvent(RenderUpdateType::QUAD, quadRendererID);
+                event->m_QuadColor = quadColor;
+                m_EventCallback(*event);
+                delete event;
+            }
+        }
+        return true;
+    }
+
+    bool TileMapComponent::SetQuadRendererData(const char index, const Sprite& sprite) {
+        if (index - FIRST_PRINTABLE_ASCII > MAX_UNIQUE_TILES) {
+            return false;
+        }
+        QuadRendererStruct& qrs = m_QuadRenderers.at(index - FIRST_PRINTABLE_ASCII);
+        qrs.sprite = sprite;
+        if (m_EventCallback != nullptr) {
+            for (auto quadRendererID : m_QuadRendererIDs.at(index - FIRST_PRINTABLE_ASCII)) {
+                RenderUpdateEvent* event = new RenderUpdateEvent(RenderUpdateType::QUAD, quadRendererID);
+                event->m_TexturePath = qrs.sprite.texturePath;
+                event->m_TexXCoords = qrs.sprite.textureXUVCoords;
+                event->m_TexYCoords = qrs.sprite.textureYUVCoords;
+                m_EventCallback(*event);
+                delete event;
+            }
+        }
+        return true;
+    }
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////PRIVATE////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+
     TileMapComponent::~TileMapComponent() {
         if (m_EventCallback) {
             DeleteTileMap();
@@ -98,40 +167,6 @@ namespace Sprocket {
         }
 
         quadRendererMapFile.close();
-
-    }
-
-    // Loads the given 2d vector with bool value of true if there is a 0 at the corresponding row and
-    // col of the colliderFile or false if there is an x or anything else.
-    void LoadBoolMap(std::vector<std::vector<bool>>& map, std::ifstream& colliderFile) {
-        std::string line;
-
-        int row = 0;
-        int col = 0;
-
-        while (std::getline(colliderFile, line)) {
-            map.push_back(std::vector<bool>());
-
-            // Iterate through the string
-            while (col < line.size()) {
-
-                char c = line.at(col);
-
-                // Only create a box collider if the character is 0
-                if (c == '0') {
-                    map.at(row).push_back(true);
-                }
-                else {
-                    map.at(row).push_back(false);
-                }
-
-                col++;
-            }
-            // Reset the column count
-            col = 0;
-
-            row++;
-        }
 
     }
 
@@ -313,59 +348,42 @@ namespace Sprocket {
         m_PhysicsIDs.clear();
     }
 
-    void TileMapComponent::SetQuadRendererMapPath(const std::string quadRendererMapPath) {
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////NONCLASS///////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////////////////////////////
 
-        m_QuadRendererMapPath = quadRendererMapPath;
+    // Loads the given 2d vector with bool value of true if there is a 0 at the corresponding row and
+    // col of the colliderFile or false if there is an x or anything else.
+    void LoadBoolMap(std::vector<std::vector<bool>>& map, std::ifstream& colliderFile) {
+        std::string line;
 
-        if (m_EventCallback == nullptr) return;
+        int row = 0;
+        int col = 0;
 
-        DeleteQuadRendererMap();
-        RegisterQuadRendererMap();
-    }
+        while (std::getline(colliderFile, line)) {
+            map.push_back(std::vector<bool>());
 
-    void TileMapComponent::SetColliderMapPath(const std::string colliderMapPath) {
+            // Iterate through the string
+            while (col < line.size()) {
 
-        m_ColliderMapPath = colliderMapPath;
+                char c = line.at(col);
 
-        if (m_EventCallback == nullptr) return;
+                // Only create a box collider if the character is 0
+                if (c == '0') {
+                    map.at(row).push_back(true);
+                }
+                else {
+                    map.at(row).push_back(false);
+                }
 
-        DeleteColliderMap();
-        RegisterColliderMap();
-    }
-
-    bool TileMapComponent::SetQuadRendererData(const char index, const glm::vec4 quadColor) {
-        if (index - FIRST_PRINTABLE_ASCII > MAX_UNIQUE_TILES) {
-            return false;
-        }
-        m_QuadRenderers.at(index - FIRST_PRINTABLE_ASCII).quadColor = quadColor;
-        if (m_EventCallback != nullptr) {
-            for (auto quadRendererID : m_QuadRendererIDs.at(index - FIRST_PRINTABLE_ASCII)) {
-                RenderUpdateEvent* event = new RenderUpdateEvent(RenderUpdateType::QUAD, quadRendererID);
-                event->m_QuadColor = quadColor;
-                m_EventCallback(*event);
-                delete event;
+                col++;
             }
-        }
-        return true;
-    }
+            // Reset the column count
+            col = 0;
 
-    bool TileMapComponent::SetQuadRendererData(const char index, const Sprite& sprite) {
-        if (index - FIRST_PRINTABLE_ASCII > MAX_UNIQUE_TILES) {
-            return false;
+            row++;
         }
-        QuadRendererStruct& qrs = m_QuadRenderers.at(index - FIRST_PRINTABLE_ASCII);
-        qrs.sprite = sprite;
-        if (m_EventCallback != nullptr) {
-            for (auto quadRendererID : m_QuadRendererIDs.at(index - FIRST_PRINTABLE_ASCII)) {
-                RenderUpdateEvent* event = new RenderUpdateEvent(RenderUpdateType::QUAD, quadRendererID);
-                event->m_TexturePath = qrs.sprite.texturePath;
-                event->m_TexXCoords = qrs.sprite.textureXUVCoords;
-                event->m_TexYCoords = qrs.sprite.textureYUVCoords;
-                m_EventCallback(*event);
-                delete event;
-            }
-        }
-        return true;
+
     }
 
 }

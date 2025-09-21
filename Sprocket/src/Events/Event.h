@@ -36,11 +36,6 @@ namespace Sprocket {
     private:
         EventType m_EventType = EventType::NONE;
 
-    protected:
-        void SetType(EventType type) {
-            m_EventType = type;
-        }
-
     public:
 
         EventType GetEventType() const { return m_EventType; }
@@ -82,6 +77,11 @@ namespace Sprocket {
             }
 
             return false;
+        }
+
+    protected:
+        void SetType(EventType type) {
+            m_EventType = type;
         }
     };
 

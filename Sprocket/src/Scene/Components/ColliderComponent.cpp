@@ -4,10 +4,12 @@
 
 namespace Sprocket {
 
-    ColliderComponent::~ColliderComponent() {
-        if (m_EventCallback && m_PhysicsID != -1) {
-            Remove();
-        }
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////PUBLIC/////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+
+    int ColliderComponent::GetPhysicsID() const {
+        return m_PhysicsID;
     }
 
     bool ColliderComponent::CollidesWith(ColliderComponent& colliderComponent) {
@@ -30,20 +32,6 @@ namespace Sprocket {
 
     }
 
-    void ColliderComponent::Remove() {
-
-        if (m_EventCallback) {
-
-            PhysicsDeleteEvent* event = new PhysicsDeleteEvent(m_PhysicsID);
-
-            m_EventCallback(*event);
-
-            delete event;
-
-        }
-
-    }
-
     bool ColliderComponent::CollidesWithAnything() {
 
         bool result = false;
@@ -56,6 +44,32 @@ namespace Sprocket {
         }
 
         return result;
+
+    }
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    ///////////////////////////////////////////PROTECTED///////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+
+    ColliderComponent::ColliderComponent(TransformComponent& transformComponent) : m_TranformComponent(&transformComponent) {}
+
+    ColliderComponent::~ColliderComponent() {
+        if (m_EventCallback && m_PhysicsID != -1) {
+            Remove();
+        }
+    }
+
+    void ColliderComponent::Remove() {
+
+        if (m_EventCallback) {
+
+            PhysicsDeleteEvent* event = new PhysicsDeleteEvent(m_PhysicsID);
+
+            m_EventCallback(*event);
+
+            delete event;
+
+        }
 
     }
 

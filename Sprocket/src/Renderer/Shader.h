@@ -9,9 +9,10 @@ namespace Sprocket {
     /// @brief This acts as an abstraction for OpenGL shader functionality.
     class Shader {
     private:
+
         unsigned int m_ProgramID;
         mutable std::unordered_map<std::string, int> m_UniformLocationCache;
-        int GetUniformLocation(const std::string& name) const;
+
     public:
 
         /// @brief Creates a new OpenGL shader program based off of the two given files.
@@ -57,6 +58,11 @@ namespace Sprocket {
         /// @param count The number of matricies in values.
         /// @param values The array of matricies that should be stored.
         void SetUniformMatrix4fv(const char* uniformName, const int count, const glm::mat4& values);
+
+    private:
+
+        int GetUniformLocation(const std::string& name) const;
+
     };
 
 }

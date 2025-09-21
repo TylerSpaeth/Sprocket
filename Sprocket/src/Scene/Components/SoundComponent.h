@@ -11,10 +11,6 @@ namespace Sprocket {
     class SPROCKET_API SoundComponent : public EventDrivenComponent { 
         friend class Entity;
     private:
-        /// @brief Creates a sound component, but does not register it with the audio system.
-        SoundComponent() {}
-        ~SoundComponent();
-
         int m_SoundID = -1;
         std::string m_Filepath;
     public:
@@ -39,6 +35,12 @@ namespace Sprocket {
         void SetLooping(bool loop);
         /// @brief Gets whether the sound is set to loop when it reaches the end.
         bool IsLooping() const;
+
+    private:
+        /// @brief Creates a sound component, but does not register it with the audio system.
+        SoundComponent() = default;
+        ~SoundComponent();
+
     };
 }
 

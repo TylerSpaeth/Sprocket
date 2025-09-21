@@ -8,9 +8,105 @@
 
 namespace Sprocket {
 
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    //////////////////////////////////////NONCLASS DEFINITIONS/////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+
+    static GLFWwindow* InitGLFWwindow(const unsigned int xDimension, const unsigned int yDimension, const char* windowTitle);
+    static void RegisterCallbacks(GLFWwindow* window);
+    static void FramebufferSizeCallback(GLFWwindow* window, int width, int height);
+    static void KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mod);
+    static void CursorPositionCallback(GLFWwindow* window, double xpos, double ypos);
+    static void MouseButtonCallback(GLFWwindow* window, int button, int action, int mods);
+    static void ScrollCallback(GLFWwindow* window, double xoffset, double yoffset);
+    static void WindowCloseCallback(GLFWwindow* window);
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////PUBLIC/////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+
+    void Window::EnableVSync(bool enable) {
+        if (enable) {
+            glfwSwapInterval(1);
+        }
+        else {
+            glfwSwapInterval(0);
+        }
+    }
+
+    void Window::EnableCursor() {
+        glfwSetInputMode((GLFWwindow*)s_Instance->m_Window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+    }
+
+    void Window::DisableCursor() {
+        glfwSetInputMode((GLFWwindow*)s_Instance->m_Window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+    }
+
+    void Window::HideCursor() {
+        glfwSetInputMode((GLFWwindow*)s_Instance->m_Window, GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
+    }
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////PRIVATE////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+
+    
     ////////////////////////////////////////////////////////////////////////////////////
-    //////////////////////////////// NONCLASS FUNCTIONS ////////////////////////////////
     ////////////////////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////////////////////////
+
+    ////////////////////////////////////////////////////////////////////////////////////
+    ///////////////////////////////// STATIC FUNCTIONS /////////////////////////////////
+    ////////////////////////////////////////////////////////////////////////////////////
+
+    void Window::Init(const unsigned int xDimension, const unsigned int yDimension, const std::string& windowTitle) {
+        if (!s_Instance) {
+            s_Instance = new Window();
+            s_Instance->m_Window = InitGLFWwindow(xDimension, yDimension, windowTitle.c_str());
+            glfwSetWindowUserPointer((GLFWwindow*)s_Instance->m_Window, (void*)&s_Instance->m_EventCallback);
+            RegisterCallbacks((GLFWwindow*)s_Instance->m_Window);
+
+            // Initialize GLAD
+            // MUST BE DONE BEFORE ANY OPENGL CALLS INCLUDING INTIALIZING RENDERER
+            gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);
+        }
+    }
+    ////////////////////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////////////////////////
+
+    ////////////////////////////////////////////////////////////////////////////////////
+    //////////////////////////////// INSTANCE FUNCTIONS ////////////////////////////////
+    ////////////////////////////////////////////////////////////////////////////////////
+
+    void Window::OnEvent(Event& event) {
+        EventType type = event.GetEventType();
+        switch (type) {
+        case EventType::APP_UPDATE:
+            OnUpdate();
+            break;
+        case EventType::APP_SHUTDOWN:
+            OnShutdown();
+            break;
+        }
+    }
+
+    void Window::OnShutdown() {
+        glfwTerminate();
+    }
+
+    void Window::OnUpdate() {
+        glfwSwapBuffers((GLFWwindow*)s_Instance->m_Window);
+        glfwPollEvents();
+    }
+
+    void Window::RegisterEventCallback(const std::function<void(Event&)> eventCallback) {
+        s_Instance->m_EventCallback = eventCallback;
+    }
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////NONCLASS///////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////////////////////////////
 
     static GLFWwindow* InitGLFWwindow(const unsigned int xDimension, const unsigned int yDimension, const char* windowTitle) {
         glfwInit();
@@ -29,6 +125,15 @@ namespace Sprocket {
         glfwSetWindowAspectRatio(window, xDimension, yDimension);
 
         return window;
+    }
+
+    static void RegisterCallbacks(GLFWwindow* window) {
+        glfwSetFramebufferSizeCallback(window, FramebufferSizeCallback);
+        glfwSetKeyCallback(window, KeyCallback);
+        glfwSetCursorPosCallback(window, CursorPositionCallback);
+        glfwSetMouseButtonCallback(window, MouseButtonCallback);
+        glfwSetScrollCallback(window, ScrollCallback);
+        glfwSetWindowCloseCallback(window, WindowCloseCallback);
     }
 
     // Set the size of the OpenGL viewport when the window is resized
@@ -87,91 +192,5 @@ namespace Sprocket {
         ApplicationShutdownEvent e;
         eventCallback(e);
     }
-
-    static void RegisterCallbacks(GLFWwindow* window) {
-        glfwSetFramebufferSizeCallback(window, FramebufferSizeCallback);
-        glfwSetKeyCallback(window, KeyCallback);
-        glfwSetCursorPosCallback(window, CursorPositionCallback);
-        glfwSetMouseButtonCallback(window, MouseButtonCallback);
-        glfwSetScrollCallback(window, ScrollCallback);
-        glfwSetWindowCloseCallback(window, WindowCloseCallback);
-    }
-    ////////////////////////////////////////////////////////////////////////////////////
-    ////////////////////////////////////////////////////////////////////////////////////
-    ////////////////////////////////////////////////////////////////////////////////////
-
-    ////////////////////////////////////////////////////////////////////////////////////
-    ///////////////////////////////// STATIC FUNCTIONS /////////////////////////////////
-    ////////////////////////////////////////////////////////////////////////////////////
-
-    void Window::Init(const unsigned int xDimension, const unsigned int yDimension, const std::string& windowTitle) {
-        if (!s_Instance) {
-            s_Instance = new Window();
-            s_Instance->m_Window = InitGLFWwindow(xDimension, yDimension, windowTitle.c_str());
-            glfwSetWindowUserPointer((GLFWwindow*)s_Instance->m_Window, (void*)&s_Instance->m_EventCallback);
-            RegisterCallbacks((GLFWwindow*)s_Instance->m_Window);
-
-            // Initialize GLAD
-            // MUST BE DONE BEFORE ANY OPENGL CALLS INCLUDING INTIALIZING RENDERER
-            gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);
-        }
-    }
-    ////////////////////////////////////////////////////////////////////////////////////
-    ////////////////////////////////////////////////////////////////////////////////////
-    ////////////////////////////////////////////////////////////////////////////////////
-
-    ////////////////////////////////////////////////////////////////////////////////////
-    //////////////////////////////// INSTANCE FUNCTIONS ////////////////////////////////
-    ////////////////////////////////////////////////////////////////////////////////////
-
-    void Window::OnEventInstance(Event& event) {
-        EventType type = event.GetEventType();
-        switch (type) {
-        case EventType::APP_UPDATE:
-            OnUpdateInstance();
-            break;
-        case EventType::APP_SHUTDOWN:
-            OnShutdownInstance();
-            break;
-        }
-    }
-
-    void Window::OnShutdownInstance() {
-        glfwTerminate();
-    }
-
-    void Window::OnUpdateInstance() {
-        glfwSwapBuffers((GLFWwindow*)m_Window);
-        glfwPollEvents();
-    }
-
-    void Window::RegisterEventCallbackInstance(const std::function<void(Event&)> eventCallback) {
-        m_EventCallback = eventCallback;
-    }
-
-    void Window::EnableVSyncInstance(bool enable) {
-        if (enable) {
-            glfwSwapInterval(1);
-        }
-        else {
-            glfwSwapInterval(0);
-        }
-    }
-
-    void Window::EnableCursorInstance() {
-        glfwSetInputMode((GLFWwindow*)m_Window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
-    }
-
-    void Window::DisableCursorInstance() {
-        glfwSetInputMode((GLFWwindow*)m_Window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
-    }
-
-    void Window::HideCursorInstance() {
-        glfwSetInputMode((GLFWwindow*)m_Window, GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
-    }
-
-    ////////////////////////////////////////////////////////////////////////////////////
-    ////////////////////////////////////////////////////////////////////////////////////
-    ////////////////////////////////////////////////////////////////////////////////////
 
 }

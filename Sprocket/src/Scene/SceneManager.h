@@ -26,11 +26,12 @@ namespace Sprocket {
 
         std::function<void(Event&)> m_EventCallback;
 
-        /// @brief Checks if the scene should change, otherwise passes through the event.
-        /// @param event The update event to pass through in the scene is not changing
-        static void OnUpdate(Event& event);
-
     public:
+
+        /// @brief Handles incoming events. Should be registered as a callback to receive events.
+        /// @param event The event the should be handled.
+        static void OnEvent(Event& event);
+
         /// @brief Initializes the SceneManager singleton. This function
         /// must be called before any other SceneManager functions.
         /// @param eventCallback an event callback to be used by the scene manager and any connected 
@@ -64,11 +65,13 @@ namespace Sprocket {
 
         /// @brief Gets the index of the active scene.
         /// @return the index of the active scene.
-        static int GetActiveSceneIndex() { return s_Instance->m_ActiveSceneIndex; }
+        static int GetActiveSceneIndex();
 
-        /// @brief Handles incoming events. Should be registered as a callback to receive events.
-        /// @param event The event the should be handled.
-        static void OnEvent(Event& event);  
+    private:
+
+        /// @brief Checks if the scene should change, otherwise passes through the event.
+        /// @param event The update event to pass through in the scene is not changing
+        static void OnUpdate(Event& event);
 
     };
 

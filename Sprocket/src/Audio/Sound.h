@@ -12,6 +12,7 @@ namespace Sprocket {
         void* m_NativeEngine = nullptr;
         float m_StartTime = 0.0f;
         float m_StopTime = std::numeric_limits<float>::max();
+
     public:
         /// @Brief Creates a sound object from a file path.
         /// @Param nativeEngine A pointer to the native audio engine

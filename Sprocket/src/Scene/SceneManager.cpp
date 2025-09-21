@@ -2,9 +2,9 @@
 
 namespace Sprocket {
 
-    /////////////////////////////////////////////////////////////////////////////////////////////////
-    //////////////////////////////////////// EVENT HANDLING /////////////////////////////////////////
-    /////////////////////////////////////////////////////////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////PUBLIC/////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////////////////////////////
 
     void SceneManager::OnEvent(Event& event) {
         switch (event.GetEventType()) {
@@ -17,29 +17,6 @@ namespace Sprocket {
                 break;
         }
     }
-
-    void SceneManager::OnUpdate(Event& event) {
-        if (s_Instance->m_ChangeScene) {
-            // Remove the old scene
-            GetActiveScene()->OnDeactivate();
-            GetActiveScene()->RegisterEventCallback(nullptr);
-            s_Instance->m_ActiveSceneIndex = s_Instance->m_NewActiveScene;
-
-            // Setup the new scene
-            GetActiveScene()->RegisterEventCallback(s_Instance->m_EventCallback);
-            GetActiveScene()->OnActivate();
-
-            s_Instance->m_ChangeScene = false;
-        }
-        else {
-            GetActiveScene()->OnEvent(event);
-        }
-        
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////
-    /////////////////////////////////////////////////////////////////////////////////////////////////
-    /////////////////////////////////////////////////////////////////////////////////////////////////
 
     void SceneManager::Init(const std::function<void(Event&)> eventCallback) {
         if (!s_Instance) {
@@ -97,6 +74,33 @@ namespace Sprocket {
             return nullptr;
         }
         return (Scene*)s_Instance->m_Scenes.at(s_Instance->m_ActiveSceneIndex);
+    }
+
+    int SceneManager::GetActiveSceneIndex() {
+        return s_Instance->m_ActiveSceneIndex;
+    }
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////PRIVATE////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+
+    void SceneManager::OnUpdate(Event& event) {
+        if (s_Instance->m_ChangeScene) {
+            // Remove the old scene
+            GetActiveScene()->OnDeactivate();
+            GetActiveScene()->RegisterEventCallback(nullptr);
+            s_Instance->m_ActiveSceneIndex = s_Instance->m_NewActiveScene;
+
+            // Setup the new scene
+            GetActiveScene()->RegisterEventCallback(s_Instance->m_EventCallback);
+            GetActiveScene()->OnActivate();
+
+            s_Instance->m_ChangeScene = false;
+        }
+        else {
+            GetActiveScene()->OnEvent(event);
+        }
+
     }
 
 }

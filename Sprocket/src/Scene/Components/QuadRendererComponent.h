@@ -26,6 +26,24 @@ namespace Sprocket {
         glm::vec4 m_QuadColor = { 1,1,1,1 };
         Sprite m_Sprite;
 
+    public:
+
+        // NOTE currently calling either of these updates will cause the renderer to switch between 
+        // color and texture. It should be determined whether this is correct behavior.
+
+        glm::vec4 GetQuadColor() const;
+
+        /// @brief Updates the Quad color to the given RGBA color. If the quad is currently 
+        /// displaying a texture, that will be replaced with this color.
+        /// @param newColor - The RGBA color to use.
+        void SetQuadColor(glm::vec4 newColor);
+
+        Sprite GetSprite() const;
+
+        void SetSprite(const Sprite& sprite);
+
+    private:
+
         QuadRendererComponent();
         ~QuadRendererComponent();
 
@@ -45,22 +63,6 @@ namespace Sprocket {
         void SendTextureEvent();
 
         void RegisterEventCallback(const std::function<void(Event&)> eventCallback) override;
-
-    public:
-
-        // NOTE currently calling either of these updates will cause the renderer to switch between 
-        // color and texture. It should be determined whether this is correct behavior.
-
-        glm::vec4 GetQuadColor() const { return m_QuadColor; }
-
-        /// @brief Updates the Quad color to the given RGBA color. If the quad is currently 
-        /// displaying a texture, that will be replaced with this color.
-        /// @param newColor - The RGBA color to use.
-        void UpdateQuadColor(glm::vec4 newColor);
-
-        Sprite GetSprite() const {return m_Sprite;}
-
-        void SetSprite(const Sprite& sprite);
 
     };
 

@@ -18,9 +18,6 @@ namespace Sprocket {
         std::vector<std::function<void()>> m_RenderFunctions;
         std::priority_queue<unsigned int, std::vector<unsigned int>, std::greater<unsigned int>> m_FreeRenderFunctionSlots;
 
-        static void OnUpdate(float deltaTime);
-        static void OnShutdown();
-
     public:
 
         /// @brief Initializes the ImGui implementation. Should be called once during application startup. 
@@ -39,6 +36,15 @@ namespace Sprocket {
         /// @brief Removes a previously submitted render function.
         /// @param id - The id of the function to remove.
         static void RemoveRenderFunction(unsigned int id);
+
+    private:
+
+        /// @brief Runs on any app update.
+        /// @param deltaTime The elapsed time since the last update in seconds
+        static void OnUpdate(float deltaTime);
+
+        /// @brief Runs when the app shuts down
+        static void OnShutdown();
     };
 
 }

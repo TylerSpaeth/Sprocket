@@ -4,9 +4,9 @@
 
 namespace Sprocket {
 
-    Scene::Scene() {}
-
-    Scene::~Scene() {}
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////PUBLIC/////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////////////////////////////
 
     bool Scene::SubmitEntityToScene(Entity& entity) {
 
@@ -75,10 +75,6 @@ namespace Sprocket {
 
     }
 
-    void Scene::RegisterEventCallback(const std::function<void(Event&)> eventCallback) {
-        m_EventCallback = eventCallback;
-    }
-
     void Scene::OnEvent(Event& event) {
         switch (event.GetEventType()) {
         case EventType::APP_UPDATE:
@@ -88,6 +84,14 @@ namespace Sprocket {
             OnUpdate(((ApplicationUpdateEvent&)event).GetDeltaTime());
             break;
         }
+    }
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////PRIVATE////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+
+    void Scene::RegisterEventCallback(const std::function<void(Event&)> eventCallback) {
+        m_EventCallback = eventCallback;
     }
 
     void Scene::OnActivate() {

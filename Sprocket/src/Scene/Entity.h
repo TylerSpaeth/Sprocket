@@ -18,7 +18,7 @@ namespace Sprocket {
 
         friend class Scene;
 
-    private:
+    private: 
 
         std::function<void(Event&)> m_EventCallback;
 
@@ -34,45 +34,10 @@ namespace Sprocket {
 
         TransformComponent m_Transform;
 
-        // Returns a transform representing the global of this entities parent.. The local values
-        // are all the matter on this component. Global values are invalid.
-        TransformComponent GetParentGlobalTransform();
-
-        /// @brief Handles incoming events. Does not need to be registered as a callback. Should 
-        /// instead be called directly be the Scene when it recieves an event.
-        /// @param event The event the should be handled.
-        void OnEvent(Event& event);
-
-        // Note that these three functions below are called by the scene that they are a part of. 
-        // As part of each of these functions, they will call Start(), Update(), and End() which 
-        // are the public, overridable functions meant for user customization of the entities 
-        // behavior.
-
-        /// @brief This is called when the scene this entity is a part of becomes active or this
-        /// entity is added to an active scene
-        void OnActivate();
-        /// @brief This is called when the scene this entity is a part of is no longer the active 
-        /// scene or this entity is removed from an active scene
-        void OnDeactivate();
-        /// @brief This corresponds to application updates.
-        /// @param deltaTime The time since the last update
-        void OnUpdate(float deltaTime);
-
-        /// @brief Initialize the m_AllowedComponents map with component types and how many more
-        /// of that type can be added to this entity.
-        void InitializeAllowedComponents();
-
-        /// @brief Frees the data in the m_AllowedComponents map
-        void FreeAllowedComponents();
-
     public:
 
         Entity();
         ~Entity();
-
-        virtual void Start() {}
-        virtual void Update(float deltaTime) {}
-        virtual void End() {}
 
         // Only one of each component type is allowed on a single Entity
         template<typename T>
@@ -155,6 +120,45 @@ namespace Sprocket {
             }
             return false;
         }
+
+    protected:
+
+        virtual void Start();
+        virtual void Update(float deltaTime);
+        virtual void End();
+
+    private:
+
+        // Returns a transform representing the global of this entities parent.. The local values
+        // are all the matter on this component. Global values are invalid.
+        TransformComponent GetParentGlobalTransform();
+
+        /// @brief Handles incoming events. Does not need to be registered as a callback. Should 
+        /// instead be called directly be the Scene when it recieves an event.
+        /// @param event The event the should be handled.
+        void OnEvent(Event& event);
+
+        // Note that these three functions below are called by the scene that they are a part of. 
+        // As part of each of these functions, they will call Start(), Update(), and End() which 
+        // are the public, overridable functions meant for user customization of the entities 
+        // behavior.
+
+        /// @brief This is called when the scene this entity is a part of becomes active or this
+        /// entity is added to an active scene
+        void OnActivate();
+        /// @brief This is called when the scene this entity is a part of is no longer the active 
+        /// scene or this entity is removed from an active scene
+        void OnDeactivate();
+        /// @brief This corresponds to application updates.
+        /// @param deltaTime The time since the last update
+        void OnUpdate(float deltaTime);
+
+        /// @brief Initialize the m_AllowedComponents map with component types and how many more
+        /// of that type can be added to this entity.
+        void InitializeAllowedComponents();
+
+        /// @brief Frees the data in the m_AllowedComponents map
+        void FreeAllowedComponents();
 
     };
 

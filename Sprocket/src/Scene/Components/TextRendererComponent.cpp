@@ -2,9 +2,39 @@
 
 #include "Events/RenderEvent.h"
 
-#include "Utils/RendererUtils.hpp"
+#include "Utils/RendererUtils.h"
 
 namespace Sprocket {
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////PUBLIC/////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+
+    bool TextRendererComponent::SetData(const std::string& fontPath, const std::string& text) {
+        if (!m_FontPath.empty() && m_Text.empty()) {
+            return false;
+        }
+        m_FontPath = fontPath;
+        m_Text = text;
+
+        if (m_EventCallback) {
+            RenderNew();
+        }
+
+        return true;
+    }
+
+    std::string TextRendererComponent::GetFontPath() const {
+        return m_FontPath;
+    }
+
+    std::string TextRendererComponent::GetText() const {
+        return m_Text;
+    }
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////PRIVATE////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////////////////////////////
 
     TextRendererComponent::TextRendererComponent() {
         m_EventCallback = nullptr;
@@ -50,20 +80,6 @@ namespace Sprocket {
             m_EventCallback(*e);
             delete e;
         }
-    }
-
-    bool TextRendererComponent::SetData(const std::string& fontPath, const std::string& text) {
-        if (!m_FontPath.empty() && m_Text.empty()) {
-            return false;
-        }
-        m_FontPath = fontPath;
-        m_Text = text;
-
-        if (m_EventCallback) {
-            RenderNew();
-        }
-
-        return true;
     }
 
 }

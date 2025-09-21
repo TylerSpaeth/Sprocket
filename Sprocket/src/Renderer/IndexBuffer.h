@@ -24,7 +24,7 @@ namespace Sprocket {
         void Unbind() const;
         /// @brief Gives the number of indicies in this IndexBuffer.
         /// @return The number of indicies.
-        inline unsigned int GetCount() const { return m_Count; }
+        unsigned int GetCount() const;
     };
 
 }

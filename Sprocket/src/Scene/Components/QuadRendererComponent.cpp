@@ -4,9 +4,38 @@
 
 #include "Events/RenderEvent.h"
 
-#include "Utils/RendererUtils.hpp"
+#include "Utils/RendererUtils.h"
 
 namespace Sprocket {
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////PUBLIC/////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+
+    glm::vec4 QuadRendererComponent::GetQuadColor() const {
+        return m_QuadColor;
+    }
+
+    void QuadRendererComponent::SetQuadColor(glm::vec4 newColor) {
+        m_QuadColor = newColor;
+        RenderUpdateEvent* e = new RenderUpdateEvent(RenderUpdateType::QUAD, m_QuadID);
+        e->m_QuadColor = m_QuadColor;
+        m_EventCallback(*e);
+        delete e;
+    }
+
+    Sprite QuadRendererComponent::GetSprite() const {
+        return m_Sprite;
+    }
+
+    void QuadRendererComponent::SetSprite(const Sprite& sprite) {
+        m_Sprite = sprite;
+        SendTextureEvent();
+    }
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////PRIVATE////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////////////////////////////
 
     QuadRendererComponent::QuadRendererComponent() {
         m_EventCallback = nullptr;
@@ -15,11 +44,6 @@ namespace Sprocket {
         if (m_EventCallback && m_QuadID != -1) {
             RemoveRender();
         }
-    }
-
-    void QuadRendererComponent::RegisterEventCallback(const std::function<void(Event&)> eventCallback) {
-        m_EventCallback = eventCallback;
-        RenderNew();
     }
 
     void QuadRendererComponent::RenderNew() {
@@ -51,14 +75,6 @@ namespace Sprocket {
         delete e;
     }
 
-    void QuadRendererComponent::UpdateQuadColor(glm::vec4 newColor) {
-        m_QuadColor = newColor;
-        RenderUpdateEvent* e = new RenderUpdateEvent(RenderUpdateType::QUAD, m_QuadID);
-        e->m_QuadColor = m_QuadColor;
-        m_EventCallback(*e);
-        delete e;
-    }
-
     void QuadRendererComponent::SendTextureEvent() {
 
         if (m_Sprite.texturePath.empty()) {
@@ -74,8 +90,8 @@ namespace Sprocket {
         delete e;
     }
 
-    void QuadRendererComponent::SetSprite(const Sprite& sprite) {
-        m_Sprite = sprite;
-        SendTextureEvent();
+    void QuadRendererComponent::RegisterEventCallback(const std::function<void(Event&)> eventCallback) {
+        m_EventCallback = eventCallback;
+        RenderNew();
     }
 }
