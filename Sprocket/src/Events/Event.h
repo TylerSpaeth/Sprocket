@@ -16,7 +16,9 @@ namespace Sprocket {
         // PHYSICS
         PHYSICS_NEW, PHYSICS_UPDATE, PHYSICS_DELETE, PHYSICS_COLLISION_CHECK, PHYSICS_COLLISION_CHECK_GENERIC,
         // AUDIO
-        AUDIO_NEW, AUDIO_DELETE, AUDIO_SETTER, AUDIO_GETTER, AUDIO_ACTION
+        AUDIO_NEW, AUDIO_DELETE, AUDIO_SETTER, AUDIO_GETTER, AUDIO_ACTION,
+        // WINDOW
+        WINDOW_RESIZED
     };
 
     // For future use
@@ -28,7 +30,8 @@ namespace Sprocket {
         MOUSE,
         RENDER,
         PHYSICS,
-        AUDIO
+        AUDIO,
+        WINDOW
     };
 
     class Event {
@@ -74,6 +77,8 @@ namespace Sprocket {
             case EventType::AUDIO_GETTER:
             case EventType::AUDIO_ACTION:
                 return eventCategory == EventCategory::AUDIO;
+            case EventType::WINDOW_RESIZED:
+                return eventCategory == EventCategory::WINDOW || eventCategory == EventCategory::APPLICATION;
             }
 
             return false;

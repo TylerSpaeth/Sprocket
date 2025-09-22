@@ -18,6 +18,9 @@ namespace Sprocket {
         void* m_Window; // GLFWwindow
         std::function<void(Event&)> m_EventCallback;
 
+        int m_XDimension = 0;
+        int m_YDimension = 0;
+
     public:
 
         /// @brief Enables or disables vsync on the window. Enabled by default.
@@ -32,6 +35,12 @@ namespace Sprocket {
 
         /// @brief Hides the cursor but does not disable it.
         static void HideCursor();
+
+        /// @brief Locks the aspect ratio to what it is currently set to.
+        static void LockAspectRatio();
+
+        /// @brief Unlocks the aspect ratio of the window.
+        static void UnlockAspectRatio();
 
     private:
 

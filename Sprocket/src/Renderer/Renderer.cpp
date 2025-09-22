@@ -6,6 +6,7 @@
 
 #include "Events/ApplicationEvent.h"
 #include "Events/RenderEvent.h"
+#include "Events/WindowEvent.h"
 
 #include "ThirdParty/glad/glad.h"
 
@@ -70,6 +71,11 @@ namespace Sprocket {
                 m_Fonts.insert_or_assign(newTextEvent.m_FontPath, font);
             }
             ((RenderNewTextEvent&)event).m_QuadID = DrawText(*font, newTextEvent.m_Text);
+            break;
+        }
+        case EventType::WINDOW_RESIZED: {
+            auto resizeEvent = ((WindowResizedEvent&)event);
+            Resize(resizeEvent.GetXDimension(), resizeEvent.GetYDimension());
             break;
         }
         case EventType::APP_START:
@@ -432,6 +438,12 @@ namespace Sprocket {
             m_IndexBuffer = newIB;
         }
 
+    }
+
+    void Renderer::Resize(int xDimension, int yDimension) {
+        m_Shader->Bind();
+        m_Shader->SetUniformMatrix4f("u_ProjectionMatrix", glm::ortho(-(float)xDimension / 2, (float)xDimension / 2, -(float)yDimension / 2, (float)yDimension / 2));
+        m_Shader->Unbind();
     }
 
     ///////////////////////////////////////////////////////////////////////////////////////////////

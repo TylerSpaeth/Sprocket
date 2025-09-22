@@ -2,6 +2,7 @@
 #include "Events/KeyboardEvent.h"
 #include "Events/MouseEvent.h"
 #include "Events/ApplicationEvent.h"
+#include "Events/WindowEvent.h"
 
 #include "ThirdParty/glad/glad.h"
 #include "ThirdParty/GLFW/glfw3.h"
@@ -46,22 +47,23 @@ namespace Sprocket {
         glfwSetInputMode((GLFWwindow*)s_Instance->m_Window, GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
     }
 
+    void Window::LockAspectRatio() {
+        glfwSetWindowAspectRatio((GLFWwindow*)s_Instance->m_Window, s_Instance->m_XDimension, s_Instance->m_YDimension);
+    }
+
+    void Window::UnlockAspectRatio() {
+        glfwSetWindowAspectRatio((GLFWwindow*)s_Instance->m_Window, GLFW_DONT_CARE, GLFW_DONT_CARE);
+    }
+
     ///////////////////////////////////////////////////////////////////////////////////////////////
     ////////////////////////////////////////////PRIVATE////////////////////////////////////////////
     ///////////////////////////////////////////////////////////////////////////////////////////////
 
-    
-    ////////////////////////////////////////////////////////////////////////////////////
-    ////////////////////////////////////////////////////////////////////////////////////
-    ////////////////////////////////////////////////////////////////////////////////////
-
-    ////////////////////////////////////////////////////////////////////////////////////
-    ///////////////////////////////// STATIC FUNCTIONS /////////////////////////////////
-    ////////////////////////////////////////////////////////////////////////////////////
-
     void Window::Init(const unsigned int xDimension, const unsigned int yDimension, const std::string& windowTitle) {
         if (!s_Instance) {
             s_Instance = new Window();
+            s_Instance->m_XDimension = xDimension;
+            s_Instance->m_YDimension = yDimension;
             s_Instance->m_Window = InitGLFWwindow(xDimension, yDimension, windowTitle.c_str());
             glfwSetWindowUserPointer((GLFWwindow*)s_Instance->m_Window, (void*)&s_Instance->m_EventCallback);
             RegisterCallbacks((GLFWwindow*)s_Instance->m_Window);
@@ -71,13 +73,6 @@ namespace Sprocket {
             gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);
         }
     }
-    ////////////////////////////////////////////////////////////////////////////////////
-    ////////////////////////////////////////////////////////////////////////////////////
-    ////////////////////////////////////////////////////////////////////////////////////
-
-    ////////////////////////////////////////////////////////////////////////////////////
-    //////////////////////////////// INSTANCE FUNCTIONS ////////////////////////////////
-    ////////////////////////////////////////////////////////////////////////////////////
 
     void Window::OnEvent(Event& event) {
         EventType type = event.GetEventType();
@@ -121,9 +116,6 @@ namespace Sprocket {
         // Make the window we created the current context on the current thread
         glfwMakeContextCurrent(window);
 
-        // Locks aspect ratio to whatever was set intially
-        glfwSetWindowAspectRatio(window, xDimension, yDimension);
-
         return window;
     }
 
@@ -139,6 +131,12 @@ namespace Sprocket {
     // Set the size of the OpenGL viewport when the window is resized
     static void FramebufferSizeCallback(GLFWwindow* window, int width, int height) {
         glViewport(0, 0, width, height);
+
+        const std::function<void(Event&)> eventCallback = *(const std::function<void(Event&)>*) glfwGetWindowUserPointer(window);
+
+        WindowResizedEvent* e  = new WindowResizedEvent(width, height);
+        eventCallback(*e);
+        delete e;
     }
 
     // This updates the key states in the input object that is stored in the glfw user pointer

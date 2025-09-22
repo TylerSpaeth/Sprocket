@@ -152,6 +152,11 @@ namespace Sprocket {
         /// otherwise makes room.
         void ValidateBuffers();
 
+        /// @brief Resize the Renderer viewport.
+        /// @param xDimension The width to resize to in pixels.
+        /// @param yDimension The height to resize to in pixels.
+        void Resize(int xDimension, int yDimension);
+
     };
 
 }
