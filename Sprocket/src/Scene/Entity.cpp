@@ -34,7 +34,7 @@ namespace Sprocket {
     ////////////////////////////////////////////PRIVATE////////////////////////////////////////////
     ///////////////////////////////////////////////////////////////////////////////////////////////
 
-    TransformComponent Entity::GetParentGlobalTransform() {
+    const TransformComponent Entity::GetParentGlobalTransform() {
         if (!m_Parent) return TransformComponent(nullptr);
 
         TransformComponent ret(nullptr);

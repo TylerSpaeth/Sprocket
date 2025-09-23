@@ -96,20 +96,20 @@ namespace Sprocket {
         /// @brief Checks to see if this PhysicsObject collides with anything.
         /// @param physicsID the id of a PhysicsObject
         /// @return a populated vector if this PhysicsObject collides with anything, false otherwise
-        std::vector<unsigned int> CheckCollidesGeneric(const unsigned int physicsID);
+        const std::vector<unsigned int> CheckCollidesGeneric(const unsigned int physicsID);
 
         /// @brief Adds a new box collider PhysicsObject into the system.
         /// @param colliderCenter - The center of the collider.
         /// @param boxColliderRotation - The z-rotation of the box collider in degrees.
         /// @param boxColliderSize - The size of the box collider.
         /// @returns The index of the new object, that can be used for future modification or removal.
-        unsigned int AddPhysicsObject(const glm::vec2 colliderCenter, const float boxColliderRotation, const glm::vec2 boxColliderSize);
+        const unsigned int AddPhysicsObject(const glm::vec2 colliderCenter, const float boxColliderRotation, const glm::vec2 boxColliderSize);
 
         /// @brief Adds a new circle collider PhysicsObject into the system.
         /// @param colliderCenter - The center of the collider.
         /// @param circleRadius - The radius of the collider.
         /// @returns The index of the new object, that can be used for future modification or removal.
-        unsigned int AddPhysicsObject(const glm::vec2 colliderCenter, const float circleRadius);
+        const unsigned int AddPhysicsObject(const glm::vec2 colliderCenter, const float circleRadius);
 
         /// @brief Updates to box collider at the given physicsID.
         /// @param physicsID - The id to lookup the collider.

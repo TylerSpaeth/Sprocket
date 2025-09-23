@@ -37,7 +37,7 @@ namespace Sprocket {
         RegisterColliderMap();
     }
 
-    bool TileMapComponent::SetQuadRendererData(const char index, const glm::vec4 quadColor) {
+    const bool TileMapComponent::SetQuadRendererData(const char index, const glm::vec4 quadColor) {
         if (index - FIRST_PRINTABLE_ASCII > MAX_UNIQUE_TILES) {
             return false;
         }
@@ -53,7 +53,7 @@ namespace Sprocket {
         return true;
     }
 
-    bool TileMapComponent::SetQuadRendererData(const char index, const Sprite& sprite) {
+    const bool TileMapComponent::SetQuadRendererData(const char index, const Sprite& sprite) {
         if (index - FIRST_PRINTABLE_ASCII > MAX_UNIQUE_TILES) {
             return false;
         }

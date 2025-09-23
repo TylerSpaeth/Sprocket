@@ -361,11 +361,11 @@ namespace Sprocket {
         return false;
     }
 
-    std::vector<unsigned int> PhysicsManager::CheckCollidesGeneric(const unsigned int physicsID) {
+    const std::vector<unsigned int> PhysicsManager::CheckCollidesGeneric(const unsigned int physicsID) {
         return m_CollidesWith.at(physicsID);
     }
 
-    unsigned int PhysicsManager::AddPhysicsObject(const glm::vec2 colliderCenter, const float boxColliderRotation, glm::vec2 boxColliderSize) {
+    const unsigned int PhysicsManager::AddPhysicsObject(const glm::vec2 colliderCenter, const float boxColliderRotation, glm::vec2 boxColliderSize) {
 
         PhysicsObject object(colliderCenter, boxColliderRotation, boxColliderSize);
         object.m_Valid = true;
@@ -396,7 +396,7 @@ namespace Sprocket {
         return freeSlot;
     }
 
-    unsigned int PhysicsManager::AddPhysicsObject(const glm::vec2 colliderCenter, const float circleRadius) {
+    const unsigned int PhysicsManager::AddPhysicsObject(const glm::vec2 colliderCenter, const float circleRadius) {
 
         PhysicsObject object(colliderCenter, circleRadius);
         object.m_Valid = true;

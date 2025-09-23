@@ -28,7 +28,7 @@ namespace Sprocket {
     public:
 
         /// @brief Sets the Animation that should be playing.
-        bool SetAnimation(const Animation& animation);
+        const bool SetAnimation(const Animation& animation);
 
     private:
 

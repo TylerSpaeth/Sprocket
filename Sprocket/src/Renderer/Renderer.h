@@ -77,7 +77,7 @@ namespace Sprocket {
         /// dimensions of the Renderer on initialization. It is reccomended that this is in pixels.
         /// @return An ID corresponding to this quad that allows it to be accessed and modified in 
         /// the future.
-        unsigned int AddQuad(float size);
+        const unsigned int AddQuad(float size);
 
         /// @brief Adds a new quad of the given size at coordinates 0,0 with the given texture
         /// @param width The width of the quad in whatever unit was used to specify the x and y 
@@ -87,12 +87,12 @@ namespace Sprocket {
         /// @param textureID the ID of the texture to display
         /// @return An ID corresponding to this quad that allows it to be accessed and modified in 
         /// the future.
-        unsigned int AddQuad(float width, float height, unsigned int textureID);
+        const unsigned int AddQuad(float width, float height, unsigned int textureID);
 
         /// @brief Removes the quad at the given index. The quad will no longer be rendered.
         /// @param quadIndex The quad to be removed.
         /// @return true if the quad is successfully remove, false otherwise
-        bool RemoveQuad(const unsigned int quadIndex);
+        const bool RemoveQuad(const unsigned int quadIndex);
 
         /// @brief Draws the calculated quads to the screen
         void Draw();
@@ -101,19 +101,19 @@ namespace Sprocket {
         /// @param font An object containing the data for font creation.
         /// @param text The string to render.
         /// @return The ID for the quad the text is rendered on
-        unsigned int DrawText(Font& font, const std::string& text);
+        const unsigned int DrawText(Font& font, const std::string& text);
 
         /// @brief Sets the model matrix of the quad at a given matrix.
         /// @param quadIndex The index of the quad.
         /// @param modelMatrix The new matrix that should be applied to the quad.
         /// @return true if the model matrix is set successfully, false otherwise
-        bool SetQuadModelMatrix(const unsigned int quadIndex, const glm::mat4 modelMatrix);
+        const bool SetQuadModelMatrix(const unsigned int quadIndex, const glm::mat4 modelMatrix);
 
         /// @brief Sets the color of the quad to the given color.
         /// @param quadIndex The index of the quad.
         /// @param color The color that the quad should be changed to in RGBA.
         /// @return true if the quad color is set successfully, false otherwise
-        bool SetQuadColor(const unsigned int quadIndex, const glm::vec4 color);
+        const bool SetQuadColor(const unsigned int quadIndex, const glm::vec4 color);
 
         /// @brief Sets the texture coordinates of the quad. 
         /// @param quadIndex The index of the quad.
@@ -122,13 +122,13 @@ namespace Sprocket {
         /// @param yCoords The y coordinates that correspond to coordinates on this quads texture.
         /// The vector should order the quads starting with the right and going clockwise.
         /// @return true if the texture coords are set successfully, false otherwise
-        bool SetQuadTextureCoords(const unsigned int quadIndex, const glm::vec4 xCoords, const glm::vec4 yCoords);
+        const bool SetQuadTextureCoords(const unsigned int quadIndex, const glm::vec4 xCoords, const glm::vec4 yCoords);
 
         /// @brief Sets the textureID of the quad.
         /// @param quadIndex The index of the quad.
         /// @param textureID The ID of the texture that should be applied to the quad.
         /// @return true if the textureID is set successfully, false otherwise
-        bool SetQuadTextureID(const unsigned int quadIndex, const float textureID);
+        const bool SetQuadTextureID(const unsigned int quadIndex, const float textureID);
 
         /// @brief Sets the view matrix of the renderer to the given matrix.
         /// @param viewMatrix The view matrix that should be applied.
@@ -141,7 +141,7 @@ namespace Sprocket {
         /// @brief Adds a new texture based on the given path.
         /// @param path the file path to the texture
         /// @return the texture slot that the texture has been bound to
-        unsigned int AddTexture(const std::string& path);
+        const unsigned int AddTexture(const std::string& path);
 
         /// @brief Updates the quad at the given index to reflect any any changes to the 
         /// uncalculated quads or modelMatrices. Passes this new data to the GPU

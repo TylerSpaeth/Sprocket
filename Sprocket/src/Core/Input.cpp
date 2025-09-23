@@ -76,27 +76,27 @@ namespace Sprocket {
         }
     }
 
-    bool Input::IsKeyPressed(Keycode key) {
+    const bool Input::IsKeyPressed(Keycode key) {
         return (*s_Instance->m_CurrentKeyStatus.find(key)).second;
     }
 
-    bool Input::IsMouseButtonPressed(MouseButton button) {
+    const bool Input::IsMouseButtonPressed(MouseButton button) {
         return (*s_Instance->m_CurrentButtonStatus.find(button)).second;
     }
 
-    float Input::GetMouseXPosition() {
+    const float Input::GetMouseXPosition() {
         return s_Instance->m_MouseXPosition;
     }
 
-    float Input::GetMouseYPosition() {
+    const float Input::GetMouseYPosition() {
         return s_Instance->m_MouseYPosition;
     }
 
-    float Input::GetMouseXScrollOffset() {
+    const float Input::GetMouseXScrollOffset() {
         return s_Instance->m_MouseXScrollOffset;
     }
 
-    float Input::GetMouseYScrollOffset() {
+    const float Input::GetMouseYScrollOffset() {
         return s_Instance->m_MouseYScrollOffset;
     }
 

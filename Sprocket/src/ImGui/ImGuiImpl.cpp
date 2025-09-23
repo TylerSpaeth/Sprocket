@@ -42,7 +42,7 @@ namespace Sprocket {
         }
     }
 
-    unsigned int ImGuiImpl::SubmitRenderFunction(std::function<void()> renderFunction) {
+    const unsigned int ImGuiImpl::SubmitRenderFunction(std::function<void()> renderFunction) {
         unsigned int id = s_Instance->m_FreeRenderFunctionSlots.top();
         s_Instance->m_FreeRenderFunctionSlots.pop();
         

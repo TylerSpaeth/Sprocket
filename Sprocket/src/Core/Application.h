@@ -80,7 +80,7 @@ namespace Sprocket {
         /// @brief Gets the amount of time that has elapsed since this function was last called in 
         /// microseconds.
         /// @return Time elapsed since last called.
-        int64_t GetTimeSinceLastChecked();
+        const int64_t GetTimeSinceLastChecked();
     };
 
     // Define in the code that is using Sprocket

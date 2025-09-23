@@ -23,15 +23,15 @@ namespace Sprocket {
         return m_LocalScale;
     }
 
-    glm::vec3 TransformComponent::Position() {
+    const glm::vec3 TransformComponent::Position() {
         return m_LocalPosition + m_GlobalTransformCallback().m_LocalPosition;
     }
 
-    glm::vec3 TransformComponent::Rotation() {
+    const glm::vec3 TransformComponent::Rotation() {
         return m_LocalRotation + m_GlobalTransformCallback().m_LocalRotation;
     }
 
-    glm::vec3 TransformComponent::Scale() {
+    const glm::vec3 TransformComponent::Scale() {
         return m_LocalScale * m_GlobalTransformCallback().m_LocalScale;
     }
 

@@ -38,17 +38,17 @@ namespace Sprocket {
         /// @brief Checks if the given key is pressed.
         /// @param key The keycode corresponding to the key that should be checked.
         /// @return true if the key is pressed, otherwise false.
-        static bool IsKeyPressed(Keycode key);
+        static const bool IsKeyPressed(Keycode key);
 
         /// @brief Checks if the given mouse button is pressed.
         /// @param button The mouse button code corresponding to the key that should be checked.
         /// @return true if the button is pressed, otherwise false.
-        static bool IsMouseButtonPressed(MouseButton button);
+        static const bool IsMouseButtonPressed(MouseButton button);
 
-        static float GetMouseXPosition();
-        static float GetMouseYPosition();
-        static float GetMouseXScrollOffset();
-        static float GetMouseYScrollOffset();
+        static const float GetMouseXPosition();
+        static const float GetMouseYPosition();
+        static const float GetMouseXScrollOffset();
+        static const float GetMouseYScrollOffset();
 
     private:
 

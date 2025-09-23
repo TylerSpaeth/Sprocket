@@ -28,9 +28,9 @@ namespace Sprocket {
         /// @param fontPath The path to the font file.
         /// @param m_Text The text to be displayed
         /// @return True if setting data is successful, false otherwise.
-        bool SetData(const std::string& fontPath, const std::string& m_Text);
-        std::string GetFontPath() const;
-        std::string GetText() const;
+        const bool SetData(const std::string& fontPath, const std::string& m_Text);
+        const std::string GetFontPath() const;
+        const std::string GetText() const;
 
     private:
 

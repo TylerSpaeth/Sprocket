@@ -14,8 +14,8 @@ namespace Sprocket {
             this->SetType(EventType::WINDOW_RESIZED);
         }
 
-        int GetXDimension() const { return xDimension; }
-        int GetYDimension() const { return yDimension; }
+        const int GetXDimension() const { return xDimension; }
+        const int GetYDimension() const { return yDimension; }
     };
 
 }

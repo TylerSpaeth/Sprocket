@@ -79,7 +79,7 @@ namespace Sprocket {
     ////////////////////////////////////////////PRIVATE////////////////////////////////////////////
     ///////////////////////////////////////////////////////////////////////////////////////////////
 
-    GLint Shader::GetUniformLocation(const std::string& name) const {
+    const GLint Shader::GetUniformLocation(const std::string& name) const {
         if (m_UniformLocationCache.find(name) != m_UniformLocationCache.end()) {
             return m_UniformLocationCache[name];
         }

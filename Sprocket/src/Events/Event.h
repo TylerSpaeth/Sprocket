@@ -41,9 +41,9 @@ namespace Sprocket {
 
     public:
 
-        EventType GetEventType() const { return m_EventType; }
+        const EventType GetEventType() const { return m_EventType; }
 
-        bool IsCategory(EventCategory eventCategory) {
+        const bool IsCategory(EventCategory eventCategory) {
             if (eventCategory == EventCategory::UNCATEGORIZED) {
                 return true;
             }

@@ -8,7 +8,7 @@ namespace Sprocket {
     ////////////////////////////////////////////PUBLIC/////////////////////////////////////////////
     ///////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool Scene::SubmitEntityToScene(Entity& entity) {
+    const bool Scene::SubmitEntityToScene(Entity& entity) {
 
         // If this entity is already in the scene
         std::vector<Entity*>::const_iterator position = std::find(m_Entities.cbegin(), m_Entities.cend(), &entity);
@@ -25,7 +25,7 @@ namespace Sprocket {
         return true;
     }
 
-    bool Scene::RemoveEntityFromScene(Entity& entity) {
+    const bool Scene::RemoveEntityFromScene(Entity& entity) {
         std::vector<Entity*>::const_iterator position = std::find(m_Entities.cbegin(), m_Entities.cend(), &entity);
         if (position != m_Entities.cend()) {
             m_Entities.erase(position);
@@ -34,7 +34,7 @@ namespace Sprocket {
         return false;
     }
 
-    bool Scene::AssignEntityParent(Entity& child, Entity* parent) {
+    const bool Scene::AssignEntityParent(Entity& child, Entity* parent) {
 
         // Verify the child is in the scene
         std::vector<Entity*>::const_iterator childPosition = std::find(m_Entities.cbegin(), m_Entities.cend(), &child);
@@ -75,7 +75,7 @@ namespace Sprocket {
 
     }
 
-    void Scene::OnEvent(Event& event) {
+    const void Scene::OnEvent(Event& event) {
         switch (event.GetEventType()) {
         case EventType::APP_UPDATE:
             for (Entity* entity : m_Entities) {

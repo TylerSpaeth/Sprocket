@@ -65,12 +65,12 @@ namespace Sprocket {
         /// @brief Sets the color of the QuadRenderer at the given index.
         /// @param index - The index of the QuadRenderer to set the color of.
         /// @param quadColor - The color to set the QuadRenderer to.
-        bool SetQuadRendererData(const char index, const glm::vec4 quadColor);
+        const bool SetQuadRendererData(const char index, const glm::vec4 quadColor);
 
         /// @brief Sets the sprite of the QuadRenderer at the given index.
         /// @param index - The index of the QuadRenderer to set the texture and UV coordinates of.
         /// @param sprite - The sprite to assign to the QuaderRenderer at index.
-        bool SetQuadRendererData(const char index, const Sprite& sprite);
+        const bool SetQuadRendererData(const char index, const Sprite& sprite);
 
     private:
 

@@ -52,11 +52,11 @@ namespace Sprocket {
         glBindTexture(GL_TEXTURE_2D, 0);
     }
 
-    int Texture::GetWidth() const {
+    const int Texture::GetWidth() const {
         return m_Width;
     }
 
-    int Texture::GetHeight() const {
+    const int Texture::GetHeight() const {
         return m_Height;
     }
 

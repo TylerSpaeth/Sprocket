@@ -11,7 +11,7 @@ namespace Sprocket {
         AudioEvent(EventType type, int soundID) : m_SoundID(soundID) {
             this->SetType(type);
         }
-        int GetSoundID() const { return m_SoundID; }
+        const int GetSoundID() const { return m_SoundID; }
     };
 
     class AudioNewEvent : public AudioEvent {
@@ -47,9 +47,9 @@ namespace Sprocket {
         AudioSetterEvent(int soundID, AudioSetterType setterType, bool value) 
             : AudioEvent(EventType::AUDIO_SETTER, soundID), m_SetterType(setterType), m_BoolValue(value) {}
 
-        AudioSetterType GetSetterType() const { return m_SetterType; }
-        float GetFloatValue() const { return m_FloatValue; }
-        bool GetBoolValue() const { return m_BoolValue; }
+        const AudioSetterType GetSetterType() const { return m_SetterType; }
+        const float GetFloatValue() const { return m_FloatValue; }
+        const bool GetBoolValue() const { return m_BoolValue; }
     };
 
     enum class AudioGetterType {
@@ -68,9 +68,9 @@ namespace Sprocket {
         AudioGetterEvent(int soundID, AudioGetterType getterType) 
             : AudioEvent(EventType::AUDIO_GETTER, soundID), m_GetterType(getterType) {}
 
-        AudioGetterType GetGetterType() const { return m_GetterType; }
-        float GetFloatValue() const { return m_FloatValue; }
-        bool GetBoolValue() const { return m_BoolValue; }
+        const AudioGetterType GetGetterType() const { return m_GetterType; }
+        const float GetFloatValue() const { return m_FloatValue; }
+        const bool GetBoolValue() const { return m_BoolValue; }
     };
 
     enum class AudioActionType {
@@ -87,7 +87,7 @@ namespace Sprocket {
         AudioActionEvent(int soundID, AudioActionType actionType) 
             : AudioEvent(EventType::AUDIO_ACTION, soundID), m_ActionType(actionType) {}
 
-        AudioActionType GetActionType() const { return m_ActionType; }
+        const AudioActionType GetActionType() const { return m_ActionType; }
     };
 }
 

@@ -10,7 +10,7 @@ namespace Sprocket {
     ////////////////////////////////////////////PUBLIC/////////////////////////////////////////////
     ///////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool TextRendererComponent::SetData(const std::string& fontPath, const std::string& text) {
+    const bool TextRendererComponent::SetData(const std::string& fontPath, const std::string& text) {
         if (!m_FontPath.empty() && m_Text.empty()) {
             return false;
         }
@@ -24,11 +24,11 @@ namespace Sprocket {
         return true;
     }
 
-    std::string TextRendererComponent::GetFontPath() const {
+    const std::string TextRendererComponent::GetFontPath() const {
         return m_FontPath;
     }
 
-    std::string TextRendererComponent::GetText() const {
+    const std::string TextRendererComponent::GetText() const {
         return m_Text;
     }
 

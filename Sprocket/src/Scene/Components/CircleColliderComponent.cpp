@@ -8,11 +8,11 @@ namespace Sprocket {
     ////////////////////////////////////////////PUBLIC/////////////////////////////////////////////
     ///////////////////////////////////////////////////////////////////////////////////////////////
 
-    float CircleColliderComponent::GetRadius() const {
+    const float CircleColliderComponent::GetRadius() const {
         return m_Radius;
     }
 
-    bool CircleColliderComponent::SetRadius(float radius) {
+    const bool CircleColliderComponent::SetRadius(float radius) {
         if (radius < 0) {
             return false;
         }

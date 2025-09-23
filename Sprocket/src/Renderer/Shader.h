@@ -61,7 +61,7 @@ namespace Sprocket {
 
     private:
 
-        int GetUniformLocation(const std::string& name) const;
+        const int GetUniformLocation(const std::string& name) const;
 
     };
 

@@ -36,11 +36,11 @@ namespace Sprocket {
         /// @brief The local scale of this TransformComponent.
         glm::vec3& LocalScale();
         /// @brief The global position of this TransformComponent.
-        glm::vec3 Position();
+        const glm::vec3 Position();
         /// @brief The global rotation of this TransformComponent.
-        glm::vec3 Rotation();
+        const glm::vec3 Rotation();
         /// @brief The global scale of this TransformComponent.
-        glm::vec3 Scale();
+        const glm::vec3 Scale();
 
     };
 

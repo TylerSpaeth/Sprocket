@@ -30,11 +30,11 @@ namespace Sprocket {
         /// @brief Sets the volume of the sound. Volume is a value between 0.0 and 1.0.
         void SetVolume(float volume);
         /// @brief Gets the volume of the sound. Volume is a value between 0.0 and 1.0.
-        float GetVolume() const;
+        const float GetVolume() const;
         /// @brief Sets whether the sound should loop when it reaches the end.
         void SetLooping(bool loop);
         /// @brief Gets whether the sound is set to loop when it reaches the end.
-        bool IsLooping() const;
+        const bool IsLooping() const;
 
     private:
         /// @brief Creates a sound component, but does not register it with the audio system.

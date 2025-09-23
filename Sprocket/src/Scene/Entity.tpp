@@ -17,7 +17,7 @@ namespace Sprocket {
     // the cpp file.
 
     template<>
-    inline bool Entity::AddComponent<BoxColliderComponent>() {
+    inline const bool Entity::AddComponent<BoxColliderComponent>() {
 
         auto it = m_AllowedComponents.find(typeid(BoxColliderComponent));
         if (*it->second == 0) {
@@ -40,7 +40,7 @@ namespace Sprocket {
     }
 
     template<>
-    inline bool Entity::AddComponent<CircleColliderComponent>() {
+    inline const bool Entity::AddComponent<CircleColliderComponent>() {
 
         auto it = m_AllowedComponents.find(typeid(CircleColliderComponent));
         if (*it->second == 0) {

@@ -33,7 +33,7 @@ namespace Sprocket {
     }
 
     // TODO this should be redone to account for ovals
-    bool Collision::Collides(glm::vec2 circleCenter1, float circleRadius1, glm::vec2 circleCenter2, float circleRadius2) {
+    const bool Collision::Collides(glm::vec2 circleCenter1, float circleRadius1, glm::vec2 circleCenter2, float circleRadius2) {
 
         float xOffset = circleCenter1.x - circleCenter2.x;
         float yOffset = circleCenter1.y - circleCenter2.y;
@@ -43,7 +43,7 @@ namespace Sprocket {
         return false;
     }
 
-    bool Collision::Collides(std::array<glm::vec2, 4> boxVerts1, std::array<glm::vec2, 4> boxVerts2) {
+    const bool Collision::Collides(std::array<glm::vec2, 4> boxVerts1, std::array<glm::vec2, 4> boxVerts2) {
 
         auto normals1 = CalculateNormals(boxVerts1);
         auto normals2 = CalculateNormals(boxVerts2);
@@ -72,7 +72,7 @@ namespace Sprocket {
         return true;
     }
 
-    bool Collision::Collides(std::array<glm::vec2, 4> boxVerts, glm::vec2 boxPosition, float boxRotation, glm::vec2 circleCenter, float circleRadius) {
+    const bool Collision::Collides(std::array<glm::vec2, 4> boxVerts, glm::vec2 boxPosition, float boxRotation, glm::vec2 circleCenter, float circleRadius) {
 
         // Iterate through the verts
         for (int i = 0; i < 4; i++) {

@@ -160,7 +160,7 @@ namespace Sprocket {
         delete this;
     }
 
-    unsigned int Renderer::AddQuad(float size) {
+    const unsigned int Renderer::AddQuad(float size) {
 
         if (size <= 0) {
             Global::fileLogger.Error("A quad must have a positive, nonzero size.");
@@ -192,7 +192,7 @@ namespace Sprocket {
 
         return -1; // Some kind of error occured if this is reached
     }
-    unsigned int Renderer::AddQuad(float width, float height, unsigned int textureID) {
+    const unsigned int Renderer::AddQuad(float width, float height, unsigned int textureID) {
 
         if (width <= 0 || height <= 0) {
             Global::fileLogger.Error("A quad must have a positive, nonzero size.");
@@ -232,7 +232,7 @@ namespace Sprocket {
     // returned. This can probably be solved quickly by checking an index against the indexes of 
     // deleted quads before performing any operations.
 
-    bool Renderer::RemoveQuad(const unsigned int quadIndex) {
+    const bool Renderer::RemoveQuad(const unsigned int quadIndex) {
         try {
             m_Quads.at(quadIndex) = ClearedQuad;
             m_CalculatedQuads.at(quadIndex) = ClearedQuad;
@@ -265,7 +265,7 @@ namespace Sprocket {
         m_Shader->Unbind();
     }
 
-    unsigned int Renderer::DrawText(Font& font, const std::string& text) {
+    const unsigned int Renderer::DrawText(Font& font, const std::string& text) {
         unsigned int width, height;
         auto buffer = font.GetTextureBufferForText(text.c_str(), width, height);
         Texture* tex = new Texture(buffer.data(), width, height, 4);
@@ -280,7 +280,7 @@ namespace Sprocket {
 
     // Set the model matrix for the corresponding index, should have scale, rotation,
     // and transform already applied
-    bool Renderer::SetQuadModelMatrix(const unsigned int quadIndex, const glm::mat4 modelMatrix) {
+    const bool Renderer::SetQuadModelMatrix(const unsigned int quadIndex, const glm::mat4 modelMatrix) {
         try {
 
             glm::mat4 scaledModelMatrix = modelMatrix;
@@ -299,7 +299,7 @@ namespace Sprocket {
     }
 
     // Sets the color of the quad at the given index to the given color
-    bool Renderer::SetQuadColor(const unsigned int quadIndex, const glm::vec4 color) {
+    const bool Renderer::SetQuadColor(const unsigned int quadIndex, const glm::vec4 color) {
         try {
             auto quad = m_Quads.at(quadIndex);
             for (int i = 0; i < 4; i++) {
@@ -315,7 +315,7 @@ namespace Sprocket {
     }
 
     // The coords should start in the top right corner and go clockwise
-    bool Renderer::SetQuadTextureCoords(const unsigned int quadIndex, const glm::vec4 xCoords, const glm::vec4 yCoords) {
+    const bool Renderer::SetQuadTextureCoords(const unsigned int quadIndex, const glm::vec4 xCoords, const glm::vec4 yCoords) {
         try {
             for (int i = 0; i < 4; i++) {
                 m_Quads.at(quadIndex).at(i).TextureCoords = glm::vec2(xCoords[i], yCoords[i]);
@@ -328,7 +328,7 @@ namespace Sprocket {
         return true;
     }
 
-    bool Renderer::SetQuadTextureID(const unsigned int quadIndex, const float textureID) {
+    const bool Renderer::SetQuadTextureID(const unsigned int quadIndex, const float textureID) {
         try {
             for (int i = 0; i < 4; i++) {
                 m_Quads.at(quadIndex).at(i).TextureID = textureID;
@@ -366,7 +366,7 @@ namespace Sprocket {
         m_Shader->Unbind();
     }
 
-    unsigned int Renderer::AddTexture(const std::string& path) {
+    const unsigned int Renderer::AddTexture(const std::string& path) {
 
         for (Texture* t : m_BoundTextures) {
             if (path.compare(t->m_FilePath) == 0) {

@@ -12,7 +12,7 @@ namespace Sprocket {
         return m_PhysicsID;
     }
 
-    bool ColliderComponent::CollidesWith(ColliderComponent& colliderComponent) {
+    const bool ColliderComponent::CollidesWith(ColliderComponent& colliderComponent) {
 
         bool result = false;
 
@@ -32,7 +32,7 @@ namespace Sprocket {
 
     }
 
-    bool ColliderComponent::CollidesWithAnything() {
+    const bool ColliderComponent::CollidesWithAnything() {
 
         bool result = false;
 

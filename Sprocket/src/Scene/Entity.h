@@ -41,7 +41,7 @@ namespace Sprocket {
 
         // Only one of each component type is allowed on a single Entity
         template<typename T>
-        bool AddComponent() {
+        const bool AddComponent() {
 
             // Check if this component is allowed to have more of its type added
             std::type_index type = typeid(T);
@@ -95,7 +95,7 @@ namespace Sprocket {
         }
 
         template<typename T>
-        bool RemoveComponent() {
+        const bool RemoveComponent() {
 
             // Verify that this is a valid component type
             std::type_index type = typeid(T);
@@ -131,7 +131,7 @@ namespace Sprocket {
 
         // Returns a transform representing the global of this entities parent.. The local values
         // are all the matter on this component. Global values are invalid.
-        TransformComponent GetParentGlobalTransform();
+        const TransformComponent GetParentGlobalTransform();
 
         /// @brief Handles incoming events. Does not need to be registered as a callback. Should 
         /// instead be called directly be the Scene when it recieves an event.

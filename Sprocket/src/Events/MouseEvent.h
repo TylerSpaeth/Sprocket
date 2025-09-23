@@ -37,8 +37,8 @@ namespace Sprocket {
         MouseMovedEvent(const double xPos, const double yPos) : m_XPos(xPos), m_YPos(yPos) {
             this->SetType(EventType::MOUSE_MOVED);
         }
-        double GetXPosition() const { return m_XPos; }
-        double GetYPosition() const { return m_YPos; }
+        const double GetXPosition() const { return m_XPos; }
+        const double GetYPosition() const { return m_YPos; }
     };
 
     class MouseScrolledEvent : public Event {
@@ -49,8 +49,8 @@ namespace Sprocket {
         MouseScrolledEvent(const double xOffset, const double yOffset) : m_XOffset(xOffset), m_YOffset(yOffset) {
             this->SetType(EventType::MOUSE_SCROLLED);
         }
-        double GetXOffset() const { return m_XOffset; }
-        double GetYOffset() const { return m_YOffset; }
+        const double GetXOffset() const { return m_XOffset; }
+        const double GetYOffset() const { return m_YOffset; }
     };
 
 }

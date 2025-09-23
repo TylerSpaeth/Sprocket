@@ -25,11 +25,11 @@ namespace Sprocket {
         /// @brief Checks if there is a collision between this and the given collider.
         /// @param collider - The other collider to check for collisions against.
         /// @returns True if they collide, false otherwise
-        bool CollidesWith(ColliderComponent& collider);
+        const bool CollidesWith(ColliderComponent& collider);
 
         /// @brief Checks if this collider collides with any other colliders.
         /// @returns True if there are any collisions, false otherwise
-        bool CollidesWithAnything();
+        const bool CollidesWithAnything();
 
     protected:
         ColliderComponent(TransformComponent& transformComponent);
@@ -53,8 +53,8 @@ namespace Sprocket {
         glm::vec2 m_Size = { 1,1 };
 
     public:
-        glm::vec2 GetSize() const;
-        bool SetSize(const glm::vec2 size);
+        const glm::vec2 GetSize() const;
+        const bool SetSize(const glm::vec2 size);
 
     private:
         BoxColliderComponent(TransformComponent& transformComponent);
@@ -69,8 +69,8 @@ namespace Sprocket {
         float m_Radius = 1;
 
     public:
-        float GetRadius() const;
-        bool SetRadius(float radius);
+        const float GetRadius() const;
+        const bool SetRadius(float radius);
 
     private:
         CircleColliderComponent(TransformComponent& transformComponent);

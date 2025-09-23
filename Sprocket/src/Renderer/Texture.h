@@ -36,8 +36,8 @@ namespace Sprocket {
         /// @brief Unbinds this texture.
         void Unbind() const;
 
-        int GetWidth() const;
-        int GetHeight() const;
+        const int GetWidth() const;
+        const int GetHeight() const;
 
     private:
 

@@ -42,12 +42,12 @@ namespace Sprocket {
         /// @param index the index that the scene should be stored at
         /// @param scene a pointer to a scene that should be stored 
         /// @returns true if adding is successful, false otherwise
-        static bool AddScene(const int index, const Scene* scene);
+        static const bool AddScene(const int index, const Scene* scene);
 
         /// @brief Removes the scene at the given index.
         /// @param index the index of the scene that should be removed
         /// @return true if removal succeeds, false otherwise
-        static bool RemoveScene(const int index);
+        static const bool RemoveScene(const int index);
 
         /// @brief Gets the scene at the given index.
         /// @param index the index of the scene that should be retrieved
@@ -57,7 +57,7 @@ namespace Sprocket {
         /// @brief Sets the active scene to that of the given index.
         /// @param index the index of the scene that should be made active.
         /// @return true if setting the active scene is successful, false otherwise
-        static bool SetActiveScene(const int index);
+        static const bool SetActiveScene(const int index);
 
         /// @brief Gets the active scene.
         /// @return a pointer to the active scene, nullptr if it does not exist
@@ -65,7 +65,15 @@ namespace Sprocket {
 
         /// @brief Gets the index of the active scene.
         /// @return the index of the active scene.
-        static int GetActiveSceneIndex();
+        static const int GetActiveSceneIndex();
+
+        /// @brief Gets the indicies of all the Scenes that are registered in the SceneManager.
+        /// @return A list of scene indicies.
+        static const std::vector<int> GetAllSceneIndicies();
+
+        /// @brief Gets all of the Scenes that are registered in the SceneManager
+        /// @return Pointers to all of the Scenes.
+        static const std::vector<const Scene*> GetAllScenes();
 
     private:
 

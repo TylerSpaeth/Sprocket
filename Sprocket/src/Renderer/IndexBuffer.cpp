@@ -26,7 +26,7 @@ namespace Sprocket {
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
     }
 
-    unsigned int IndexBuffer::GetCount() const {
+    const unsigned int IndexBuffer::GetCount() const {
         return m_Count;
     }
 

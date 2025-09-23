@@ -18,7 +18,7 @@ namespace Sprocket {
             this->SetType(EventType::RENDER_NEW);
         }
 
-        int GetQuadID() const { return m_QuadID; }
+        const int GetQuadID() const { return m_QuadID; }
     };
 
     enum class RenderUpdateType {
@@ -51,9 +51,9 @@ namespace Sprocket {
             this->SetType(EventType::RENDER_UPDATE);
         }
 
-        RenderUpdateType GetType() const { return m_Type; }
+        const RenderUpdateType GetType() const { return m_Type; }
 
-        int GetQuadID() const { return m_QuadID; }
+        const int GetQuadID() const { return m_QuadID; }
     };
 
     class RenderDeleteEvent : public Event {
@@ -65,7 +65,7 @@ namespace Sprocket {
             this->SetType(EventType::RENDER_DELETE);
         }
 
-        int GetQuadID() const { return m_QuadID; }
+        const int GetQuadID() const { return m_QuadID; }
     };
 
     class RenderNewTextEvent : public Event {
@@ -79,7 +79,7 @@ namespace Sprocket {
             this->SetType(EventType::RENDER_NEW_TEXT);
         }
 
-        int GetQuadID() const { return m_QuadID; }
+        const int GetQuadID() const { return m_QuadID; }
     };
 
 }

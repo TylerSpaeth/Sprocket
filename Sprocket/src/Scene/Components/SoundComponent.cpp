@@ -52,7 +52,7 @@ namespace Sprocket {
         delete event;
     }
 
-    float SoundComponent::GetVolume() const {
+    const float SoundComponent::GetVolume() const {
         AudioGetterEvent* event = new AudioGetterEvent(m_SoundID, AudioGetterType::VOLUME);
         m_EventCallback(*event);
         float volume = event->GetFloatValue();
@@ -66,7 +66,7 @@ namespace Sprocket {
         delete event;
     }
 
-    bool SoundComponent::IsLooping() const {
+    const bool SoundComponent::IsLooping() const {
         AudioGetterEvent* event = new AudioGetterEvent(m_SoundID, AudioGetterType::LOOPING);
         m_EventCallback(*event);
         bool isLooping = event->GetBoolValue();

@@ -31,7 +31,7 @@ namespace Sprocket {
         }
     }
 
-    bool SceneManager::AddScene(const int index, const Scene* scene) {
+    const bool SceneManager::AddScene(const int index, const Scene* scene) {
         if (s_Instance->m_Scenes.find(index) != s_Instance->m_Scenes.cend()) {
             return false;
         }
@@ -39,7 +39,7 @@ namespace Sprocket {
         return true;
     }
 
-    bool SceneManager::RemoveScene(const int index) {
+    const bool SceneManager::RemoveScene(const int index) {
         if (s_Instance->m_Scenes.find(index) == s_Instance->m_Scenes.cend()) {
             return false;
         }
@@ -57,7 +57,7 @@ namespace Sprocket {
         return (Scene*)s_Instance->m_Scenes.at(index);
     }
 
-    bool SceneManager::SetActiveScene(const int index) {
+    const bool SceneManager::SetActiveScene(const int index) {
         if (s_Instance->m_Scenes.find(index) == s_Instance->m_Scenes.cend()) {
             return false;
         }
@@ -76,8 +76,24 @@ namespace Sprocket {
         return (Scene*)s_Instance->m_Scenes.at(s_Instance->m_ActiveSceneIndex);
     }
 
-    int SceneManager::GetActiveSceneIndex() {
+    const int SceneManager::GetActiveSceneIndex() {
         return s_Instance->m_ActiveSceneIndex;
+    }
+
+    const std::vector<int> SceneManager::GetAllSceneIndicies() {
+        std::vector<int> keys;
+        for (const auto& pair : s_Instance->m_Scenes) {
+            keys.push_back(pair.first);
+        }
+        return keys;
+    }
+
+    const std::vector<const Scene*> SceneManager::GetAllScenes() {
+        std::vector<const Scene*> scenes;
+        for (const auto& pair : s_Instance->m_Scenes) {
+            scenes.push_back(pair.second);
+        }
+        return scenes;
     }
 
     ///////////////////////////////////////////////////////////////////////////////////////////////

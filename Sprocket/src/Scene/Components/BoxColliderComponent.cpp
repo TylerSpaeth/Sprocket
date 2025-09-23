@@ -8,11 +8,11 @@ namespace Sprocket {
     ////////////////////////////////////////////PUBLIC/////////////////////////////////////////////
     ///////////////////////////////////////////////////////////////////////////////////////////////
 
-    glm::vec2 BoxColliderComponent::GetSize() const {
+    const glm::vec2 BoxColliderComponent::GetSize() const {
         return m_Size;
     }
 
-    bool BoxColliderComponent::SetSize(const glm::vec2 size) {
+    const bool BoxColliderComponent::SetSize(const glm::vec2 size) {
 
         if (size.x < 0 || size.y < 0) {
             return false;
