@@ -74,6 +74,7 @@ namespace Sprocket {
             }
             else if (AnimationComponent* animation = dynamic_cast<AnimationComponent*>(component)) {
                 animation->RegisterEventCallback(m_EventCallback);
+                animation->m_QuadRenderer->UpdateModelMatrix(m_Transform.Position(), m_Transform.Rotation(), m_Transform.Scale());
             }
             if (TextRendererComponent* tr = dynamic_cast<TextRendererComponent*>(component)) {
                 tr->RegisterEventCallback(m_EventCallback);
@@ -111,6 +112,7 @@ namespace Sprocket {
                 animation->m_QuadRenderer->RemoveRender();
                 animation->m_EventCallback = nullptr;
                 animation->m_QuadRenderer->m_EventCallback = nullptr;
+                animation->m_ElapsedTime = 0;
             }
             if (TextRendererComponent* tr = dynamic_cast<TextRendererComponent*>(component)) {
                 tr->RemoveRender();
