@@ -73,6 +73,7 @@ namespace Sprocket {
         RenderDeleteEvent* e = new RenderDeleteEvent(m_QuadID);
         m_EventCallback(*e);
         delete e;
+        m_QuadID = -1;
     }
 
     void QuadRendererComponent::SendTextureEvent() {
