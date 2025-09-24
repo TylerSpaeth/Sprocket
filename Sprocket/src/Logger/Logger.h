@@ -14,16 +14,26 @@ namespace Sprocket {
 
     private:
 
+        static inline const std::string INFO_COLOR = "\033[37m";
+        static inline const std::string WARNING_COLOR = "\033[33m";
+        static inline const std::string ERROR_COLOR = "\033[31m";
+        static inline const std::string DEBUG_COLOR = "\033[36m";
+
         static inline const std::string INFO = "   Info";
         static inline const std::string WARNING = "Warning";
         static inline const std::string ERROR = "  Error";
         static inline const std::string DEBUG = "  Debug";
 
+        bool m_UseANSIColors;
+
         FILE* m_LogFile;
 
     public:
 
-        Logger() : m_LogFile(stdout) {} // Default to stdout
+        /// @brief Create a logger that logs to stdout.
+        /// @param useANSIColors Whether or not ansi escape characters should be used to color the 
+        /// log messages from this logger. The is enabled by default.
+        Logger(bool useANSIColors = true);
 
         /// @brief A logger that logs to the given filepath. Note that in debug builds this will 
         /// also duplicate all logs to stdout.
@@ -53,7 +63,7 @@ namespace Sprocket {
         /// @brief Writes a message with the with a log type and timestamp to the logfile.
         /// @param logTypeString - Represents the type of log this is.
         /// @param message - The actual message of the log
-        void WriteLog(const std::string& logTypeString, const std::string& message);
+        void WriteLog(const std::string& color, const std::string& logTypeString, const std::string& message);
     };
 }
 
