@@ -105,6 +105,7 @@ namespace Sprocket {
     void Scene::OnDeactivate() {
         for (Entity* entity : m_Entities) {
             entity->OnDeactivate();
+            entity->m_EventCallback = nullptr;
         }
     }
 
