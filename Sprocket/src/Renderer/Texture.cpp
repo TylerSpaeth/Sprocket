@@ -39,17 +39,8 @@ namespace Sprocket {
     }
 
     Texture::~Texture() {
+        glMakeTextureHandleNonResidentARB(m_Handle);
         glDeleteTextures(1, &m_TextureID);
-    }
-
-    void Texture::Bind(unsigned int slot) const {
-        m_Slot = slot;
-        glActiveTexture(GL_TEXTURE0 + slot);
-        glBindTexture(GL_TEXTURE_2D, m_TextureID);
-    }
-
-    void Texture::Unbind() const {
-        glBindTexture(GL_TEXTURE_2D, 0);
     }
 
     const int Texture::GetWidth() const {
@@ -60,14 +51,16 @@ namespace Sprocket {
         return m_Height;
     }
 
+    const unsigned long long Texture::GetHandle() const {
+        return m_Handle;
+    }
+
     ///////////////////////////////////////////////////////////////////////////////////////////////
     ////////////////////////////////////////////PRIVATE////////////////////////////////////////////
     ///////////////////////////////////////////////////////////////////////////////////////////////
 
     void Texture::CreateTexture() {
         glGenTextures(1, &m_TextureID);
-        // FIXME for some reason this needs to be called in order to be able to render multiple textures at the same time. This should be done a different way because there is no guarentee that the textureID and slot will always be the same
-        glActiveTexture(GL_TEXTURE0 + m_TextureID);
         glBindTexture(GL_TEXTURE_2D, m_TextureID);
 
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
@@ -76,6 +69,10 @@ namespace Sprocket {
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 
         glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, m_Width, m_Height, 0, GL_RGBA, GL_UNSIGNED_BYTE, m_LocalBuffer);
+
+        // Get bindless handle
+        m_Handle = glGetTextureHandleARB(m_TextureID);
+        glMakeTextureHandleResidentARB(m_Handle);
 
         glBindTexture(GL_TEXTURE_2D, 0);
     }

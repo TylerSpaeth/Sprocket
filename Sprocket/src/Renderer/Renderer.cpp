@@ -19,8 +19,8 @@ namespace Sprocket {
     Vertex ClearedVertex = { {0,0,0},{0,0,0,0},{0,0},0 };
     std::array<Vertex, 4> ClearedQuad = { ClearedVertex, ClearedVertex, ClearedVertex, ClearedVertex };
     static IndexBuffer* GenerateIndexBuffer(unsigned int count);
-    static std::array<Vertex, 4> CreateQuad(float size, float textureID);
-    static std::array<Vertex, 4> CreateQuad(float width, float height, float textureID);
+    static std::array<Vertex, 4> CreateQuad(float size, GLuint64 textureID);
+    static std::array<Vertex, 4> CreateQuad(float width, float height, GLuint64 textureID);
     static bool IsQuadEmpty(std::array<Vertex, 4> quad);
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
@@ -48,12 +48,11 @@ namespace Sprocket {
                 SetQuadModelMatrix(((RenderUpdateEvent&)event).m_QuadID, ((RenderUpdateEvent&)event).m_Matrix);
                 break;
             case RenderUpdateType::QUAD:
-                unsigned int slot = 0;
+                GLuint64 slot = 0;
                 if (((RenderUpdateEvent&)event).m_TexturePath != "") {
                     slot = AddTexture(((RenderUpdateEvent&)event).m_TexturePath);
                 }
                 SetQuadTextureID(((RenderUpdateEvent&)event).m_QuadID, slot);
-                UpdateTextureUniform(m_BoundTextures.size());
                 SetQuadColor(((RenderUpdateEvent&)event).m_QuadID, ((RenderUpdateEvent&)event).m_QuadColor);
                 SetQuadTextureCoords(((RenderUpdateEvent&)event).m_QuadID, ((RenderUpdateEvent&)event).m_TexXCoords, ((RenderUpdateEvent&)event).m_TexYCoords);
                 break;
@@ -104,29 +103,23 @@ namespace Sprocket {
         m_IndexBuffer = GenerateIndexBuffer(60);
         m_VertexArray = new VertexArray();
 
-        // Check to see how many texture slots the system has
-        int systemMaxTextures;
-        glGetIntegerv(GL_MAX_TEXTURE_IMAGE_UNITS, &systemMaxTextures);
-        // Use the appropriate fragment shader for the number of texture slots the system has
-        // TODO add more options
-        if (systemMaxTextures < 32) {
-            m_Shader = new Shader("shaders/Default.vert", "shaders/Default.frag");
-        }
-        else {
-            m_Shader = new Shader("shaders/Default.vert", "shaders/Default32.frag");
-        }
+        m_Shader = new Shader("shaders/Default.vert", "shaders/Default.frag");
 
         // Define the layout of the vertex buffer
         m_VertexArray->Bind();
         m_VertexBuffer->Bind();
         glEnableVertexAttribArray(0);
-        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 10 * sizeof(float), (void*)0);
+        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE,
+            sizeof(Vertex), (void*)offsetof(Vertex, Position));
         glEnableVertexAttribArray(1);
-        glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, 10 * sizeof(float), (void*)(3 * sizeof(float)));
+        glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE,
+            sizeof(Vertex), (void*)offsetof(Vertex, Color));
         glEnableVertexAttribArray(2);
-        glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 10 * sizeof(float), (void*)(7 * sizeof(float)));
+        glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE,
+            sizeof(Vertex), (void*)offsetof(Vertex, TextureCoords));
         glEnableVertexAttribArray(3);
-        glVertexAttribPointer(3, 1, GL_FLOAT, GL_FALSE, 10 * sizeof(float), (void*)(9 * sizeof(float)));
+        glVertexAttribLPointer(3, 1, GL_UNSIGNED_INT64_ARB,
+            sizeof(Vertex), (void*)offsetof(Vertex, TextureID));
         m_VertexBuffer->Unbind();
         m_VertexArray->Unbind();
 
@@ -192,7 +185,7 @@ namespace Sprocket {
 
         return -1; // Some kind of error occured if this is reached
     }
-    const unsigned int Renderer::AddQuad(float width, float height, unsigned int textureID) {
+    const unsigned int Renderer::AddQuad(float width, float height, unsigned long long textureID) {
 
         if (width <= 0 || height <= 0) {
             Global::fileLogger.Error("A quad must have a positive, nonzero size.");
@@ -270,9 +263,7 @@ namespace Sprocket {
         auto buffer = font.GetTextureBufferForText(text.c_str(), width, height);
         Texture* tex = new Texture(buffer.data(), width, height, 4);
         m_BoundTextures.push_back(tex);
-        tex->Bind(m_BoundTextures.size());
-        UpdateTextureUniform(m_BoundTextures.size());
-        auto quadID = AddQuad(width, height, m_BoundTextures.size());
+        auto quadID = AddQuad(width, height, tex->GetHandle());
         SetQuadTextureCoords(quadID, { 1,1,0,0 }, { 0,1,1,0 });
 
         return quadID;
@@ -328,7 +319,7 @@ namespace Sprocket {
         return true;
     }
 
-    const bool Renderer::SetQuadTextureID(const unsigned int quadIndex, const float textureID) {
+    const bool Renderer::SetQuadTextureID(const unsigned int quadIndex, const unsigned long long textureID) {
         try {
             for (int i = 0; i < 4; i++) {
                 m_Quads.at(quadIndex).at(i).TextureID = textureID;
@@ -353,31 +344,17 @@ namespace Sprocket {
         m_ViewMatrix = glm::lookAt(position, target, up);
     }
 
-    // This updates the texture uniform to have IDs for all the textures
-    // that need to be rendered, asssuming that they start at slot 1 and are
-    // in sequencial order
-    void Renderer::UpdateTextureUniform(unsigned int uniqueTextures) {
-        m_Shader->Bind();
-        std::vector<int> textureIDs(uniqueTextures);
-        for (int i = 1; i <= uniqueTextures; i++) {
-            textureIDs[i - 1] = i;
-        }
-        m_Shader->SetUniform1iv("u_Texture", uniqueTextures, textureIDs.data());
-        m_Shader->Unbind();
-    }
-
-    const unsigned int Renderer::AddTexture(const std::string& path) {
+    const unsigned long long Renderer::AddTexture(const std::string& path) {
 
         for (Texture* t : m_BoundTextures) {
             if (path.compare(t->m_FilePath) == 0) {
-                return t->m_Slot;
+                return t->m_Handle;
             }
         }
 
         Texture* texture = new Texture(path);
         m_BoundTextures.push_back(texture);
-        texture->Bind(m_BoundTextures.size());
-        return m_BoundTextures.size();
+        return texture->GetHandle();
     }
 
     void Renderer::UpdateCalculatedQuads(const unsigned int index) {
@@ -421,13 +398,17 @@ namespace Sprocket {
             m_VertexArray->Bind();
             newVB->Bind();
             glEnableVertexAttribArray(0);
-            glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 10 * sizeof(float), (void*)0);
+            glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE,
+                sizeof(Vertex), (void*)offsetof(Vertex, Position));
             glEnableVertexAttribArray(1);
-            glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, 10 * sizeof(float), (void*)(3 * sizeof(float)));
+            glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE,
+                sizeof(Vertex), (void*)offsetof(Vertex, Color));
             glEnableVertexAttribArray(2);
-            glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 10 * sizeof(float), (void*)(7 * sizeof(float)));
+            glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE,
+                sizeof(Vertex), (void*)offsetof(Vertex, TextureCoords));
             glEnableVertexAttribArray(3);
-            glVertexAttribPointer(3, 1, GL_FLOAT, GL_FALSE, 10 * sizeof(float), (void*)(9 * sizeof(float)));
+            glVertexAttribLPointer(3, 1, GL_UNSIGNED_INT64_ARB,
+                sizeof(Vertex), (void*)offsetof(Vertex, TextureID));
             newVB->Unbind();
             m_VertexArray->Unbind();
 
@@ -474,7 +455,7 @@ namespace Sprocket {
         return ib;
     }
 
-    static std::array<Vertex, 4> CreateQuad(float size, float textureID) {
+    static std::array<Vertex, 4> CreateQuad(float size, GLuint64 textureID) {
 
         // Top Right
         Vertex v0;
@@ -507,7 +488,7 @@ namespace Sprocket {
         return { v0, v1, v2, v3 };
     }
 
-    static std::array<Vertex, 4> CreateQuad(float width, float height, float textureID) {
+    static std::array<Vertex, 4> CreateQuad(float width, float height, GLuint64 textureID) {
 
         // Top Right
         Vertex v0;
