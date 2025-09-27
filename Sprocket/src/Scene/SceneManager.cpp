@@ -43,10 +43,8 @@ namespace Sprocket {
         if (s_Instance->m_Scenes.find(index) == s_Instance->m_Scenes.cend()) {
             return false;
         }
-        if (s_Instance->m_ActiveSceneIndex == index) {
-            return false;
-        }
-        s_Instance->m_Scenes.erase(index);
+        s_Instance->m_ScenesToRemove.insert(index);
+        s_Instance->m_RemoveScene = true;
         return true;
     }
 
@@ -101,6 +99,7 @@ namespace Sprocket {
     ///////////////////////////////////////////////////////////////////////////////////////////////
 
     void SceneManager::OnUpdate(Event& event) {
+
         if (s_Instance->m_ChangeScene) {
             // Remove the old scene
             GetActiveScene()->OnDeactivate();
@@ -115,6 +114,16 @@ namespace Sprocket {
         }
         else {
             GetActiveScene()->OnEvent(event);
+        }
+
+        if (s_Instance->m_RemoveScene) {
+            s_Instance->m_RemoveScene = false;
+            for (const auto& scene : s_Instance->m_ScenesToRemove) {
+                if (s_Instance->m_ActiveSceneIndex != scene) {
+                    s_Instance->m_Scenes.erase(scene);
+                }
+            }
+            s_Instance->m_ScenesToRemove.clear();
         }
 
     }

@@ -80,13 +80,22 @@ public:
             storage.push_back(std::to_string(scene));
             scenesAsStrings.push_back(storage.at(storage.size()-1).c_str());
         }
-        int selectedIndex = Sprocket::SceneManager::GetActiveSceneIndex();
+
+        int selectedIndex = 0;
+        int activeScene = Sprocket::SceneManager::GetActiveSceneIndex();
+        for (int i = 0; i < scenes.size(); i++) {
+            if (activeScene == scenes.at(i)) {
+                selectedIndex = i;
+                break;
+            }
+        }
+
         ImGui::Begin("Scene Selector");
         if (ImGui::BeginCombo("Selected Scene", scenesAsStrings[selectedIndex])) {
             for (int i = 0; i < scenesAsStrings.size(); i++) {
                 const bool isSelected = selectedIndex == i;
                 if (ImGui::Selectable(scenesAsStrings[i], isSelected)) {
-                    Sprocket::SceneManager::SetActiveScene(i);
+                    Sprocket::SceneManager::SetActiveScene(std::stoi(scenesAsStrings[i]));
                 }
                 if (isSelected) {
                     ImGui::SetItemDefaultFocus();

@@ -17,6 +17,9 @@ namespace Sprocket {
 
     private:
 
+        bool m_RemoveScene = false;
+        std::set<unsigned int> m_ScenesToRemove;
+
         bool m_ChangeScene = false;
         int m_NewActiveScene = 0;
 
@@ -44,7 +47,8 @@ namespace Sprocket {
         /// @returns true if adding is successful, false otherwise
         static const bool AddScene(const int index, const Scene* scene);
 
-        /// @brief Removes the scene at the given index.
+        /// @brief Queues the scene for removal. Removal will fail if this scene is active when it 
+        /// is elected for removal.
         /// @param index the index of the scene that should be removed
         /// @return true if removal succeeds, false otherwise
         static const bool RemoveScene(const int index);
