@@ -28,6 +28,7 @@ namespace Sprocket {
     const bool Scene::RemoveEntityFromScene(Entity& entity) {
         std::vector<Entity*>::const_iterator position = std::find(m_Entities.cbegin(), m_Entities.cend(), &entity);
         if (position != m_Entities.cend()) {
+            (*position)->OnDeactivate(); // Deactivate the entity to remove it from the scene
             m_Entities.erase(position);
             return true;
         }
