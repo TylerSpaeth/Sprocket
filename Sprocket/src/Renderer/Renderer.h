@@ -19,7 +19,7 @@ namespace Sprocket {
         glm::vec3 Position;
         glm::vec4 Color;
         glm::vec2 TextureCoords;
-        float TextureID;
+        unsigned long long TextureID;
         bool operator==(const Vertex& other) const {
             return Position == other.Position &&
                 Color == other.Color &&
@@ -87,7 +87,7 @@ namespace Sprocket {
         /// @param textureID the ID of the texture to display
         /// @return An ID corresponding to this quad that allows it to be accessed and modified in 
         /// the future.
-        const unsigned int AddQuad(float width, float height, unsigned int textureID);
+        const unsigned int AddQuad(float width, float height, unsigned long long textureID);
 
         /// @brief Removes the quad at the given index. The quad will no longer be rendered.
         /// @param quadIndex The quad to be removed.
@@ -128,20 +128,16 @@ namespace Sprocket {
         /// @param quadIndex The index of the quad.
         /// @param textureID The ID of the texture that should be applied to the quad.
         /// @return true if the textureID is set successfully, false otherwise
-        const bool SetQuadTextureID(const unsigned int quadIndex, const float textureID);
+        const bool SetQuadTextureID(const unsigned int quadIndex, const unsigned long long textureID);
 
         /// @brief Sets the view matrix of the renderer to the given matrix.
         /// @param viewMatrix The view matrix that should be applied.
         void SetViewMatrix(glm::mat4 viewMatrix);
 
-        /// @brief Updates the texture uniform for the given number of unique textures.
-        /// @param uniqueTextures the number of unique textures that are being used
-        void UpdateTextureUniform(unsigned int uniqueTextures);
-
         /// @brief Adds a new texture based on the given path.
         /// @param path the file path to the texture
-        /// @return the texture slot that the texture has been bound to
-        const unsigned int AddTexture(const std::string& path);
+        /// @return the handle for the texture
+        const unsigned long long AddTexture(const std::string& path);
 
         /// @brief Updates the quad at the given index to reflect any any changes to the 
         /// uncalculated quads or modelMatrices. Passes this new data to the GPU

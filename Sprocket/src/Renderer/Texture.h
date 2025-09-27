@@ -14,7 +14,7 @@ namespace Sprocket {
         std::string m_FilePath;
         unsigned char* m_LocalBuffer;
         int m_Width, m_Height, m_BytesPerPixel;
-        mutable unsigned int m_Slot = -1;
+        mutable unsigned long long m_Handle = -1;
 
     public:
 
@@ -29,15 +29,9 @@ namespace Sprocket {
         /// @brief Removes this texture from OpenGL's textures.
         ~Texture();
 
-        /// @brief Binds this texture to the given texture slot.
-        /// @param slot the texture slot to bind this texture to.
-        void Bind(unsigned int slot = 0) const;
-
-        /// @brief Unbinds this texture.
-        void Unbind() const;
-
         const int GetWidth() const;
         const int GetHeight() const;
+        const unsigned long long GetHandle() const;
 
     private:
 
