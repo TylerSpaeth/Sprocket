@@ -30,9 +30,9 @@ namespace Sprocket {
         // can be added to this entity.
         std::unordered_map<std::type_index, unsigned int*> m_AllowedComponents;
 
-        std::vector<Component*> m_Components;
+        std::vector<std::shared_ptr<Component>> m_Components;
 
-        TransformComponent m_Transform;
+        std::shared_ptr<TransformComponent> m_Transform;
 
     public:
 
@@ -57,14 +57,15 @@ namespace Sprocket {
 
             // Decrement the number of components that can now be added of this type
             (*it->second)--;
-            T* newComponent = new T();
+            auto newComponent = std::make_shared<T>();
+            //T* newComponent = new T();
             m_Components.push_back(newComponent);
 
             // If this is an event driven component and we have an eventcallback, register
                         // the event callback on the component
             if (std::is_base_of<EventDrivenComponent, T>::value) {
                 if (m_EventCallback) {
-                    ((EventDrivenComponent*)newComponent)->RegisterEventCallback(m_EventCallback);
+                    ((std::shared_ptr<EventDrivenComponent>)newComponent)->RegisterEventCallback(m_EventCallback);
                 }
             }
 
@@ -72,7 +73,7 @@ namespace Sprocket {
         }
 
         template<typename T>
-        T* GetComponent() {
+        std::shared_ptr<T> GetComponent() {
 
             // Verify that this is a valid component type
             std::type_index type = typeid(T);
@@ -85,8 +86,8 @@ namespace Sprocket {
             // Iterate over all of the components and try to dynamic cast them to be the type of 
             // component we are looking for. If the static cast in not null then we have found
             // the component
-            for (Component* component : m_Components) {
-                T* existingComponent = dynamic_cast<T*>(component);
+            for (auto component : m_Components) {
+                auto existingComponent = dynamic_pointer_cast<T>(component);
                 if (existingComponent != nullptr) {
                     return existingComponent;
                 }
@@ -109,12 +110,11 @@ namespace Sprocket {
             // component we are looking for. If the static cast is not null then we have found
             // the component to remove.
             for (int i = 0; i < m_Components.size(); i++) {
-                T* existingComponent = dynamic_cast<T*>(m_Components.at(i));
+                auto existingComponent = dynamic_pointer_cast<T>(m_Components.at(i));
                 if (existingComponent != nullptr) {
                     // Since we are removing this component we can allow another to be created
                     (*it->second)++;
                     m_Components.erase(m_Components.begin() + i);
-                    delete existingComponent;
                     return true;
                 }
             }

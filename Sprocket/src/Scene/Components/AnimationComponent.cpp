@@ -8,6 +8,13 @@ namespace Sprocket {
     ////////////////////////////////////////////PUBLIC/////////////////////////////////////////////
     ///////////////////////////////////////////////////////////////////////////////////////////////
 
+    AnimationComponent::AnimationComponent() { m_EventCallback = nullptr; }
+    AnimationComponent::~AnimationComponent() {
+        if (m_QuadRenderer) {
+            delete m_QuadRenderer;
+        }
+    }
+
     const bool AnimationComponent::SetAnimation(const Animation& animation) {
 
         float totalDuration = 0;
@@ -37,13 +44,6 @@ namespace Sprocket {
     ///////////////////////////////////////////////////////////////////////////////////////////////
     ////////////////////////////////////////////PRIVATE////////////////////////////////////////////
     ///////////////////////////////////////////////////////////////////////////////////////////////
-
-    AnimationComponent::AnimationComponent() {m_EventCallback = nullptr;}
-    AnimationComponent::~AnimationComponent() {
-        if (m_QuadRenderer) {
-            delete m_QuadRenderer;
-        }
-    }
 
     void AnimationComponent::RegisterEventCallback(const std::function<void(Event&)> eventCallback) {
         m_EventCallback = eventCallback;

@@ -28,6 +28,9 @@ namespace Sprocket {
 
     public:
 
+        QuadRendererComponent();
+        ~QuadRendererComponent();
+
         // NOTE currently calling either of these updates will cause the renderer to switch between 
         // color and texture. It should be determined whether this is correct behavior.
 
@@ -43,9 +46,6 @@ namespace Sprocket {
         void SetSprite(const Sprite& sprite);
 
     private:
-
-        QuadRendererComponent();
-        ~QuadRendererComponent();
 
         /// @brief Submits this quad renderer into the rendering system
         void RenderNew();

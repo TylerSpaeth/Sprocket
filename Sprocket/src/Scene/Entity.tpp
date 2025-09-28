@@ -25,7 +25,9 @@ namespace Sprocket {
             return false;
         }
 
-        BoxColliderComponent* boxCollider = new BoxColliderComponent(m_Transform);
+        auto boxCollider = std::shared_ptr<BoxColliderComponent>(
+            new BoxColliderComponent(*m_Transform)
+        );
 
         if (m_EventCallback != nullptr) {
             boxCollider->m_EventCallback = m_EventCallback;
@@ -48,7 +50,9 @@ namespace Sprocket {
             return false;
         }
 
-        CircleColliderComponent* circleCollider = new CircleColliderComponent(m_Transform);
+        auto circleCollider = std::shared_ptr<CircleColliderComponent>(
+            new CircleColliderComponent(*m_Transform)
+        );
 
         if (m_EventCallback != nullptr) {
             circleCollider->m_EventCallback = m_EventCallback;
@@ -63,8 +67,8 @@ namespace Sprocket {
     }
 
     template<>
-    inline TransformComponent* Entity::GetComponent<TransformComponent>() {
-        return &m_Transform;
+    inline std::shared_ptr<TransformComponent> Entity::GetComponent<TransformComponent>() {
+        return m_Transform;
     }
 
 }

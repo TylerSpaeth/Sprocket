@@ -24,6 +24,9 @@ namespace Sprocket {
     
     public:
 
+        TextRendererComponent();
+        ~TextRendererComponent();
+
         /// @brief This sets the data on the for this TextRenderer. It may only be set once.
         /// @param fontPath The path to the font file.
         /// @param m_Text The text to be displayed
@@ -33,9 +36,6 @@ namespace Sprocket {
         const std::string GetText() const;
 
     private:
-
-        TextRendererComponent();
-        ~TextRendererComponent();
 
         void RegisterEventCallback(const std::function<void(Event&)> eventCallback) override;
 

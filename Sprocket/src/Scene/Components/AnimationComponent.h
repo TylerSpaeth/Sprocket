@@ -27,13 +27,13 @@ namespace Sprocket {
 
     public:
 
+        AnimationComponent();
+        ~AnimationComponent();
+
         /// @brief Sets the Animation that should be playing.
         const bool SetAnimation(const Animation& animation);
 
     private:
-
-        AnimationComponent();
-        ~AnimationComponent();
 
         void RegisterEventCallback(const std::function<void(Event&)> eventCallback) override;
 

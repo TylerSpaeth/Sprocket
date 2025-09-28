@@ -3,6 +3,8 @@
 
 #include "Component.h"
 
+#include "Core/Sprocket.pch"
+
 #include "ThirdParty/glm/glm.hpp"
 
 namespace Sprocket {
@@ -12,11 +14,12 @@ namespace Sprocket {
 
         friend class Entity;
 
+    public:
+
+        ~CameraComponent();
+
     private:
 
-        CameraComponent() = default;
-        ~CameraComponent();
-    
         /// @brief Updates the camera transform to the given position, rotation, and scale
         /// @param position 
         /// @param rotation

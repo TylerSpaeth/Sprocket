@@ -53,11 +53,13 @@ namespace Sprocket {
         glm::vec2 m_Size = { 1,1 };
 
     public:
+
+        BoxColliderComponent(TransformComponent& transformComponent);
+
         const glm::vec2 GetSize() const;
         const bool SetSize(const glm::vec2 size);
 
     private:
-        BoxColliderComponent(TransformComponent& transformComponent);
         void Register() override;
         void UpdateTransform() override;
     };
@@ -69,11 +71,13 @@ namespace Sprocket {
         float m_Radius = 1;
 
     public:
+
+        CircleColliderComponent(TransformComponent& transformComponent);
+
         const float GetRadius() const;
         const bool SetRadius(float radius);
 
     private:
-        CircleColliderComponent(TransformComponent& transformComponent);
         void Register() override;
         void UpdateTransform() override;
 

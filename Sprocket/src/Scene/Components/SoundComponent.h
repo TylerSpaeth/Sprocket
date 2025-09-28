@@ -14,6 +14,11 @@ namespace Sprocket {
         int m_SoundID = -1;
         std::string m_Filepath;
     public:
+
+        /// @brief Creates a sound component, but does not register it with the audio system.
+        SoundComponent() = default;
+        ~SoundComponent();
+
         /// @brief Creates a sound component and registers it with the audio system. This can
         /// only be called once. 
         void SetFilepath(const std::string& filepath);
@@ -34,12 +39,7 @@ namespace Sprocket {
         /// @brief Sets whether the sound should loop when it reaches the end.
         void SetLooping(bool loop);
         /// @brief Gets whether the sound is set to loop when it reaches the end.
-        const bool IsLooping() const;
-
-    private:
-        /// @brief Creates a sound component, but does not register it with the audio system.
-        SoundComponent() = default;
-        ~SoundComponent();
+        const bool IsLooping() const;;
 
     };
 }
