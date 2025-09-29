@@ -19,7 +19,7 @@ namespace Sprocket {
 
         // Animation components store a quad renderer component that they use for actually 
         // displaying sprites.
-        QuadRendererComponent* m_QuadRenderer = nullptr;
+        std::shared_ptr<QuadRendererComponent> m_QuadRenderer = nullptr;
         Animation m_Animation;
 
         float m_AnimationTotalTime = 0;
@@ -28,7 +28,6 @@ namespace Sprocket {
     public:
 
         AnimationComponent();
-        ~AnimationComponent();
 
         /// @brief Sets the Animation that should be playing.
         const bool SetAnimation(const Animation& animation);

@@ -9,11 +9,6 @@ namespace Sprocket {
     ///////////////////////////////////////////////////////////////////////////////////////////////
 
     AnimationComponent::AnimationComponent() { m_EventCallback = nullptr; }
-    AnimationComponent::~AnimationComponent() {
-        if (m_QuadRenderer) {
-            delete m_QuadRenderer;
-        }
-    }
 
     const bool AnimationComponent::SetAnimation(const Animation& animation) {
 
@@ -53,9 +48,9 @@ namespace Sprocket {
 
     void AnimationComponent::Register() {
 
-        m_QuadRenderer = new QuadRendererComponent();
+        m_QuadRenderer = std::make_shared<QuadRendererComponent>();
 
-        m_QuadRenderer->m_EventCallback = m_EventCallback;
+        m_QuadRenderer.get()->m_EventCallback = m_EventCallback;
    
     }
 
@@ -74,7 +69,7 @@ namespace Sprocket {
             totalTime += frame.frameDuration;
 
             if (totalTime > timeInCurrentAnimationLoop) {
-                m_QuadRenderer->SetSprite(frame.sprite);
+                m_QuadRenderer.get()->SetSprite(frame.sprite);
                 break;
             }
         }
