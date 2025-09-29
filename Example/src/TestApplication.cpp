@@ -28,6 +28,7 @@ public:
         SceneManager::AddScene(2, gameScene);
 
         SceneManager::SetActiveScene(1);
+        SceneManager::RemoveScene(0);
 
         // Show ImGui demo window
         /*ImGuiImpl::SubmitRenderFunction([]() {

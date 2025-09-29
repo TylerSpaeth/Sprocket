@@ -20,26 +20,26 @@ namespace Sprocket {
 
         std::function<void(Event&)> m_EventCallback;
 
-        std::vector<Entity*> m_Entities;
+        std::vector<std::shared_ptr<Entity>> m_Entities;
 
     public:
         
         /// @brief Adds an entity into the scene.
         /// @param entity - The entity to add to the scene.
         /// @returns True if submission is successful, false otherwise
-        const bool SubmitEntityToScene(Entity& entity);
+        const bool SubmitEntityToScene(std::shared_ptr<Entity> entity);
 
         /// @brief Removes an entity from the scene.
         /// @param entity - The entity to be removed from the scene.
         /// @returns True if removal is successful, false otherwise
-        const bool RemoveEntityFromScene(Entity& entity);
+        const bool RemoveEntityFromScene(std::shared_ptr<Entity> entity);
 
         /// @brief Assigns the child-parent relation between the given entities. The parent is 
         /// updated to hold the new child. The parent can be null to remove the child's parent.
         /// @brief child - The child entity to have its parent value set
         /// @brief parent - The parent entity to set as the childs parent.
         /// @returns True if assignment is successful, false otherwise
-        const bool AssignEntityParent(Entity& child, Entity* parent);
+        const bool AssignEntityParent(std::shared_ptr<Entity> child, std::shared_ptr<Entity> parent);
 
         /// @brief Handles incoming events. Does not need to be registered as a callback. Should 
         /// instead be called directly be the Scene Manager when it recieves an event.

@@ -18,13 +18,17 @@ namespace Sprocket {
 
         friend class Scene;
 
+    protected:
+
+        std::shared_ptr<Entity> m_Self;
+
     private: 
 
         std::function<void(Event&)> m_EventCallback;
 
-        Entity* m_Parent = nullptr;
+        std::weak_ptr<Entity> m_Parent;
 
-        std::vector<Entity*> m_Children;
+        std::vector<std::weak_ptr<Entity>> m_Children;
 
         // A map, mapping difference component types to how many more of that component
         // can be added to this entity.

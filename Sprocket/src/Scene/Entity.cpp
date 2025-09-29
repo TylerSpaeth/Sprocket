@@ -15,6 +15,7 @@ namespace Sprocket {
     ///////////////////////////////////////////////////////////////////////////////////////////////
 
     Entity::Entity() {
+        m_Self = std::shared_ptr<Entity>(this);
         auto parentGlobalTransform = GetParentGlobalTransform();
         m_Transform = std::make_shared<TransformComponent>([this]() {return GetParentGlobalTransform(); });
         InitializeAllowedComponents();
@@ -37,12 +38,13 @@ namespace Sprocket {
     ///////////////////////////////////////////////////////////////////////////////////////////////
 
     const TransformComponent Entity::GetParentGlobalTransform() {
-        if (!m_Parent) return TransformComponent(nullptr);
+        if (!m_Parent.lock()) return TransformComponent(nullptr);
 
         TransformComponent ret(nullptr);
-        ret.m_LocalPosition = m_Parent->m_Transform.get()->Position();
-        ret.m_LocalRotation = m_Parent->m_Transform.get()->Rotation();
-        ret.m_LocalScale = m_Parent->m_Transform.get()->Scale();
+        auto lockedParent = m_Parent.lock();
+        ret.m_LocalPosition = lockedParent->m_Transform->Position();
+        ret.m_LocalRotation = lockedParent->m_Transform->Rotation();
+        ret.m_LocalScale = lockedParent->m_Transform->Scale();
         return ret;
     }
 
@@ -53,12 +55,12 @@ namespace Sprocket {
             // If this component is of they QuadRendererComponent, remove its event callback
             if (auto qr = dynamic_pointer_cast<QuadRendererComponent>(component)) {
                 qr->RegisterEventCallback(m_EventCallback);
-                qr->UpdateModelMatrix(m_Transform.get()->Position(), m_Transform.get()->Rotation(), m_Transform.get()->Scale());
+                qr->UpdateModelMatrix(m_Transform->Position(), m_Transform->Rotation(), m_Transform->Scale());
                 qr->SetQuadColor(qr->GetQuadColor());
             }
             else if (auto camera = dynamic_pointer_cast<CameraComponent>(component)) {
                 camera->RegisterEventCallback(m_EventCallback);
-                camera->UpdateCameraTransform(m_Transform.get()->Position(), m_Transform.get()->Rotation(), m_Transform.get()->Scale());
+                camera->UpdateCameraTransform(m_Transform->Position(), m_Transform->Rotation(), m_Transform->Scale());
             }
             else if (auto collider = dynamic_pointer_cast<ColliderComponent>(component)) {
                 collider->RegisterEventCallback(m_EventCallback);
@@ -66,7 +68,7 @@ namespace Sprocket {
             }
             else if (auto tileMap = dynamic_pointer_cast<TileMapComponent>(component)) {
                 tileMap->RegisterEventCallback(m_EventCallback);
-                tileMap->RegisterTileMap(m_Transform.get()->Position(), m_Transform.get()->Rotation(), m_Transform.get()->Scale());
+                tileMap->RegisterTileMap(m_Transform->Position(), m_Transform->Rotation(), m_Transform->Scale());
             }
             else if (auto sound = dynamic_pointer_cast<SoundComponent>(component)) {
                 sound->RegisterEventCallback(m_EventCallback);
@@ -76,11 +78,11 @@ namespace Sprocket {
             }
             else if (auto animation = dynamic_pointer_cast<AnimationComponent>(component)) {
                 animation->RegisterEventCallback(m_EventCallback);
-                animation->m_QuadRenderer->UpdateModelMatrix(m_Transform.get()->Position(), m_Transform.get()->Rotation(), m_Transform.get()->Scale());
+                animation->m_QuadRenderer->UpdateModelMatrix(m_Transform->Position(), m_Transform->Rotation(), m_Transform->Scale());
             }
             if (auto tr = dynamic_pointer_cast<TextRendererComponent>(component)) {
                 tr->RegisterEventCallback(m_EventCallback);
-                tr->UpdateModelMatrix(m_Transform.get()->Position(), m_Transform.get()->Rotation(), m_Transform.get()->Scale());
+                tr->UpdateModelMatrix(m_Transform->Position(), m_Transform->Rotation(), m_Transform->Scale());
             }
         }
         Start();
@@ -129,32 +131,34 @@ namespace Sprocket {
     void Entity::OnUpdate(float deltaTime) {
 
         // Transform Updates
-        if (m_Transform.get()->m_Modified) {
+        if (m_Transform->m_Modified) {
             for (auto component : m_Components) {
                 if (auto qr = dynamic_pointer_cast<QuadRendererComponent>(component)) {
-                    qr->UpdateModelMatrix(m_Transform.get()->Position(), m_Transform.get()->Rotation(), m_Transform.get()->Scale());
+                    qr->UpdateModelMatrix(m_Transform->Position(), m_Transform->Rotation(), m_Transform->Scale());
                 }
                 else if (auto camera = dynamic_pointer_cast<CameraComponent>(component)) {
-                    camera->UpdateCameraTransform(m_Transform.get()->Position(), m_Transform.get()->Rotation(), m_Transform.get()->Scale());
+                    camera->UpdateCameraTransform(m_Transform->Position(), m_Transform->Rotation(), m_Transform->Scale());
                 }
                 else if (auto collider = dynamic_pointer_cast<ColliderComponent>(component)) {
                     collider->UpdateTransform();
                 }
                 else if (auto tileMap = dynamic_pointer_cast<TileMapComponent>(component)) {
-                    tileMap->UpdateTransform(m_Transform.get()->Position(), m_Transform.get()->Rotation(), m_Transform.get()->Scale());
+                    tileMap->UpdateTransform(m_Transform->Position(), m_Transform->Rotation(), m_Transform->Scale());
                 }
                 else if (auto animation = dynamic_pointer_cast<AnimationComponent>(component)) {
-                    animation->m_QuadRenderer->UpdateModelMatrix(m_Transform.get()->Position(), m_Transform.get()->Rotation(), m_Transform.get()->Scale());
+                    animation->m_QuadRenderer->UpdateModelMatrix(m_Transform->Position(), m_Transform->Rotation(), m_Transform->Scale());
                 }
                 else if (auto tr = dynamic_pointer_cast<TextRendererComponent>(component)) {
-                    tr->UpdateModelMatrix(m_Transform.get()->Position(), m_Transform.get()->Rotation(), m_Transform.get()->Scale());
+                    tr->UpdateModelMatrix(m_Transform->Position(), m_Transform->Rotation(), m_Transform->Scale());
                 }
             }
             for (auto child : m_Children) {
-                child->m_Transform.get()->m_Modified = true;
+                if(auto lockedChild = child.lock()) {
+                    lockedChild->m_Transform->m_Modified = true;
+                }
             }
 
-            m_Transform.get()->m_Modified = false;
+            m_Transform->m_Modified = false;
         }
 
         // Any per frame updates for components

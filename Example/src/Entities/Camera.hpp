@@ -15,7 +15,9 @@ namespace Sprocket {
         }
 
         void Update(float deltaTime) override {
-            GetComponent<TransformComponent>()->LocalPosition() = m_EntityToFollow->GetComponent<TransformComponent>()->LocalPosition();
+            if (m_EntityToFollow != nullptr) {
+                GetComponent<TransformComponent>()->LocalPosition() = m_EntityToFollow->GetComponent<TransformComponent>()->LocalPosition();
+            }
         }
 
     };

@@ -3,7 +3,7 @@
 
 #include "Sprocket.h"
 
-#include "Camera.hpp"
+#include "Entities/Camera.hpp"
 #include "Player.hpp"
 #include "Tiles.hpp"
 #include "TestAnimation.hpp"
@@ -13,27 +13,22 @@ namespace Sprocket {
     class GameScene : public Scene {
 
     private: 
-        Entity* player;
-        Entity* camera;
-        Entity* tileMap;
-        Entity* testAnimation;
-        Entity* title;
+        std::shared_ptr<Entity> player;
+        std::shared_ptr<Entity> camera;
 
     public:
 
         GameScene() {
-            player = new Player();
-            SubmitEntityToScene(*player);
+            player = std::make_shared<Player>();
+            SubmitEntityToScene(player);
 
-            camera = new Camera();
-            ((Camera*)camera)->m_EntityToFollow = player;
-            SubmitEntityToScene(*camera);
+            camera = std::make_shared<Camera>();
+            ((Camera*)(camera.get()))->m_EntityToFollow = player.get();
+            SubmitEntityToScene(camera);
 
-            tileMap = new Tiles();
-            SubmitEntityToScene(*tileMap);
+            SubmitEntityToScene(std::make_shared<Tiles>());
 
-            testAnimation = new TestAnimation();
-            SubmitEntityToScene(*testAnimation);
+            SubmitEntityToScene(std::make_shared<TestAnimation>());
 
         }
 
