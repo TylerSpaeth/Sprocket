@@ -10,10 +10,6 @@ namespace Sprocket {
 
     class MenuScene : public Scene {
 
-    private:
-        Entity* title;
-        Entity* enterToStart;
-
     public:
         MenuScene() {
       

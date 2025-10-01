@@ -32,7 +32,7 @@ namespace Sprocket {
         /// @brief Removes an entity from the scene.
         /// @param entity - The entity to be removed from the scene.
         /// @returns True if removal is successful, false otherwise
-        const bool RemoveEntityFromScene(std::shared_ptr<Entity> entity);
+        const bool RemoveEntityFromScene(std::weak_ptr<Entity> entity);
 
         /// @brief Assigns the child-parent relation between the given entities. The parent is 
         /// updated to hold the new child. The parent can be null to remove the child's parent.

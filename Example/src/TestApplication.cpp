@@ -1,12 +1,14 @@
 #include "Sprocket.h"
 #include "GameScene/GameScene.hpp"
 #include "MenuScene/MenuScene.hpp"
+#include "FlappyBirdScene/FlappyBirdScene.hpp"
 #include <functional>
 
 class TestApplication : public Sprocket::Application {
 
     Sprocket::Scene* gameScene;
     Sprocket::Scene* menuScene;
+    Sprocket::Scene* flappyBirdScene;
 
     Sprocket::Logger logger;
 
@@ -26,6 +28,8 @@ public:
         SceneManager::AddScene(1, menuScene);
         gameScene = new GameScene();
         SceneManager::AddScene(2, gameScene);
+        flappyBirdScene = new FlappyBirdScene();
+        SceneManager::AddScene(3, flappyBirdScene);
 
         SceneManager::SetActiveScene(1);
         SceneManager::RemoveScene(0);

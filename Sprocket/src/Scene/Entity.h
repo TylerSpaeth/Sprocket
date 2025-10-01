@@ -20,7 +20,7 @@ namespace Sprocket {
 
     protected:
 
-        std::shared_ptr<Entity> m_Self;
+        std::weak_ptr<Entity> m_Self;
 
     private: 
 
@@ -32,16 +32,20 @@ namespace Sprocket {
 
         // A map, mapping difference component types to how many more of that component
         // can be added to this entity.
-        std::unordered_map<std::type_index, unsigned int*> m_AllowedComponents;
+        std::unordered_map<std::type_index, std::shared_ptr<unsigned int>> m_AllowedComponents;
 
         std::vector<std::shared_ptr<Component>> m_Components;
 
         std::shared_ptr<TransformComponent> m_Transform;
 
+
     public:
 
+        /// @brief Initializes the self variable
+        /// @param self Must be the a pointer to this entity
+        bool InitSelf(std::shared_ptr<Entity> self);
+
         Entity();
-        ~Entity();
 
         // Only one of each component type is allowed on a single Entity
         template<typename T>
@@ -160,9 +164,6 @@ namespace Sprocket {
         /// @brief Initialize the m_AllowedComponents map with component types and how many more
         /// of that type can be added to this entity.
         void InitializeAllowedComponents();
-
-        /// @brief Frees the data in the m_AllowedComponents map
-        void FreeAllowedComponents();
 
     };
 

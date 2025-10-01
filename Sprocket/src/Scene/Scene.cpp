@@ -26,9 +26,9 @@ namespace Sprocket {
         return true;
     }
 
-    const bool Scene::RemoveEntityFromScene(std::shared_ptr<Entity> entity) {
+    const bool Scene::RemoveEntityFromScene(std::weak_ptr<Entity> entity) {
         std::vector<std::shared_ptr<Entity>>::const_iterator position = std::find_if(m_Entities.cbegin(), m_Entities.cend(),
-            [&](const std::shared_ptr<Entity>& other) {return other.get() == entity.get(); });
+            [&](const std::shared_ptr<Entity>& other) {return other.get() == entity.lock().get(); });
         if (position != m_Entities.cend()) {
             (*position)->OnDeactivate(); // Deactivate the entity to remove it from the scene
             m_Entities.erase(position);
@@ -116,8 +116,8 @@ namespace Sprocket {
     }
 
     void Scene::OnUpdate(float deltaTime) {
-        for (auto& entity : m_Entities) {
-            entity->OnUpdate(deltaTime);
+        for (int i = 0; i < m_Entities.size(); i++) {
+            m_Entities.at(i)->OnUpdate(deltaTime);
         }
     }
 

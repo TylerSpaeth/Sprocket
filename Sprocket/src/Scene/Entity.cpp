@@ -14,15 +14,19 @@ namespace Sprocket {
     ////////////////////////////////////////////PUBLIC/////////////////////////////////////////////
     ///////////////////////////////////////////////////////////////////////////////////////////////
 
+    bool Entity::InitSelf(std::shared_ptr<Entity> self) {
+        if (self.get() != this) {
+            Global::fileLogger.Warning("InitSelf Failed. Provided pointer does not point to self.");
+            return false;
+        }
+        m_Self = self; // call this right after construction
+        return true;
+    }
+
     Entity::Entity() {
-        m_Self = std::shared_ptr<Entity>(this);
         auto parentGlobalTransform = GetParentGlobalTransform();
         m_Transform = std::make_shared<TransformComponent>([this]() {return GetParentGlobalTransform(); });
         InitializeAllowedComponents();
-    }
-
-    Entity::~Entity() {
-        FreeAllowedComponents();
     }
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
@@ -174,27 +178,18 @@ namespace Sprocket {
 
     void Entity::InitializeAllowedComponents() {
         // Transform is set to 0 since that can never be added to an entity
-        m_AllowedComponents.insert({typeid(TransformComponent), new unsigned int(0)});
-        m_AllowedComponents.insert({typeid(CameraComponent), new unsigned int(1)});
-        auto maximumColliders = new unsigned int(1);
+        m_AllowedComponents.insert({typeid(TransformComponent), std::make_shared<unsigned int>(0)});
+        m_AllowedComponents.insert({typeid(CameraComponent), std::make_shared<unsigned int>(1) });
+        auto maximumColliders = std::make_shared<unsigned int>(1);
         m_AllowedComponents.insert({typeid(ColliderComponent), maximumColliders});
         m_AllowedComponents.insert({typeid(BoxColliderComponent), maximumColliders});
         m_AllowedComponents.insert({typeid(CircleColliderComponent), maximumColliders});
-        auto maximumRenderers = new unsigned int(1);
+        auto maximumRenderers = std::make_shared<unsigned int>(1);
         m_AllowedComponents.insert({typeid(QuadRendererComponent), maximumRenderers});
         m_AllowedComponents.insert({typeid(AnimationComponent), maximumRenderers});
         m_AllowedComponents.insert({typeid(TextRendererComponent), maximumRenderers});
-        m_AllowedComponents.insert({typeid(SoundComponent), new unsigned int(1)});
-        m_AllowedComponents.insert({typeid(TileMapComponent), new unsigned int(1)});
-    }
-
-    void Entity::FreeAllowedComponents() {
-        for(const auto& pair : m_AllowedComponents) {
-            if(pair.second != nullptr) {
-                delete pair.second;
-            }
-        }
-        m_AllowedComponents.clear();
+        m_AllowedComponents.insert({typeid(SoundComponent), std::make_shared<unsigned int>(1)});
+        m_AllowedComponents.insert({typeid(TileMapComponent), std::make_shared<unsigned int>(1)});
     }
 
 }

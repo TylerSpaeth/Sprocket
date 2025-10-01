@@ -8,7 +8,7 @@ namespace Sprocket {
     class Camera : public Entity {
 
     public:
-        Entity* m_EntityToFollow = nullptr;
+        std::shared_ptr<Entity> m_EntityToFollow = nullptr;
 
         Camera() {
             AddComponent<CameraComponent>();

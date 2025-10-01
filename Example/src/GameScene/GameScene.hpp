@@ -23,7 +23,7 @@ namespace Sprocket {
             SubmitEntityToScene(player);
 
             camera = std::make_shared<Camera>();
-            ((Camera*)(camera.get()))->m_EntityToFollow = player.get();
+            ((Camera*)(camera.get()))->m_EntityToFollow = player;
             SubmitEntityToScene(camera);
 
             SubmitEntityToScene(std::make_shared<Tiles>());
