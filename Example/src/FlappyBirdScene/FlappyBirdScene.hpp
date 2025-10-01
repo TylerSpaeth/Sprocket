@@ -18,22 +18,18 @@ namespace Sprocket {
 
     public:
         FlappyBirdScene() {
-            SubmitEntityToScene(std::make_shared<Camera>());
-            auto spawner = std::make_shared<ObstacleSpawner>();
-            spawner->InitSelf(spawner);
-            SubmitEntityToScene(spawner);
-            bird = std::make_shared<Bird>();
+
+            SubmitEntityToScene<Camera>();
+            auto spawner = SubmitEntityToScene<ObstacleSpawner>();
+            bird = SubmitEntityToScene<Bird>();
             bird->gameOverCallback = std::bind(&FlappyBirdScene::GameOver, this);
             bird->GetComponent<TransformComponent>()->LocalPosition().x -= 3;
-            SubmitEntityToScene(bird);
-            scoreText = std::make_shared<ScoreText>();
-            SubmitEntityToScene(scoreText);
-            auto border = std::make_shared<Border>();
-            border->GetComponent<TransformComponent>()->LocalPosition().y = 3.5;
-            SubmitEntityToScene(border);
-            border = std::make_shared<Border>();
-            border->GetComponent<TransformComponent>()->LocalPosition().y = -3.5;
-            SubmitEntityToScene(border);
+            auto border1 = SubmitEntityToScene<Border>();
+            border1->GetComponent<TransformComponent>()->LocalPosition().y = 3.5;
+            auto border2 = SubmitEntityToScene<Border>();
+            border2->GetComponent<TransformComponent>()->LocalPosition().y = -3.5;
+            scoreText = SubmitEntityToScene<ScoreText>();
+
         }
 
         void GameOver() {

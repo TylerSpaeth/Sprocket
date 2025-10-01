@@ -8,24 +8,6 @@ namespace Sprocket {
     ////////////////////////////////////////////PUBLIC/////////////////////////////////////////////
     ///////////////////////////////////////////////////////////////////////////////////////////////
 
-    const bool Scene::SubmitEntityToScene(std::shared_ptr<Entity> entity) {
-
-        // If this entity is already in the scene
-        std::vector<std::shared_ptr<Entity>>::const_iterator position = std::find_if(m_Entities.cbegin(), m_Entities.cend(), 
-            [&](const std::shared_ptr<Entity>& other) {return other.get() == entity.get();});
-        if (position != m_Entities.cend()) {
-            return false;
-        }
-
-        m_Entities.push_back(entity);
-        entity->m_EventCallback = m_EventCallback;
-        if (m_EventCallback) {
-            entity->OnActivate();
-        }
-
-        return true;
-    }
-
     const bool Scene::RemoveEntityFromScene(std::weak_ptr<Entity> entity) {
         std::vector<std::shared_ptr<Entity>>::const_iterator position = std::find_if(m_Entities.cbegin(), m_Entities.cend(),
             [&](const std::shared_ptr<Entity>& other) {return other.get() == entity.lock().get(); });

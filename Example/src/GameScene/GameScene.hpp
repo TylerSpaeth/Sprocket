@@ -19,16 +19,11 @@ namespace Sprocket {
     public:
 
         GameScene() {
-            player = std::make_shared<Player>();
-            SubmitEntityToScene(player);
-
-            camera = std::make_shared<Camera>();
+            player = SubmitEntityToScene<Player>();
+            camera = SubmitEntityToScene<Camera>();
             ((Camera*)(camera.get()))->m_EntityToFollow = player;
-            SubmitEntityToScene(camera);
-
-            SubmitEntityToScene(std::make_shared<Tiles>());
-
-            SubmitEntityToScene(std::make_shared<TestAnimation>());
+            SubmitEntityToScene<Tiles>();
+            SubmitEntityToScene<TestAnimation>();
 
         }
 

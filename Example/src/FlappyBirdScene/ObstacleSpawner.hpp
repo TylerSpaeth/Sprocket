@@ -45,19 +45,17 @@ namespace Sprocket {
                 float green = gdis(gen);
                 float blue = bdis(gen);
                 glm::vec4 color = {red ,green, blue, 1};
-                
-                std::shared_ptr<Entity> obstacle1 = std::make_shared<Obstacle>();
-                obstacle1->InitSelf(obstacle1);
-                SceneManager::GetActiveScene()->SubmitEntityToScene(obstacle1);
+
+                std::shared_ptr<Entity> obstacle1 = SceneManager::GetActiveScene()->SubmitEntityToScene<Obstacle>();
                 SceneManager::GetActiveScene()->AssignEntityParent(obstacle1, m_Self.lock());
-                obstacle1->GetComponent<TransformComponent>()->LocalPosition().y = 3+height;
+                obstacle1->GetComponent<TransformComponent>()->LocalPosition().y = 3 + height;
                 obstacle1->GetComponent<QuadRendererComponent>()->SetQuadColor(color);
-                std::shared_ptr<Entity> obstacle2 = std::make_shared<Obstacle>();
-                obstacle2->InitSelf(obstacle2);
-                SceneManager::GetActiveScene()->SubmitEntityToScene(obstacle2);
+
+                std::shared_ptr<Entity> obstacle2 = SceneManager::GetActiveScene()->SubmitEntityToScene<Obstacle>();
                 SceneManager::GetActiveScene()->AssignEntityParent(obstacle2, m_Self.lock());
-                obstacle2->GetComponent<TransformComponent>()->LocalPosition().y = -3+height;
+                obstacle2->GetComponent<TransformComponent>()->LocalPosition().y = -3 + height;
                 obstacle2->GetComponent<QuadRendererComponent>()->SetQuadColor(color);
+
                 m_ElapsedTime = 0;
             }
 

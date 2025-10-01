@@ -66,7 +66,6 @@ namespace Sprocket {
             // Decrement the number of components that can now be added of this type
             (*it->second)--;
             auto newComponent = std::make_shared<T>();
-            //T* newComponent = new T();
             m_Components.push_back(newComponent);
 
             // If this is an event driven component and we have an eventcallback, register

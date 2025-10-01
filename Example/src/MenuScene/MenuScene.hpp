@@ -13,10 +13,8 @@ namespace Sprocket {
     public:
         MenuScene() {
       
-            SubmitEntityToScene(std::make_shared<Title>());
-
-            SubmitEntityToScene(std::make_shared<EnterToStart>());
-
+            SubmitEntityToScene<Title>();
+            SubmitEntityToScene<EnterToStart>();
         }
 
     };

@@ -23,11 +23,28 @@ namespace Sprocket {
         std::vector<std::shared_ptr<Entity>> m_Entities;
 
     public:
+
+        template<typename T>
+        const std::shared_ptr<T> SubmitEntityToScene() {
+
+            if (!std::is_base_of<Entity, T>::value) {
+                return nullptr;
+            }
+
+            std::shared_ptr<T> newEntity = std::make_shared<T>();
+            m_Entities.push_back(newEntity);
+            newEntity->InitSelf(newEntity);
+            newEntity->m_EventCallback = m_EventCallback;
+            if (m_EventCallback) {
+                newEntity->OnActivate();
+            }
+            return newEntity;
+        }
         
         /// @brief Adds an entity into the scene.
         /// @param entity - The entity to add to the scene.
         /// @returns True if submission is successful, false otherwise
-        const bool SubmitEntityToScene(std::shared_ptr<Entity> entity);
+        //const bool SubmitEntityToScene(std::shared_ptr<Entity> entity);
 
         /// @brief Removes an entity from the scene.
         /// @param entity - The entity to be removed from the scene.
