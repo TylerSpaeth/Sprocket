@@ -25,7 +25,7 @@ namespace Sprocket {
 
         // An empty default scene will always be given at index 0.
         int m_ActiveSceneIndex = 0;
-        mutable std::unordered_map<int, const Scene*> m_Scenes;
+        mutable std::unordered_map<int, std::shared_ptr<Scene>> m_Scenes;
 
         std::function<void(Event&)> m_EventCallback;
 
@@ -45,7 +45,7 @@ namespace Sprocket {
         /// @param index the index that the scene should be stored at
         /// @param scene a pointer to a scene that should be stored 
         /// @returns true if adding is successful, false otherwise
-        static const bool AddScene(const int index, const Scene* scene);
+        static const bool AddScene(const int index, std::shared_ptr<Scene> scene);
 
         /// @brief Queues the scene for removal. Removal will fail if this scene is active when it 
         /// is elected for removal.
@@ -56,7 +56,7 @@ namespace Sprocket {
         /// @brief Gets the scene at the given index.
         /// @param index the index of the scene that should be retrieved
         /// @return a pointer to the scene at the given index, nullptr if it does not exist.
-        static Scene* GetSceneAtIndex(const int index);
+        static std::shared_ptr<Scene> GetSceneAtIndex(const int index);
 
         /// @brief Sets the active scene to that of the given index.
         /// @param index the index of the scene that should be made active.
@@ -65,7 +65,7 @@ namespace Sprocket {
 
         /// @brief Gets the active scene.
         /// @return a pointer to the active scene, nullptr if it does not exist
-        static Scene* GetActiveScene();
+        static std::shared_ptr<Scene> GetActiveScene();
 
         /// @brief Gets the index of the active scene.
         /// @return the index of the active scene.
@@ -77,7 +77,7 @@ namespace Sprocket {
 
         /// @brief Gets all of the Scenes that are registered in the SceneManager
         /// @return Pointers to all of the Scenes.
-        static const std::vector<const Scene*> GetAllScenes();
+        static const std::vector<std::shared_ptr<Scene>> GetAllScenes();
 
     private:
 

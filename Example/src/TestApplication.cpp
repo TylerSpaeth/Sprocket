@@ -24,12 +24,9 @@ public:
 
         Window::EnableVSync(false);
 
-        menuScene = new MenuScene();
-        SceneManager::AddScene(1, menuScene);
-        gameScene = new GameScene();
-        SceneManager::AddScene(2, gameScene);
-        flappyBirdScene = new FlappyBirdScene();
-        SceneManager::AddScene(3, flappyBirdScene);
+        SceneManager::AddScene(1, std::make_shared<MenuScene>());
+        SceneManager::AddScene(2, std::make_shared<GameScene>());
+        SceneManager::AddScene(3, std::make_shared<FlappyBirdScene>());
 
         SceneManager::SetActiveScene(1);
         SceneManager::RemoveScene(0);
