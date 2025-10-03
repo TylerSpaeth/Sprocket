@@ -22,7 +22,7 @@ namespace Sprocket {
         if (!s_Instance) {
             s_Instance = new SceneManager();
             // Create a default scene with an index of 0
-            s_Instance->AddScene(0, new Scene());
+            s_Instance->AddScene(0, std::make_shared<Scene>());
 
             // Store the event callback and register it with the newly created scene. Also load the scene
             // so that any of its subsystems can be activated.
@@ -31,7 +31,7 @@ namespace Sprocket {
         }
     }
 
-    const bool SceneManager::AddScene(const int index, const Scene* scene) {
+    const bool SceneManager::AddScene(const int index, std::shared_ptr<Scene> scene) {
         if (s_Instance->m_Scenes.find(index) != s_Instance->m_Scenes.cend()) {
             return false;
         }
@@ -48,11 +48,11 @@ namespace Sprocket {
         return true;
     }
 
-    Scene* SceneManager::GetSceneAtIndex(const int index) {
+    std::shared_ptr<Scene> SceneManager::GetSceneAtIndex(const int index) {
         if (s_Instance->m_Scenes.find(index) == s_Instance->m_Scenes.cend()) {
             return nullptr;
         }
-        return (Scene*)s_Instance->m_Scenes.at(index);
+        return s_Instance->m_Scenes.at(index);
     }
 
     const bool SceneManager::SetActiveScene(const int index) {
@@ -67,11 +67,11 @@ namespace Sprocket {
 
     }
 
-    Scene* SceneManager::GetActiveScene() {
+    std::shared_ptr<Scene> SceneManager::GetActiveScene() {
         if (s_Instance->m_Scenes.find(s_Instance->m_ActiveSceneIndex) == s_Instance->m_Scenes.cend()) {
             return nullptr;
         }
-        return (Scene*)s_Instance->m_Scenes.at(s_Instance->m_ActiveSceneIndex);
+        return s_Instance->m_Scenes.at(s_Instance->m_ActiveSceneIndex);
     }
 
     const int SceneManager::GetActiveSceneIndex() {
@@ -86,8 +86,8 @@ namespace Sprocket {
         return keys;
     }
 
-    const std::vector<const Scene*> SceneManager::GetAllScenes() {
-        std::vector<const Scene*> scenes;
+    const std::vector<std::shared_ptr<Scene>> SceneManager::GetAllScenes() {
+        std::vector<std::shared_ptr<Scene>> scenes;
         for (const auto& pair : s_Instance->m_Scenes) {
             scenes.push_back(pair.second);
         }

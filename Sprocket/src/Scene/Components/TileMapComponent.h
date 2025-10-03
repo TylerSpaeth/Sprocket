@@ -51,6 +51,8 @@ namespace Sprocket {
         std::array<QuadRendererStruct, MAX_UNIQUE_TILES> m_QuadRenderers;
 
     public:
+
+        ~TileMapComponent();
         
         /// @brief Sets the QuadRenderer map path. This is a text file that defines the layout of the
         /// sprites in the tilemap. Each character in the text file corresponds to a unique sprite.
@@ -73,9 +75,6 @@ namespace Sprocket {
         const bool SetQuadRendererData(const char index, const Sprite& sprite);
 
     private:
-
-        TileMapComponent() = default;
-        ~TileMapComponent();
 
         /// @brief Registers the TileMap with the given transform values.
         /// @param position - The position of the tile map.

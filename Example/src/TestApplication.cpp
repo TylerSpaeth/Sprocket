@@ -1,12 +1,14 @@
 #include "Sprocket.h"
 #include "GameScene/GameScene.hpp"
 #include "MenuScene/MenuScene.hpp"
+#include "FlappyBirdScene/FlappyBirdScene.hpp"
 #include <functional>
 
 class TestApplication : public Sprocket::Application {
 
     Sprocket::Scene* gameScene;
     Sprocket::Scene* menuScene;
+    Sprocket::Scene* flappyBirdScene;
 
     Sprocket::Logger logger;
 
@@ -22,12 +24,12 @@ public:
 
         Window::EnableVSync(false);
 
-        menuScene = new MenuScene();
-        SceneManager::AddScene(1, menuScene);
-        gameScene = new GameScene();
-        SceneManager::AddScene(2, gameScene);
+        SceneManager::AddScene(1, std::make_shared<MenuScene>());
+        SceneManager::AddScene(2, std::make_shared<GameScene>());
+        SceneManager::AddScene(3, std::make_shared<FlappyBirdScene>());
 
         SceneManager::SetActiveScene(1);
+        SceneManager::RemoveScene(0);
 
         // Show ImGui demo window
         /*ImGuiImpl::SubmitRenderFunction([]() {

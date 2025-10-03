@@ -10,6 +10,16 @@ namespace Sprocket {
     ////////////////////////////////////////////PUBLIC/////////////////////////////////////////////
     ///////////////////////////////////////////////////////////////////////////////////////////////
 
+    TextRendererComponent::TextRendererComponent() {
+        m_EventCallback = nullptr;
+    }
+
+    TextRendererComponent::~TextRendererComponent() {
+        if (m_EventCallback && m_QuadID != -1) {
+            RemoveRender();
+        }
+    }
+
     const bool TextRendererComponent::SetData(const std::string& fontPath, const std::string& text) {
         if (!m_FontPath.empty() && m_Text.empty()) {
             return false;
@@ -35,16 +45,6 @@ namespace Sprocket {
     ///////////////////////////////////////////////////////////////////////////////////////////////
     ////////////////////////////////////////////PRIVATE////////////////////////////////////////////
     ///////////////////////////////////////////////////////////////////////////////////////////////
-
-    TextRendererComponent::TextRendererComponent() {
-        m_EventCallback = nullptr;
-    }
-
-    TextRendererComponent::~TextRendererComponent() {
-        if (m_EventCallback && m_QuadID != -1) {
-            RemoveRender();
-        }
-    }
 
     void TextRendererComponent::RegisterEventCallback(const std::function<void(Event&)> eventCallback) {
         m_EventCallback = eventCallback;

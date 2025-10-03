@@ -12,6 +12,15 @@ namespace Sprocket {
     ////////////////////////////////////////////PUBLIC/////////////////////////////////////////////
     ///////////////////////////////////////////////////////////////////////////////////////////////
 
+    QuadRendererComponent::QuadRendererComponent() {
+        m_EventCallback = nullptr;
+    }
+    QuadRendererComponent::~QuadRendererComponent() {
+        if (m_EventCallback && m_QuadID != -1) {
+            RemoveRender();
+        }
+    }
+
     glm::vec4 QuadRendererComponent::GetQuadColor() const {
         return m_QuadColor;
     }
@@ -36,15 +45,6 @@ namespace Sprocket {
     ///////////////////////////////////////////////////////////////////////////////////////////////
     ////////////////////////////////////////////PRIVATE////////////////////////////////////////////
     ///////////////////////////////////////////////////////////////////////////////////////////////
-
-    QuadRendererComponent::QuadRendererComponent() {
-        m_EventCallback = nullptr;
-    }
-    QuadRendererComponent::~QuadRendererComponent() {
-        if (m_EventCallback && m_QuadID != -1) {
-            RemoveRender();
-        }
-    }
 
     void QuadRendererComponent::RenderNew() {
         RenderNewEvent* e = new RenderNewEvent();
