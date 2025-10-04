@@ -12,6 +12,9 @@ namespace Sprocket {
         std::vector<std::shared_ptr<Entity>>::const_iterator position = std::find_if(m_Entities.cbegin(), m_Entities.cend(),
             [&](const std::shared_ptr<Entity>& other) {return other.get() == entity.lock().get(); });
         if (position != m_Entities.cend()) {
+
+            AssignEntityParent(entity.lock(), nullptr);
+
             (*position)->OnDeactivate(); // Deactivate the entity to remove it from the scene
             m_Entities.erase(position);
             return true;
