@@ -66,7 +66,6 @@ namespace Sprocket {
 
             if (totalTime > timeInCurrentAnimationLoop) {
                 m_QuadRenderer->SetSprite(frame.sprite);
-                m_QuadRenderer->SetQuadColor(frame.color);
                 break;
             }
         }

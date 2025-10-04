@@ -19,12 +19,6 @@ namespace Sprocket {
         friend class Entity;
 
     private:
-
-        // Data structure to hold the data for each QuadRenderer in the tilemap
-        struct QuadRendererStruct {
-            glm::vec4 quadColor = { 1,1,1,1 };
-            Sprite sprite;
-        };
     
         // Global transform values for the entire tilemap
     
@@ -48,7 +42,7 @@ namespace Sprocket {
         static constexpr char FIRST_PRINTABLE_ASCII = '!';
         static constexpr unsigned int MAX_UNIQUE_TILES = 94;
         std::array<std::vector<unsigned int>, MAX_UNIQUE_TILES> m_QuadRendererIDs;
-        std::array<QuadRendererStruct, MAX_UNIQUE_TILES> m_QuadRenderers;
+        std::array<Sprite, MAX_UNIQUE_TILES> m_Sprites;
 
     public:
 
@@ -63,11 +57,6 @@ namespace Sprocket {
         /// colliders in the tilemap. 0s represent a collider while everything else is empty space.
         /// @param colliderMapPath - The path to the Collider map file. 
         void SetColliderMapPath(const std::string colliderMapPath);
-
-        /// @brief Sets the color of the QuadRenderer at the given index.
-        /// @param index - The index of the QuadRenderer to set the color of.
-        /// @param quadColor - The color to set the QuadRenderer to.
-        const bool SetQuadRendererData(const char index, const glm::vec4 quadColor);
 
         /// @brief Sets the sprite of the QuadRenderer at the given index.
         /// @param index - The index of the QuadRenderer to set the texture and UV coordinates of.

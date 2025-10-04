@@ -11,7 +11,6 @@ namespace Sprocket {
 
     struct AnimationFrame {
         Sprite sprite;
-        glm::vec4 color = {1,1,1,1};
         // Frame duration is in seconds
         float frameDuration;
     };

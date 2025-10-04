@@ -21,15 +21,6 @@ namespace Sprocket {
         }
     }
 
-    glm::vec4 QuadRendererComponent::GetQuadColor() const {
-        return m_QuadColor;
-    }
-
-    void QuadRendererComponent::SetQuadColor(glm::vec4 newColor) {
-        m_QuadColor = newColor;
-        SendTextureEvent();
-    }
-
     Sprite QuadRendererComponent::GetSprite() const {
         return m_Sprite;
     }
@@ -76,7 +67,7 @@ namespace Sprocket {
     void QuadRendererComponent::SendTextureEvent() {
 
         RenderUpdateEvent* e = new RenderUpdateEvent(RenderUpdateType::QUAD, m_QuadID);
-        e->m_QuadColor = m_QuadColor;
+        e->m_QuadColor = m_Sprite.color;
         e->m_TexturePath = m_Sprite.texturePath;
         e->m_TexXCoords = m_Sprite.textureXUVCoords;
         e->m_TexYCoords = m_Sprite.textureYUVCoords;
