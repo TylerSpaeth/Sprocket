@@ -27,10 +27,7 @@ namespace Sprocket {
 
     void QuadRendererComponent::SetQuadColor(glm::vec4 newColor) {
         m_QuadColor = newColor;
-        RenderUpdateEvent* e = new RenderUpdateEvent(RenderUpdateType::QUAD, m_QuadID);
-        e->m_QuadColor = m_QuadColor;
-        m_EventCallback(*e);
-        delete e;
+        SendTextureEvent();
     }
 
     Sprite QuadRendererComponent::GetSprite() const {
@@ -78,12 +75,8 @@ namespace Sprocket {
 
     void QuadRendererComponent::SendTextureEvent() {
 
-        if (m_Sprite.texturePath.empty()) {
-            Global::fileLogger.Warning("The texturePath is empty. Failed to send texture event.");
-            return;
-        }
-
         RenderUpdateEvent* e = new RenderUpdateEvent(RenderUpdateType::QUAD, m_QuadID);
+        e->m_QuadColor = m_QuadColor;
         e->m_TexturePath = m_Sprite.texturePath;
         e->m_TexXCoords = m_Sprite.textureXUVCoords;
         e->m_TexYCoords = m_Sprite.textureYUVCoords;

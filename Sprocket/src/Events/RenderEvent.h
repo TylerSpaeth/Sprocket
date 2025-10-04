@@ -42,7 +42,7 @@ namespace Sprocket {
         std::string m_TexturePath; // A path of "" represents no texture and uses the quadcolor 
         // Used to store either view or model matrix depending on the RenderUpdateType
         glm::mat4 m_Matrix;
-        glm::vec4 m_QuadColor;
+        glm::vec4 m_QuadColor = {1,1,1,1};
         // Texture coords start with the top right corner and go clockwise around the quad
         glm::vec4 m_TexXCoords;
         glm::vec4 m_TexYCoords;
@@ -80,6 +80,17 @@ namespace Sprocket {
         }
 
         const int GetQuadID() const { return m_QuadID; }
+    };
+
+    class RenderUpdateTextColorEvent : public Event {
+        friend class Renderer;
+    private:
+        int m_QuadID = -1;
+        glm::vec4 m_QuadColor;
+    public:
+        RenderUpdateTextColorEvent(const unsigned int quadID, const glm::vec4 color) : m_QuadID(quadID) , m_QuadColor(color) {
+            this->SetType(EventType::RENDER_UPDATE_TEXT_COLOR);
+        }
     };
 
 }

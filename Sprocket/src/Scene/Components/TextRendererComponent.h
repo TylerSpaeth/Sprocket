@@ -21,6 +21,8 @@ namespace Sprocket {
 
         std::string m_FontPath;
         std::string m_Text;
+
+        glm::vec4 m_Color = {1,1,1,1};
     
     public:
 
@@ -34,6 +36,9 @@ namespace Sprocket {
         const bool SetData(const std::string& fontPath, const std::string& m_Text);
         const std::string GetFontPath() const;
         const std::string GetText() const;
+
+        void SetColor(const glm::vec4 color);
+        const glm::vec4 GetColor() const;
 
     private:
 

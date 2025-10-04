@@ -103,7 +103,6 @@ namespace Sprocket {
         /// @brief Delete the Collider portion of the tile map from the relevant systems.
         void DeleteColliderMap();
 
-
     };
 
 }

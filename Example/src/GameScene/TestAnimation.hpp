@@ -69,6 +69,7 @@ namespace Sprocket {
             AnimationFrame frame2;
             frame2.frameDuration = .2;
             frame2.sprite = circle;
+            frame2.color = {1,0,0,1};
 
             circleTree.animationFrames.push_back(frame1);
             circleTree.animationFrames.push_back(frame2);

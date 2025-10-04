@@ -31,17 +31,19 @@ namespace Sprocket {
 
             auto collides = GetComponent<BoxColliderComponent>()->CollidesWithAnything();
             auto qr = GetComponent<QuadRendererComponent>();
-            if (qr->GetQuadColor() != glm::vec4(1, 0, 0, 1) && collides) {
-                qr->SetQuadColor({ 1,0,0,1 });
+            if (qr) {
+                if (qr->GetQuadColor() != glm::vec4(1, 0, 0, 1) && collides) {
+                    qr->SetQuadColor({ 1,0,0,1 });
 
-                if (!soundComponent->IsPlaying()) {
-                    soundComponent->Play();
+                    if (!soundComponent->IsPlaying()) {
+                        soundComponent->Play();
+                    }
                 }
-            }
-            else if (!collides && qr->GetQuadColor() == glm::vec4(1, 0, 0, 1)) {
-                qr->SetQuadColor({ 1,1,1,1 });  
-                soundComponent->Stop();
-                soundComponent->Reset();
+                else if (!collides && qr->GetQuadColor() == glm::vec4(1, 0, 0, 1)) {
+                    qr->SetQuadColor({ 1,1,1,1 });
+                    soundComponent->Stop();
+                    soundComponent->Reset();
+                }
             }
 
             if (Input::IsKeyPressed(KEY_W)) {

@@ -42,6 +42,15 @@ namespace Sprocket {
         return m_Text;
     }
 
+    void TextRendererComponent::SetColor(const glm::vec4 color) {
+        m_Color = color;
+        if (m_EventCallback) {
+            RenderUpdateTextColorEvent* e = new RenderUpdateTextColorEvent(m_QuadID, m_Color);
+            m_EventCallback(*e);
+            delete e;
+        }
+    }
+
     ///////////////////////////////////////////////////////////////////////////////////////////////
     ////////////////////////////////////////////PRIVATE////////////////////////////////////////////
     ///////////////////////////////////////////////////////////////////////////////////////////////
@@ -59,6 +68,10 @@ namespace Sprocket {
         m_EventCallback(*e);
         m_QuadID = e->GetQuadID();
         delete e;
+
+        RenderUpdateTextColorEvent* colorEvent = new RenderUpdateTextColorEvent(m_QuadID, m_Color);
+        m_EventCallback(*colorEvent);
+        delete colorEvent;
     }
 
     void TextRendererComponent::UpdateModelMatrix(glm::vec3 position, glm::vec3 rotation, glm::vec3 scale) {
