@@ -60,7 +60,7 @@ namespace Sprocket {
             if (auto qr = dynamic_pointer_cast<QuadRendererComponent>(component)) {
                 qr->RegisterEventCallback(m_EventCallback);
                 qr->UpdateModelMatrix(m_Transform->Position(), m_Transform->Rotation(), m_Transform->Scale());
-                qr->SetQuadColor(qr->GetQuadColor());
+                qr->SetSprite(qr->GetSprite());
             }
             else if (auto camera = dynamic_pointer_cast<CameraComponent>(component)) {
                 camera->RegisterEventCallback(m_EventCallback);

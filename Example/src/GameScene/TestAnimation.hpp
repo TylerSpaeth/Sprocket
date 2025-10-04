@@ -65,6 +65,7 @@ namespace Sprocket {
             frame1.sprite = tree;
 
             Sprite circle;
+            circle.color= { 1,0,0,1 };
             circle.texturePath = "textures/Circle.png";
             AnimationFrame frame2;
             frame2.frameDuration = .2;

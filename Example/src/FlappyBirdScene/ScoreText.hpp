@@ -70,6 +70,7 @@ namespace Sprocket {
             GetComponent<TransformComponent>()->LocalScale() = {.5,.5,1};
             AddComponent<TextRendererComponent>();
             GetComponent<TextRendererComponent>()->SetData("fonts/Arial.ttf", std::format("Game Over. Final Score: {}", score));
+            GetComponent<TextRendererComponent>()->SetColor({ 1,0,0,1 });
         }
 
     };

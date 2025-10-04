@@ -20,10 +20,6 @@ namespace Sprocket {
                 Global::fileLogger.Warning(std::format("Failed to set animation, frame {} has a negative frame duration.", index));
                 return false;
             }
-            if (frame.sprite.texturePath.empty()) {
-                Global::fileLogger.Warning(std::format("Failed to set animation, frame {} has an empty texturePath.", index));
-                return false;
-            }
             index++;
 
             totalDuration += frame.frameDuration;
@@ -69,7 +65,7 @@ namespace Sprocket {
             totalTime += frame.frameDuration;
 
             if (totalTime > timeInCurrentAnimationLoop) {
-                m_QuadRenderer.get()->SetSprite(frame.sprite);
+                m_QuadRenderer->SetSprite(frame.sprite);
                 break;
             }
         }

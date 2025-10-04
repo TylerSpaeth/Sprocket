@@ -23,23 +23,12 @@ namespace Sprocket {
         // the component in the rendering system.
         int m_QuadID = -1;
 
-        glm::vec4 m_QuadColor = { 1,1,1,1 };
         Sprite m_Sprite;
 
     public:
 
         QuadRendererComponent();
         ~QuadRendererComponent();
-
-        // NOTE currently calling either of these updates will cause the renderer to switch between 
-        // color and texture. It should be determined whether this is correct behavior.
-
-        glm::vec4 GetQuadColor() const;
-
-        /// @brief Updates the Quad color to the given RGBA color. If the quad is currently 
-        /// displaying a texture, that will be replaced with this color.
-        /// @param newColor - The RGBA color to use.
-        void SetQuadColor(glm::vec4 newColor);
 
         Sprite GetSprite() const;
 

@@ -46,15 +46,18 @@ namespace Sprocket {
                 float blue = bdis(gen);
                 glm::vec4 color = {red ,green, blue, 1};
 
+                Sprite sprite;
+                sprite.color = color;
+
                 std::shared_ptr<Entity> obstacle1 = SceneManager::GetActiveScene()->SubmitEntityToScene<Obstacle>();
                 SceneManager::GetActiveScene()->AssignEntityParent(obstacle1, m_Self.lock());
                 obstacle1->GetComponent<TransformComponent>()->LocalPosition().y = 3 + height;
-                obstacle1->GetComponent<QuadRendererComponent>()->SetQuadColor(color);
+                obstacle1->GetComponent<QuadRendererComponent>()->SetSprite(sprite);
 
                 std::shared_ptr<Entity> obstacle2 = SceneManager::GetActiveScene()->SubmitEntityToScene<Obstacle>();
                 SceneManager::GetActiveScene()->AssignEntityParent(obstacle2, m_Self.lock());
                 obstacle2->GetComponent<TransformComponent>()->LocalPosition().y = -3 + height;
-                obstacle2->GetComponent<QuadRendererComponent>()->SetQuadColor(color);
+                obstacle2->GetComponent<QuadRendererComponent>()->SetSprite(sprite);
 
                 m_ElapsedTime = 0;
             }

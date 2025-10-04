@@ -43,34 +43,22 @@ namespace Sprocket {
         RegisterColliderMap();
     }
 
-    const bool TileMapComponent::SetQuadRendererData(const char index, const glm::vec4 quadColor) {
-        if (index - FIRST_PRINTABLE_ASCII > MAX_UNIQUE_TILES) {
-            return false;
-        }
-        m_QuadRenderers.at(index - FIRST_PRINTABLE_ASCII).quadColor = quadColor;
-        if (m_EventCallback != nullptr) {
-            for (auto quadRendererID : m_QuadRendererIDs.at(index - FIRST_PRINTABLE_ASCII)) {
-                RenderUpdateEvent* event = new RenderUpdateEvent(RenderUpdateType::QUAD, quadRendererID);
-                event->m_QuadColor = quadColor;
-                m_EventCallback(*event);
-                delete event;
-            }
-        }
-        return true;
-    }
-
     const bool TileMapComponent::SetQuadRendererData(const char index, const Sprite& sprite) {
         if (index - FIRST_PRINTABLE_ASCII > MAX_UNIQUE_TILES) {
             return false;
         }
-        QuadRendererStruct& qrs = m_QuadRenderers.at(index - FIRST_PRINTABLE_ASCII);
-        qrs.sprite = sprite;
+        Sprite& sp = m_Sprites.at(index - FIRST_PRINTABLE_ASCII);
+        sp.color = sprite.color;
+        sp.texturePath = sprite.texturePath;
+        sp.textureXUVCoords = sprite.textureXUVCoords;
+        sp.textureYUVCoords = sprite.textureYUVCoords;
         if (m_EventCallback != nullptr) {
             for (auto quadRendererID : m_QuadRendererIDs.at(index - FIRST_PRINTABLE_ASCII)) {
                 RenderUpdateEvent* event = new RenderUpdateEvent(RenderUpdateType::QUAD, quadRendererID);
-                event->m_TexturePath = qrs.sprite.texturePath;
-                event->m_TexXCoords = qrs.sprite.textureXUVCoords;
-                event->m_TexYCoords = qrs.sprite.textureYUVCoords;
+                event->m_TexturePath = sp.texturePath;
+                event->m_TexXCoords = sp.textureXUVCoords;
+                event->m_TexYCoords = sp.textureYUVCoords;
+                event->m_QuadColor = sp.color;
                 m_EventCallback(*event);
                 delete event;
             }
@@ -124,7 +112,7 @@ namespace Sprocket {
                     // Get the index for this char in the array
                     int cAsInt = c - FIRST_PRINTABLE_ASCII;
 
-                    QuadRendererStruct quadRendererStruct = m_QuadRenderers.at(cAsInt);
+                    Sprite& sprite = m_Sprites.at(cAsInt);
 
                     RenderNewEvent* renderNewEvent = new RenderNewEvent();
                     m_EventCallback(*renderNewEvent);
@@ -133,14 +121,10 @@ namespace Sprocket {
                     delete renderNewEvent;
 
                     RenderUpdateEvent* renderUpdateEventQuad = new RenderUpdateEvent(RenderUpdateType::QUAD, quadID);
-                    if (!quadRendererStruct.sprite.texturePath.empty()) {
-                        renderUpdateEventQuad->m_TexturePath = quadRendererStruct.sprite.texturePath;
-                        renderUpdateEventQuad->m_TexXCoords = quadRendererStruct.sprite.textureXUVCoords;
-                        renderUpdateEventQuad->m_TexYCoords = quadRendererStruct.sprite.textureYUVCoords;
-                    }
-                    else {
-                        renderUpdateEventQuad->m_QuadColor = quadRendererStruct.quadColor;
-                    }
+                    renderUpdateEventQuad->m_QuadColor = sprite.color;
+                    renderUpdateEventQuad->m_TexturePath = sprite.texturePath;
+                    renderUpdateEventQuad->m_TexXCoords = sprite.textureXUVCoords;
+                    renderUpdateEventQuad->m_TexYCoords = sprite.textureYUVCoords;
                     m_EventCallback(*renderUpdateEventQuad);
                     delete renderUpdateEventQuad;
 

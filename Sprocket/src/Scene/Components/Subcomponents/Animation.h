@@ -5,6 +5,8 @@
 
 #include "Core/Sprocket.pch"
 
+#include "ThirdParty/glm/glm.hpp"
+
 namespace Sprocket {
 
     struct AnimationFrame {

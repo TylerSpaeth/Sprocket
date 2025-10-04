@@ -72,6 +72,11 @@ namespace Sprocket {
             ((RenderNewTextEvent&)event).m_QuadID = DrawText(*font, newTextEvent.m_Text);
             break;
         }
+        case EventType::RENDER_UPDATE_TEXT_COLOR: {
+            auto updateTextEvent = (RenderUpdateTextColorEvent&)event;
+            SetQuadColor(updateTextEvent.m_QuadID, updateTextEvent.m_QuadColor);
+            break;
+        }
         case EventType::WINDOW_RESIZED: {
             auto resizeEvent = ((WindowResizedEvent&)event);
             Resize(resizeEvent.GetXDimension(), resizeEvent.GetYDimension());

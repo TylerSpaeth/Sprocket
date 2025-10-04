@@ -31,17 +31,23 @@ namespace Sprocket {
 
             auto collides = GetComponent<BoxColliderComponent>()->CollidesWithAnything();
             auto qr = GetComponent<QuadRendererComponent>();
-            if (qr->GetQuadColor() != glm::vec4(1, 0, 0, 1) && collides) {
-                qr->SetQuadColor({ 1,0,0,1 });
+            if (qr) {
+                if (qr->GetSprite().color != glm::vec4(1, 0, 0, 1) && collides) {
+                    Sprite sp = qr->GetSprite();
+                    sp.color = {1,0,0,1};
+                    qr->SetSprite(sp);
 
-                if (!soundComponent->IsPlaying()) {
-                    soundComponent->Play();
+                    if (!soundComponent->IsPlaying()) {
+                        soundComponent->Play();
+                    }
                 }
-            }
-            else if (!collides && qr->GetQuadColor() == glm::vec4(1, 0, 0, 1)) {
-                qr->SetQuadColor({ 1,1,1,1 });  
-                soundComponent->Stop();
-                soundComponent->Reset();
+                else if (!collides && qr->GetSprite().color == glm::vec4(1, 0, 0, 1)) {
+                    Sprite sp = qr->GetSprite();
+                    sp.color = {1,1,1,1};
+                    qr->SetSprite(sp);
+                    soundComponent->Stop();
+                    soundComponent->Reset();
+                }
             }
 
             if (Input::IsKeyPressed(KEY_W)) {
@@ -75,9 +81,6 @@ namespace Sprocket {
             }
             if (Input::IsKeyPressed(KEY_END) && GetComponent<TransformComponent>()->LocalScale().x > .02) {
                 GetComponent<TransformComponent>()->LocalScale() -= .01;
-            }
-            if (Input::IsKeyPressed(KEY_8)) {
-                GetComponent<QuadRendererComponent>()->SetQuadColor({ 1,0,1,1 });
             }
             if (Input::IsKeyPressed(KEY_7)) {
                 Sprite sprite;
