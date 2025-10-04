@@ -19,7 +19,7 @@ namespace Sprocket {
         bool running;
 
         ScoreText() {
-            GetComponent<TransformComponent>()->LocalPosition() = {0,2,.01};
+            GetComponent<TransformComponent>()->LocalPosition() = {0,2,50};
             AddComponent<TextRendererComponent>();
             GetComponent<TextRendererComponent>()->SetData("fonts/Arial.ttf", "Score: 0");
         }
