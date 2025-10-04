@@ -56,38 +56,12 @@ namespace Sprocket {
 
     void Entity::OnActivate() {
         for (auto component : m_Components) {
-            // If this component is of they QuadRendererComponent, remove its event callback
-            if (auto qr = dynamic_pointer_cast<QuadRendererComponent>(component)) {
-                qr->RegisterEventCallback(m_EventCallback);
-                qr->UpdateModelMatrix(m_Transform->Position(), m_Transform->Rotation(), m_Transform->Scale());
-                qr->SetSprite(qr->GetSprite());
-            }
-            else if (auto camera = dynamic_pointer_cast<CameraComponent>(component)) {
-                camera->RegisterEventCallback(m_EventCallback);
-                camera->UpdateCameraTransform(m_Transform->Position(), m_Transform->Rotation(), m_Transform->Scale());
-            }
-            else if (auto collider = dynamic_pointer_cast<ColliderComponent>(component)) {
-                collider->RegisterEventCallback(m_EventCallback);
-                collider->Register();
-            }
-            else if (auto tileMap = dynamic_pointer_cast<TileMapComponent>(component)) {
-                tileMap->RegisterEventCallback(m_EventCallback);
-                tileMap->RegisterTileMap(m_Transform->Position(), m_Transform->Rotation(), m_Transform->Scale());
-            }
-            else if (auto sound = dynamic_pointer_cast<SoundComponent>(component)) {
-                sound->RegisterEventCallback(m_EventCallback);
-                if (!sound->GetFilepath().empty() && sound->m_SoundID == -1) {
-                    sound->SetFilepath(sound->GetFilepath());
-                }
-            }
-            else if (auto animation = dynamic_pointer_cast<AnimationComponent>(component)) {
-                animation->RegisterEventCallback(m_EventCallback);
-                animation->m_QuadRenderer->UpdateModelMatrix(m_Transform->Position(), m_Transform->Rotation(), m_Transform->Scale());
-            }
-            if (auto tr = dynamic_pointer_cast<TextRendererComponent>(component)) {
-                tr->RegisterEventCallback(m_EventCallback);
-                tr->UpdateModelMatrix(m_Transform->Position(), m_Transform->Rotation(), m_Transform->Scale());
-            }
+            OnActivateParams params;
+            params.eventCallback = m_EventCallback;
+            params.position = m_Transform->Position();
+            params.rotation = m_Transform->Rotation();
+            params.scale = m_Transform->Scale();
+            component->OnActivate(params);
         }
         Start();
     }
@@ -95,37 +69,10 @@ namespace Sprocket {
     void Entity::OnDeactivate() {
 
         for (auto component : m_Components) {
-            // If this component is of they QuadRendererComponent, remove its event callback
-            if (auto qr = dynamic_pointer_cast<QuadRendererComponent>(component)) {
-                qr->RemoveRender();
-                qr->m_EventCallback = nullptr;
-            }
-            else if (auto camera = dynamic_pointer_cast<CameraComponent>(component)) {
-                camera->UpdateCameraTransform(glm::vec3(0), glm::vec3(0), glm::vec3(1));
-                camera->m_EventCallback = nullptr;
-            }
-            else if (auto collider = dynamic_pointer_cast<ColliderComponent>(component)) {
-                collider->Remove();
-                collider->m_EventCallback = nullptr;
-            }
-            else if (auto tileMap = dynamic_pointer_cast<TileMapComponent>(component)) {
-                tileMap->DeleteTileMap();
-                tileMap->m_EventCallback = nullptr;
-            }
-            else if (auto sound = dynamic_pointer_cast<SoundComponent>(component)) {
-                sound->Stop();
-                sound->m_EventCallback = nullptr;
-            }
-            if (auto animation = dynamic_pointer_cast<AnimationComponent>(component)) {
-                animation->m_QuadRenderer->RemoveRender();
-                animation->m_EventCallback = nullptr;
-                animation->m_QuadRenderer->m_EventCallback = nullptr;
-                animation->m_ElapsedTime = 0;
-            }
-            if (auto tr = dynamic_pointer_cast<TextRendererComponent>(component)) {
-                tr->RemoveRender();
-                tr->m_EventCallback = nullptr;
-            }
+
+            OnDeactivateParams params;
+            component->OnDeactivate(params);
+
         }
 
         m_EventCallback = nullptr;
@@ -137,24 +84,12 @@ namespace Sprocket {
         // Transform Updates
         if (m_Transform->m_Modified) {
             for (auto component : m_Components) {
-                if (auto qr = dynamic_pointer_cast<QuadRendererComponent>(component)) {
-                    qr->UpdateModelMatrix(m_Transform->Position(), m_Transform->Rotation(), m_Transform->Scale());
-                }
-                else if (auto camera = dynamic_pointer_cast<CameraComponent>(component)) {
-                    camera->UpdateCameraTransform(m_Transform->Position(), m_Transform->Rotation(), m_Transform->Scale());
-                }
-                else if (auto collider = dynamic_pointer_cast<ColliderComponent>(component)) {
-                    collider->UpdateTransform();
-                }
-                else if (auto tileMap = dynamic_pointer_cast<TileMapComponent>(component)) {
-                    tileMap->UpdateTransform(m_Transform->Position(), m_Transform->Rotation(), m_Transform->Scale());
-                }
-                else if (auto animation = dynamic_pointer_cast<AnimationComponent>(component)) {
-                    animation->m_QuadRenderer->UpdateModelMatrix(m_Transform->Position(), m_Transform->Rotation(), m_Transform->Scale());
-                }
-                else if (auto tr = dynamic_pointer_cast<TextRendererComponent>(component)) {
-                    tr->UpdateModelMatrix(m_Transform->Position(), m_Transform->Rotation(), m_Transform->Scale());
-                }
+                OnUpdateParams params;
+                params.deltaTime = deltaTime;
+                params.position = m_Transform->Position();
+                params.rotation = m_Transform->Rotation();
+                params.scale = m_Transform->Scale();
+                component->OnUpdate(params);
             }
             for (auto child : m_Children) {
                 if(auto lockedChild = child.lock()) {

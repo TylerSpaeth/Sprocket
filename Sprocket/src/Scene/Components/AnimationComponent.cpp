@@ -72,4 +72,20 @@ namespace Sprocket {
 
     }
 
+    void AnimationComponent::OnActivate(OnActivateParams& onActivateParams) {
+        RegisterEventCallback(onActivateParams.eventCallback);
+        m_QuadRenderer->UpdateModelMatrix(onActivateParams.position, onActivateParams.rotation, onActivateParams.scale);
+    }
+
+    void AnimationComponent::OnDeactivate(OnDeactivateParams& onDeactivateParams) {
+        m_QuadRenderer->RemoveRender();
+        m_EventCallback = nullptr;
+        m_QuadRenderer->m_EventCallback = nullptr;
+        m_ElapsedTime = 0;
+    }
+
+    void AnimationComponent::OnUpdate(OnUpdateParams& onUpdateParams) {
+        m_QuadRenderer->UpdateModelMatrix(onUpdateParams.position, onUpdateParams.rotation, onUpdateParams.scale);
+    }
+
 }

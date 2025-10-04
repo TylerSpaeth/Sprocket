@@ -1,6 +1,10 @@
 #ifndef COMPONENT_H
 #define COMPONENT_H
 
+#include "Scene/OnActivateParams.h"
+#include "Scene/OnDeactivateParams.h"
+#include "Scene/OnUpdateParams.h"
+
 #include "Core/Macros.h"
 #include "Core/Sprocket.pch"
 
@@ -11,9 +15,17 @@ namespace Sprocket {
     /// @brief The base class for all Component.
     class SPROCKET_API Component {
 
+        friend class Entity;
+
     public:
         // This is needed to allow dynamic cast checking against Component pointers
         virtual ~Component() = default;
+
+    protected:
+
+        virtual void OnActivate(OnActivateParams& onActivateParams) = 0;
+        virtual void OnDeactivate(OnDeactivateParams& onDeactivateParams) = 0;
+        virtual void OnUpdate(OnUpdateParams& onUpdateParams) = 0;
 
     };
     

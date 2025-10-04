@@ -42,6 +42,13 @@ namespace Sprocket {
         /// @brief The global scale of this TransformComponent.
         const glm::vec3 Scale();
 
+    private:
+
+        void OnActivate(OnActivateParams& onActivateParams) override;
+        void OnDeactivate(OnDeactivateParams& onDeactivateParams) override;
+        void OnUpdate(OnUpdateParams& onUpdateParams) override;
+
+
     };
 
 }

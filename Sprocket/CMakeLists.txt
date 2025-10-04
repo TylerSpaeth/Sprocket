@@ -35,7 +35,7 @@ target_sources(sprocket PRIVATE
   src/ThirdParty/imgui-docking/imgui_widgets.cpp
   src/ThirdParty/imgui-docking/backends/imgui_impl_glfw.cpp
   src/ThirdParty/imgui-docking/backends/imgui_impl_opengl3.cpp
-)
+ "src/Scene/OnActivateParams.h")
 
 # Add Renderer source code
 target_sources(sprocket PRIVATE 

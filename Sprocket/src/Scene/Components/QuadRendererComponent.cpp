@@ -79,4 +79,19 @@ namespace Sprocket {
         m_EventCallback = eventCallback;
         RenderNew();
     }
+
+    void QuadRendererComponent::OnActivate(OnActivateParams& onActivateParams) {
+        RegisterEventCallback(onActivateParams.eventCallback);
+        UpdateModelMatrix(onActivateParams.position, onActivateParams.rotation, onActivateParams.scale);
+        SetSprite(m_Sprite);
+    }
+
+    void QuadRendererComponent::OnDeactivate(OnDeactivateParams& onDeactivateParams) {
+        RemoveRender();
+        m_EventCallback = nullptr;
+    }
+
+    void QuadRendererComponent::OnUpdate(OnUpdateParams& onUpdateParams) {
+        UpdateModelMatrix(onUpdateParams.position, onUpdateParams.rotation, onUpdateParams.scale);
+    }
 }

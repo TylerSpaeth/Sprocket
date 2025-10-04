@@ -39,7 +39,13 @@ namespace Sprocket {
         /// @brief Sets whether the sound should loop when it reaches the end.
         void SetLooping(bool loop);
         /// @brief Gets whether the sound is set to loop when it reaches the end.
-        const bool IsLooping() const;;
+        const bool IsLooping() const;
+
+    private:
+
+        void OnActivate(OnActivateParams& onActivateParams) override;
+        void OnDeactivate(OnDeactivateParams& onDeactivateParams) override;
+        void OnUpdate(OnUpdateParams& onUpdateParams) override;
 
     };
 }

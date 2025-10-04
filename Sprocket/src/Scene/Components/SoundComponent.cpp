@@ -87,4 +87,22 @@ namespace Sprocket {
         return isLooping;
     }
 
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////PRIVATE////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+
+    void SoundComponent::OnActivate(OnActivateParams& onActivateParams) {
+        RegisterEventCallback(onActivateParams.eventCallback);
+        if (!m_Filepath.empty() && m_SoundID == -1) {
+            SetFilepath(m_Filepath);
+        }
+    }
+
+    void SoundComponent::OnDeactivate(OnDeactivateParams& onDeactivateParams) {
+        Stop();
+        m_EventCallback = nullptr;
+    }
+
+    void SoundComponent::OnUpdate(OnUpdateParams& onUpdateParams) {}
+
 }

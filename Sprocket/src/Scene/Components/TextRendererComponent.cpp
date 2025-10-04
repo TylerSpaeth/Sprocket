@@ -95,4 +95,18 @@ namespace Sprocket {
         }
     }
 
+    void TextRendererComponent::OnActivate(OnActivateParams& onActivateParams) {
+        RegisterEventCallback(onActivateParams.eventCallback);
+        UpdateModelMatrix(onActivateParams.position, onActivateParams.rotation, onActivateParams.scale);
+    }
+
+    void TextRendererComponent::OnDeactivate(OnDeactivateParams& onDeactivateParams) {
+        RemoveRender();
+        m_EventCallback = nullptr;
+    }
+
+    void TextRendererComponent::OnUpdate(OnUpdateParams& onUpdateParams) {
+        UpdateModelMatrix(onUpdateParams.position, onUpdateParams.rotation, onUpdateParams.scale);
+    }
+
 }

@@ -92,6 +92,10 @@ namespace Sprocket {
         /// @brief Delete the Collider portion of the tile map from the relevant systems.
         void DeleteColliderMap();
 
+        void OnActivate(OnActivateParams& onActivateParams) override;
+        void OnDeactivate(OnDeactivateParams& onDeactivateParams) override;
+        void OnUpdate(OnUpdateParams& onUpdateParams) override;
+
     };
 
 }
