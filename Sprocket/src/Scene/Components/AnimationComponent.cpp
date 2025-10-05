@@ -85,7 +85,10 @@ namespace Sprocket {
     }
 
     void AnimationComponent::OnUpdate(OnUpdateParams& onUpdateParams) {
-        m_QuadRenderer->UpdateModelMatrix(onUpdateParams.position, onUpdateParams.rotation, onUpdateParams.scale);
+        if (onUpdateParams.updatedTransform) {
+            m_QuadRenderer->UpdateModelMatrix(onUpdateParams.position, onUpdateParams.rotation, onUpdateParams.scale);
+        }
+        UpdateAnimation(onUpdateParams.deltaTime);
     }
 
 }

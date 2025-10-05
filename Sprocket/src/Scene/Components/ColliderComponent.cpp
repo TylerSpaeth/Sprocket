@@ -84,6 +84,8 @@ namespace Sprocket {
     }
 
     void ColliderComponent::OnUpdate(OnUpdateParams& onUpdateParams) {
-        UpdateTransform();
+        if (onUpdateParams.updatedTransform) {
+            UpdateTransform();
+        }
     }
 }

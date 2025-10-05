@@ -343,7 +343,9 @@ namespace Sprocket {
     }
 
     void TileMapComponent::OnUpdate(OnUpdateParams& onUpdateParams) {
-        UpdateTransform(onUpdateParams.position, onUpdateParams.rotation, onUpdateParams.scale);
+        if (onUpdateParams.updatedTransform) {
+            UpdateTransform(onUpdateParams.position, onUpdateParams.rotation, onUpdateParams.scale);
+        }
     }
 
 

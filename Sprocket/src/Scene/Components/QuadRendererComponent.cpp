@@ -92,6 +92,8 @@ namespace Sprocket {
     }
 
     void QuadRendererComponent::OnUpdate(OnUpdateParams& onUpdateParams) {
-        UpdateModelMatrix(onUpdateParams.position, onUpdateParams.rotation, onUpdateParams.scale);
+        if (onUpdateParams.updatedTransform) {
+            UpdateModelMatrix(onUpdateParams.position, onUpdateParams.rotation, onUpdateParams.scale);
+        }
     }
 }

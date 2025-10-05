@@ -55,12 +55,14 @@ namespace Sprocket {
     void Entity::OnEvent(Event& event) {}
 
     void Entity::OnActivate() {
+
+        OnActivateParams params;
+        params.eventCallback = m_EventCallback;
+        params.position = m_Transform->Position();
+        params.rotation = m_Transform->Rotation();
+        params.scale = m_Transform->Scale();
+
         for (auto component : m_Components) {
-            OnActivateParams params;
-            params.eventCallback = m_EventCallback;
-            params.position = m_Transform->Position();
-            params.rotation = m_Transform->Rotation();
-            params.scale = m_Transform->Scale();
             component->OnActivate(params);
         }
         Start();
@@ -68,11 +70,10 @@ namespace Sprocket {
 
     void Entity::OnDeactivate() {
 
+        OnDeactivateParams params;
+
         for (auto component : m_Components) {
-
-            OnDeactivateParams params;
             component->OnDeactivate(params);
-
         }
 
         m_EventCallback = nullptr;
@@ -81,31 +82,29 @@ namespace Sprocket {
 
     void Entity::OnUpdate(float deltaTime) {
 
-        // Transform Updates
+        OnUpdateParams params;
+        params.deltaTime = deltaTime;
         if (m_Transform->m_Modified) {
-            for (auto component : m_Components) {
-                OnUpdateParams params;
-                params.deltaTime = deltaTime;
-                params.position = m_Transform->Position();
-                params.rotation = m_Transform->Rotation();
-                params.scale = m_Transform->Scale();
-                component->OnUpdate(params);
-            }
-            for (auto child : m_Children) {
-                if(auto lockedChild = child.lock()) {
-                    lockedChild->m_Transform->m_Modified = true;
+            params.updatedTransform = true;
+            params.position = m_Transform->Position();
+            params.rotation = m_Transform->Rotation();
+            params.scale = m_Transform->Scale();
+        }
+
+        for (auto component : m_Components) {
+
+            component->OnUpdate(params);
+
+            if (m_Transform->m_Modified) {
+                for (auto child : m_Children) {
+                    if (auto lockedChild = child.lock()) {
+                        lockedChild->m_Transform->m_Modified = true;
+                    }
                 }
             }
-
-            m_Transform->m_Modified = false;
         }
 
-        // Any per frame updates for components
-        for (auto component : m_Components) {
-            if (auto animation = dynamic_pointer_cast<AnimationComponent>(component)) {
-                animation->UpdateAnimation(deltaTime);
-            }
-        }
+        m_Transform->m_Modified = false;
 
         Update(deltaTime);
 

@@ -7,6 +7,8 @@ namespace Sprocket {
 
     struct OnUpdateParams {
         float deltaTime;
+
+        bool updatedTransform = false;
         glm::vec3 position;
         glm::vec3 rotation;
         glm::vec3 scale;

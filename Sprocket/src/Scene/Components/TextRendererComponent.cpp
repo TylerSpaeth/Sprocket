@@ -106,7 +106,9 @@ namespace Sprocket {
     }
 
     void TextRendererComponent::OnUpdate(OnUpdateParams& onUpdateParams) {
-        UpdateModelMatrix(onUpdateParams.position, onUpdateParams.rotation, onUpdateParams.scale);
+        if (onUpdateParams.updatedTransform) {
+            UpdateModelMatrix(onUpdateParams.position, onUpdateParams.rotation, onUpdateParams.scale);
+        }
     }
 
 }

@@ -41,7 +41,9 @@ namespace Sprocket {
     }
 
     void CameraComponent::OnUpdate(OnUpdateParams& onUpdateParams) {
-        UpdateCameraTransform(onUpdateParams.position, onUpdateParams.rotation, onUpdateParams.scale);
+        if (onUpdateParams.updatedTransform) {
+            UpdateCameraTransform(onUpdateParams.position, onUpdateParams.rotation, onUpdateParams.scale);
+        }
     }
 
 }
