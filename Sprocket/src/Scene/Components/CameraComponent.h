@@ -14,9 +14,16 @@ namespace Sprocket {
 
         friend class Entity;
 
+    private:
+        glm::vec3 m_Position= {0,0,0};
+
     public:
 
         ~CameraComponent();
+
+        /// @brief Gets the position of the mouse in world space.
+        /// @return the x any y coordinates of the mouse in world space.
+        glm::vec2 GetMousePositionInWorldSpace();
 
     private:
 

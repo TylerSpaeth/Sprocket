@@ -8,6 +8,8 @@
 
 #include "Utils/Singleton.h"
 
+#include "ThirdParty/glm/glm.hpp"
+
 namespace Sprocket {
 
     /// @brief This is a singleton the encapsulates the GLFW functionality. This is an event producer.
@@ -41,6 +43,10 @@ namespace Sprocket {
 
         /// @brief Unlocks the aspect ratio of the window.
         static void UnlockAspectRatio();
+
+        /// @brief Gets the window dimensions in pixels.
+        /// @return X and Y dimensions of the window in pixels.
+        static const glm::vec2 GetWindowDimensions();
 
     private:
 
