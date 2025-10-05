@@ -72,7 +72,7 @@ namespace Sprocket {
     class SPROCKET_API CircleColliderComponent : public ColliderComponent {
         friend class Entity;
     private:
-        float m_Radius = 1;
+        float m_Radius = .5;
 
     public:
 

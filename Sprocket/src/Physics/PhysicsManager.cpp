@@ -34,7 +34,7 @@ namespace Sprocket {
                 newEvent.m_PhysicsID = AddPhysicsObject(newEvent.m_ColliderCenter * Global::pixelsPerUnit, newEvent.m_BoxColliderRotation, newEvent.m_BoxColliderSize * Global::pixelsPerUnit);
                 break;
             case ColliderType::CIRCLE:
-                newEvent.m_PhysicsID = AddPhysicsObject(newEvent.m_ColliderCenter, newEvent.m_CircleRadius * Global::pixelsPerUnit);
+                newEvent.m_PhysicsID = AddPhysicsObject(newEvent.m_ColliderCenter * Global::pixelsPerUnit, newEvent.m_CircleRadius * Global::pixelsPerUnit);
                 break;
             }
             break;
@@ -46,7 +46,7 @@ namespace Sprocket {
                 UpdatePhysicsObject(updateEvent.m_PhysicsID, updateEvent.m_ColliderCenter * Global::pixelsPerUnit, updateEvent.m_BoxColliderRotation, updateEvent.m_BoxColliderSize * Global::pixelsPerUnit);
                 break;
             case ColliderType::CIRCLE:
-                UpdatePhysicsObject(updateEvent.m_PhysicsID, updateEvent.m_ColliderCenter, updateEvent.m_CircleRadius * Global::pixelsPerUnit);
+                UpdatePhysicsObject(updateEvent.m_PhysicsID, updateEvent.m_ColliderCenter * Global::pixelsPerUnit, updateEvent.m_CircleRadius * Global::pixelsPerUnit);
                 break;
             }
             break;
