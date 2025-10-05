@@ -23,13 +23,16 @@ namespace Sprocket {
 
         Bird() {
             AddComponent<QuadRendererComponent>();
-            AddComponent<BoxColliderComponent>();
+            Sprite sprite;
+            sprite.texturePath = "textures/Circle.png";
+            GetComponent<QuadRendererComponent>()->SetSprite(sprite);
+            AddComponent<CircleColliderComponent>();
             GetComponent<TransformComponent>()->LocalScale() = {0.5,0.5,1};
         }
 
         void Update(float deltaTime) {
 
-            auto collider = GetComponent<BoxColliderComponent>();
+            auto collider = GetComponent<CircleColliderComponent>();
             if (collider->CollidesWithAnything()) {
                 gameOverCallback();
                 return;

@@ -22,7 +22,7 @@ namespace Sprocket {
         glm::vec2 m_ColliderCenter;
         float m_CircleRadius = 0;
         float m_BoxColliderRotation = 0;
-        glm::vec2 m_BoxColliderSize;
+        glm::vec2 m_BoxColliderSize = {0,0};
         ColliderType m_ColliderType;
     public:
         PhysicsNewEvent(glm::vec2 colliderCenter, glm::vec2 boxColliderSize, float boxColliderRotation) : m_ColliderCenter(colliderCenter), m_BoxColliderRotation(boxColliderRotation), m_BoxColliderSize(boxColliderSize) {
@@ -45,7 +45,7 @@ namespace Sprocket {
         glm::vec2 m_ColliderCenter;
         float m_CircleRadius = 0;
         float m_BoxColliderRotation = 0;
-        glm::vec2 m_BoxColliderSize;
+        glm::vec2 m_BoxColliderSize = {0,0};
         ColliderType m_ColliderType;
     public:
         PhysicsUpdateEvent(const unsigned int physicsID, glm::vec2 colliderCenter, glm::vec2 boxColliderSize, float boxColliderRotation) : m_PhysicsID(physicsID), m_ColliderCenter(colliderCenter), m_BoxColliderRotation(boxColliderRotation), m_BoxColliderSize(boxColliderSize) {

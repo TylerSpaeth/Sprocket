@@ -27,7 +27,10 @@ namespace Sprocket {
 
     void QuadRendererComponent::SetSprite(const Sprite& sprite) {
         m_Sprite = sprite;
-        SendTextureEvent();
+        if (m_EventCallback) {
+            SendTextureEvent();
+        }
+        
     }
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
