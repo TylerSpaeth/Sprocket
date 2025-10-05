@@ -23,10 +23,13 @@ namespace Sprocket {
 
     void SoundComponent::SetFilepath(const std::string& filepath) {
         m_Filepath = filepath;
-        AudioNewEvent* event = new AudioNewEvent(m_Filepath);
-        m_EventCallback(*event);
-        m_SoundID = event->GetSoundID();
-        delete event;
+
+        if (m_EventCallback) {
+            AudioNewEvent* event = new AudioNewEvent(m_Filepath);
+            m_EventCallback(*event);
+            m_SoundID = event->GetSoundID();
+            delete event;
+        }
     }
 
     const std::string& SoundComponent::GetFilepath() const {

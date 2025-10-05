@@ -20,7 +20,7 @@ namespace Sprocket {
         glm::vec3 m_LocalRotation = glm::vec3(0, 0, 0);
         glm::vec3 m_LocalScale = glm::vec3(1, 1, 1);
         // Indicates whether the transform has been modified since the last time it was checked.
-        bool m_Modified = false;
+        bool m_Modified = true;
 
         /// @brief A callback function that returns the global transform of the entity this component is attached to.
         std::function<TransformComponent()> m_GlobalTransformCallback;

@@ -52,8 +52,9 @@ namespace Sprocket {
             cowboyIdle.animationFrames.push_back(frame3);
             cowboyIdle.animationFrames.push_back(frame4);
 
-            GetComponent<TransformComponent>()->LocalPosition().y += 5;
-
+            // TransformComponent are the only components that should be modified in the constructor.
+            // Others can be, but it's not recommended.
+            GetComponent<TransformComponent>()->LocalPosition().y += 5; 
         }
 
         void Start() override {

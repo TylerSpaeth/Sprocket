@@ -10,10 +10,13 @@ namespace Sprocket {
     public:
         EnterToStart() {
             AddComponent<TextRendererComponent>();
-            GetComponent<TextRendererComponent>()->SetData("fonts/Arial.ttf", "Press Enter to Start");
             auto transform = GetComponent<TransformComponent>();
             transform->LocalScale() = { 0.5, 0.5, 1 };
             transform->LocalPosition().z += .01;
+        }
+
+        void Start() override {
+            GetComponent<TextRendererComponent>()->SetData("fonts/Arial.ttf", "Press Enter to Start");
         }
 
         void Update(float deltaTime) override {

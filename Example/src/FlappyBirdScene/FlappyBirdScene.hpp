@@ -7,6 +7,7 @@
 #include "Bird.hpp"
 #include "ScoreText.hpp"
 #include "Border.hpp"
+#include "GameOverSoundEffect.hpp"
 
 namespace Sprocket {
     
@@ -36,6 +37,7 @@ namespace Sprocket {
             ((ScoreText*)scoreText.get())->GameOver();
             scoreText->running = false;
             RemoveEntityFromScene(bird);
+            SubmitEntityToScene<GameOverSoundEffect>();
         }
 
     };

@@ -23,11 +23,17 @@ namespace Sprocket {
 
         Bird() {
             AddComponent<QuadRendererComponent>();
+            AddComponent<CircleColliderComponent>();
+            AddComponent<SoundComponent>();
+            GetComponent<TransformComponent>()->LocalScale() = { 0.5,0.5,1 };
+        }
+
+        void Start() override {
             Sprite sprite;
             sprite.texturePath = "textures/Circle.png";
             GetComponent<QuadRendererComponent>()->SetSprite(sprite);
-            AddComponent<CircleColliderComponent>();
-            GetComponent<TransformComponent>()->LocalScale() = {0.5,0.5,1};
+            GetComponent<SoundComponent>()->SetFilepath("sounds/pixel-jump-319167.mp3");
+            GetComponent<SoundComponent>()->SetVolume(0.5f);
         }
 
         void Update(float deltaTime) {
@@ -49,6 +55,7 @@ namespace Sprocket {
 
             if (!jumping && Input::IsKeyPressed(KEY_SPACE)) {
                 jumping = true;
+                GetComponent<SoundComponent>()->Play();
             }
 
             float move = 0;

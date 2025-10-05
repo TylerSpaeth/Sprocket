@@ -20,9 +20,8 @@ namespace Sprocket {
 
     public:
 
-        ObstacleSpawner() {
+        ObstacleSpawner() : gen(std::mt19937(rd())) {
             GetComponent<TransformComponent>()->LocalPosition().x = 6.5;
-            gen = std::mt19937(rd());
         }
 
         void Start() override {
