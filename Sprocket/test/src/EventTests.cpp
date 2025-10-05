@@ -2,7 +2,6 @@
 #include "Events/Event.h"
 #include "Events/KeyboardEvent.h"
 #include "Events/MouseEvent.h"
-#include "Events/WindowEvents.h"
 #include "Events/ApplicationEvent.h"
 #include "Events/RenderEvent.h"
 
@@ -46,11 +45,6 @@ TEST(EventTests, VerifyEventTypes) {
         Sprocket::MouseScrolledEvent event(0, 0);
         Sprocket::EventType type = event.GetEventType();
         EXPECT_EQ(type, Sprocket::EventType::MOUSE_SCROLLED);
-    }
-    {
-        Sprocket::WindowCloseEvent event;
-        Sprocket::EventType type = event.GetEventType();
-        EXPECT_EQ(type, Sprocket::EventType::WINDOW_CLOSE);
     }
     {
         Sprocket::RenderNewEvent event;
