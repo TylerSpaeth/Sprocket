@@ -26,6 +26,10 @@ namespace Sprocket {
         /// @param scale
         void UpdateCameraTransform(glm::vec3 position, glm::vec3 rotation, glm::vec3 scale);
 
+        void OnActivate(OnActivateParams& onActivateParams) override;
+        void OnDeactivate(OnDeactivateParams& onDeactivateParams) override;
+        void OnUpdate(OnUpdateParams& onUpdateParams) override;
+
     };
 
 }

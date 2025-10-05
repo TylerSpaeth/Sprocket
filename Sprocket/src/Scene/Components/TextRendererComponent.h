@@ -56,6 +56,10 @@ namespace Sprocket {
         /// @brief Pulls this out of the rendering system.
         void RemoveRender();
 
+        void OnActivate(OnActivateParams& onActivateParams) override;
+        void OnDeactivate(OnDeactivateParams& onDeactivateParams) override;
+        void OnUpdate(OnUpdateParams& onUpdateParams) override;
+
     };
 
 }

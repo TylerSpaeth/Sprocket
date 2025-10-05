@@ -73,4 +73,19 @@ namespace Sprocket {
 
     }
 
+    void ColliderComponent::OnActivate(OnActivateParams& onActivateParams) {
+        RegisterEventCallback(onActivateParams.eventCallback);
+        Register();
+    }
+
+    void ColliderComponent::OnDeactivate(OnDeactivateParams& onDeactivateParams) {
+        Remove();
+        m_EventCallback = nullptr;
+    }
+
+    void ColliderComponent::OnUpdate(OnUpdateParams& onUpdateParams) {
+        if (onUpdateParams.updatedTransform) {
+            UpdateTransform();
+        }
+    }
 }

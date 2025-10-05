@@ -30,4 +30,20 @@ namespace Sprocket {
 
     }
 
+    void CameraComponent::OnActivate(OnActivateParams& onActivateParams) {
+        RegisterEventCallback(onActivateParams.eventCallback);
+        UpdateCameraTransform(onActivateParams.position, onActivateParams.rotation, onActivateParams.scale);
+    }
+
+    void CameraComponent::OnDeactivate(OnDeactivateParams& onDeactivateParams) {
+        UpdateCameraTransform(glm::vec3(0), glm::vec3(0), glm::vec3(1));
+        m_EventCallback = nullptr;
+    }
+
+    void CameraComponent::OnUpdate(OnUpdateParams& onUpdateParams) {
+        if (onUpdateParams.updatedTransform) {
+            UpdateCameraTransform(onUpdateParams.position, onUpdateParams.rotation, onUpdateParams.scale);
+        }
+    }
+
 }

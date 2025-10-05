@@ -44,6 +44,10 @@ namespace Sprocket {
         /// @brief Updates the transform of the collider in the physics system
         virtual void UpdateTransform() = 0;
 
+        void OnActivate(OnActivateParams& onActivateParams) override;
+        void OnDeactivate(OnDeactivateParams& onDeactivateParams) override;
+        void OnUpdate(OnUpdateParams& onUpdateParams) override;
+
     };
 
     /// @brief A 2D box collider component.

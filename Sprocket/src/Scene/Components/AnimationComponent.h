@@ -44,6 +44,10 @@ namespace Sprocket {
         /// @param deltaTime - The elapsed time between frames
         void UpdateAnimation(float deltaTime);
 
+        void OnActivate(OnActivateParams& onActivateParams) override;
+        void OnDeactivate(OnDeactivateParams& onDeactivateParams) override;
+        void OnUpdate(OnUpdateParams& onUpdateParams) override;
+
     };
 
 }

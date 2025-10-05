@@ -332,6 +332,23 @@ namespace Sprocket {
         m_PhysicsIDs.clear();
     }
 
+    void TileMapComponent::OnActivate(OnActivateParams& onActivateParams) {
+        RegisterEventCallback(onActivateParams.eventCallback);
+        RegisterTileMap(onActivateParams.position, onActivateParams.rotation, onActivateParams.scale);
+    }
+
+    void TileMapComponent::OnDeactivate(OnDeactivateParams& onDeactivateParams) {
+        DeleteTileMap();
+        m_EventCallback = nullptr;
+    }
+
+    void TileMapComponent::OnUpdate(OnUpdateParams& onUpdateParams) {
+        if (onUpdateParams.updatedTransform) {
+            UpdateTransform(onUpdateParams.position, onUpdateParams.rotation, onUpdateParams.scale);
+        }
+    }
+
+
     ///////////////////////////////////////////////////////////////////////////////////////////////
     ////////////////////////////////////////////NONCLASS///////////////////////////////////////////
     ///////////////////////////////////////////////////////////////////////////////////////////////

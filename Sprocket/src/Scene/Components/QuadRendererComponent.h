@@ -53,6 +53,10 @@ namespace Sprocket {
 
         void RegisterEventCallback(const std::function<void(Event&)> eventCallback) override;
 
+        void OnActivate(OnActivateParams& onActivateParams) override;
+        void OnDeactivate(OnDeactivateParams& onDeactivateParams) override;
+        void OnUpdate(OnUpdateParams& onUpdateParams) override;
+
     };
 
 }
