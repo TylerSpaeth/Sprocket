@@ -86,10 +86,11 @@ namespace Sprocket {
         params.deltaTime = deltaTime;
         if (m_Transform->m_Modified) {
             params.updatedTransform = true;
-            params.position = m_Transform->Position();
-            params.rotation = m_Transform->Rotation();
-            params.scale = m_Transform->Scale();
         }
+        // We set these even if the transform wasn't modified since some components will need it anyways
+        params.position = m_Transform->Position();
+        params.rotation = m_Transform->Rotation();
+        params.scale = m_Transform->Scale();
 
         for (auto component : m_Components) {
 

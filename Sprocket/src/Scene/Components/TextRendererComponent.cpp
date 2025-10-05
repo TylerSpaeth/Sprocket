@@ -1,5 +1,7 @@
 #include "TextRendererComponent.h"
 
+#include "Core/Global.h"
+
 #include "Events/RenderEvent.h"
 
 #include "Utils/RendererUtils.h"
@@ -26,10 +28,6 @@ namespace Sprocket {
         }
         m_FontPath = fontPath;
         m_Text = text;
-
-        if (m_EventCallback) {
-            RenderNew();
-        }
 
         return true;
     }
@@ -76,6 +74,11 @@ namespace Sprocket {
 
     void TextRendererComponent::UpdateModelMatrix(glm::vec3 position, glm::vec3 rotation, glm::vec3 scale) {
 
+        if (m_QuadID == -1) {
+            Global::fileLogger.Warning("Attempting to UpdateModelMatrix without rendering first.");
+            return;
+        }
+
         RenderUpdateEvent* e = new RenderUpdateEvent(RenderUpdateType::MODEL_MATRIX, m_QuadID);
 
         // TODO investigate why the position and rotation need to be negative here. This behavior should
@@ -97,6 +100,7 @@ namespace Sprocket {
 
     void TextRendererComponent::OnActivate(OnActivateParams& onActivateParams) {
         RegisterEventCallback(onActivateParams.eventCallback);
+
         UpdateModelMatrix(onActivateParams.position, onActivateParams.rotation, onActivateParams.scale);
     }
 
@@ -106,7 +110,13 @@ namespace Sprocket {
     }
 
     void TextRendererComponent::OnUpdate(OnUpdateParams& onUpdateParams) {
-        if (onUpdateParams.updatedTransform) {
+
+        // If the text should be renderered, but has not by the time update hits, then render it
+        if (m_QuadID == -1 && !m_FontPath.empty() && !m_Text.empty()) {
+            RenderNew();
+            UpdateModelMatrix(onUpdateParams.position, onUpdateParams.rotation, onUpdateParams.scale);
+        }
+        else if (onUpdateParams.updatedTransform) {
             UpdateModelMatrix(onUpdateParams.position, onUpdateParams.rotation, onUpdateParams.scale);
         }
     }

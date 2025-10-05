@@ -59,7 +59,6 @@ namespace Sprocket {
         void IncrementScore() {
             RemoveComponent<TextRendererComponent>();
             score++;
-            GetComponent<TransformComponent>()->LocalPosition() = { 0,2,.01 };
             AddComponent<TextRendererComponent>();
             GetComponent<TextRendererComponent>()->SetData("fonts/Arial.ttf", std::format("Score: {}", score));
         }

@@ -68,12 +68,13 @@ namespace Sprocket {
             auto newComponent = std::make_shared<T>();
             m_Components.push_back(newComponent);
 
-            // If this is an event driven component and we have an eventcallback, register
-                        // the event callback on the component
-            if (std::is_base_of<EventDrivenComponent, T>::value) {
-                if (m_EventCallback) {
-                    ((std::shared_ptr<EventDrivenComponent>)newComponent)->RegisterEventCallback(m_EventCallback);
-                }
+            if (m_EventCallback) {
+                OnActivateParams onActivateParams;
+                onActivateParams.eventCallback = m_EventCallback;
+                onActivateParams.position = m_Transform->Position();
+                onActivateParams.rotation = m_Transform->Rotation();
+                onActivateParams.scale = m_Transform->Scale();
+                newComponent->OnActivate(onActivateParams);
             }
 
             return true;
@@ -119,9 +120,11 @@ namespace Sprocket {
             for (int i = 0; i < m_Components.size(); i++) {
                 auto existingComponent = dynamic_pointer_cast<T>(m_Components.at(i));
                 if (existingComponent != nullptr) {
+                    OnDeactivateParams onDeactivateParams;
+                    existingComponent->OnDeactivate(onDeactivateParams);
+                    m_Components.erase(m_Components.begin() + i);
                     // Since we are removing this component we can allow another to be created
                     (*it->second)++;
-                    m_Components.erase(m_Components.begin() + i);
                     return true;
                 }
             }
