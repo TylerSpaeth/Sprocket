@@ -18,48 +18,37 @@ namespace Sprocket {
         void Start() override {
             GetComponent<TileMapComponent>()->SetColliderMapPath("tilemaps/ColliderTileMap.txt");
             GetComponent<TileMapComponent>()->SetQuadRendererMapPath("tilemaps/SpriteTileMap.txt");
+
+            auto sprites = GetSpritesFromSpritesheet("textures/NewDirtTopDownTiles.png", 960, 960, 96, 96);
+
             // 0 Full Grass
-            Sprite fullGrass = { "textures/NewDirtTopDownTiles.png", { 575 / 959.0f,575 / 959.0f,480 / 959.0f,480 / 959.0f }, { 575 / 959.0f,480 / 959.0f,480 / 959.0f,575 / 959.0f } };
-            GetComponent<TileMapComponent>()->SetQuadRendererData('0', fullGrass);
+            GetComponent<TileMapComponent>()->SetQuadRendererData('0', sprites[55]);
             // 1 Full Dirt
-            Sprite fullDirt = { "textures/NewDirtTopDownTiles.png", { 383 / 959.0f,383 / 959.0f,288 / 959.0f,288 / 959.0f }, { 863 / 959.0f,768 / 959.0f,768 / 959.0f,863 / 959.0f } };
-            GetComponent<TileMapComponent>()->SetQuadRendererData('1', fullDirt);
+            GetComponent<TileMapComponent>()->SetQuadRendererData('1', sprites[83]);
             // 2 Grass Top Dirt Bottom
-            Sprite grassTopDirtBottom = { "textures/NewDirtTopDownTiles.png", { 575 / 959.0f,575 / 959.0f,480 / 959.0f,480 / 959.0f }, { 479 / 959.0f,384 / 959.0f,384 / 959.0f,479 / 959.0f } };
-            GetComponent<TileMapComponent>()->SetQuadRendererData('2', grassTopDirtBottom);
+            GetComponent<TileMapComponent>()->SetQuadRendererData('2', sprites[45]);
             // 3 Grass Left Dirt Right
-            Sprite grassLeftDirtRight = { "textures/NewDirtTopDownTiles.png", { 671 / 959.0f,671 / 959.0f,576 / 959.0f,576 / 959.0f }, { 575 / 959.0f,480 / 959.0f,480 / 959.0f,575 / 959.0f } };
-            GetComponent<TileMapComponent>()->SetQuadRendererData('3', grassLeftDirtRight);
+            GetComponent<TileMapComponent>()->SetQuadRendererData('3', sprites[56]);
             // 4 Grass Right Dirt Left
-            Sprite grassRightDirtLeft = { "textures/NewDirtTopDownTiles.png", { 479 / 959.0f,479 / 959.0f,384 / 959.0f,384 / 959.0f }, { 575 / 959.0f,480 / 959.0f,480 / 959.0f,575 / 959.0f } };
-            GetComponent<TileMapComponent>()->SetQuadRendererData('4', grassRightDirtLeft);
+            GetComponent<TileMapComponent>()->SetQuadRendererData('4', sprites[54]);
             // 5 Grass Bottom Dirt Top
-            Sprite grassBottomDirtTop = { "textures/NewDirtTopDownTiles.png", { 575 / 959.0f,575 / 959.0f,480 / 959.0f,480 / 959.0f }, { 671 / 959.0f,576 / 959.0f,576 / 959.0f,671 / 959.0f } };
-            GetComponent<TileMapComponent>()->SetQuadRendererData('5', grassBottomDirtTop);
+            GetComponent<TileMapComponent>()->SetQuadRendererData('5', sprites[65]);
             // 6 Dirt Bottom Right
-            Sprite dirtBottomRight = { "textures/NewDirtTopDownTiles.png", { 191 / 959.0f,191 / 959.0f,96 / 959.0f,96 / 959.0f }, { 287 / 959.0f,192 / 959.0f,192 / 959.0f,287 / 959.0f } };
-            GetComponent<TileMapComponent>()->SetQuadRendererData('6', dirtBottomRight);
+            GetComponent<TileMapComponent>()->SetQuadRendererData('6', sprites[21]);
             // 7 Dirt Bottom Left
-            Sprite dirtBottomLeft = { "textures/NewDirtTopDownTiles.png", { 287 / 959.0f,287 / 959.0f,192 / 959.0f,192 / 959.0f }, { 287 / 959.0f,192 / 959.0f,192 / 959.0f,287 / 959.0f } };
-            GetComponent<TileMapComponent>()->SetQuadRendererData('7', dirtBottomLeft);
+            GetComponent<TileMapComponent>()->SetQuadRendererData('7', sprites[22]);
             // 8 Dirt Top Left
-            Sprite dirtTopLeft = { "textures/NewDirtTopDownTiles.png", { 287 / 959.0f,287 / 959.0f,192 / 959.0f,192 / 959.0f }, { 191 / 959.0f,96 / 959.0f,96 / 959.0f,191 / 959.0f } };
-            GetComponent<TileMapComponent>()->SetQuadRendererData('8', dirtTopLeft);
+            GetComponent<TileMapComponent>()->SetQuadRendererData('8', sprites[12]);
             // 9 Dirt Top Right
-            Sprite dirtTopRight = { "textures/NewDirtTopDownTiles.png", { 191 / 959.0f,191 / 959.0f,96 / 959.0f,96 / 959.0f }, { 191 / 959.0f,96 / 959.0f,96 / 959.0f,191 / 959.0f } };
-            GetComponent<TileMapComponent>()->SetQuadRendererData('9', dirtTopRight);
+            GetComponent<TileMapComponent>()->SetQuadRendererData('9', sprites[11]);
             // a Grass Bottom Right
-            Sprite grassBottomRight = { "textures/NewDirtTopDownTiles.png", { 191 / 959.0f,191 / 959.0f,96 / 959.0f,96 / 959.0f }, { 863 / 959.0f,768 / 959.0f,768 / 959.0f,863 / 959.0f } };
-            GetComponent<TileMapComponent>()->SetQuadRendererData('a', grassBottomRight);
+            GetComponent<TileMapComponent>()->SetQuadRendererData('a', sprites[81]);
             // b Grass Bottom Left
-            Sprite grassBottomLeft = { "textures/NewDirtTopDownTiles.png", { 287 / 959.0f,287 / 959.0f,192 / 959.0f,192 / 959.0f }, { 863 / 959.0f,768 / 959.0f,768 / 959.0f,863 / 959.0f } };
-            GetComponent<TileMapComponent>()->SetQuadRendererData('b', grassBottomLeft);
+            GetComponent<TileMapComponent>()->SetQuadRendererData('b', sprites[82]);
             // c Grass Top Left
-            Sprite grassTopLeft = { "textures/NewDirtTopDownTiles.png", { 287 / 959.0f,287 / 959.0f,192 / 959.0f,192 / 959.0f }, { 767 / 959.0f,672 / 959.0f,672 / 959.0f,767 / 959.0f } };
-            GetComponent<TileMapComponent>()->SetQuadRendererData('c', grassTopLeft);
+            GetComponent<TileMapComponent>()->SetQuadRendererData('c', sprites[72]);
             // d Grass Top Right
-            Sprite grassTopRight = { "textures/NewDirtTopDownTiles.png", { 191 / 959.0f,191 / 959.0f,96 / 959.0f,96 / 959.0f }, { 767 / 959.0f,672 / 959.0f,672 / 959.0f,767 / 959.0f } };
-            GetComponent<TileMapComponent>()->SetQuadRendererData('d', grassTopRight);
+            GetComponent<TileMapComponent>()->SetQuadRendererData('d', sprites[71]);
         }
 
     };

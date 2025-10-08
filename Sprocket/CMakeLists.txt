@@ -102,6 +102,7 @@ target_sources(sprocket PRIVATE
 # Add Utils source code
 target_sources(sprocket PRIVATE
     src/Utils/RendererUtils.cpp
+    src/Utils/SceneUtils.cpp
 )
 
 # Copy everything in the resources folder to the output directory

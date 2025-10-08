@@ -14,6 +14,8 @@
 
 #include "ImGui/ImGuiImpl.h"
 
+#include "Utils/ExternalUtils.h"
+
 #include "ThirdParty/imgui-docking/imgui.h"
 
 // Sprocket EntryPoint
