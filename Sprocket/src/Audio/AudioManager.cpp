@@ -97,7 +97,7 @@ namespace Sprocket {
 
     void AudioManager::UnloadSound(int soundID) {
         if(soundID < 0 || soundID >= m_Sounds.size() || m_Sounds[soundID] == nullptr) {
-            Global::fileLogger.Warning(std::format("Attempted to unload invalid sound ID: {}", soundID));
+            Global::FileLogger().Warning(std::format("Attempted to unload invalid sound ID: {}", soundID));
             return;
         }
         delete m_Sounds[soundID];
@@ -145,7 +145,7 @@ namespace Sprocket {
         auto startupStatus = ma_engine_init(NULL, (ma_engine*)m_NativeAudioEngine);
 
         if (startupStatus != MA_SUCCESS) {
-            Global::fileLogger.Error(std::format("Failed to initialize native audio engine. Error code: {}", (void*)startupStatus));
+            Global::FileLogger().Error(std::format("Failed to initialize native audio engine. Error code: {}", (void*)startupStatus));
             free(m_NativeAudioEngine);
             delete this;
         }

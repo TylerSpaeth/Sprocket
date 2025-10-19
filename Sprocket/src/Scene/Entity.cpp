@@ -16,7 +16,7 @@ namespace Sprocket {
 
     bool Entity::InitSelf(std::shared_ptr<Entity> self) {
         if (self.get() != this) {
-            Global::fileLogger.Warning("InitSelf Failed. Provided pointer does not point to self.");
+            Global::FileLogger().Warning("InitSelf Failed. Provided pointer does not point to self.");
             return false;
         }
         m_Self = self; // call this right after construction
@@ -27,6 +27,10 @@ namespace Sprocket {
         auto parentGlobalTransform = GetParentGlobalTransform();
         m_Transform = std::make_shared<TransformComponent>([this]() {return GetParentGlobalTransform(); });
         InitializeAllowedComponents();
+    }
+
+    uint64_t Entity::GetUUID() const {
+        return m_UUID;
     }
 
     ///////////////////////////////////////////////////////////////////////////////////////////////

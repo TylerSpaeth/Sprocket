@@ -7,10 +7,11 @@ namespace Sprocket {
 
     namespace Global {
         
-        inline static Logger fileLogger("Sprocket.log");
-        inline static Logger consoleLogger;
+        SPROCKET_API Logger& FileLogger();
 
-        inline static float pixelsPerUnit = 100.0f;
+        SPROCKET_API Logger& ConsoleLogger();
+
+        SPROCKET_API float& PixelsPerUnit();
 
     }
 

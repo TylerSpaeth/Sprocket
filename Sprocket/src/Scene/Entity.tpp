@@ -21,7 +21,7 @@ namespace Sprocket {
 
         auto it = m_AllowedComponents.find(typeid(BoxColliderComponent));
         if (*it->second == 0) {
-            Global::fileLogger.Warning("Max number of BoxColliderComponents on this object reached. Ignoring add.");
+            Global::FileLogger().Warning("Max number of BoxColliderComponents on this object reached. Ignoring add.");
             return false;
         }
 
@@ -46,7 +46,7 @@ namespace Sprocket {
 
         auto it = m_AllowedComponents.find(typeid(CircleColliderComponent));
         if (*it->second == 0) {
-            Global::fileLogger.Warning("Max number of CircleColliderComponents on this object reached. Ignoring add.");
+            Global::FileLogger().Warning("Max number of CircleColliderComponents on this object reached. Ignoring add.");
             return false;
         }
 

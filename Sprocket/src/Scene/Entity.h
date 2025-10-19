@@ -11,6 +11,8 @@
 #include "Core/Sprocket.pch"
 #include "Core/Global.h"
 
+#include "Utils/UUID.h"
+
 namespace Sprocket {
 
     /// @brief A sort of container for for Components with some extra functionality
@@ -18,11 +20,18 @@ namespace Sprocket {
 
         friend class Scene;
 
+    public:
+
+        std::string m_Name;
+        std::string m_Tag;
+
     protected:
 
         std::weak_ptr<Entity> m_Self;
 
     private: 
+
+        const uint64_t m_UUID = UUID::Generate();
 
         std::function<void(Event&)> m_EventCallback;
 
@@ -47,6 +56,10 @@ namespace Sprocket {
 
         Entity();
 
+        /// @brief Retrieves the unique identifier for this entity.
+        /// @return A 64-bit unsigned integer representing the UUID.
+        uint64_t GetUUID() const;
+
         // Only one of each component type is allowed on a single Entity
         template<typename T>
         const bool AddComponent() {
@@ -55,11 +68,11 @@ namespace Sprocket {
             std::type_index type = typeid(T);
             auto it = m_AllowedComponents.find(type);
             if (it == m_AllowedComponents.end()) {
-                Global::fileLogger.Warning("Invalid component type, ignoring add.");
+                Global::FileLogger().Warning("Invalid component type, ignoring add.");
                 return false;
             }
             if (*(it->second) == 0) {
-                Global::fileLogger.Warning(std::format("Max number of {} on this entity reached. Ignoring add.", typeid(T).name()));
+                Global::FileLogger().Warning(std::format("Max number of {} on this entity reached. Ignoring add.", typeid(T).name()));
                 return false;
             }
 
@@ -87,7 +100,7 @@ namespace Sprocket {
             std::type_index type = typeid(T);
             auto it = m_AllowedComponents.find(type);
             if (it == m_AllowedComponents.end()) {
-                Global::fileLogger.Warning("Invalid component type, ignoring get.");
+                Global::FileLogger().Warning("Invalid component type, ignoring get.");
                 return nullptr;
             }
 
@@ -110,7 +123,7 @@ namespace Sprocket {
             std::type_index type = typeid(T);
             auto it = m_AllowedComponents.find(type);
             if (it == m_AllowedComponents.end()) {
-                Global::fileLogger.Warning("Invalid file type, ignoring remove.");
+                Global::FileLogger().Warning("Invalid file type, ignoring remove.");
                 return false;
             }
 

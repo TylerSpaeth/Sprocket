@@ -37,7 +37,7 @@ namespace Sprocket {
             OnShutdown();
             break;
         case EventType::RENDER_NEW:
-            ((RenderNewEvent&)event).m_QuadID = AddQuad(Global::pixelsPerUnit);
+            ((RenderNewEvent&)event).m_QuadID = AddQuad(Global::PixelsPerUnit());
             break;
         case EventType::RENDER_UPDATE: {
             switch (((RenderUpdateEvent&)event).GetType()) {
@@ -94,7 +94,7 @@ namespace Sprocket {
 
     void Renderer::OnStart(float xDimension, float yDimension) {
         if (xDimension < 0 || yDimension < 0) {
-            Global::fileLogger.Error("Renderer dimensions can not be negative.");
+            Global::FileLogger().Error("Renderer dimensions can not be negative.");
             exit(EXIT_FAILURE);
         }
         // Setup blending
@@ -161,7 +161,7 @@ namespace Sprocket {
     const unsigned int Renderer::AddQuad(float size) {
 
         if (size <= 0) {
-            Global::fileLogger.Error("A quad must have a positive, nonzero size.");
+            Global::FileLogger().Error("A quad must have a positive, nonzero size.");
             exit(EXIT_FAILURE);
         }
 
@@ -193,7 +193,7 @@ namespace Sprocket {
     const unsigned int Renderer::AddQuad(float width, float height, unsigned long long textureID) {
 
         if (width <= 0 || height <= 0) {
-            Global::fileLogger.Error("A quad must have a positive, nonzero size.");
+            Global::FileLogger().Error("A quad must have a positive, nonzero size.");
             exit(EXIT_FAILURE);
         }
 
@@ -282,7 +282,7 @@ namespace Sprocket {
             glm::mat4 scaledModelMatrix = modelMatrix;
 
             glm::vec3 position = modelMatrix[3];
-            position *= Global::pixelsPerUnit;
+            position *= Global::PixelsPerUnit();
             scaledModelMatrix[3] = glm::vec4(position, 1.0f);
 
             m_ModelMatrices[quadIndex] = scaledModelMatrix;
@@ -341,7 +341,7 @@ namespace Sprocket {
 
         glm::mat4 inverseViewMatrix = glm::inverse(viewMatrix);
         glm::vec3 position = glm::vec3(inverseViewMatrix[3]);
-        position *= Global::pixelsPerUnit;
+        position *= Global::PixelsPerUnit();
         glm::vec3 forward = glm::vec3(-inverseViewMatrix[2]);
         glm::vec3 target = position + forward;
         glm::vec3 up = glm::vec3(inverseViewMatrix[1]);
@@ -438,7 +438,7 @@ namespace Sprocket {
 
     static IndexBuffer* GenerateIndexBuffer(unsigned int count) {
         if (count < 6 || count % 6 != 0) {
-            Global::fileLogger.Error("The number of verticies in an index buffer must be a positive multiple of 6.");
+            Global::FileLogger().Error("The number of verticies in an index buffer must be a positive multiple of 6.");
             return nullptr;
         }
         unsigned int* indicies = new unsigned int[count];

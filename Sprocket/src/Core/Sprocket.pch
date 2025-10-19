@@ -22,5 +22,7 @@
 #include <cmath>
 #include <set>
 #include <memory>
+#include <unordered_set>
+#include <random>
 
 #endif

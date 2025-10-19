@@ -10,7 +10,7 @@ namespace Sprocket {
         std::vector<Sprite> sprites;
 
         if (sheetWidth % spriteWidth != 0 || sheetHeight % spriteHeight != 0) {
-            Global::fileLogger.Warning("GetSpritesFromSpriteSheet: Sheet dimensions must be divisible by sprite dimensions");
+            Global::FileLogger().Warning("GetSpritesFromSpriteSheet: Sheet dimensions must be divisible by sprite dimensions");
             return sprites;
         }
 

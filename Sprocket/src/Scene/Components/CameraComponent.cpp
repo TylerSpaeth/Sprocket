@@ -29,7 +29,7 @@ namespace Sprocket {
         float mouseXFromCenter = mouseX - (windowDimensions.x / 2.0f);
         float mouseYFromCenter = (windowDimensions.y / 2.0f) - mouseY;
 
-        return { mouseXFromCenter / Global::pixelsPerUnit + m_Position.x, mouseYFromCenter / Global::pixelsPerUnit + m_Position.y};
+        return { mouseXFromCenter / Global::PixelsPerUnit() + m_Position.x, mouseYFromCenter / Global::PixelsPerUnit() + m_Position.y};
     }
 
     ///////////////////////////////////////////////////////////////////////////////////////////////

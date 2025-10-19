@@ -13,14 +13,14 @@ namespace Sprocket {
 
     Sound::Sound(void* nativeEngine, const std::string& filepath) : m_NativeEngine(nativeEngine) {
         if(!m_NativeEngine) {
-            Global::fileLogger.Error("Native audio engine is null. Cannot create sound.");
+            Global::FileLogger().Error("Native audio engine is null. Cannot create sound.");
             throw std::runtime_error("Native audio engine is null. Cannot create sound.");
         }
         
         m_NativeSound = malloc(sizeof(ma_sound));
         auto result = ma_sound_init_from_file((ma_engine*)m_NativeEngine, filepath.c_str(), MA_SOUND_FLAG_DECODE, NULL, NULL, (ma_sound*)m_NativeSound);
         if(result != MA_SUCCESS) {
-            Global::fileLogger.Error(std::format("Failed to load sound from file: {}. Error code: {}", filepath, (void*)result));
+            Global::FileLogger().Error(std::format("Failed to load sound from file: {}. Error code: {}", filepath, (void*)result));
             free(m_NativeSound);
             m_NativeSound = nullptr;
             throw std::runtime_error("Failed to load sound from file: " + filepath);

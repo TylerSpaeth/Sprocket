@@ -10,6 +10,8 @@
 
 #include "Events/Event.h"
 
+#include "Utils/UUID.h"
+
 namespace Sprocket {
 
     /// @brief The base class for all Component.
@@ -18,8 +20,14 @@ namespace Sprocket {
         friend class Entity;
 
     public:
+
+        const uint64_t m_UUID = UUID::Generate();
+
+    public:
         // This is needed to allow dynamic cast checking against Component pointers
         virtual ~Component() = default;
+
+        uint64_t GetUUID() const { return m_UUID; }
 
     protected:
 

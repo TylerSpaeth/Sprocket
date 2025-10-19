@@ -16,14 +16,14 @@ namespace Sprocket {
         // Init FreeType
         FT_Library ft;
         if (FT_Init_FreeType(&ft)) {
-            Global::fileLogger.Error("Could not init FreeType.");
+            Global::FileLogger().Error("Could not init FreeType.");
             std::exit(EXIT_FAILURE);
         }
 
         // Load font
         FT_Face face;
         if (FT_New_Face(ft, m_FontPath.c_str(), 0, &face)) {
-            Global::fileLogger.Error(std::format("Failed to load font: {}", fontPath));
+            Global::FileLogger().Error(std::format("Failed to load font: {}", fontPath));
             std::exit(EXIT_FAILURE);
         }
 
@@ -52,7 +52,7 @@ namespace Sprocket {
         int xOffset = 0;
         for (unsigned char c = 0; c < 128; c++) {
             if (FT_Load_Char(face, c, FT_LOAD_RENDER)) {
-                Global::fileLogger.Warning(std::format("Failed to load glyph \"{}\" for {}", c, fontPath));
+                Global::FileLogger().Warning(std::format("Failed to load glyph \"{}\" for {}", c, fontPath));
                 continue;
             }
 

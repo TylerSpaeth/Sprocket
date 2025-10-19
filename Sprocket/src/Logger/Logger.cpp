@@ -8,8 +8,8 @@ namespace Sprocket {
 
     Logger::Logger(bool useANSIColors) : m_LogFile(stdout), m_UseANSIColors(useANSIColors) {}
 
-    Logger::Logger(const std::string& filepath) : m_UseANSIColors(false) {
-        m_LogFile = fopen(filepath.c_str(), "w");
+    Logger::Logger(const char* filepath) : m_UseANSIColors(false) {
+        m_LogFile = fopen(filepath, "w");
         if (!m_LogFile) {
             std::println("Failed to open log file for writing: {}", filepath);
             m_LogFile = stdout;
@@ -45,7 +45,7 @@ namespace Sprocket {
         auto timestamp = std::chrono::system_clock::now();
         // We only want to add color if we are logging to stdout.
         if (m_UseANSIColors && m_LogFile == stdout) {
-            std::print("{}", color);
+            std::print(stdout, "{}", color);
         }
         std::println(m_LogFile, "{:%Y-%m-%d %H:%M:%S} {} : {}", timestamp, logTypeString, message);
         fflush(m_LogFile);
@@ -54,7 +54,7 @@ namespace Sprocket {
         #ifdef _DEBUG
             if (m_LogFile != stdout) {
                 if (m_UseANSIColors) {
-                    std::print("{}",color);
+                    std::print(stdout, "{}",color);
                 }
                 std::println(stdout, "Logged to file: {:%Y-%m-%d %H:%M:%S} {} : {}", timestamp, logTypeString, message);
             }
