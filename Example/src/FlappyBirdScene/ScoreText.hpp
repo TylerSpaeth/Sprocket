@@ -20,7 +20,7 @@ namespace Sprocket {
 
         ScoreText() {
             AddComponent<TextRendererComponent>();
-            GetComponent<TransformComponent>()->LocalPosition() = { 0,2,50 };
+            GetComponent<TransformComponent>()->LocalPosition() = { 0,2,1 };
         }
 
         void Start() override {
