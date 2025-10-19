@@ -131,7 +131,7 @@ namespace Sprocket {
         // By default, the projection matrix will have the center of the screen at (0,0) and
         // the the edges will be determined by the x and y values given 
         m_Shader->Bind();
-        m_Shader->SetUniformMatrix4f("u_ProjectionMatrix", glm::ortho(-(float)xDimension / 2, (float)xDimension / 2, -(float)yDimension / 2, (float)yDimension / 2, -100.0f,100.0f));//std::numeric_limits<float>::lowest(), std::numeric_limits<float>::max()));
+        m_Shader->SetUniformMatrix4f("u_ProjectionMatrix", glm::ortho(-(float)xDimension / 2, (float)xDimension / 2, -(float)yDimension / 2, (float)yDimension / 2, -100.0f, 100.0f));
         m_Shader->Unbind();
     }
 
