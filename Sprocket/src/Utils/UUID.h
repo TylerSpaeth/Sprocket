@@ -13,6 +13,8 @@ namespace Sprocket {
 
     public:
 
+        /// @brief Generates a unique 64-bit unsigned integer UUID.
+        /// @return 64-bit unsigned integer UUID.
         static uint64_t Generate();
 
     };
