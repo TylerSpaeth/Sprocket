@@ -37,7 +37,7 @@ namespace Sprocket {
 
         /// @brief A logger that logs to the given filepath. Note that in debug builds this will 
         /// also duplicate all logs to stdout.
-        Logger(const std::string& filepath);
+        Logger(const char* filepath);
 
         ~Logger();
 

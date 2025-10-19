@@ -40,11 +40,6 @@ namespace Sprocket {
             }
             return newEntity;
         }
-        
-        /// @brief Adds an entity into the scene.
-        /// @param entity - The entity to add to the scene.
-        /// @returns True if submission is successful, false otherwise
-        //const bool SubmitEntityToScene(std::shared_ptr<Entity> entity);
 
         /// @brief Removes an entity from the scene.
         /// @param entity - The entity to be removed from the scene.
@@ -62,6 +57,21 @@ namespace Sprocket {
         /// instead be called directly be the Scene Manager when it recieves an event.
         /// @param event The event the should be handled.
         const void OnEvent(Event& event);
+
+        /// @brief Gets the entity with the given UUID.
+        /// @param uuid - The UUID of the entity to get.
+        /// @return The entity with the given UUID, or nullptr if not found.
+        const std::shared_ptr<Entity> GetEntityByUUID(const uint64_t uuid) const;
+
+        /// @brief Retrieves all entities with the given name.
+        /// @param name - The name of the entities to retrieve.
+        /// @return A vector of shared pointers to the entities with the given name.
+        const std::vector<std::shared_ptr<Entity>> GetEntitiesByName(const std::string& name) const;
+
+        /// @brief Retrieves all entities with the given tag.
+        /// @param tag - The tag of the entities to retrieve.
+        /// @return A vector of shared pointers to the entities with the given tag.
+        const std::vector<std::shared_ptr<Entity>> GetEntitiesByTag(const std::string& tag) const;
 
     private:
 

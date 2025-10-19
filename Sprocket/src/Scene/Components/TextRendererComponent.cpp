@@ -75,7 +75,7 @@ namespace Sprocket {
     void TextRendererComponent::UpdateModelMatrix(glm::vec3 position, glm::vec3 rotation, glm::vec3 scale) {
 
         if (m_QuadID == -1) {
-            Global::fileLogger.Warning("Attempting to UpdateModelMatrix without rendering first.");
+            Global::FileLogger().Warning("Attempting to UpdateModelMatrix without rendering first.");
             return;
         }
 

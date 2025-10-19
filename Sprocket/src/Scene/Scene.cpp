@@ -78,6 +78,35 @@ namespace Sprocket {
         }
     }
 
+    const std::shared_ptr<Entity> Scene::GetEntityByUUID(const uint64_t uuid) const {
+        for (auto& entity : m_Entities) {
+            if (entity->GetUUID() == uuid) {
+                return entity;
+            }
+        }
+        return nullptr;
+    }
+
+    const std::vector<std::shared_ptr<Entity>> Scene::GetEntitiesByName(const std::string& name) const {
+        std::vector<std::shared_ptr<Entity>> entities;
+        for (auto& entity : m_Entities) {
+            if (entity->m_Name == name) {
+                entities.push_back(entity);
+            }
+        }
+        return entities;
+    }
+
+    const std::vector<std::shared_ptr<Entity>> Scene::GetEntitiesByTag(const std::string& tag) const {
+        std::vector<std::shared_ptr<Entity>> entities;
+        for (auto& entity : m_Entities) {
+            if (entity->m_Tag == tag) {
+                entities.push_back(entity);
+            }
+        }
+        return entities;
+    }
+
     ///////////////////////////////////////////////////////////////////////////////////////////////
     ////////////////////////////////////////////PRIVATE////////////////////////////////////////////
     ///////////////////////////////////////////////////////////////////////////////////////////////

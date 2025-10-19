@@ -26,44 +26,44 @@ namespace Sprocket {
             return;
         }
 
-        Global::fileLogger.Info("Sprocket: Startup");
+        Global::FileLogger().Info("Sprocket: Startup");
 
         Window::Init(m_WindowDimensions.first, m_WindowDimensions.second, m_WindowTitle);
         Window::RegisterEventCallback(std::bind(&Application::OnEvent, this, std::placeholders::_1));
         this->RegisterEventCallback(Window::OnEvent, EventCategory::UNCATEGORIZED);
 
-        Global::fileLogger.Info("Window Initialized.");
+        Global::FileLogger().Info("Window Initialized.");
 
         Input::Init();
         this->RegisterEventCallback(Input::OnEvent, EventCategory::APPLICATION);
 
-        Global::fileLogger.Info("Input Initialized.");
+        Global::FileLogger().Info("Input Initialized.");
 
         // ImGui must be initialized after the window and much have its callback registered before the renderer
         ImGuiImpl::Init();
         this->RegisterEventCallback(ImGuiImpl::OnEvent, EventCategory::UNCATEGORIZED);
 
-        Global::fileLogger.Info("ImGuiImpl Intialized.");
+        Global::FileLogger().Info("ImGuiImpl Intialized.");
         
         auto renderer = new Renderer();
         this->RegisterEventCallback(std::bind(&Renderer::OnEvent, renderer, std::placeholders::_1), EventCategory::UNCATEGORIZED);
 
-        Global::fileLogger.Info("Renderer Initialized.");
+        Global::FileLogger().Info("Renderer Initialized.");
 
         auto physics = new PhysicsManager();
         this->RegisterEventCallback(std::bind(&PhysicsManager::OnEvent, physics, std::placeholders::_1), EventCategory::UNCATEGORIZED);
 
-        Global::fileLogger.Info("Physics Initialized.");
+        Global::FileLogger().Info("Physics Initialized.");
 
         auto audioManager = new AudioManager();
         this->RegisterEventCallback(std::bind(&AudioManager::OnEvent, audioManager, std::placeholders::_1), EventCategory::UNCATEGORIZED);
 
-        Global::fileLogger.Info("AudioManager Intialized.");
+        Global::FileLogger().Info("AudioManager Intialized.");
 
         SceneManager::Init(std::bind(&Application::OnEvent, this, std::placeholders::_1));
         this->RegisterEventCallback(SceneManager::OnEvent, EventCategory::UNCATEGORIZED);
 
-        Global::fileLogger.Info("SceneManager Initialized.");
+        Global::FileLogger().Info("SceneManager Initialized.");
     }
 
     void Application::Run() {
@@ -102,12 +102,12 @@ namespace Sprocket {
     void Application::OnEvent(Event& event) {
 
         if (!m_AppRunning && event.GetEventType() != EventType::APP_START) {
-            Global::fileLogger.Warning("Event recieved before application startup. Event will be ignored.");
+            Global::FileLogger().Warning("Event recieved before application startup. Event will be ignored.");
             return;
         }
 
         if (m_ShutdownSeen) {
-            Global::fileLogger.Warning("Event received after shutdown event. Event will be ignored.");
+            Global::FileLogger().Warning("Event received after shutdown event. Event will be ignored.");
             return;
         }
 
@@ -131,7 +131,7 @@ namespace Sprocket {
         }
 
         if (event.GetEventType() == EventType::APP_SHUTDOWN) {
-            Global::fileLogger.Info("Sprocket: Shutdown");
+            Global::FileLogger().Info("Sprocket: Shutdown");
             m_AppRunning = false;
             m_ShutdownSeen = true;
         }

@@ -31,10 +31,10 @@ namespace Sprocket {
             PhysicsNewEvent& newEvent = ((PhysicsNewEvent&)event);
             switch (newEvent.m_ColliderType) {
             case ColliderType::BOX:
-                newEvent.m_PhysicsID = AddPhysicsObject(newEvent.m_ColliderCenter * Global::pixelsPerUnit, newEvent.m_BoxColliderRotation, newEvent.m_BoxColliderSize * Global::pixelsPerUnit);
+                newEvent.m_PhysicsID = AddPhysicsObject(newEvent.m_ColliderCenter * Global::PixelsPerUnit(), newEvent.m_BoxColliderRotation, newEvent.m_BoxColliderSize * Global::PixelsPerUnit());
                 break;
             case ColliderType::CIRCLE:
-                newEvent.m_PhysicsID = AddPhysicsObject(newEvent.m_ColliderCenter * Global::pixelsPerUnit, newEvent.m_CircleRadius * Global::pixelsPerUnit);
+                newEvent.m_PhysicsID = AddPhysicsObject(newEvent.m_ColliderCenter * Global::PixelsPerUnit(), newEvent.m_CircleRadius * Global::PixelsPerUnit());
                 break;
             }
             break;
@@ -43,10 +43,10 @@ namespace Sprocket {
             PhysicsUpdateEvent& updateEvent = ((PhysicsUpdateEvent&)event);
             switch (updateEvent.m_ColliderType) {
             case ColliderType::BOX:
-                UpdatePhysicsObject(updateEvent.m_PhysicsID, updateEvent.m_ColliderCenter * Global::pixelsPerUnit, updateEvent.m_BoxColliderRotation, updateEvent.m_BoxColliderSize * Global::pixelsPerUnit);
+                UpdatePhysicsObject(updateEvent.m_PhysicsID, updateEvent.m_ColliderCenter * Global::PixelsPerUnit(), updateEvent.m_BoxColliderRotation, updateEvent.m_BoxColliderSize * Global::PixelsPerUnit());
                 break;
             case ColliderType::CIRCLE:
-                UpdatePhysicsObject(updateEvent.m_PhysicsID, updateEvent.m_ColliderCenter * Global::pixelsPerUnit, updateEvent.m_CircleRadius * Global::pixelsPerUnit);
+                UpdatePhysicsObject(updateEvent.m_PhysicsID, updateEvent.m_ColliderCenter * Global::PixelsPerUnit(), updateEvent.m_CircleRadius * Global::PixelsPerUnit());
                 break;
             }
             break;

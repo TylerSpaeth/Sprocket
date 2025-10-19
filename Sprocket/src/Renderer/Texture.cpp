@@ -26,7 +26,7 @@ namespace Sprocket {
         m_LocalBuffer = stbi_load(path.c_str(), &m_Width, &m_Height, &m_BytesPerPixel, 4);
 
         if (m_LocalBuffer == nullptr) {
-            Global::fileLogger.Error(std::format("Sprocket: Texture loading failed for path: {}", path));
+            Global::FileLogger().Error(std::format("Sprocket: Texture loading failed for path: {}", path));
         }
 
         CreateTexture();

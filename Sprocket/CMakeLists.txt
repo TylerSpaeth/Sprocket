@@ -53,6 +53,7 @@ target_sources(sprocket PRIVATE
   src/Core/Window.cpp
   src/Core/Application.cpp
   src/Core/Input.cpp
+  src/Core/Global.cpp
 )
 
 # Add Scene source code
@@ -103,6 +104,7 @@ target_sources(sprocket PRIVATE
 target_sources(sprocket PRIVATE
     src/Utils/RendererUtils.cpp
     src/Utils/SceneUtils.cpp
+    src/Utils/UUID.cpp
 )
 
 # Copy everything in the resources folder to the output directory

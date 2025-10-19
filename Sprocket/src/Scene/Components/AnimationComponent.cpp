@@ -17,7 +17,7 @@ namespace Sprocket {
         int index = 0;
         for (auto frame : animation.animationFrames) {
             if (frame.frameDuration < 0) {
-                Global::fileLogger.Warning(std::format("Failed to set animation, frame {} has a negative frame duration.", index));
+                Global::FileLogger().Warning(std::format("Failed to set animation, frame {} has a negative frame duration.", index));
                 return false;
             }
             index++;
