@@ -18,6 +18,8 @@ namespace Sprocket {
 
     private:
 
+        uint64_t m_UUID = UUID::Generate();
+
         std::function<void(Event&)> m_EventCallback;
 
         std::vector<std::shared_ptr<Entity>> m_Entities;
@@ -38,6 +40,10 @@ namespace Sprocket {
             if (m_EventCallback) {
                 newEntity->OnActivate();
             }
+            
+
+            Global::FileLogger().Debug(std::format("Entity ({} - {}) Submitted to Scene ({})", typeid(T).name(), newEntity->m_UUID, m_UUID));
+
             return newEntity;
         }
 

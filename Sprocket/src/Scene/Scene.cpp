@@ -120,6 +120,7 @@ namespace Sprocket {
             entity->m_EventCallback = m_EventCallback;
             entity->OnActivate();
         }
+        Global::FileLogger().Debug(std::format("Scene ({}) Activated", m_UUID));
     }
 
     void Scene::OnDeactivate() {
@@ -127,6 +128,7 @@ namespace Sprocket {
             entity->OnDeactivate();
             entity->m_EventCallback = nullptr;
         }
+        Global::FileLogger().Debug(std::format("Scene ({}) Deactivated", m_UUID));
     }
 
     void Scene::OnUpdate(float deltaTime) {
